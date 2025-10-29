@@ -63,7 +63,7 @@ Example from 2048.
     ],
     "desc": "The 2048 puzzle game",
     "desc_md": null,
-    "inst": "ready to run,
+    "inst": "ready to run",
     "inst_md": null,
     "genres": [
       "other"
