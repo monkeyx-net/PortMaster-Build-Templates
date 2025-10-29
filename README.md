@@ -31,7 +31,7 @@ go: downloading github.com/veandco/go-sdl2 v0.4.40
 go: downloading golang.org/x/image v0.29.0
 ```
 
-Also needed to add a golang repo but this step would have been needed no matter what build process was chosen. These steps will documented as part of the buid process.
+Also needed to add a golang repo but this step would have been needed no matter what build process was chosen. These steps will documented as part of the build process.
 
 ## Pre Requisites
 
