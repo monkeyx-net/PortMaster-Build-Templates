@@ -49,31 +49,37 @@ Example from 2048.
 
 ```json
 {
-    "version": 2,
+    "version": 4,
     "name": "2048.zip",
     "items": [
         "2048.sh",
-        "2048/"
+        "2048"
     ],
-    "items_opt": null,
-    "attr": {
-        "title": "2048",
-        "desc": "The 2048 puzzle game",
-        "inst": "Ready to run.",
-        "genres": [
-            "puzzle"
-        ],
-        "porter": [
-            "Christian_Haitian"
-        ],
-        "image": {},
-        "rtr": true,
-        "runtime": null,
-        "reqs": [],
-        "arch": [
-            "aarch64",
-            "armhf"
-        ]
+  "items_opt": [],
+   "attr": {
+    "title": "2048",
+    "porter": [
+      "BOT"
+    ],
+    "desc": "The 2048 puzzle game",
+    "desc_md": null,
+    "inst": "ready to run,
+    "inst_md": null,
+    "genres": [
+      "other"
+    ],
+    "image": null,
+    "rtr": true,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "full",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "armf"
+    ],
+    "min_glibc": ""
     }
 }
 ```
