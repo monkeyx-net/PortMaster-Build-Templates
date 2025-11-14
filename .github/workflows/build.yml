@@ -1,0 +1,166 @@
+name: Build Multi-Architecture for PortMaster
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  GO_VERSION: 1.23
+  SDL_VERSION: 2.30.2
+  GAME_EXE: "sdlscav"
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }} Binary
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            platform: linux/amd64
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+            platform: linux/arm64
+
+    outputs:
+      game_folder: ${{ steps.parse-json.outputs.game_folder }}
+      game_name: ${{ steps.parse-json.outputs.game_name }}
+      game_zip: ${{ steps.parse-json.outputs.game_zip }}
+      game_start: ${{ steps.parse-json.outputs.game_start }}
+      game_exe: ${{ steps.parse-json.outputs.game_exe }}
+      game_icon: ${{ steps.parse-json.outputs.game_icon }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Parse port.json
+        id: parse-json
+        run: |
+          PORT_JSON_PATH="latest/scavenger/port.json"
+          if [ ! -f "$PORT_JSON_PATH" ]; then
+            echo "Error: $PORT_JSON_PATH not found" && exit 1
+          fi
+          GAME_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          GAME_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
+          GAME_ZIP=$(jq -r '.name' "$PORT_JSON_PATH")
+          GAME_START=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          GAME_EXE="$GAME_EXE"
+          GAME_ICON="latest/$GAME_FOLDER/cover.png"
+          echo "game_folder=$GAME_FOLDER" >> $GITHUB_OUTPUT
+          echo "game_name=$GAME_NAME" >> $GITHUB_OUTPUT
+          echo "game_zip=$GAME_ZIP" >> $GITHUB_OUTPUT
+          echo "game_start=$GAME_START" >> $GITHUB_OUTPUT
+          echo "game_exe=$GAME_EXE" >> $GITHUB_OUTPUT
+          echo "game_icon=$GAME_ICON" >> $GITHUB_OUTPUT
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install dependencies and Go
+        run: |
+          sudo add-apt-repository -y ppa:longsleep/golang-backports
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkg-config wget tar golang-go \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+            libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
+            libpipewire-0.3-dev libfuse2 appstream make patchelf jq
+
+          echo "GOROOT=$(go env GOROOT)" >> $GITHUB_ENV
+          echo "$(go env GOROOT)/bin" >> $GITHUB_PATH
+
+      - name: Install Kitware CMake
+        run: |
+          sudo apt install -y wget gnupg
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main" | sudo tee /etc/apt/sources.list.d/kitware.list
+          sudo apt install -y --no-install-recommends cmake
+          sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Build binary
+        run: |
+          make
+
+      - name: Strip and package binary
+        run: |
+          GAME_EXE="${{ steps.parse-json.outputs.game_exe }}"
+          GAME_FOLDER="${{ steps.parse-json.outputs.game_folder }}"
+          mkdir -p dist
+          cp ${GAME_EXE} dist/${GAME_EXE}-${{ matrix.arch }}
+          strip dist/${GAME_EXE}-${{ matrix.arch }} || true
+          tar -czf ${GAME_FOLDER}-linux-${{ matrix.arch }}.tar.gz -C dist ${GAME_EXE}-${{ matrix.arch }}
+          ls -lh *.tar.gz
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}
+          path: ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}.tar.gz
+          retention-days: 7
+
+  package:
+    name: Package PortMaster
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository (for latest/ folder and other files)
+        uses: actions/checkout@v4
+
+      - name: Download all binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: scavenger-linux-*
+          merge-multiple: true
+
+      - name: Extract binaries to correct locations
+        run: |
+          GAME_EXE="${{ needs.build.outputs.game_exe }}"
+          GAME_FOLDER="${{ needs.build.outputs.game_folder }}"
+          GAME_START="${{ needs.build.outputs.game_start }}"
+          echo "game_exe=$GAME_EXE" >> $GITHUB_OUTPUT
+          echo "game_folder=$GAME_FOLDER" >> $GITHUB_OUTPUT
+          echo "Creating PortMaster package"
+          mkdir -p dist/${GAME_FOLDER}/conf
+          echo "Artifacts structure:"
+          find artifacts -type f -name "*.tar.gz" | while read f; do
+            echo "Extracting $f..."
+            tar -xzf "$f" -C dist/
+          done
+          echo "Contents of dist/:"
+          ls -la artifacts/
+          ls -la dist/
+          ls -la latest/
+          echo "Remove previous aarch64 and x86_64 binaries"
+          rm -f "latest/${GAME_FOLDER}/${GAME_EXE}.aarch64" "latest/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+          echo "Copy ${GAME_START} from latest to dist folder"
+          cp "latest/$GAME_START" "dist/"
+          echo "Copy meta information and supporting files/folders"
+          cp -r "latest/${GAME_FOLDER}/." "dist/${GAME_FOLDER}/"
+          echo "Copy latest game binaries"
+          mv dist/${GAME_EXE}-x86_64 dist/${GAME_FOLDER}/${GAME_EXE}.x86_64
+          mv dist/${GAME_EXE}-arm64 dist/${GAME_FOLDER}/${GAME_EXE}.aarch64
+          chmod +x dist/${GAME_FOLDER}/${GAME_EXE}.*
+          echo "Contents of dist/${GAME_FOLDER}/:"
+          ls -la dist/${GAME_FOLDER}
+          cd dist
+          zip -r "../${GAME_FOLDER}.zip" .
+
+      - name: Upload PortMaster package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.game_folder }}-portmaster
+          path: ${{ needs.build.outputs.game_folder }}.zip
+          retention-days: 7
