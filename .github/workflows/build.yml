@@ -123,7 +123,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{ steps.parse-json.outputs.game_exe }}-linux-*
+          pattern: ${{ needs.build.outputs.game_exe }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
