@@ -24,7 +24,7 @@ jobs:
           - arch: x86_64
             runner: ubuntu-latest
             platform: linux/amd64
-          - arch: arm64
+          - arch: aarch64
             runner: ubuntu-22.04-arm
             platform: linux/arm64
 
@@ -98,10 +98,10 @@ jobs:
         run: |
           GAME_EXE="${{ steps.parse-json.outputs.game_exe }}"
           GAME_FOLDER="${{ steps.parse-json.outputs.game_folder }}"
-          mkdir -p dist
+          mkdir -p dist/libs.${{ matrix.arch }}
           cp ${GAME_EXE} dist/${GAME_EXE}-${{ matrix.arch }}
           strip dist/${GAME_EXE}-${{ matrix.arch }} || true
-          tar -czf ${GAME_FOLDER}-linux-${{ matrix.arch }}.tar.gz -C dist ${GAME_EXE}-${{ matrix.arch }}
+          tar -czf ${GAME_FOLDER}-linux-${{ matrix.arch }}.tar.gz -C dist . ${GAME_EXE}-${{ matrix.arch }}
           ls -lh *.tar.gz
 
       - name: Upload binary artifact
@@ -123,7 +123,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{ needs.build.outputs.game_exe }}-linux-*
+          pattern: ${{ needs.build.outputs.game_folder }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
@@ -144,15 +144,13 @@ jobs:
           ls -la artifacts/
           ls -la dist/
           ls -la latest/
-          echo "Remove previous aarch64 and x86_64 binaries"
-          rm -f "latest/${GAME_FOLDER}/${GAME_EXE}.aarch64" "latest/${GAME_FOLDER}/${GAME_EXE}.x86_64"
           echo "Copy ${GAME_START} from latest to dist folder"
           cp "latest/$GAME_START" "dist/"
           echo "Copy meta information and supporting files/folders"
           cp -r "latest/${GAME_FOLDER}/." "dist/${GAME_FOLDER}/"
           echo "Copy latest game binaries"
           mv dist/${GAME_EXE}-x86_64 dist/${GAME_FOLDER}/${GAME_EXE}.x86_64
-          mv dist/${GAME_EXE}-arm64 dist/${GAME_FOLDER}/${GAME_EXE}.aarch64
+          mv dist/${GAME_EXE}-aarch64 dist/${GAME_FOLDER}/${GAME_EXE}.aarch64
           chmod +x dist/${GAME_FOLDER}/${GAME_EXE}.*
           echo "Contents of dist/${GAME_FOLDER}/:"
           ls -la dist/${GAME_FOLDER}
