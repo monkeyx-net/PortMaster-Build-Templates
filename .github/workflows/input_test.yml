@@ -31,7 +31,7 @@ jobs:
     - run: |
         echo "Port Bash Name: ${{ github.event.inputs.bash_file }}"
         echo "Port Binary Name: ${{ github.event.inputs.exe_file }}"
-        echo "Port Folder Name: ${{ github.event.inputs.folder_file }}"
+        echo "Port Folder Name: ${{ github.event.inputs.folder_name }}"
         echo "Port Json File Name: ${{ github.event.inputs.port_file }}"
         echo "SDL version: ${{ github.event.inputs.sdl_version }}"
          
