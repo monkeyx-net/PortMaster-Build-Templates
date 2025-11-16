@@ -1,19 +1,35 @@
 on:
   workflow_dispatch:
     inputs:
-      sdl_version:
-        description: 'Framework version'
-        required: true
-        default: '2.5.3'
       bash_file:
-        description: 'Publish artifacts'
+        description: 'Enter Bash filename'
         required: true
         default: 'Port.sh'   
+      exe_file:
+        description: 'Enter executable filename'
+        required: true
+        default: 'port'   
+      folder_name:
+        description: 'Enter port folder name'
+        required: true
+        default: 'some_folder'
+      port_file:
+        description: 'Enter port.json file name'
+        required: true
+        default: 'port.json'       
+      sdl_version:
+        description: 'Enter SDL Version required'
+        required: true
+        default: '2.32.0'
 
 jobs:
   printInputs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Log level: ${{ github.event.inputs.sdl_veersion }}"
-        echo "Tags: ${{ github.event.inputs.bash_file }}" 
+        echo "Port Bash Name: ${{ github.event.inputs.bash_file }}"
+        echo "Port Binary Name: ${{ github.event.inputs.exe_file }}"
+        echo "Port Folder Name: ${{ github.event.inputs.folder_file }}"
+        echo "Port Json File Name: ${{ github.event.inputs.port_file }}"
+        echo "SDL version: ${{ github.event.inputs.sdl_version }}"
+         
