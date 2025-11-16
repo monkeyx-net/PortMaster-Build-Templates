@@ -9,3 +9,11 @@ on:
         description: 'Publish artifacts'
         required: true
         default: 'Port.sh'   
+
+jobs:
+  printInputs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Log level: ${{ github.event.inputs.sdl_veersion }}"
+        echo "Tags: ${{ github.event.inputs.bash_file }}" 
