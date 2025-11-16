@@ -1,0 +1,11 @@
+on:
+  workflow_dispatch:
+    inputs:
+      sdl_version:
+        description: 'Framework version'
+        required: true
+        default: '2.5.3'
+      bash_file:
+        description: 'Publish artifacts'
+        required: true
+        default: 'Port.sh'   
