@@ -92,8 +92,8 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
-          mkdir -p ports/"${{ steps.parse-json.outputs.game_folder }}"
-          cd ports/"${{ steps.parse-json.outputs.game_folder }}"
+          mkdir -p ports/${{ steps.download.outputs.game_folder }}
+          cd ports/${{ steps.download.outputs.game_folder }}
           URL="${{ github.event.inputs.port_url }}"
           filename=$(basename "$URL")
           echo "Downloading: $filename"
@@ -113,7 +113,7 @@ jobs:
 
       - name: Extract archive
         run: |
-          cd ports/"${{ steps.parse-json.outputs.game_folder }}"
+          cd ports/${{ steps.download.outputs.game_folder }}
           ARCHIVE_TYPE="${{ steps.download.outputs.archive_type }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
@@ -134,7 +134,7 @@ jobs:
 
       - name: Clean up downloaded archive
         run: |
-          cd ports/"${{ steps.parse-json.outputs.game_folder }}"
+          cd ports/"${{ steps.download.outputs.game_folder }}"
           rm -f shamogu-archive.*
 
       - name: Commit changes
