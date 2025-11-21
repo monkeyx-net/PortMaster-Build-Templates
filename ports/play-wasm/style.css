@@ -1,0 +1,32 @@
+/* Colors from https://github.com/jan-warchol/selenized/ */
+html{
+	background-color:#fdf3db;
+	color:#53676d;
+	font-size:16px;
+}
+html, body {
+	max-width:100%;
+}
+canvas {
+	max-width:100%;
+	max-height:100%;
+}
+details{
+	background-color:#ece3cc
+}
+canvas {
+	display:block;
+	margin: 0;
+	position: relative;
+	left: 50%;
+	transform: translate(-50%);
+	-webkit-transform: translate(-50%);
+}
+.centered {
+	display:block;
+	position: relative;
+	text-align: center;
+	left: 50%;
+	transform: translate(-50%);
+	-webkit-transform: translate(-50%);
+}
