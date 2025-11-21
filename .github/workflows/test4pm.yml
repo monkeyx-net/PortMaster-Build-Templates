@@ -1,4 +1,4 @@
-name: Test for PM
+name: PortMaster Automated Build System (PABS)
 
 on:
   workflow_dispatch:
