@@ -72,7 +72,7 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
-          mkdir ports
+          mkdir -p ports
           cd ports
           URL="${{ github.event.inputs.port_url }}"
           filename=$(basename "$URL")
