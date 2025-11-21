@@ -1,4 +1,4 @@
-name: Test for PM
+name: Autobuild 4 PortMaster
 
 on:
   workflow_dispatch:
