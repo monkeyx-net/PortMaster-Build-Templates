@@ -198,12 +198,15 @@ jobs:
             cd ports/$FOLDER_NAME
             pwd
             $BUILD_CMD
-
+            ls -ltr
             echo 'Creating distribution...'
             mkdir -p dist
+            ls -ltr
             cp '$EXE_FILE' 'dist/$EXE_FILE-${{ matrix.arch }}'
+            ls -ltr
             strip 'dist/$EXE_FILE-${{ matrix.arch }}' || echo 'Strip failed, continuing...'
             tar -czf '$FOLDER_NAME-linux-${{ matrix.arch }}.tar.gz' -C dist .
+            ls -ltr
             echo 'Build completed successfully'
             "
 
