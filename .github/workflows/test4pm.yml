@@ -38,7 +38,8 @@ on:
         description: 'Enter SDL Version required'
         required: true
         default: '2.32.0'
-
+env:
+        BUILD_TOKEN: ${{ secrets.BUILD_TOKEN }}
 jobs:
   build:
     name: Build ${{ matrix.arch }} Binary
@@ -120,6 +121,7 @@ jobs:
         run: |
           git config --local user.email "tim@monkeyx.net"
           git config --local user.name "monkeyx-net"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git add ports/
           if git diff --staged --quiet; then
             echo "No changes to commit"
