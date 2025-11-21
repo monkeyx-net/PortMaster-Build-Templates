@@ -135,7 +135,7 @@ jobs:
           esac
 
       - name: Clean up downloaded archive
-        needs:build
+        needs: build
         run: |
           cd ports/"${{ needs.build.outputs.game_folder }}"
           rm -f shamogu-archive.*
