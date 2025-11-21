@@ -92,9 +92,6 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
-          echo "1 - $game_folder"
-          echo "2 - ${{ steps.parse-json.outputs.game_folder }}"
-          echo "3 - $GAME_FOLDER"
           mkdir -p ports/"${{ steps.parse-json.outputs.game_folder }}"
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
           URL="${{ github.event.inputs.port_url }}"
@@ -196,8 +193,10 @@ jobs:
             sdl2-config --version
             echo 'SDL Build completed successfully'
 
-            echo 'Building ${{ github.event.inputs.game_exe }}application'
+            echo 'Building ${{ github.event.inputs.game_exe }} application'
+            pwd
             cd ports/$FOLDER_NAME
+            pwd
             $BUILD_CMD
 
             echo 'Creating distribution...'
