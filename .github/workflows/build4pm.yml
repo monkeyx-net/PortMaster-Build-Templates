@@ -98,13 +98,11 @@ jobs:
           filename=$(basename "$URL")
           echo "Downloading: $filename"
           if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
-            echo "archive_type=tar.gz" >> $GITHUB_OUTPUT
-            echo "archive_file=shamogu-archive.tar.gz" >> $GITHUB_OUTPUT
-            output_file="shamogu-archive.tar.gz"
+            echo "archive_file="${{ steps.parse-json.outputs.game_folder }}"-archive.tar.gz" >> $GITHUB_OUTPUT
+            output_file=""${{ steps.parse-json.outputs.game_folder }}"-archive.tar.gz"
           elif [[ "$filename" == *.zip ]]; then
-            echo "archive_type=zip" >> $GITHUB_OUTPUT
-            echo "archive_file=shamogu-archive.zip" >> $GITHUB_OUTPUT
-            output_file="shamogu-archive.zip"
+            echo "archive_file="${{ steps.parse-json.outputs.game_folder }}"-archive.zip" >> $GITHUB_OUTPUT
+            output_file=""${{ steps.parse-json.outputs.game_folder }}"-archive.zip"
           else
             echo "Unknown archive type: $filename"
             exit 1
@@ -114,28 +112,14 @@ jobs:
       - name: Extract archive
         run: |
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
-          ARCHIVE_TYPE="${{ steps.download.outputs.archive_type }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
-          case "$ARCHIVE_TYPE" in
-            "tar.gz")
-              tar -xzf "$ARCHIVE_FILE" --strip-components=1
-              ;;
-            "zip")
-              unzip -q "$ARCHIVE_FILE"
-              for dir in "shamogu-*" "shamogu-master" "*shamogu*"; do
-                if [ -d "$dir" ]; then
-                  mv "$dir"/* . 2>/dev/null || true
-                  rmdir "$dir" 2>/dev/null || true
-                fi
-              done
-              ;;
-          esac
+          bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
 
       - name: Clean up downloaded archive
         run: |
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
-          rm -f shamogu-archive.*
+          rm -f "${{ steps.parse-json.outputs.game_folder }}"-archive.*
 
       - name: Commit changes
         if: matrix.arch == 'x86_64'
