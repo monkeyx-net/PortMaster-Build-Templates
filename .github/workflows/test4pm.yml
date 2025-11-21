@@ -118,6 +118,7 @@ jobs:
           rm -f shamogu-archive.*
 
       - name: Commit changes
+        if: matrix.arch == 'x86_64'
         run: |
           git config --local user.email "tim@monkeyx.net"
           git config --local user.name "monkeyx-net"
