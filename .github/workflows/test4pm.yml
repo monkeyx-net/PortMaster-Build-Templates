@@ -87,8 +87,6 @@ jobs:
           echo "Unknown archive type: $filename"
           exit 1
         fi
-
-        # Download the file
         curl -L -o "$output_file" "$URL"
 
     - name: Extract archive
@@ -103,7 +101,6 @@ jobs:
             ;;
           "zip")
             unzip -q "$ARCHIVE_FILE"
-            # Remove common inner directory patterns
             for dir in "shamogu-*" "shamogu-master" "*shamogu*"; do
               if [ -d "$dir" ]; then
                 mv "$dir"/* . 2>/dev/null || true
