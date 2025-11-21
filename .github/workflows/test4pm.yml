@@ -72,6 +72,7 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
+          echo $game_folder
           mkdir -p ports/$game_folder
           cd ports/$game_folder
           URL="${{ github.event.inputs.port_url }}"
