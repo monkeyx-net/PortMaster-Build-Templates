@@ -72,8 +72,8 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
-          mkdir -p ports
-          cd ports
+          mkdir -p ports/$GAME_FOLDER
+          cd ports/$GAME_FOLDER
           URL="${{ github.event.inputs.port_url }}"
           filename=$(basename "$URL")
           echo "Downloading: $filename"
@@ -194,6 +194,7 @@ jobs:
             echo 'SDL Build completed successfully'
 
             echo 'Building ${{ github.event.inputs.game_exe }}application'
+            cd ports/$FOLDER_NAME
             $BUILD_CMD
 
             echo 'Creating distribution...'
