@@ -90,10 +90,11 @@ jobs:
           echo "game_icon=$GAME_ICON" >> $GITHUB_OUTPUT
 
       - name: Determine archive type and download
+        needs: build
         id: download
         run: |
-          mkdir -p ports/${{ steps.download.outputs.game_folder }}
-          cd ports/${{ steps.download.outputs.game_folder }}
+          mkdir -p ports/${{ needs.build.outputs.game_folder }}
+          cd ports/${{ needs.build.outputs.game_folder }}
           URL="${{ github.event.inputs.port_url }}"
           filename=$(basename "$URL")
           echo "Downloading: $filename"
@@ -112,10 +113,11 @@ jobs:
           curl -L -o "$output_file" "$URL"
 
       - name: Extract archive
+        needs: build
         run: |
-          cd ports/${{ steps.download.outputs.game_folder }}
-          ARCHIVE_TYPE="${{ steps.download.outputs.archive_type }}"
-          ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
+          cd ports/${{ needs.build.outputs.game_folder }}
+          ARCHIVE_TYPE="${{ needs.build.outputs.archive_type }}"
+          ARCHIVE_FILE="${{ needs.build.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
           case "$ARCHIVE_TYPE" in
             "tar.gz")
@@ -133,8 +135,9 @@ jobs:
           esac
 
       - name: Clean up downloaded archive
+        needs:build
         run: |
-          cd ports/"${{ steps.download.outputs.game_folder }}"
+          cd ports/"${{ needs.build.outputs.game_folder }}"
           rm -f shamogu-archive.*
 
       - name: Commit changes
