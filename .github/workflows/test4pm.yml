@@ -69,6 +69,26 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Parse port.json
+        id: parse-json
+        run: |
+          PORT_JSON_PATH="${{ github.event.inputs.port_file }}"
+          if [ ! -f "$PORT_JSON_PATH" ]; then
+            echo "Error: $PORT_JSON_PATH not found" && exit 1
+          fi
+          GAME_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          GAME_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
+          GAME_ZIP=$(jq -r '.name' "$PORT_JSON_PATH")
+          GAME_START=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          GAME_EXE="${{ github.event.inputs.exe_file }}"
+          GAME_ICON="latest/$GAME_FOLDER/cover.png"
+          echo "game_folder=$GAME_FOLDER" >> $GITHUB_OUTPUT
+          echo "game_name=$GAME_NAME" >> $GITHUB_OUTPUT
+          echo "game_zip=$GAME_ZIP" >> $GITHUB_OUTPUT
+          echo "game_start=$GAME_START" >> $GITHUB_OUTPUT
+          echo "game_exe=$GAME_EXE" >> $GITHUB_OUTPUT
+          echo "game_icon=$GAME_ICON" >> $GITHUB_OUTPUT
+
       - name: Determine archive type and download
         id: download
         run: |
@@ -133,26 +153,6 @@ jobs:
             git commit -m "Update shamogu ports from Codeberg [$(date +%Y-%m-%d)]"
             git push
           fi
-
-      - name: Parse port.json
-        id: parse-json
-        run: |
-          PORT_JSON_PATH="${{ github.event.inputs.port_file }}"
-          if [ ! -f "$PORT_JSON_PATH" ]; then
-            echo "Error: $PORT_JSON_PATH not found" && exit 1
-          fi
-          GAME_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
-          GAME_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
-          GAME_ZIP=$(jq -r '.name' "$PORT_JSON_PATH")
-          GAME_START=$(jq -r '.items[0]' "$PORT_JSON_PATH")
-          GAME_EXE="${{ github.event.inputs.exe_file }}"
-          GAME_ICON="latest/$GAME_FOLDER/cover.png"
-          echo "game_folder=$GAME_FOLDER" >> $GITHUB_OUTPUT
-          echo "game_name=$GAME_NAME" >> $GITHUB_OUTPUT
-          echo "game_zip=$GAME_ZIP" >> $GITHUB_OUTPUT
-          echo "game_start=$GAME_START" >> $GITHUB_OUTPUT
-          echo "game_exe=$GAME_EXE" >> $GITHUB_OUTPUT
-          echo "game_icon=$GAME_ICON" >> $GITHUB_OUTPUT
 
       - name: Build in container (${{ matrix.arch }})
         env:
