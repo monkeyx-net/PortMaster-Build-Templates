@@ -1,4 +1,4 @@
-name: Build Multi-Architecture for PortMaster
+name: Build Multi-Architecture for PortMaster v beta
 
 on:
   workflow_dispatch:
