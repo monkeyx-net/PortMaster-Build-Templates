@@ -1,0 +1,220 @@
+name: PortMaster Build Pipeline Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      bash_file:
+        description: 'Enter Bash filename'
+        required: true
+        default: 'Port.sh'
+      exe_file:
+        description: 'Enter executable filename'
+        required: true
+        default: 'port'
+      folder_name:
+        description: 'Enter port folder name'
+        required: true
+        default: 'some_folder'
+      port_file:
+        description: 'Enter port.json file name'
+        required: true
+        default: 'port.json'
+      sdl_version:
+        description: 'Enter SDL Version required'
+        required: true
+        default: '2.32.0'
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }} Binary
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            platform: linux/amd64
+            docker_image: ubuntu:20.04
+          - arch: aarch64
+            platform: linux/arm64
+            docker_image: ubuntu:20.04
+
+    env:
+      SDL_VERSION: ${{ github.event.inputs.sdl_version }}
+      GAME_EXE: ${{ github.event.inputs.exe_file }}
+      PORT_FILE: ${{ github.event.inputs.port_file }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Parse port.json
+        id: parse-json
+        run: |
+          PORT_JSON_PATH="$PORT_FILE"
+          if [ ! -f "$PORT_JSON_PATH" ]; then
+            echo "Error: $PORT_JSON_PATH not found" && exit 1
+          fi
+          GAME_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          GAME_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
+          GAME_ZIP=$(jq -r '.name' "$PORT_JSON_PATH")
+          GAME_START=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          echo "game_folder=$GAME_FOLDER" >> $GITHUB_OUTPUT
+          echo "game_name=$GAME_NAME" >> $GITHUB_OUTPUT
+          echo "game_zip=$GAME_ZIP" >> $GITHUB_OUTPUT
+          echo "game_start=$GAME_START" >> $GITHUB_OUTPUT
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker dependencies
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-cache-${{ matrix.arch }}
+          key: ${{ matrix.arch }}-deps-${{ hashFiles('**/Makefile', '**/*.c', '**/*.h', '**/*.cpp', '**/*.hpp') }}
+          restore-keys: |
+            ${{ matrix.arch }}-deps-
+
+      - name: Build binary using Docker with caching
+        run: |
+          docker run --rm --platform ${{ matrix.platform }} \
+            -v ${{ github.workspace }}:/workspace \
+            -v /tmp/docker-cache-${{ matrix.arch }}:/cache \
+            -w /workspace \
+            ${{ matrix.docker_image }} \
+            /bin/bash -c "
+            # Set non-interactive frontend to avoid prompts
+            export DEBIAN_FRONTEND=noninteractive
+
+            # Install dependencies only if not cached
+            if [ ! -f /cache/deps-installed ]; then
+              echo 'Installing dependencies...'
+              apt-get update && \
+              apt-get install -y --no-install-recommends \
+                build-essential cmake pkg-config wget tar \
+                libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+                libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
+                libpipewire-0.3-dev libfuse2 appstream make patchelf jq && \
+              apt-get clean && \
+              rm -rf /var/lib/apt/lists/* && \
+              touch /cache/deps-installed
+              echo 'Dependencies installed and cached'
+            else
+              echo 'Using cached dependencies'
+            fi
+
+            # Build the binary
+            echo 'Building binary...'
+            make
+
+            # Create distribution package
+            echo 'Creating distribution package...'
+            mkdir -p dist
+            cp $GAME_EXE dist/$GAME_EXE-${{ matrix.arch }}
+            strip dist/$GAME_EXE-${{ matrix.arch }} || true
+            tar -czf ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist $GAME_EXE-${{ matrix.arch }}
+
+            echo 'Build completed successfully'
+          "
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}
+          path: ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}.tar.gz
+          retention-days: 7
+
+  package:
+    name: Package PortMaster
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: ${{ needs.build.outputs.game_folder }}-linux-*
+          merge-multiple: true
+
+      - name: Create PortMaster package
+        run: |
+          GAME_FOLDER="${{ needs.build.outputs.game_folder }}"
+          GAME_START="${{ needs.build.outputs.game_start }}"
+          GAME_EXE="${{ github.event.inputs.exe_file }}"
+
+          echo "Creating package for: $GAME_FOLDER"
+          echo "Game executable: $GAME_EXE"
+          echo "Start script: $GAME_START"
+
+          # Create directory structure
+          mkdir -p dist/$GAME_FOLDER
+
+          # Extract binaries from artifacts
+          echo "Extracting binaries..."
+          find artifacts -name "*.tar.gz" -exec tar -xzf {} -C dist/ \;
+
+          # Copy game files from latest directory
+          echo "Copying game files..."
+          if [ -f "latest/$GAME_START" ]; then
+            cp "latest/$GAME_START" "dist/"
+            echo "Copied start script: latest/$GAME_START"
+          else
+            echo "Warning: Start script not found at latest/$GAME_START"
+          fi
+
+          if [ -d "latest/$GAME_FOLDER" ]; then
+            cp -r "latest/$GAME_FOLDER/." "dist/$GAME_FOLDER/"
+            echo "Copied game folder: latest/$GAME_FOLDER"
+          else
+            echo "Warning: Game folder not found at latest/$GAME_FOLDER"
+          fi
+
+          # Move binaries to correct location
+          echo "Moving binaries..."
+          if [ -f "dist/$GAME_EXE-x86_64" ]; then
+            mv "dist/$GAME_EXE-x86_64" "dist/$GAME_FOLDER/$GAME_EXE.x86_64"
+            chmod +x "dist/$GAME_FOLDER/$GAME_EXE.x86_64"
+            echo "Moved x86_64 binary"
+          else
+            echo "Warning: x86_64 binary not found"
+          fi
+
+          if [ -f "dist/$GAME_EXE-aarch64" ]; then
+            mv "dist/$GAME_EXE-aarch64" "dist/$GAME_FOLDER/$GAME_EXE.aarch64"
+            chmod +x "dist/$GAME_FOLDER/$GAME_EXE.aarch64"
+            echo "Moved aarch64 binary"
+          else
+            echo "Warning: aarch64 binary not found"
+          fi
+
+          # Verify final structure
+          echo "Final directory structure:"
+          find dist/ -type f -name "*" | sort
+
+          # Create final zip package
+          echo "Creating final zip package..."
+          cd dist
+          zip -r "../$GAME_FOLDER.zip" .
+
+          echo "Package created: $GAME_FOLDER.zip"
+
+      - name: Upload PortMaster package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.game_folder }}-portmaster
+          path: ${{ needs.build.outputs.game_folder }}.zip
+          retention-days: 7
+
+      - name: Show package info
+        run: |
+          echo "=== Package Information ==="
+          echo "Game Name: ${{ needs.build.outputs.game_name }}"
+          echo "Game Folder: ${{ needs.build.outputs.game_folder }}"
+          echo "Game Zip: ${{ needs.build.outputs.game_zip }}"
+          echo "Package: ${{ needs.build.outputs.game_folder }}.zip"
+          echo "==========================="
