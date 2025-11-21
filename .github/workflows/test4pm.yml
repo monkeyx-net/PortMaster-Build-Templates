@@ -1,9 +1,9 @@
-name: PortMaster Automated Build System (PABS)
+name: Test for PM
 
 on:
   workflow_dispatch:
     inputs:
-        port_type:
+      port_type:
         type: choice
         description: 'New or Existing?'
         required: true
@@ -12,7 +12,7 @@ on:
           - new
           - existing
       port_url:
-        descrition: "enter tr.gz link or zip link for code repo"
+        description: "enter tr.gz link or zip link for code repo"
         required: true
         default: 'https://codeberg.org/anaseto/shamogu/archive/master.tar.gz'
       bash_file:
@@ -68,64 +68,64 @@ jobs:
         with:
           submodules: recursive
 
-    - name: Determine archive type and download
-      id: download
-      run: |
-        cd ports
-        URL="${{ github.event.inputs.port_url }}"
-        filename=$(basename "$URL")
-        echo "Downloading: $filename"
-        if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
-          echo "archive_type=tar.gz" >> $GITHUB_OUTPUT
-          echo "archive_file=shamogu-archive.tar.gz" >> $GITHUB_OUTPUT
-          output_file="shamogu-archive.tar.gz"
-        elif [[ "$filename" == *.zip ]]; then
-          echo "archive_type=zip" >> $GITHUB_OUTPUT
-          echo "archive_file=shamogu-archive.zip" >> $GITHUB_OUTPUT
-          output_file="shamogu-archive.zip"
-        else
-          echo "Unknown archive type: $filename"
-          exit 1
-        fi
-        curl -L -o "$output_file" "$URL"
+      - name: Determine archive type and download
+        id: download
+        run: |
+          cd ports
+          URL="${{ github.event.inputs.port_url }}"
+          filename=$(basename "$URL")
+          echo "Downloading: $filename"
+          if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
+            echo "archive_type=tar.gz" >> $GITHUB_OUTPUT
+            echo "archive_file=shamogu-archive.tar.gz" >> $GITHUB_OUTPUT
+            output_file="shamogu-archive.tar.gz"
+          elif [[ "$filename" == *.zip ]]; then
+            echo "archive_type=zip" >> $GITHUB_OUTPUT
+            echo "archive_file=shamogu-archive.zip" >> $GITHUB_OUTPUT
+            output_file="shamogu-archive.zip"
+          else
+            echo "Unknown archive type: $filename"
+            exit 1
+          fi
+          curl -L -o "$output_file" "$URL"
 
-    - name: Extract archive
-      run: |
-        cd ports
-        ARCHIVE_TYPE="${{ steps.download.outputs.archive_type }}"
-        ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
-        echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
-        case "$ARCHIVE_TYPE" in
-          "tar.gz")
-            tar -xzf "$ARCHIVE_FILE" --strip-components=1
-            ;;
-          "zip")
-            unzip -q "$ARCHIVE_FILE"
-            for dir in "shamogu-*" "shamogu-master" "*shamogu*"; do
-              if [ -d "$dir" ]; then
-                mv "$dir"/* . 2>/dev/null || true
-                rmdir "$dir" 2>/dev/null || true
-              fi
-            done
-            ;;
-        esac
+      - name: Extract archive
+        run: |
+          cd ports
+          ARCHIVE_TYPE="${{ steps.download.outputs.archive_type }}"
+          ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
+          echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
+          case "$ARCHIVE_TYPE" in
+            "tar.gz")
+              tar -xzf "$ARCHIVE_FILE" --strip-components=1
+              ;;
+            "zip")
+              unzip -q "$ARCHIVE_FILE"
+              for dir in "shamogu-*" "shamogu-master" "*shamogu*"; do
+                if [ -d "$dir" ]; then
+                  mv "$dir"/* . 2>/dev/null || true
+                  rmdir "$dir" 2>/dev/null || true
+                fi
+              done
+              ;;
+          esac
 
-    - name: Clean up downloaded archive
-      run: |
-        cd ports
-        rm -f shamogu-archive.*
+      - name: Clean up downloaded archive
+        run: |
+          cd ports
+          rm -f shamogu-archive.*
 
-    - name: Commit changes
-      run: |
-        git config --local user.email "tim@monkeyx.net"
-        git config --local user.name "monkeyx-net"
-        git add ports/
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Update shamogu ports from Codeberg [$(date +%Y-%m-%d)]"
-          git push
-        fi
+      - name: Commit changes
+        run: |
+          git config --local user.email "tim@monkeyx.net"
+          git config --local user.name "monkeyx-net"
+          git add ports/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update shamogu ports from Codeberg [$(date +%Y-%m-%d)]"
+            git push
+          fi
 
       - name: Parse port.json
         id: parse-json
@@ -188,7 +188,6 @@ jobs:
             cd ../..
             sdl2-config --version
             echo 'SDL Build completed successfully'
-
 
             echo 'Building ${{ github.event.inputs.game_exe }}application'
             $BUILD_CMD
