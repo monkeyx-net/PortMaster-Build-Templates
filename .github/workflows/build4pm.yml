@@ -112,7 +112,7 @@ jobs:
       - name: Extract archive
         run: |
           sudo apt-get update
-          sudo apt-get install -y bsdtar
+          sudo apt-get install -y libarchive-tools
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE as $ARCHIVE_TYPE"
