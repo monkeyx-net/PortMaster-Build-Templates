@@ -25,7 +25,7 @@ update_port_json() {
 
 
 create_new_port () {
-  local port_title=$1
+  local port_title="$1"
   echo -e "\n\n"
   read -rp  "Your portname is ${port_title}. Do you wish to change the title. Y/N "  answer
   case "$answer" in
@@ -57,7 +57,7 @@ create_new_port () {
   mv new_ports/${port_folder}/${port_folder}/zz_folder.gptk new_ports/${port_folder}/${port_folder}/${port_exe}.gtpk
   mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/${port_exe}_LICENSE.txt
   mv new_ports/${port_folder}/${port_folder}/zz_folder.md new_ports/${port_folder}/${port_folder}/${port_exe}.md
-  update_port_json $port_title $porter_name $port_folder $port_bash
+  update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
 }
 
 exit_nicely () {
@@ -101,7 +101,7 @@ if [ ${#ports[@]} -eq 0 ]; then
     echo "Process single port file instead. Need path some folder/shamogu"
     echo "Make function for port.json and ports.json"
     echo "Make function for returning title and name ie shamogu.zip"
-    create_new_port ${port_title}
+    create_new_port "${port_title}"
 fi
 
 echo "Available ports with ${port_title} in the title:"
