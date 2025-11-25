@@ -219,7 +219,7 @@ jobs:
           done
 
           echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:-"
-          ls -la dist/
+          ls -la new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
 
           echo "Organizing binaries..."
           if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
@@ -230,7 +230,7 @@ jobs:
             mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
           fi
 
-          echo "Final contents of dist/${GAME_FOLDER}/:"
+          echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
           ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
