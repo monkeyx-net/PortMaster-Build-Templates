@@ -122,10 +122,6 @@ jobs:
           fi
 
       - name: Build in container (${{ matrix.arch }})
-        env:
-          EXE_FILE: ${{ github.event.inputs.exe_file }}
-          FOLDER_NAME: ${{ github.event.inputs.folder_name }}
-          BUILD_CMD: ${{ github.event.inputs.build_cmd }}
         run: |
           docker run --rm \
             -v $PWD:/workspace \
@@ -163,19 +159,18 @@ jobs:
             sdl2-config --version
             echo 'SDL Build completed successfully'
 
-            echo 'Building ${{ github.event.inputs.game_exe }} application'
-            pwd
-            cd ports/$FOLDER_NAME
-            pwd
-            $BUILD_CMD
+            echo 'Building ${{ github.event.inputs.port_exe }} application'
+            cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+            ${{ steps.parse-json.outputs.port_build }}
+
             ls -ltr
             echo 'Creating distribution...'
             mkdir -p dist
             ls -ltr
-            cp '$EXE_FILE' 'dist/$EXE_FILE-${{ matrix.arch }}'
+            cp '${{ steps.parse-json.outputs.port_exe }}' 'dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}'
             ls -ltr
-            strip 'dist/$EXE_FILE-${{ matrix.arch }}' || echo 'Strip failed, continuing...'
-            tar -czf '/workspace/$FOLDER_NAME-linux-${{ matrix.arch }}.tar.gz' -C dist .
+            strip 'dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}' || echo 'Strip failed, continuing...'
+            tar -czf '/workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz' -C dist .
             ls -ltr
             echo 'Build completed successfully'
             "
@@ -183,8 +178,8 @@ jobs:
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.parse-json.outputs.game_folder }}-linux-${{ matrix.arch }}
-          path: ${{ github.event.inputs.folder_name }}-linux-${{ matrix.arch }}.tar.gz
+          name: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}
+          path: ${{ steps.parse-json.outputs.port_folder }} }}-linux-${{ matrix.arch }}.tar.gz
           retention-days: 7
 
   package:
@@ -199,14 +194,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{ needs.build.outputs.game_folder }}-linux-*
+          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
         run: |
-          GAME_EXE="${{ needs.build.outputs.game_exe }}"
-          GAME_FOLDER="${{ needs.build.outputs.game_folder }}"
-          GAME_START="${{ needs.build.outputs.game_start }}"
+          GAME_EXE="${{ needs.build.outputs.port_exe }}"
+          GAME_FOLDER="${{ needs.build.outputs.port_folder }}"
+          GAME_START="${{ needs.build.outputs.port_bash }}"
 
           echo "Creating PortMaster package"
           echo "Game EXE: $GAME_EXE"
