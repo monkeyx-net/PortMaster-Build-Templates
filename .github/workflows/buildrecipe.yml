@@ -77,7 +77,7 @@ jobs:
         id: download
         run: |
           mkdir -p new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
-          cd new_ports/build/"${{ steps.parse-json.outputs.game_folder }}"
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           URL="${{ steps.parse-json.outputs.port_url }}"
           filename=$(basename "$URL")
           echo "Downloading: $filename"
@@ -92,16 +92,12 @@ jobs:
             exit 1
           fi
           curl -L -o "$output_file" "$URL"
-          pwd
-          ls -lha
 
       - name: Extract archive
         run: |
           sudo apt-get update
           sudo apt-get install -y libarchive-tools
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
-          pwd
-          ls -lha
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
