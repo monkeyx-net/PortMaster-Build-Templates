@@ -167,10 +167,10 @@ jobs:
             echo 'Creating distribution...'
             mkdir -p dist
             ls -ltr
-            cp '${{ steps.parse-json.outputs.port_exe }}' 'dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}'
+            cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}
             ls -ltr
-            strip 'dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}' || echo 'Strip failed, continuing...'
-            tar -czf '/workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz' -C dist .
+            strip dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }} || echo 'Strip failed, continuing...'
+            tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
             ls -ltr
             echo 'Build completed successfully'
             "
