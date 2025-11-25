@@ -30,7 +30,7 @@ jobs:
 
     outputs:
       game_folder: ${{ steps.parse-json.outputs.game_folder }}
-      game_name: ${{ steps.parse-json.outputs.game_name }}
+      game_name: ${{ steps.parse-json.outputs.game_name }   }
       game_zip: ${{ steps.parse-json.outputs.game_zip }}
       game_start: ${{ steps.parse-json.outputs.game_start }}
       game_exe: ${{ steps.parse-json.outputs.game_exe }}
@@ -42,16 +42,16 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Parse port.json
+      - name: Parse recipe.json
         id: parse-json
         run: |
           PORT_JSON_PATH="${{ github.event.inputs.port_file }}"
           if [ ! -f "$PORT_JSON_PATH" ]; then
             echo "Error: $PORT_JSON_PATH not found" && exit 1
           fi
-          GAME_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
-          GAME_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
-          GAME_ZIP=$(jq -r '.name' "$PORT_JSON_PATH")
+          PORT_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          PORT_NAME=$(jq -r '.attr.title' "$PORT_JSON_PATH")
+          GAME_URL=$(jq -r '.name' "$PORT_JSON_PATH")
           GAME_START=$(jq -r '.items[0]' "$PORT_JSON_PATH")
           GAME_EXE="${{ github.event.inputs.exe_file }}"
           GAME_ICON="latest/$GAME_FOLDER/cover.png"
