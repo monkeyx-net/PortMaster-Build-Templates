@@ -179,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}
-          path: ${{ steps.parse-json.outputs.port_folder }} }}-linux-${{ matrix.arch }}.tar.gz
+          path: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz
           retention-days: 7
 
   package:
@@ -194,7 +194,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
+          pattern: ${{ steps.parse-json.outputs.port_folder }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
@@ -207,6 +207,7 @@ jobs:
           echo "Game EXE: $GAME_EXE"
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
+          echo "Game Test: ${{ steps.parse-json.outputs.port_exe }}"
 
           echo "Creating folder structure..."
           mkdir -p dist/${GAME_FOLDER}/conf
@@ -262,8 +263,8 @@ jobs:
       - name: Show package info
         run: |
           echo "=== Package Information ==="
-          echo "Game Name: ${{ needs.build.outputs.game_name }}"
-          echo "Game Folder: ${{ needs.build.outputs.game_folder }}"
-          echo "Game Zip: ${{ needs.build.outputs.game_zip }}"
-          echo "Package: ${{ needs.build.outputs.game_folder }}.zip"
+          echo "Game Name: ${{ needs.build.outputs.port_name }}"
+          echo "Game Folder: ${{ needs.build.outputs.port_folder }}"
+          echo "Game Zip: ${{ needs.build.outputs.port_name }}"
+          echo "Package: ${{ needs.build.outputs.port_folder }}.zip"
           echo "==========================="
