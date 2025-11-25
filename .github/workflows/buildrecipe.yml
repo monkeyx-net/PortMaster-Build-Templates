@@ -235,8 +235,10 @@ jobs:
           ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
+          pwd
           cd new_ports/build/${GAME_FOLDER}
-          zip -r "workspace/${GAME_FOLDER}.zip" .
+          pwd
+          zip -r "../../${GAME_FOLDER}.zip" .
 
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
