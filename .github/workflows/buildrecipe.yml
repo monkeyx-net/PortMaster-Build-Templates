@@ -91,6 +91,7 @@ jobs:
             echo "Unknown archive type: $filename"
             exit 1
           fi
+          # ToDo create md5 stamp and store in recipe.json if different For existing ports do this as part of new_recipe.sh too?
           curl -L -o "$output_file" "$URL"
 
       - name: Extract archive
@@ -194,7 +195,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{  needs.build.outputs.port_folder }}-linux-*
+          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
@@ -217,16 +218,16 @@ jobs:
             tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
           done
 
-          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/:-"
+          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:-"
           ls -la dist/
 
           echo "Organizing binaries..."
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-x86_64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
           fi
 
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-aarch64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_FOLDER}/${GAME_EXE}.aarch64"
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
           fi
 
           echo "Final contents of dist/${GAME_FOLDER}/:"
