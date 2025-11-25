@@ -92,6 +92,7 @@ jobs:
             exit 1
           fi
           curl -L -o "$output_file" "$URL"
+          pwd
           ls -lha
 
       - name: Extract archive
@@ -99,6 +100,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libarchive-tools
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          pwd
           ls -lha
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE"
