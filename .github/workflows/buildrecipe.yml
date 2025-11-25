@@ -55,8 +55,8 @@ jobs:
         run: |
           mkdir -p ports/"${{ steps.parse-json.outputs.game_folder }}"
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
-          URL="${{ github.event.inputs.port_url }}"
-          filename=$(basename "$URL")
+          URL="${PORT_URL}}"
+          filename=$(basename "URL")
           echo "Downloading: $filename"
           if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
             echo "archive_file="${{ steps.parse-json.outputs.game_folder }}"-archive.tar.gz" >> $GITHUB_OUTPUT
