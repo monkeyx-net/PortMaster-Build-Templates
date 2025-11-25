@@ -194,7 +194,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: ${{ steps.parse-json.outputs.port_folder }}-linux-*
+          pattern: ${{  needs.build.outputs.port_folder }}-linux-*
           merge-multiple: true
 
       - name: Extract binaries to correct locations
@@ -209,48 +209,32 @@ jobs:
           echo "Game Start: $GAME_START"
 
           echo "Creating folder structure..."
-          mkdir -p dist/${GAME_FOLDER}/conf
+          mkdir -p "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/conf"
 
           echo "Extracting artifacts..."
           find artifacts -type f -name "*.tar.gz" | while read f; do
             echo "Extracting $f..."
-            tar -xzf "$f" -C dist/
+            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/
           done
 
-          echo "Contents of dist/:"
+          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/:-"
           ls -la dist/
 
-          echo "Copying startup script..."
-          if [ -f "latest/$GAME_START" ]; then
-            cp "latest/$GAME_START" "dist/"
-          else
-            echo "Warning: Startup script latest/$GAME_START not found"
-          fi
-
-          echo "Copying game metadata and resources..."
-          if [ -d "latest/${GAME_FOLDER}" ]; then
-            cp -r "latest/${GAME_FOLDER}/." "dist/${GAME_FOLDER}/"
-          else
-            echo "Warning: Game folder latest/${GAME_FOLDER} not found"
-          fi
-
           echo "Organizing binaries..."
-          if [ -f "dist/${GAME_EXE}-x86_64" ]; then
-            mv "dist/${GAME_EXE}-x86_64" "dist/${GAME_FOLDER}/${GAME_EXE}.x86_64"
-            chmod +x "dist/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-x86_64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_FOLDER}/${GAME_EXE}.x86_64"
           fi
 
-          if [ -f "dist/${GAME_EXE}-aarch64" ]; then
-            mv "dist/${GAME_EXE}-aarch64" "dist/${GAME_FOLDER}/${GAME_EXE}.aarch64"
-            chmod +x "dist/${GAME_FOLDER}/${GAME_EXE}.aarch64"
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-aarch64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/${GAME_FOLDER}/${GAME_EXE}.aarch64"
           fi
 
           echo "Final contents of dist/${GAME_FOLDER}/:"
-          ls -la "dist/${GAME_FOLDER}/"
+          ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
           cd dist
-          zip -r "../${GAME_FOLDER}.zip" .
+          zip -r /workspace/${GAME_FOLDER}.zip" .
 
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
