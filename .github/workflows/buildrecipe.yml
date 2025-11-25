@@ -207,7 +207,6 @@ jobs:
           echo "Game EXE: $GAME_EXE"
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
-          echo "Game Test: ${{ steps.parse-json.outputs.port_exe }}"
 
           echo "Creating folder structure..."
           mkdir -p dist/${GAME_FOLDER}/conf
