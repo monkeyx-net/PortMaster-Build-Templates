@@ -76,11 +76,10 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
-          echo "Port Folder: ${{ steps.parse-json.outputs.port_folder }} and ${{ steps.parse-json.outputs.port_url }}"
           mkdir -p new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           cd new_ports/build/"${{ steps.parse-json.outputs.game_folder }}"
           URL="${{ steps.parse-json.outputs.port_url }}"
-          filename=$(basename "URL")
+          filename=$(basename "$URL")
           echo "Downloading: $filename"
           if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
             echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz" >> $GITHUB_OUTPUT
