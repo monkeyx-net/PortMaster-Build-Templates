@@ -2,6 +2,7 @@
   "name": "shamogu.zip",
   "port_json": "new_ports/shamogu/shamogu/port.json",
   "source": {
+    "port_exe": "shamogu",
     "date_updated": "2025-11-25",
     "md5": "todo",
     "build_cmd": "go build -tags sdl",

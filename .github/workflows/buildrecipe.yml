@@ -34,6 +34,7 @@ jobs:
       port_exe: ${{ steps.parse-json.outputs.port.exe }}
       port_build: ${{ steps.parse-json.outputs.port_build }}
       port_url: ${{ steps.parse-json.outputs.port_url }}
+      port_bash: ${{ steps.parse-json.outputs.port_bash }}
       port_folder: ${{ steps.parse-json.outputs.port_folder }}
 
     steps:
@@ -51,27 +52,27 @@ jobs:
           fi
           PORT_NAME=$(jq -r '.name' "$RECIPE_JSON_PATH")
           PORT_JSON=$(jq -r '.port_json' "$RECIPE_JSON_PATH")
-          PORT_BUILD=$(jq -r '.source.port_build' "$RECIPE_JSON_PATH")
+          PORT_EXE=$(jq -r '.source.port.exe' "$RECIPE_JSON_PATH")
+          PORT_BUILD=$(jq -r '.source.build_cmd' "$RECIPE_JSON_PATH")
           PORT_URL=$(jq -r '.source.url' "$RECIPE_JSON_PATH")
           echo "port_name=$PORT_NAME" | tee -a $GITHUB_OUTPUT
           echo "port_json=$PORT_JSON" | tee -a $GITHUB_OUTPUT
-          echo "port_exe=$PORT_EXE" | tee -a $GITHUB_OUTPUT
           echo "port_build=$PORT_BUILD" | tee -a $GITHUB_OUTPUT
           echo "port_url=$PORT_URL" | tee -a $GITHUB_OUTPUT
           PORT_JSON_PATH="${PORT_JSON}"
           if [ ! -f "$PORT_JSON_PATH" ]; then
             echo "Error: $PORT_JSON_PATH not found" && exit 1
           fi
-          PORT_EXE=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          PORT_BASH=$(jq -r '.items[0]' "$PORT_JSON_PATH")
           PORT_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
           echo "port_exe=$PORT_EXE" | tee -a $GITHUB_OUTPUT
-          echo "port_folder=$PORT_FODLER" | tee -a $GITHUB_OUTPUT
-
+          echo "port_folder=$PORT_FOLDER" | tee -a $GITHUB_OUTPUT
 
 
       - name: Determine archive type and download
         id: download
         run: |
+          echo "Port Folder: ${PORT_FOLDER}"
           mkdir -p ports/"${{ steps.parse-json.outputs.game_folder }}"
           cd ports/"${{ steps.parse-json.outputs.game_folder }}"
           URL="${PORT_URL}}"
