@@ -214,7 +214,7 @@ jobs:
           echo "Extracting artifacts..."
           find artifacts -type f -name "*.tar.gz" | while read f; do
             echo "Extracting $f..."
-            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/
+            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
           done
 
           echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER/:-"
