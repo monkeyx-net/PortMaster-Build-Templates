@@ -93,6 +93,8 @@ create_new_port () {
   cat recipes/files/${port_folder}_recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
   tree new_ports/${port_folder}/
+  xdg-open https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/buildrecipe.yml
+  exit_nicely
 }
 
 exit_nicely () {
