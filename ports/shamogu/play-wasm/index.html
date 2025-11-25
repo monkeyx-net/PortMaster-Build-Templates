@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1">
+<title>Play Shamogu in the Browser</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<script src="wasm_exec.js"></script>
+<div id="gamediv">
+<canvas id="gamecanvas">
+Game Screen
+</canvas>
+</div>
+<div style="display:none">
+<img id="loading" src="loading-screen.png" alt="Game Loading Screen">
+</div>
+<script>
+function hasLocalStorage() {
+	var shamogutest = 'shamogutest';
+	try {
+		localStorage.setItem(shamogutest, shamogutest);
+		localStorage.removeItem(shamogutest);
+		return true;
+	} catch(e) {
+		return false;
+	}
+}
+function saveReplay() {
+	if (!hasLocalStorage()) {
+		var t = document.getElementById("shamoguinfo");
+		t.innerHTML = 'Feature not available in your browser.';
+		return
+	}
+	var data = localStorage.getItem('shamogureplay');
+	if (!data) {
+		var t = document.getElementById("shamoguinfo");
+		t.innerHTML = 'No replay available.';
+		return
+	}
+	var a = document.createElement('a');
+	a.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
+	a.setAttribute('download', "shamogureplay");
+	if (document.createEvent) {
+		var ev = document.createEvent('MouseEvents');
+		ev.initEvent('click', true, true);
+		a.dispatchEvent(ev);
+	}
+	else {
+		a.click();
+	}
+}
+function loadReplay(files) {
+	if (!hasLocalStorage()) {
+		var t = document.getElementById("shamoguinfo");
+		t.innerHTML = 'Feature not available in your browser.';
+		return
+	}
+	if (files.length > 0) {
+		var f = files[0];
+		var reader = new FileReader();
+		reader.addEventListener("loadend", function() {
+			localStorage.setItem('shamogureplay', reader.result);
+		});
+		reader.readAsText(f);
+	}
+}
+</script>
+<div>
+<span class="centered">
+Load replay: <input type="file" value="Load replay" onchange="loadReplay(this.files)"> -
+<input type="button" value="Save replay" onclick="saveReplay()">
+<em id="shamoguinfo"></em>
+<small>Keys: press ? for help</small>
+<button id="goFS">Go Fullscreen</button>
+<button id="clearcfgsave">Clear config/saves</button>
+</span>
+</div>
+<details>
+<summary>Game Summary and Statistics</summary>
+<pre id="dump">
+This will be filled with statistics at the end of the game, or when you press
+“#” in the game.
+</pre>
+</details>
+<script>
+var canvas = document.getElementById("gamecanvas");
+var gamediv = document.getElementById("gamediv");
+var ctx = canvas.getContext("2d");
+var loadingImg = document.getElementById("loading");
+document.getElementById('goFS').addEventListener('click', () => {
+	if (gamediv.requestFullscreen) {
+		gamediv.requestFullscreen();
+	}
+});
+document.getElementById('clearcfgsave').addEventListener('click', () => {
+	if (hasLocalStorage()) {
+		localStorage.removeItem("shamogusave")
+		localStorage.removeItem("shamogureplay")
+		localStorage.removeItem("shamoguconfig")
+	}
+});
+var gameStarted = false;
+loadingImg.onload = function() {
+	if (gameStarted) {
+		return;
+	}
+	gameStarted = true;
+	canvas.width = loadingImg.naturalWidth;
+	canvas.height = loadingImg.naturalHeight;
+	ctx.drawImage(loadingImg, 0, 0);
+	if (!WebAssembly.instantiateStreaming) { // polyfill
+		WebAssembly.instantiateStreaming = async (resp, importObject) => {
+			const source = await (await resp).arrayBuffer();
+			return await WebAssembly.instantiate(source, importObject);
+		};
+	}
+	const go = new Go();
+	let mod, inst;
+	WebAssembly.instantiateStreaming(fetch("shamogu.wasm"), go.importObject).then((result) => {
+		mod = result.module;
+		inst = result.instance;
+		go.run(inst);
+	}).catch((err) => {
+		console.error(err);
+	});
+}
+</script>
+</body>
+</html>
