@@ -34,6 +34,7 @@ jobs:
       port_exe: ${{ steps.parse-json.outputs.port.exe }}
       port_build: ${{ steps.parse-json.outputs.port_build }}
       port_url: ${{ steps.parse-json.outputs.port_url }}
+      port_folder: ${{ steps.parse-json.outputs.port_folder }}
 
     steps:
       - name: Checkout source
@@ -41,7 +42,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Parse recipe.json
+      - name: Parse recipe.json and port.json
         id: parse-json
         run: |
           RECIPE_JSON_PATH="${{ github.event.inputs.recipe_file }}"
@@ -50,17 +51,22 @@ jobs:
           fi
           PORT_NAME=$(jq -r '.name' "$RECIPE_JSON_PATH")
           PORT_JSON=$(jq -r '.port_json' "$RECIPE_JSON_PATH")
-          PORT_EXE=$(jq -r '.source.port_exe' "$RECIPE_JSON_PATH")
           PORT_BUILD=$(jq -r '.source.port_build' "$RECIPE_JSON_PATH")
           PORT_URL=$(jq -r '.source.url' "$RECIPE_JSON_PATH")
-          echo "port_name=$PORT_NAME" >> $GITHUB_OUTPUT
-          echo "port_json=$PORT_JSON" >> $GITHUB_OUTPUT
-          echo "port_exe=$PORT_EXE" >> $GITHUB_OUTPUT
-          echo "port_build=$PORT_BUILD" >> $GITHUB_OUTPUT
-          echo "port_url=$PORT_URL" >> $GITHUB_OUTPUT
-          echo "${PORT_URL}"
-          echo "${PORT_NAME}"
-          echo $port_exe
+          echo "port_name=$PORT_NAME" | tee -a $GITHUB_OUTPUT
+          echo "port_json=$PORT_JSON" | tee -a $GITHUB_OUTPUT
+          echo "port_exe=$PORT_EXE" | tee -a $GITHUB_OUTPUT
+          echo "port_build=$PORT_BUILD" | tee -a $GITHUB_OUTPUT
+          echo "port_url=$PORT_URL" | tee -a $GITHUB_OUTPUT
+          PORT_JSON_PATH="${PORT_JSON}"
+          if [ ! -f "$PORT_JSON_PATH" ]; then
+            echo "Error: $PORT_JSON_PATH not found" && exit 1
+          fi
+          PORT_EXE=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          PORT_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          echo "port_exe=$PORT_EXE" | tee -a $GITHUB_OUTPUT
+          echo "port_folder=$PORT_FODLER" | tee -a $GITHUB_OUTPUT
+
 
 
       - name: Determine archive type and download
