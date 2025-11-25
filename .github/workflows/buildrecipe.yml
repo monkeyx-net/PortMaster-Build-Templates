@@ -31,7 +31,7 @@ jobs:
     outputs:
       port_name: ${{ steps.parse-json.outputs.port_name }}
       port_json: ${{ steps.parse-json.outputs.port_json }}
-      port_exe: ${{ steps.parse-json.outputs.port.exe }}
+      port_exe: ${{ steps.parse-json.outputs.port_exe }}
       port_build: ${{ steps.parse-json.outputs.port_build }}
       port_url: ${{ steps.parse-json.outputs.port_url }}
       port_ttile: ${{ steps.parse-json.outputs.port_bash }}
