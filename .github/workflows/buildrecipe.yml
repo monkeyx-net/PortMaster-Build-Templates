@@ -30,6 +30,8 @@ jobs:
 
     outputs:
       game_folder: ${{ steps.parse-json.outputs.game_folder }}
+      game_url: ${{ steps.parse-json.outputs.game_url }}
+
 
     steps:
       - name: Checkout source
@@ -44,8 +46,9 @@ jobs:
           if [ ! -f "$PORT_JSON_PATH" ]; then
             echo "Error: $PORT_JSON_PATH not found" && exit 1
           fi
-          PORT_URL=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          PORT_URL=$(jq -r '.source.url' "$PORT_JSON_PATH")
           echo "port_url=$PORT_URL" >> $GITHUB_OUTPUT
+
 
       - name: Determine archive type and download
         id: download
