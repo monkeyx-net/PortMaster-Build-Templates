@@ -1,39 +1,12 @@
-name: Autobuild 4 PortMaster
+name: Recipes 4 PortMaster
 
 on:
   workflow_dispatch:
     inputs:
-      port_type:
-        type: choice
-        description: 'New or Existing?'
-        required: true
-        default: 'new'
-        options:
-          - new
-          - existing
-      port_url:
-        description: "enter tr.gz link or zip link for code repo"
-        required: true
-        default: 'https://codeberg.org/anaseto/shamogu/archive/master.tar.gz'
-      bash_file:
-        description: 'Enter Bash filename'
-        required: true
-        default: 'Shamogu.sh'
-      exe_file:
-        description: 'Enter executable filename'
-        required: true
-        default: 'shamogu'
-      folder_name:
-        description: 'Enter port folder name'
-        required: true
-        default: 'shamogu'
       port_file:
-        description: 'Enter port.json file name'
+        description: 'Enter port.json file folder name'
         required: true
-        default: 'latest/shamogu/port.json'
-      build_cmd:
-        description: "Enter build command"
-        default: "go build -tags sdl"
+        default: 'newport/changefolder/port.json'
       sdl_version:
         description: 'Enter SDL Version required'
         required: true
