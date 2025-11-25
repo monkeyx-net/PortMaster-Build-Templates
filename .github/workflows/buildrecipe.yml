@@ -231,7 +231,7 @@ jobs:
           fi
 
           echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
-          ls -la "new_ports/build/${GAME_FOLDER}/
+          ls -la "new_ports/build/${GAME_FOLDER}/"
           ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
