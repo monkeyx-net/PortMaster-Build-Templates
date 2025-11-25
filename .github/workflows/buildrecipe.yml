@@ -30,7 +30,7 @@ jobs:
 
     outputs:
       game_folder: ${{ steps.parse-json.outputs.game_folder }}
-      game_name: ${{ steps.parse-json.outputs.game_name }   }
+      game_name: ${{ steps.parse-json.outputs.game_name }}
       game_zip: ${{ steps.parse-json.outputs.game_zip }}
       game_start: ${{ steps.parse-json.outputs.game_start }}
       game_exe: ${{ steps.parse-json.outputs.game_exe }}
