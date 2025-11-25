@@ -6,7 +6,7 @@ on:
       port_file:
         description: 'Enter port.json file folder name'
         required: true
-        default: 'new_ports/changefolder/port.json'
+        default: 'recipes/files/shamogu_recipe.json'
       sdl_version:
         description: 'Enter SDL Version required'
         required: true
@@ -29,8 +29,11 @@ jobs:
             image: arm64v8/ubuntu:20.04
 
     outputs:
-      game_folder: ${{ steps.parse-json.outputs.game_folder }}
-      game_url: ${{ steps.parse-json.outputs.game_url }}
+      port_name: ${{ steps.parse-json.outputs.port_name }}
+      port_json: ${{ steps.parse-json.outputs.port_json }}
+      recipe_url: ${{ steps.parse-json.outputs.recipe_url }}
+      port_url: ${{ steps.parse-json.outputs.port_url }}
+
 
 
     steps:
@@ -42,12 +45,12 @@ jobs:
       - name: Parse recipe.json
         id: parse-json
         run: |
-          PORT_JSON_PATH="${{ github.event.inputs.port_file }}"
-          if [ ! -f "$PORT_JSON_PATH" ]; then
-            echo "Error: $PORT_JSON_PATH not found" && exit 1
+          RECIPE_JSON_PATH="${{ github.event.inputs.port_file }}"
+          if [ ! -f "$RECIPE_JSON_PATH" ]; then
+            echo "Error: $RECIPE_JSON_PATH not found" && exit 1
           fi
-          PORT_URL=$(jq -r '.source.url' "$PORT_JSON_PATH")
-          echo "port_url=$PORT_URL" >> $GITHUB_OUTPUT
+          RECIPE_URL=$(jq -r '.source.url' "$RECIPE_JSON_PATH")
+          echo "recipe_url=$RECIPE_URL" >> $GITHUB_OUTPUT
 
 
       - name: Determine archive type and download
