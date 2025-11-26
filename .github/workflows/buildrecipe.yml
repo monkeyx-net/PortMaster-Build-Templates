@@ -34,7 +34,7 @@ jobs:
       port_exe: ${{ steps.parse-json.outputs.port_exe }}
       port_build: ${{ steps.parse-json.outputs.port_build }}
       port_url: ${{ steps.parse-json.outputs.port_url }}
-      port_ttile: ${{ steps.parse-json.outputs.port_bash }}
+      port_title: ${{ steps.parse-json.outputs.port_title }}
       port_bash: ${{ steps.parse-json.outputs.port_bash }}
       port_folder: ${{ steps.parse-json.outputs.port_folder }}
 
@@ -238,10 +238,8 @@ jobs:
           pwd
           cd new_ports/build/${GAME_FOLDER}
           pwd
-          zip -r "/home/runner/work/PortMaster-Build-Templates/PortMaster-Build-Templates/${GAME_FOLDER}.zip" .
-          cd
-          pwd
-          cd $HOME
+          zip -r "../${GAME_FOLDER}.zip" .
+          ls -ltr ../
           pwd
 
       - name: Upload PortMaster package
@@ -254,8 +252,7 @@ jobs:
       - name: Show package info
         run: |
           echo "=== Package Information ==="
-          echo "Game Name: ${{ needs.build.outputs.port_name }}"
-          echo "Game Folder: ${{ needs.build.outputs.port_folder }}"
-          echo "Game Zip: ${{ needs.build.outputs.port_name }}"
-          echo "Package: ${{ needs.build.outputs.port_folder }}.zip"
+          echo "Port Name: ${{ needs.build.outputs.port_title }}"
+          echo "Port Folder: ${{ needs.build.outputs.port_folder }}"
+          echo "Port Zip: ${{ needs.build.outputs.port_name }}"
           echo "==========================="
