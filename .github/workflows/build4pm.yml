@@ -270,7 +270,9 @@ jobs:
           ls -la "dist/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
+          pwd
           cd dist
+          pwd
           zip -r "../${GAME_FOLDER}.zip" .
 
       - name: Upload PortMaster package
