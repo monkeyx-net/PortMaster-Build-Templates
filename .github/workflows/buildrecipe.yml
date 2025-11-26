@@ -238,17 +238,15 @@ jobs:
           pwd
           cd new_ports/build/${GAME_FOLDER}
           pwd
-          zip -r "../../../${GAME_FOLDER}.zip" .
-          zip -r "../../../../${GAME_FOLDER}.zip" .
-          zip -r "../../${GAME_FOLDER}.zip" .
-          ls -ltr ../
-          pwd
+          zip -r "$HOME/${GAME_FOLDER}.zip" .
+          ls -ltr $HOME
+
 
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.build.outputs.game_folder }}-portmaster
-          path: ${{ needs.build.outputs.game_folder }}.zip
+          path: $HOME/${{ needs.build.outputs.game_folder }}.zip
           retention-days: 7
 
       - name: Show package info
