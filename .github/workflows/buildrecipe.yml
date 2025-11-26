@@ -238,7 +238,7 @@ jobs:
           pwd
           cd new_ports/build/${GAME_FOLDER}
           pwd
-          zip -r "/home/runner/work/${GAME_FOLDER}/${GAME_FOLDER}.zip" .
+          zip -r "/home/runner/work/PortMaster-Build-Templates/${GAME_FOLDER}.zip" .
 
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
