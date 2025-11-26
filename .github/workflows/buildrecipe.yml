@@ -238,7 +238,7 @@ jobs:
           pwd
           cd new_ports/build/${GAME_FOLDER}
           pwd
-          zip -r "../${GAME_FOLDER}.zip" .
+          zip -r "../../../${GAME_FOLDER}.zip" .
           ls -ltr ../
           pwd
 
