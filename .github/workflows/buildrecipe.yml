@@ -158,8 +158,9 @@ jobs:
             make install
             cd ../..
             sdl2-config --version
+            rm sdl.tar.gz
+            rm -rf sdl-sorce
             echo 'SDL Build completed successfully'
-
             echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
             cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
             ${{ steps.parse-json.outputs.port_build }}
@@ -172,8 +173,8 @@ jobs:
             ls -lha dist/
             strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
             tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
-            ls -ltr dist
-            ls -ltr /workspace/
+            ls -lha dist
+            ls -lha /workspace/
             echo 'Build completed successfully'
             "
 
