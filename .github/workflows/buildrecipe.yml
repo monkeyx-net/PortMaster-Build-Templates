@@ -85,7 +85,7 @@ jobs:
             echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz" | tee -a $GITHUB_OUTPUT
             output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz"
           elif [[ "$filename" == *.zip ]]; then
-            echo "archive_file="${{ steps.parse-json.outputs.game_folder }}"-archive.zip" | tee -a $GITHUB_OUTPUT
+            echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.zip" | tee -a $GITHUB_OUTPUT
             output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.zip"
           else
             echo "Unknown archive type: $filename"
