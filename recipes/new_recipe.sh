@@ -1,22 +1,28 @@
 #!/bin/bash
 
+exit_nicely () {
+  tput sgr0
+}
+
 create_recipe (){
 local port_folder="$1"
 local port_url="$2"
 local port_build="$3"
+local port_checksum="$4"
 
 jq -n \
   --arg port_name "${port_folder}.zip" \
   --arg port_folder "${port_folder}" \
   --arg port_updated "${port_date}" \
-  --arg port_url "$port_url" \
-  --arg port_build "$port_build" \
+  --arg port_url "${port_url}" \
+  --arg port_build "${port_build}" \
+  --arg port_checksum "${port_checksum}" \
   '{
     name: $port_name,
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
     source: {
       date_updated: $port_updated,
-      md5: "todo",
+      sha256: $port_checksum
       build_cmd: $port_build,
       url: $port_url
     }
@@ -75,20 +81,28 @@ create_new_port () {
   mv new_ports/${port_folder}/${port_folder}/zz_folder.md new_ports/${port_folder}/${port_folder}/${port_exe}.md
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
   while true; do
+    local error_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 "
     echo "Enter URL for port code base. Must be in .zip or .tar.gz format"
     read -rp 'Enter URL for code: ' port_url
     if [ -z "${port_url}" ]; then
       echo "Empty input received. Please enter a valid URL."
     elif [[ "${port_url}" =~ \.zip$ || "${port_url}" =~ \.tar\.gz$ ]]; then
-      echo "Valid URL ending with .zip or .tar.gz"
-      break
+      echo "Creating sha256sum for ${port_url}"
+      port_checksum=curl -s --fail ${port_url} | sha256sum | cut -d' ' -f1
+      if [ "${port_checksum}" = "${expected_hash}" ]; then
+        echo "SUCCESS: port_checksum set ${port_checksum}"
+        echo "Hash: $port_checksum"
+        break
+      else
+        echo "FAILURE: port_checksum is not valid"
+      fi
     else
       echo "URL must end with .zip or .tar.gz. Please try again."
     fi
   done
-  echo "TODO seperate build commands?"
+  # TODO seperate build commands?
   read -rp 'Enter build command(s): ' port_build
-  create_recipe "${port_folder}" "${port_url}" "${port_build}"
+  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}"
   echo -e "\nCreated recipe for ${port_folder}_recipe.json\n"
   cat recipes/files/${port_folder}_recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
@@ -96,11 +110,6 @@ create_new_port () {
   xdg-open https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/buildrecipe.yml
   exit_nicely
 }
-
-exit_nicely () {
-  tput sgr0
-}
-
 
 # move back to root folder of repo
 cd ..
