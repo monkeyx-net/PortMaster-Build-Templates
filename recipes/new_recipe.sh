@@ -10,6 +10,7 @@ local port_folder="$1"
 local port_url="$2"
 local port_build="$3"
 local port_checksum="$4"
+local port_exe="$5"
 
 jq -n \
   --arg port_name "${port_folder}.zip" \
@@ -18,13 +19,15 @@ jq -n \
   --arg port_url "${port_url}" \
   --arg port_build "${port_build}" \
   --arg port_checksum "${port_checksum}" \
+  --arg port_exe "${port_exe}" \
   '{
     name: $port_name,
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
     source: {
       date_updated: $port_updated,
       sha256: $port_checksum,
-      build_cmd: $port_build,
+      port_exe: $port_exe,
+      port_build: $port_build,
       url: $port_url
     }
   }' > recipes/files/${port_folder}_recipe.json
@@ -102,7 +105,7 @@ create_new_port () {
   done
   # TODO seperate build commands? shared libs?
   read -rp 'Enter build command(s): ' port_build
-  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}"
+  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}"
   echo -e "\nCreated recipe for ${port_folder}_recipe.json\n"
   cat recipes/files/${port_folder}_recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
@@ -134,8 +137,6 @@ echo -e "*******************************************"
 echo -e "\n\nThis script should be run from the recipes folder to ensure correct paths are used. \n\n"
 
 read -rp 'Enter port name or part name: ' port_title
-
-
 
 # Case insensitive search "i"
 mapfile -t ports < <(
