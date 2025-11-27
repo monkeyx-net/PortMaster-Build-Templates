@@ -209,9 +209,6 @@ jobs:
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
 
-          echo "Creating folder structure..."
-          mkdir -p "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/conf"
-
           echo "Extracting artifacts..."
           find artifacts -type f -name "*.tar.gz" | while read f; do
             echo "Extracting $f..."
@@ -223,20 +220,20 @@ jobs:
 
           echo "Organizing binaries..."
           if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
           fi
 
           if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
           fi
 
           echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
-          ls -la "new_ports/build/${GAME_FOLDER}/"
-          ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
+          ls -la "new_ports//${GAME_FOLDER}/"
+          ls -la "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/"
 
           echo "Creating final zip package..."
           pwd
-          cd new_ports/build/${GAME_FOLDER}
+          cd new_ports/${GAME_FOLDER}
           pwd
           zip -r "$HOME/${GAME_FOLDER}.zip" .
           ls -ltr $HOME
