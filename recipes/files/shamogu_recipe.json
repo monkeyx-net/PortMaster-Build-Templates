@@ -3,7 +3,7 @@
   "port_json": "new_ports/shamogu/shamogu/port.json",
   "source": {
     "date_updated": "2025-11-27",
-    "sha256": "29d8082be1e018b65fd9d497a2877d6205f408b3fcf9dd6572148e7872020867",
+    "sha256": "9914bc90bd1b7a875a6a5d107e51c659d50f02377e0e607933f3caea2d854888",
     "port_exe": "shamogu",
     "port_build": "go build -tags sdl",
     "url": "https://codeberg.org/anaseto/shamogu/archive/master.zip"
