@@ -28,7 +28,7 @@ jq -n \
       sha256: $port_checksum,
       port_exe: $port_exe,
       port_build: $port_build,
-      url: $port_url
+      port_url: $port_url
     }
   }' > recipes/files/${port_folder}_recipe.json
 
