@@ -85,7 +85,7 @@ jobs:
             echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz" | tee -a $GITHUB_OUTPUT
             output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz"
           elif [[ "$filename" == *.zip ]]; then
-            echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.zip" | tee -a $GITHUB_OUTPUT
+            echo "archive_file="${{ steps.parse-json.outputs.game_folder }}"-archive.zip" | tee -a $GITHUB_OUTPUT
             output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.zip"
           else
             echo "Unknown archive type: $filename"
@@ -191,6 +191,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download all binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
+          merge-multiple: true
+
       - name: Extract binaries to correct locations
         run: |
           GAME_EXE="${{ needs.build.outputs.port_exe }}"
@@ -201,6 +208,27 @@ jobs:
           echo "Game EXE: $GAME_EXE"
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
+
+          echo "Creating folder structure..."
+          mkdir -p "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/conf"
+
+          echo "Extracting artifacts..."
+          find artifacts -type f -name "*.tar.gz" | while read f; do
+            echo "Extracting $f..."
+            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
+          done
+
+          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:-"
+          ls -la new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
+
+          echo "Organizing binaries..."
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+          fi
+
+          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
+          fi
 
           echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
           ls -la "new_ports/build/${GAME_FOLDER}/"
