@@ -98,7 +98,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libarchive-tools
-          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"/"${{ steps.parse-json.outputs.port_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
@@ -191,13 +191,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download all binary artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
-          merge-multiple: true
-
       - name: Extract binaries to correct locations
         run: |
           GAME_EXE="${{ needs.build.outputs.port_exe }}"
@@ -208,27 +201,6 @@ jobs:
           echo "Game EXE: $GAME_EXE"
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
-
-          echo "Creating folder structure..."
-          mkdir -p "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/conf"
-
-          echo "Extracting artifacts..."
-          find artifacts -type f -name "*.tar.gz" | while read f; do
-            echo "Extracting $f..."
-            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
-          done
-
-          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:-"
-          ls -la new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
-
-          echo "Organizing binaries..."
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
-          fi
-
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
-            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
-          fi
 
           echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
           ls -la "new_ports/build/${GAME_FOLDER}/"
