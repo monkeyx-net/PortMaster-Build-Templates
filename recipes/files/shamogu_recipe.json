@@ -2,10 +2,9 @@
   "name": "shamogu.zip",
   "port_json": "new_ports/shamogu/shamogu/port.json",
   "source": {
-    "port_exe": "shamogu",
-    "date_updated": "2025-11-25",
-    "md5": "todo",
+    "date_updated": "2025-11-27",
+    "sha256": "29d8082be1e018b65fd9d497a2877d6205f408b3fcf9dd6572148e7872020867",
     "build_cmd": "go build -tags sdl",
-    "url": "https://codeberg.org/anaseto/shamogu/archive/master.tar.gz"
+    "url": "https://codeberg.org/anaseto/shamogu/archive/master.zip"
   }
 }
