@@ -160,16 +160,16 @@ jobs:
             sdl2-config --version
             echo 'SDL Build completed successfully'
 
-            echo 'Building ${{ steps.parse-json.outputs.port_exer }} application'
+            echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
             cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
             ${{ steps.parse-json.outputs.port_build }}
 
             ls -ltr
             echo 'Creating binary artifact'
             mkdir -p dist
-            ls -ltr
+            ls -lha
             cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }}
-            ls -ltr dist/
+            ls -lha dist/
             strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
             tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
             ls -ltr dist
