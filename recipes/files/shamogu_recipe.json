@@ -4,7 +4,8 @@
   "source": {
     "date_updated": "2025-11-27",
     "sha256": "29d8082be1e018b65fd9d497a2877d6205f408b3fcf9dd6572148e7872020867",
-    "build_cmd": "go build -tags sdl",
+    "port_exe": "shamogu",
+    "port_build": "go build -tags sdl",
     "url": "https://codeberg.org/anaseto/shamogu/archive/master.zip"
   }
 }
