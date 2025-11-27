@@ -170,7 +170,7 @@ jobs:
             ls -ltr
             cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }}
             ls -ltr dist/
-            strip dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }} || echo 'Strip failed, continuing...'
+            strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
             tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
             ls -ltr dist
             ls -ltr /workspace/
