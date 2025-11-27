@@ -54,7 +54,7 @@ jobs:
           PORT_NAME=$(jq -r '.name' "$RECIPE_JSON_PATH")
           PORT_JSON=$(jq -r '.port_json' "$RECIPE_JSON_PATH")
           PORT_EXE=$(jq -r '.source.port_exe' "$RECIPE_JSON_PATH")
-          PORT_BUILD=$(jq -r '.source.port_build' "$RECIPE_JSON_PATH")
+          PORT_BUILD=$(jq -r '.source.build_cmd' "$RECIPE_JSON_PATH")
           PORT_URL=$(jq -r '.source.url' "$RECIPE_JSON_PATH")
           echo "port_name=$PORT_NAME" | tee -a $GITHUB_OUTPUT
           echo "port_json=$PORT_JSON" | tee -a $GITHUB_OUTPUT
