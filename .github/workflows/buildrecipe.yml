@@ -98,7 +98,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libarchive-tools
-          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"/"${{ steps.parse-json.outputs.port_folder }}"
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
