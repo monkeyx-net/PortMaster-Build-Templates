@@ -71,8 +71,6 @@ jobs:
           echo "port_title=$PORT_TITLE" | tee -a $GITHUB_OUTPUT
           echo "port_bash=$PORT_BASH" | tee -a $GITHUB_OUTPUT
           echo "port_folder=$PORT_FOLDER" | tee -a $GITHUB_OUTPUT
-
-
       - name: Determine archive type and download
         id: download
         run: |
@@ -93,7 +91,6 @@ jobs:
           fi
           # ToDo create md5 stamp and store in recipe.json if different For existing ports do this as part of new_recipe.sh too?
           curl -L -o "$output_file" "$URL"
-
       - name: Extract archive
         run: |
           sudo apt-get update
@@ -102,12 +99,10 @@ jobs:
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           echo "Extracting $ARCHIVE_FILE"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
-
       - name: Clean up downloaded archive
         run: |
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           rm -f "${{ steps.parse-json.outputs.port_folder }}"-archive.*
-
       - name: Commit changes
         if: matrix.arch == 'x86_64'
         run: |
@@ -121,7 +116,6 @@ jobs:
             git commit -m "Update ports from [$(date +%Y-%m-%d)] for port - ${{ steps.parse-json.outputs.port_bash }} - ${{ steps.parse-json.outputs.port_name }}"
             git push
           fi
-
       - name: Build in container (${{ matrix.arch }})
         run: |
           docker run --rm \
@@ -146,7 +140,6 @@ jobs:
             libfuse2 appstream make patchelf jq autoconf autotools-dev \
             automake libtool ldc dub pkgconf liballegro5-dev liballegro-acodec5-dev \
             liballegro-audio5-dev liballegro-image5-dev liballegro-ttf5-dev libenet-dev
-
             echo 'SDL Build started ${{ github.event.inputs.sdl_version }}'
             wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${{ github.event.inputs.sdl_version }}.tar.gz
             tar -xzf sdl.tar.gz
@@ -158,26 +151,21 @@ jobs:
             make install
             cd ../..
             sdl2-config --version
-            rm sdl.tar.gz
-            rm -rf sdl-sorce
             echo 'SDL Build completed successfully'
-            echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
+            echo 'Building ${{ github.event.inputs.port_exe }} application'
             cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
             ${{ steps.parse-json.outputs.port_build }}
-
             ls -ltr
-            echo 'Creating binary artifact'
+            echo 'Creating distribution...'
             mkdir -p dist
-            ls -lha
-            cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }}
-            ls -lha dist/
-            strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
+            ls -ltr
+            cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }}
+            ls -ltr
+            strip dist/${{ steps.parse-json.outputs.port_exe }}-${{ matrix.arch }} || echo 'Strip failed, continuing...'
             tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
-            ls -lha dist
-            ls -lha /workspace/
+            ls -ltr
             echo 'Build completed successfully'
             "
-
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
@@ -205,44 +193,37 @@ jobs:
           GAME_EXE="${{ needs.build.outputs.port_exe }}"
           GAME_FOLDER="${{ needs.build.outputs.port_folder }}"
           GAME_START="${{ needs.build.outputs.port_bash }}"
-
           echo "Creating PortMaster package"
           echo "Game EXE: $GAME_EXE"
           echo "Game Folder: $GAME_FOLDER"
           echo "Game Start: $GAME_START"
-
+          echo "Creating folder structure..."
+          mkdir -p "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/conf"
           echo "Extracting artifacts..."
           find artifacts -type f -name "*.tar.gz" | while read f; do
             echo "Extracting $f..."
-            tar -xzf "$f" -C new_ports/${GAME_FOLDER}/${GAME_FOLDER}/
+            tar -xzf "$f" -C new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
           done
-
-          echo "Contents of new_ports/${GAME_FOLDER}/${GAME_FOLDER}/:-"
-          ls -la new_ports/${GAME_FOLDER}/${GAME_FOLDER}/
-
+          echo "Contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:-"
+          ls -la new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/
           echo "Organizing binaries..."
           if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
-            mv "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
           fi
-
           if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
-            mv "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
+            mv "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
           fi
-
           echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
-          ls -la "new_ports//${GAME_FOLDER}/"
-          ls -la "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/"
-
+          ls -la "new_ports/build/${GAME_FOLDER}/"
+          ls -la "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/"
           echo "Creating final zip package..."
           pwd
-          cd new_ports/${GAME_FOLDER}
+          cd new_ports/build/${GAME_FOLDER}
           pwd
           zip -r "$HOME/${GAME_FOLDER}.zip" .
           ls -ltr $HOME
           cd
           pwd
-
-
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
         with:
