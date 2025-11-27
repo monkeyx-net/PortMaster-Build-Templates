@@ -2,6 +2,7 @@
 
 exit_nicely () {
   tput sgr0
+  exit
 }
 
 create_recipe (){
@@ -22,7 +23,7 @@ jq -n \
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
     source: {
       date_updated: $port_updated,
-      sha256: $port_checksum
+      sha256: $port_checksum,
       build_cmd: $port_build,
       url: $port_url
     }
@@ -64,7 +65,7 @@ create_new_port () {
   echo -e "\nCreating a recipe file for port title: ${port_title}"
   echo -e "This will create basic files for a new port"
   read -rp "Enter PortMaster porter name ie github, discord or nickname for your port: " porter_name
-  read -rp "Enter port exectuable name: " port_exe
+  read -rp "Enter port executable name: " port_exe
   read -rp "Enter zip/folder name: " port_folder
   folder_name=$(echo "$port_folder" | tr '[:upper:]' '[:lower:]')
   read -rp "Enter Bash file name (include .sh): " port_bash
@@ -81,37 +82,35 @@ create_new_port () {
   mv new_ports/${port_folder}/${port_folder}/zz_folder.md new_ports/${port_folder}/${port_folder}/${port_exe}.md
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
   while true; do
-    local error_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 "
     echo "Enter URL for port code base. Must be in .zip or .tar.gz format"
     read -rp 'Enter URL for code: ' port_url
     if [ -z "${port_url}" ]; then
       echo "Empty input received. Please enter a valid URL."
     elif [[ "${port_url}" =~ \.zip$ || "${port_url}" =~ \.tar\.gz$ ]]; then
       echo "Creating sha256sum for ${port_url}"
-      port_checksum=curl -s --fail ${port_url} | sha256sum | cut -d' ' -f1
-      if [ "${port_checksum}" = "${expected_hash}" ]; then
-        echo "SUCCESS: port_checksum set ${port_checksum}"
-        echo "Hash: $port_checksum"
-        break
+      port_checksum=$(curl -s --fail "${port_url}" | sha256sum | cut -d' ' -f1)
+      local error_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      if [ "${port_checksum}" = "${error_hash}" ]; then
+        echo "Checksum FAILURE: port_checksum or url is not valid"
       else
-        echo "FAILURE: port_checksum is not valid"
+        echo "Checksum SUCCESS: port_checksum set ${port_checksum}"
+        break
       fi
     else
       echo "URL must end with .zip or .tar.gz. Please try again."
     fi
   done
-  # TODO seperate build commands?
+  # TODO seperate build commands? shared libs?
   read -rp 'Enter build command(s): ' port_build
   create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}"
   echo -e "\nCreated recipe for ${port_folder}_recipe.json\n"
   cat recipes/files/${port_folder}_recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
   tree new_ports/${port_folder}/
-  xdg-open https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/buildrecipe.yml
+  xdg-open "https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/buildrecipe.yml"  2>/dev/null
   exit_nicely
 }
 
-# move back to root folder of repo
 cd ..
 clear
 green='\033[32m'
