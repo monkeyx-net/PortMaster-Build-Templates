@@ -291,6 +291,11 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 		switch msgkey.Key {
 		case gruid.KeyEscape:
 			if GameConfig.AdvancedNewGame {
+				if len(GameConfig.Mods) == NMods {
+					md.g.Mods = slices.Clone(GameConfig.Mods)
+				} else {
+					clear(md.g.Mods)
+				}
 				md.openSpiritSelectionMenu(modeNewGameAdvanced)
 			} else {
 				md.openSpiritSelectionMenu(modeNewGame)
@@ -318,9 +323,11 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 			l.Content = ui.Text("Save mod selection and continue to advanced primary spirit selection screen").
 				Format(UIWidth/2 - 1 - 2)
 			if act == ui.MenuInvoke {
-				GameConfig.Mods = slices.Clone(g.Mods)
-				if err := SaveConfig(); err != nil {
-					md.g.Logf("Error saving mod config changes: %v", err)
+				if !slices.Equal(GameConfig.Mods, g.Mods) {
+					GameConfig.Mods = slices.Clone(g.Mods)
+					if err := SaveConfig(); err != nil {
+						md.g.Logf("Error saving mod config changes: %v", err)
+					}
 				}
 				md.openSpiritSelectionMenu(modeNewGameAdvanced)
 			}
@@ -329,7 +336,7 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 		if idx > len(g.Mods) {
 			l := md.desc
 			l.Box = &ui.Box{Title: ui.Text("Quit menu and disable mods")}
-			l.Content = ui.Text("Disable any mods and return to normal spirit selection menu.").
+			l.Content = ui.Text("Disable any mods and return to classic primary spirit selection menu.").
 				Format(UIWidth/2 - 1 - 2)
 			if act == ui.MenuInvoke {
 				md.openSpiritSelectionMenu(modeNewGame)
