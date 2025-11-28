@@ -150,6 +150,7 @@ Fixes:
 * Fix translucent-wall related cases of auto-explore saying you couldn't
   explore the whole map, when you actually had explored all the terrain
   connected to passable tiles.
+* Fix potential crash when trying to load an incompatible save (see #12).
 
 # v1.1.0 2025-10-27
 

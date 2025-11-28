@@ -105,7 +105,6 @@ func (md *model) init() gruid.Effect {
 		}
 	}
 	if err != nil {
-		g.LogStyled("Warning: could not load old saved game… starting new game.", logError)
 		log.Printf("Error: %v", err)
 	}
 	md.targ.CancelExamine()

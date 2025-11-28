@@ -107,6 +107,10 @@ func (g *Game) Load() (bool, error) {
 		return false, err
 	}
 	if lg.Version != Version {
+		log.Print("ignoring incompatible old save")
+		if err := RemoveDataFile("save"); err != nil {
+			log.Printf("removing old save: %v", err)
+		}
 		return false, nil
 	}
 	*g = *lg
