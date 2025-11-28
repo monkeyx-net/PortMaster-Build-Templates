@@ -225,19 +225,6 @@ jobs:
           cd new_ports/${PORT_FOLDER}
           zip -r "$HOME/${PORT_FOLDER}.zip" .
 
-      - name: Commit post build changes
-          run: |
-            git config --local user.email "tim@monkeyx.net"
-            git config --local user.name "monkeyx-net"
-            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-            git add new_ports/build/
-            if git diff --staged --quiet; then
-              echo "No changes to commit"
-            else
-              git commit -m "Add post build files for port ${{ steps.parse-json.outputs.port_title }} on [$(date +%Y-%m-%d)]"
-              git push
-            fi
-
       - name: Upload PortMaster package
         uses: actions/upload-artifact@v4
         with:
