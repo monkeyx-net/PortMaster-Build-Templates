@@ -194,6 +194,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
+            git pull
             git commit -m "Add post build files for port ${{ steps.parse-json.outputs.port_title }} on [$(date +%Y-%m-%d)]"
             git push
           fi
