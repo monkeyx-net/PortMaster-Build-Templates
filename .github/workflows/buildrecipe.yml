@@ -108,7 +108,7 @@ jobs:
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           rm -f "${{ steps.parse-json.outputs.port_folder }}"-archive.*
 
-      - name: Commit changes
+      - name: Commit build changes
         if: matrix.arch == 'x86_64'
         run: |
           git config --local user.email "tim@monkeyx.net"
@@ -118,7 +118,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update ports from [$(date +%Y-%m-%d)] for port - ${{ steps.parse-json.outputs.port_bash }} - ${{ steps.parse-json.outputs.port_name }}"
+            git commit -m "Add build files for port ${{ steps.parse-json.outputs.port_title }} on [$(date +%Y-%m-%d)]"
             git push
           fi
 
@@ -159,7 +159,7 @@ jobs:
             cd ../..
             sdl2-config --version
             rm sdl.tar.gz
-            rm -rf sdl-sorce
+            rm -rf sdl-source
             echo 'SDL Build completed successfully'
             echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
             cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
@@ -175,7 +175,7 @@ jobs:
             tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
             ls -lha dist
             ls -lha /workspace/
-            echo 'Build completed successfully'
+            echo 'Build completed successfully - next Step upload artifacts'
             "
 
       - name: Upload binary artifact
@@ -184,6 +184,20 @@ jobs:
           name: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}
           path: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz
           retention-days: 7
+
+      - name: Commit post build changes
+        run: |
+          git config --local user.email "tim@monkeyx.net"
+          git config --local user.name "monkeyx-net"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git add new_ports/build/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add post build files for port ${{ steps.parse-json.outputs.port_title }} on [$(date +%Y-%m-%d)]"
+            git push
+          fi
+
 
   package:
     name: Package PortMaster
@@ -202,45 +216,28 @@ jobs:
 
       - name: Extract binaries to correct locations
         run: |
-          GAME_EXE="${{ needs.build.outputs.port_exe }}"
-          GAME_FOLDER="${{ needs.build.outputs.port_folder }}"
-          GAME_START="${{ needs.build.outputs.port_bash }}"
+          PORT_EXE="${{ needs.build.outputs.port_exe }}"
+          PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
 
           echo "Creating PortMaster package"
-          echo "Game EXE: $GAME_EXE"
-          echo "Game Folder: $GAME_FOLDER"
-          echo "Game Start: $GAME_START"
+          echo "Port EXE: $PORT_EXE"
+          echo "Port Folder: $PORT_FOLDER"
 
           echo "Extracting artifacts..."
           find artifacts -type f -name "*.tar.gz" | while read f; do
             echo "Extracting $f..."
-            tar -xzf "$f" -C new_ports/${GAME_FOLDER}/${GAME_FOLDER}/
+            tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
           done
 
-          echo "Contents of new_ports/${GAME_FOLDER}/${GAME_FOLDER}/:-"
-          ls -la new_ports/${GAME_FOLDER}/${GAME_FOLDER}/
+          echo "Contents of new_ports/${PORT_FOLDER}/${PORT_FOLDER}/:-"
+          ls -lha new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
+          echo "Remove build folder new_ports/build/${PORT_FOLDER}:-"
+          rm -rf new_ports/build/${PORT_FOLDER}
 
-          echo "Organizing binaries..."
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" ]; then
-            mv "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-x86_64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.x86_64"
-          fi
-
-          if [ -f "new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" ]; then
-            mv "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}-aarch64" "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/${GAME_EXE}.aarch64"
-          fi
-
-          echo "Final contents of new_ports/build/${GAME_FOLDER}/${GAME_FOLDER}/:"
-          ls -la "new_ports//${GAME_FOLDER}/"
-          ls -la "new_ports/${GAME_FOLDER}/${GAME_FOLDER}/"
-
-          echo "Creating final zip package..."
+          echo "Creating final zip package to $HOME/${PORT_FOLDER}.zip"
           pwd
-          cd new_ports/${GAME_FOLDER}
-          pwd
-          zip -r "$HOME/${GAME_FOLDER}.zip" .
-          ls -ltr $HOME
-          cd
-          pwd
+          cd new_ports/${PORT_FOLDER}
+          zip -r "$HOME/${PORT_FOLDER}.zip" .
 
 
       - name: Upload PortMaster package
