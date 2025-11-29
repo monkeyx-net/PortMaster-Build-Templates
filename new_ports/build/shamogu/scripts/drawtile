@@ -1,0 +1,153 @@
+#!/usr/bin/env tclsh8.6
+# vim:ft=tcl
+# Type F1 in the program for help.
+package require Tk
+package require cmdline
+
+set options {
+    {zoom.arg 30 "zoom"}
+    {width.arg 16 "width"}
+    {height.arg 24 "height"}
+}
+set usage "\[-zoom factor\] \[-width px\] \[-height px\] file"
+try {
+    array set params [::cmdline::getoptions argv $options $usage]
+} trap {CMDLINE USAGE} {msg} {
+    puts stderr "Usage: $msg"
+    exit 1
+}
+if {[llength $argv] != 1} {
+    puts stderr "Usage: $usage"
+    exit 1
+}
+set image_path [lindex $argv 0]
+set zoom $params(zoom)
+
+if {[file exists $image_path]} {
+    image create photo icon -file $image_path
+    set params(width) [image width icon]
+    set params(height) [image height icon]
+} else {
+    image create photo icon -width $params(width) -height $params(height) -palette 1
+    icon put black -to 0 0 $params(width) $params(height) 
+}
+set zwidth [expr {$params(width) * $zoom}]
+set zheight [expr {$params(height) * $zoom}]
+set can [canvas .c -width $zwidth -height $zheight -background black]
+grid $can -row 0 -column 0
+focus $can
+image create photo zicon -width $zwidth -height $zheight -palette 1
+zicon copy icon -zoom $zoom $zoom
+image create photo zbuf -width $zwidth -height $zheight -palette 1
+$can create image 0 0 -anchor nw -image zicon
+set undos {}
+
+proc paint {color x y} {
+    global zicon zoom zwidth zheight undos
+    if {$x >= 0 && $y >= 0 && $x < $zwidth && $y < $zheight} {
+        set xc [expr {$x - $x % $zoom}]
+        set yc [expr {$y - $y % $zoom}]
+        set ocolor [get_color [zicon get $xc $yc]]
+        if {$ocolor ne $color} {
+            zicon put $color -to $xc $yc [expr {$xc+$zoom}] [expr {$yc+$zoom}]
+            lappend undos [list $xc $yc $ocolor]
+        }
+    }
+}
+
+proc rotate {x y} {
+    global zicon zbuf zwidth zheight zoom
+    set w [expr {$zwidth-$zoom}]
+    set h [expr {$zheight-$zoom}]
+    if {$x == 1} {
+        zbuf copy zicon -from 0 0 $w $zheight -to $zoom 0
+        zbuf copy zicon -from $w 0 -to 0 0
+        zicon copy zbuf
+    } elseif {$y == 1} {
+        zbuf copy zicon -from 0 0 $zwidth $h -to 0 $zoom
+        zbuf copy zicon -from 0 $h -to 0 0
+        zicon copy zbuf
+    } elseif {$x == -1} {
+        zbuf copy zicon -to 0 0 $w $zheight -from $zoom 0
+        zbuf copy zicon -to $w 0 -from 0 0
+        zicon copy zbuf
+    } elseif {$y == -1} {
+        zbuf copy zicon -to 0 0 $zwidth $h -from 0 $zoom
+        zbuf copy zicon -to 0 $h -from 0 0
+        zicon copy zbuf
+    }
+}
+
+proc reflexion {} {
+    global zicon zbuf zwidth zheight zoom
+    for {set y 0} {$y<$zheight} {incr y $zoom} {
+        for {set x 0} {$x<$zwidth} {incr x $zoom} {
+            zbuf copy zicon -from $x $y [expr {$x+$zoom}] [expr {$y+$zoom}] -to [
+                expr {$zwidth-$x-$zoom}] $y [expr {$zwidth-$x}] [expr {$y+$zoom}]
+        }
+    }
+    zicon copy zbuf
+}
+
+proc get_color {color} {
+    if {$color eq {0 0 0}} {
+        return black
+    }
+    return white
+}
+
+proc undo_cmd {} {
+    global undos zicon zoom
+    if {[llength $undos] == 0} {
+        return
+    }
+    lassign [lindex $undos end] xc yc color
+    if {$color eq "rotate"} {
+        rotate $xc $yc
+    } else {
+        zicon put $color -to $xc $yc [expr {$xc+$zoom}] [expr {$yc+$zoom}]
+    }
+    set undos [lrange $undos 0 end-1]
+}
+
+proc save_image {} {
+    global zicon zoom icon image_path
+    icon copy zicon -subsample $zoom $zoom
+    icon write $image_path -background black
+}
+
+bind $can <Key-Right> {
+    rotate 1 0
+    lappend undos [list -1 0 rotate]
+}
+bind $can <Key-Left> {
+    rotate -1 0
+    lappend undos [list 1 0 rotate]
+}
+bind $can <Key-Down> {
+    rotate 0 1
+    lappend undos [list 0 -1 rotate]
+}
+bind $can <Key-Up> {
+    rotate 0 -1
+    lappend undos [list 0 1 rotate]
+}
+bind $can <Key-r> {reflexion}
+bind $can <1> {paint white %x %y}
+bind $can <B1-Motion> {paint white %x %y}
+bind $can <3> {paint black %x %y}
+bind $can <B3-Motion> {paint black %x %y}
+bind $can <2> {undo_cmd}
+bind $can <Key-u> {undo_cmd}
+bind $can <Key-BackSpace> {undo_cmd}
+bind $can <Key-s> {save_image}
+bind $can <Key-S> {
+    save_image
+    exit
+}
+bind $can <Key-Q> {
+    exit
+}
+bind $can <Key-F1> {
+    tk_messageBox -message "Help" -detail "Keys:\n\ts (save)\n\tS (save and quit)\n\tQ (quit without saving)\n\tu (undo)\n\tarrows (rotation)\n\tr (reflexion)\nMouse:\n\tButton 1 (white)\n\tButton 3 (black)\n\tButton 2 (undo)" -type ok -icon info
+}
