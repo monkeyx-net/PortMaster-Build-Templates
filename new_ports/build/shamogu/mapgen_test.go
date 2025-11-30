@@ -98,5 +98,21 @@ func testGame(t *testing.T) {
 		case g.ProcInfo.Spirits[g.Map.Level-1].Idx >= 0 && g.Map.Portal == InvalidPos:
 			t.Errorf("Missing totem at level %d:\n%s\n", g.Map.Level, map2String(g.Map.Terrain))
 		}
+		b := map[gruid.Point]bool{}
+		for i := range g.ItemEntities() {
+			p := g.Entity(i).P
+			if i >= FirstMapID && b[p] {
+				t.Errorf("Two items in same place: %d", p)
+			}
+			b[p] = true
+		}
+		clear(b)
+		for i := range g.Actors() {
+			p := g.Entity(i).P
+			if i >= FirstMapID && b[p] {
+				t.Errorf("Two actors in same place: %d", p)
+			}
+			b[p] = true
+		}
 	}
 }

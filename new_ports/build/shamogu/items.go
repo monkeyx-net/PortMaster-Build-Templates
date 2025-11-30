@@ -308,7 +308,7 @@ func (m *Menhir) Desc() string {
 
 func (m *Menhir) Use(g *Game, i ID) bool {
 	if m.Used {
-		g.Log("Magical stone is already inert.")
+		g.Log("The menhir is already inert.")
 		return false
 	}
 	done := m.Effect.Apply(g)

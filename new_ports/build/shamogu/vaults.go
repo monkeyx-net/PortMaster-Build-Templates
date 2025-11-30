@@ -157,8 +157,10 @@ func (mg *MapGen) DigVault(v *vault) {
 			v.places = append(v.places, place{p: q, kind: PlaceWaypoint})
 		case '!':
 			v.places = append(v.places, place{p: q, kind: PlaceItem})
+			mg.itemPlace.Set(q, true)
 		case '>':
 			v.places = append(v.places, place{p: q, kind: PlaceStatic})
+			mg.itemPlace.Set(q, true)
 		case '+', '-':
 			if q.X == 0 || q.X == MapWidth-1 || q.Y == 0 || q.Y == MapHeight-1 {
 				break
@@ -193,20 +195,20 @@ func (mg *MapGen) UnusedEntry(v *vault) int {
 }
 
 // RandomPlace returns a random free place of the given kind (among all vaults).
-func (mg *MapGen) RandomPlace(kind placeKind) gruid.Point {
-	_, v := mg.RandomVaultsPlace(mg.vaults, kind)
+func (g *Game) RandomPlace(mg *MapGen, kind placeKind) gruid.Point {
+	_, v := g.RandomVaultsPlace(mg, mg.vaults, kind)
 	return v
 }
 
 // RandomVaultsPlace returns a random free place of the given kind among given
 // vaults.
-func (mg *MapGen) RandomVaultsPlace(vs []*vault, kind placeKind) (int, gruid.Point) {
-	return mg.RandomVaultsPlaceWithFunc(vs, kind, mg.rand.IntN)
+func (g *Game) RandomVaultsPlace(mg *MapGen, vs []*vault, kind placeKind) (int, gruid.Point) {
+	return g.RandomVaultsPlaceWithFunc(mg, vs, kind, mg.rand.IntN)
 }
 
 // RandomVaultsPlaceWithFunc returns a random free place of the given kind
 // among given vaults using the given custom IntN-like rand function.
-func (mg *MapGen) RandomVaultsPlaceWithFunc(vs []*vault, kind placeKind, rf func(n int) int) (int, gruid.Point) {
+func (g *Game) RandomVaultsPlaceWithFunc(mg *MapGen, vs []*vault, kind placeKind, rf func(n int) int) (int, gruid.Point) {
 	// We assume len(vs) > 0 and that there are remaining free places of
 	// that kind.
 	const maxIterations = 10000
@@ -214,7 +216,8 @@ func (mg *MapGen) RandomVaultsPlaceWithFunc(vs []*vault, kind placeKind, rf func
 	for {
 		count++
 		if count > maxIterations {
-			panic("infinite loop")
+			log.Println("no suitable place in vault")
+			return 0, g.randomFreeItemFloor(mg)
 		}
 		i := rf(len(vs))
 		p := mg.RandomVaultPlace(vs[i], kind)

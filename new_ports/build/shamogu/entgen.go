@@ -25,7 +25,7 @@ func (g *Game) InitPlayer(spe *Entity) {
 
 func (g *Game) debugBuild() {
 	// g.Entities[PrimarySpiritID+1] = spiritEntity(g.Mods, challengeSpirits[4])
-	// g.Entities[PrimarySpiritID+1] = spiritEntity(g.Mods, challengeSpirits[6])
+	// g.Entities[PrimarySpiritID+2] = spiritEntity(g.Mods, challengeSpirits[2])
 	// g.Entities[PrimarySpiritID+4] = comestibleEntity(ComestibleData[BerserkingFlower])
 	// g.Entities[PrimarySpiritID+5] = comestibleEntity(ComestibleData[ClarityLeaves])
 	// g.Entities[PrimarySpiritID+6] = comestibleEntity(ComestibleData[FirebreathPepper])
@@ -54,7 +54,7 @@ func (g *Game) genPlayerOnNewLevel(mg *MapGen) {
 	p := g.PlayerEntity()
 	// Chose player's vault.
 	var pvi int // player's vault index
-	pvi, p.P = mg.RandomVaultsPlace(mg.vaults, PlaceWaypoint)
+	pvi, p.P = g.RandomVaultsPlace(mg, mg.vaults, PlaceWaypoint)
 	pv := mg.vaults[pvi]
 	// Sort vaults by distance to the chosen player's vault.
 	slices.SortFunc(mg.vaults, func(vi, vj *vault) int {
@@ -380,7 +380,7 @@ func (g *Game) genItems(mg *MapGen) {
 		var i int
 		addPortal := func(fake bool) {
 			portal := &Entity{Name: "magic portal", Rune: '>', Role: &Portal{Fake: fake}}
-			i, portal.P = mg.RandomVaultsPlaceWithFunc(npvaults[len(npvaults)/3:], PlaceStatic, g.IntNBiasedUp)
+			i, portal.P = g.RandomVaultsPlaceWithFunc(mg, npvaults[len(npvaults)/3:], PlaceStatic, g.IntNBiasedUp)
 			portalIdxs = append(portalIdxs, i+1)
 			if !fake {
 				g.Map.Portal = portal.P
@@ -389,6 +389,7 @@ func (g *Game) genItems(mg *MapGen) {
 		}
 		addPortal(false)
 		if g.ProcInfo.FakePortal[g.Map.Level-1] {
+			extraStatic++
 			addPortal(true)
 			if g.Mod(ModCorruptedDungeon) && g.IntN(2) == 0 {
 				extraStatic++
@@ -402,7 +403,7 @@ func (g *Game) genItems(mg *MapGen) {
 	} else {
 		var i int
 		orb := &Entity{Name: "Orb of Corruption", Rune: '☼', Role: &CorruptionOrb{}}
-		i, orb.P = mg.RandomVaultsPlaceWithFunc(npvaults[len(npvaults)/2:], PlaceStatic, g.IntNBiasedUp)
+		i, orb.P = g.RandomVaultsPlaceWithFunc(mg, npvaults[len(npvaults)/2:], PlaceStatic, g.IntNBiasedUp)
 		g.Map.Orb = orb.P
 		portalIdxs = append(portalIdxs, i+1)
 		g.AddEntity(orb)
@@ -410,9 +411,9 @@ func (g *Game) genItems(mg *MapGen) {
 	// Totemic spirit.
 	totemPoint := func() gruid.Point {
 		if g.Mod(ModCorruptedDungeon) && g.IntN(2*MapLevels) == 0 {
-			return g.randomFreeItemFloor()
+			return g.randomFreeItemFloor(mg)
 		}
-		_, p := mg.RandomVaultsPlace(npvaults, PlaceItem)
+		_, p := g.RandomVaultsPlace(mg, npvaults, PlaceItem)
 		return p
 	}
 	if spi := g.ProcInfo.Spirits[g.Map.Level-1]; spi.Idx >= 0 {
@@ -478,9 +479,9 @@ func (g *Game) genItems(mg *MapGen) {
 		}
 		me := menhirEntity(MenhirData[idx])
 		if g.Mod(ModCorruptedDungeon) && g.IntN(5) == 0 || extraStatic >= 2 {
-			me.P = g.randomFreeItemFloor()
+			me.P = g.randomFreeItemFloor(mg)
 		} else {
-			_, me.P = mg.RandomVaultsPlace(tvaults, PlaceStatic)
+			_, me.P = g.RandomVaultsPlace(mg, tvaults, PlaceStatic)
 		}
 		if g.Mod(ModCorruptedDungeon) && g.IntN(100) == 0 {
 			menhir := me.Role.(*Menhir)
@@ -492,10 +493,10 @@ func (g *Game) genItems(mg *MapGen) {
 	nitems := g.ProcInfo.NComestibles[g.Map.Level-1]
 	addComestible := func(i int, cod itemInfo) {
 		co := comestibleEntity(cod)
-		if i <= (nitems+1)/2 {
-			co.P = mg.RandomPlace(PlaceItem)
+		if i <= max(4, (nitems+1)/2) {
+			co.P = g.RandomPlace(mg, PlaceItem)
 		} else {
-			co.P = g.randomFreeItemFloor()
+			co.P = g.randomFreeItemFloor(mg)
 		}
 		g.AddEntity(co)
 	}
@@ -583,10 +584,15 @@ func (g *Game) genItems(mg *MapGen) {
 // randomFreeItemFloor returns a random passable position that is not occupied
 // by an item. The returned position has some bias toward walls and sets the
 // terrain to Floor.
-func (g *Game) randomFreeItemFloor() gruid.Point {
+func (g *Game) randomFreeItemFloor(mg *MapGen) gruid.Point {
 	for {
 		p := g.RandomPassableBiased()
 		if i, _ := g.ItemAt(p); i >= 0 {
+			continue
+		}
+		if mg.itemPlace.At(p) {
+			// Avoid placement on a special item place, as we
+			// couldn't have enough of them otherwise.
 			continue
 		}
 		if p == g.PP() {

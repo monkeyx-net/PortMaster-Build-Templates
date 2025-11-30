@@ -29,14 +29,15 @@ const NLayouts = 3
 
 // MapGen gathers all terrain and vault information for generating a new map.
 type MapGen struct {
-	terrain rl.Grid         // map terrain
-	theme   mapTheme        // particular theme for the level
-	vaults  []*vault        // list of special vaults
-	tunnel  CacheGrid[bool] // in tunnel
-	xtunnel []gruid.Point   // points belonging to extra tunnels
-	vault   CacheGrid[bool] // in vault
-	PR      *paths.PathRange
-	rand    *rand.Rand
+	terrain   rl.Grid         // map terrain
+	theme     mapTheme        // particular theme for the level
+	vaults    []*vault        // list of special vaults
+	tunnel    CacheGrid[bool] // in tunnel
+	xtunnel   []gruid.Point   // points belonging to extra tunnels
+	vault     CacheGrid[bool] // in vault
+	itemPlace CacheGrid[bool] // item/static vault place
+	PR        *paths.PathRange
+	rand      *rand.Rand
 }
 
 // mapTheme represents the various kinds of special rare themed levels. They
@@ -70,8 +71,9 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 	mt := g.Map.Terrain
 	mt.Fill(Wall)
 	mg := &MapGen{terrain: mt, rand: g.rand, PR: g.PR,
-		tunnel: make(CacheGrid[bool], MapWidth*MapHeight),
-		vault:  make(CacheGrid[bool], MapWidth*MapHeight),
+		tunnel:    make(CacheGrid[bool], MapWidth*MapHeight),
+		vault:     make(CacheGrid[bool], MapWidth*MapHeight),
+		itemPlace: make(CacheGrid[bool], MapWidth*MapHeight),
 	}
 	g.choseTheme(mg)
 	halves := func() (rl.Grid, rl.Grid) {
