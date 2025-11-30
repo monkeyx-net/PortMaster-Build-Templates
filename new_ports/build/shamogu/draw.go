@@ -547,10 +547,12 @@ func (md *model) drawSpiritSelection() {
 	ui.Textf("Shamanic Mountain Guardian - Shamogu %s", Version).WithStyle(gruid.Style{}.WithFg(ColorMagenta)).
 		Draw(md.gd.Slice(gruid.NewRange(-25+UIWidth/2, 3, UIWidth, UIHeight)))
 	y := 13
+	tabtext := `(TAB for advanced new game settings)`
 	if md.mode == modeNewGameAdvanced {
 		y += len(primarySpiritsAdvanced)
+		tabtext = fmt.Sprintf(`(TAB for mod selection - %d enabled)`, md.g.modCount())
 	}
-	ui.Text(`(TAB for advanced new game settings)`).WithStyle(gruid.Style{Fg: ColorGreen}).
+	ui.Text(tabtext).WithStyle(gruid.Style{Fg: ColorGreen}).
 		Draw(md.gd.Slice(gruid.NewRange(0, y, UIWidth/2, y+1)))
 	y = 16
 	if md.mode == modeNewGameAdvanced {

@@ -21,7 +21,7 @@ func (g *Game) UpdateFOV() {
 	pa := g.PlayerActor()
 	lt := &lighter{
 		g:      g,
-		flying: pa.DoesAny(NocturnalFlying) && !pa.Has(StatusLignification),
+		flying: pa.DoesAny(NocturnalFlying) && !pa.Has(StatusLignification) && !pa.Has(StatusGardener),
 	}
 	g.Map.FOV.VisionMap(lt, pp)
 	g.Map.FOVPts = g.Map.FOV.SSCVisionMap(pp, g.MaxFOVRange(), passable, false)
