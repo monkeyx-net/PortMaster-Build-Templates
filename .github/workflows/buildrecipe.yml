@@ -108,20 +108,6 @@ jobs:
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           rm -f "${{ steps.parse-json.outputs.port_folder }}"-archive.*
 
-      - name: Commit build changes
-        if: matrix.arch == 'x86_64'
-        run: |
-          git config --local user.email "tim@monkeyx.net"
-          git config --local user.name "monkeyx-net"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-          git add new_ports/build/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Add build files for port ${{ steps.parse-json.outputs.port_title }} on [$(date +%Y-%m-%d)]"
-            git push
-          fi
-
       - name: Build in container (${{ matrix.arch }})
         run: |
           docker run --rm \
