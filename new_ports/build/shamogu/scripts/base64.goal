@@ -1,6 +1,0 @@
-#!/usr/bin/env goal
-/ Requires a build of goal with -tags full (supporting base64 encoding).
-/ It can be used to convert a binary replay file from the native version into a
-/ base64-encoded version suitable for replay in the browser.
-(2~#ARGS)or:error"USAGE: goal base64.goal replay-gob > replay-base64"
-print base64.enc 'read ARGS 1
