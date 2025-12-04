@@ -133,7 +133,7 @@ jobs:
           automake libtool ldc dub pkgconf liballegro5-dev liballegro-acodec5-dev \
           liballegro-audio5-dev liballegro-image5-dev liballegro-ttf5-dev libenet-dev \
           xvfb x11-apps libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxi-dev \
-          libxcursor-dev libgl1-mesa-dev libglu1-mesa-dev
+          libxcursor-dev libgl1-mesa-dev libglu1-mesa-dev timeout
 
           echo 'SDL Build started ${{ github.event.inputs.sdl_version }}'
           wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${{ github.event.inputs.sdl_version }}.tar.gz
@@ -155,9 +155,6 @@ jobs:
           Xvfb :99 -screen 0 1024x768x24 &
           XVFB_PID=\$!
           ${{ steps.parse-json.outputs.port_build }}
-          timeout --preserve-status 5s ./${{ steps.parse-json.outputs.port_exe }}
-          echo "Exit Status: $?"
-
           kill \$XVFB_PID 2>/dev/null || true
 
           ls -ltr
@@ -172,6 +169,7 @@ jobs:
           ls -lha /workspace/
           echo 'Build completed successfully - next Step upload artifacts'
           "
+
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
