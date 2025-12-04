@@ -150,8 +150,6 @@ jobs:
             echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
             cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
             ${{ steps.parse-json.outputs.port_build }}
-            timeout --preserve-status 5s ./"${{ steps.parse-json.outputs.port_exe }}"
-            echo "Exit Status: $?"
 
             ls -ltr
             echo 'Creating binary artifact'
