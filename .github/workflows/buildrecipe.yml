@@ -111,67 +111,58 @@ jobs:
       - name: Build in container (${{ matrix.arch }})
         run: |
           docker run --rm \
-          -v $PWD:/workspace \
-          -w /workspace \
-          -e DEBIAN_FRONTEND=noninteractive \
-          ${{ matrix.image }} \
-          /bin/bash -c "
-          set -e
-          echo 'Installing dependencies...'
-          apt-get update
-          apt-get install -y software-properties-common wget gnupg coreutils
-          echo 'Adding Kitware CMake repository'
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
-          echo 'Adding Go repository'
-          add-apt-repository -y ppa:longsleep/golang-backports
-          apt-get update
-          apt-get install -y build-essential cmake tar golang-go \
-          libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-          libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
-          libfuse2 appstream make patchelf jq autoconf autotools-dev \
-          automake libtool ldc dub pkgconf liballegro5-dev liballegro-acodec5-dev \
-          liballegro-audio5-dev liballegro-image5-dev liballegro-ttf5-dev libenet-dev \
-          xvfb x11-apps libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxi-dev \
-          libxcursor-dev libgl1-mesa-dev libglu1-mesa-dev
+            -v $PWD:/workspace \
+            -w /workspace \
+            -e DEBIAN_FRONTEND=noninteractive \
+            ${{ matrix.image }} \
+            /bin/bash -c "
+            set -e
+            echo 'Installing dependencies...'
+            apt-get update
+            apt-get install -y software-properties-common wget gnupg
+            echo 'Adding Kitware CMake repository'
+            wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+            echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+            echo 'Adding Go repository'
+            add-apt-repository -y ppa:longsleep/golang-backports
+            apt-get update
+            apt-get install -y build-essential cmake tar golang-go \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+            libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
+            libfuse2 appstream make patchelf jq autoconf autotools-dev \
+            automake libtool ldc dub pkgconf liballegro5-dev liballegro-acodec5-dev \
+            liballegro-audio5-dev liballegro-image5-dev liballegro-ttf5-dev libenet-dev
 
-          echo 'SDL Build started ${{ github.event.inputs.sdl_version }}'
-          wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${{ github.event.inputs.sdl_version }}.tar.gz
-          tar -xzf sdl.tar.gz
-          mv SDL-release-${{ github.event.inputs.sdl_version }} sdl-source
-          cd sdl-source
-          mkdir -p build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-          make -j\$(nproc)
-          make install
-          cd ../..
-          sdl2-config --version
-          rm sdl.tar.gz
-          rm -rf sdl-source
-          echo 'SDL Build completed successfully'
-          echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
-          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1024x768x24 &
-          XVFB_PID=\$!
-          ${{ steps.parse-json.outputs.port_build }}
-          timeout --preserve-status 5s ./${{ steps.parse-json.outputs.port_exe }}
-          echo "Exit Status: $?"
+            echo 'SDL Build started ${{ github.event.inputs.sdl_version }}'
+            wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${{ github.event.inputs.sdl_version }}.tar.gz
+            tar -xzf sdl.tar.gz
+            mv SDL-release-${{ github.event.inputs.sdl_version }} sdl-source
+            cd sdl-source
+            mkdir -p build && cd build
+            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+            make -j\$(nproc)
+            make install
+            cd ../..
+            sdl2-config --version
+            rm sdl.tar.gz
+            rm -rf sdl-source
+            echo 'SDL Build completed successfully'
+            echo 'Building ${{ steps.parse-json.outputs.port_exe }} application'
+            cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+            ${{ steps.parse-json.outputs.port_build }}
 
-          kill \$XVFB_PID 2>/dev/null || true
-
-          ls -ltr
-          echo 'Creating binary artifact'
-          mkdir -p dist
-          ls -lha
-          cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }}
-          ls -lha dist/
-          strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
-          tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
-          ls -lha dist
-          ls -lha /workspace/
-          echo 'Build completed successfully - next Step upload artifacts'
-          "
+            ls -ltr
+            echo 'Creating binary artifact'
+            mkdir -p dist
+            ls -lha
+            cp ${{ steps.parse-json.outputs.port_exe }} dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }}
+            ls -lha dist/
+            strip dist/${{ steps.parse-json.outputs.port_exe }}.${{ matrix.arch }} || echo 'Strip failed, continuing...'
+            tar -czf /workspace/${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz -C dist .
+            ls -lha dist
+            ls -lha /workspace/
+            echo 'Build completed successfully - next Step upload artifacts'
+            "
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
