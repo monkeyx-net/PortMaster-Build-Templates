@@ -119,7 +119,7 @@ jobs:
           set -e
           echo 'Installing dependencies...'
           apt-get update
-          apt-get install -y software-properties-common wget gnupg
+          apt-get install -y software-properties-common wget gnupg coreutils
           echo 'Adding Kitware CMake repository'
           wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
           echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
@@ -133,7 +133,7 @@ jobs:
           automake libtool ldc dub pkgconf liballegro5-dev liballegro-acodec5-dev \
           liballegro-audio5-dev liballegro-image5-dev liballegro-ttf5-dev libenet-dev \
           xvfb x11-apps libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxi-dev \
-          libxcursor-dev libgl1-mesa-dev libglu1-mesa-dev timeout
+          libxcursor-dev libgl1-mesa-dev libglu1-mesa-dev
 
           echo 'SDL Build started ${{ github.event.inputs.sdl_version }}'
           wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${{ github.event.inputs.sdl_version }}.tar.gz
