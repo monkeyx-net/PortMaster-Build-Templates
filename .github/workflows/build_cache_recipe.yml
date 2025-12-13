@@ -21,7 +21,7 @@ permissions:
 env:
   BUILD_TOKEN: ${{ secrets.BUILD_TOKEN }}
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository | lower }}/portmaster-builder
+  IMAGE_NAME: ${{ github.repository.owner}}/portmaster-build-templates/portmaster-builder
 
 jobs:
   build-builder-image:
