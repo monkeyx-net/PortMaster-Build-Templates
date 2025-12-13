@@ -171,6 +171,8 @@ jobs:
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
+          pwd
+          ls -lha
 
       - name: Clean up downloaded archive
         run: |
@@ -188,20 +190,18 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
             /bin/bash -c "
             set -e
-            mkdir -p new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
+            pwd
+            ls -lha
             cd new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
-            mkdir -p build
-            cd build
+            pwd
+            ls -lha
             ${{ steps.parse-json.outputs.port_build }}
-            find .. -name '${{ steps.parse-json.outputs.port_exe }}' -type f -executable | head -1 | xargs -I {} cp {} ../'${{ steps.parse-json.outputs.port_exe }}' || true
-            cd ..
-            if [ ! -f '${{ steps.parse-json.outputs.port_exe }}' ]; then
-              exit 1
-            fi
             mkdir -p dist
             cp '${{ steps.parse-json.outputs.port_exe }}' dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }}
             strip dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }} || true
             tar -czf /workspace/'${{ steps.parse-json.outputs.port_folder }}'-linux-${{ matrix.arch }}.tar.gz -C dist .
+            pwd
+            ls -lha
             "
 
       - name: Upload binary artifact
