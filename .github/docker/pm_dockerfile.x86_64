@@ -62,7 +62,8 @@ RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/re
 
 RUN sdl2-config --version
 
-RUN echo '#!/bin/bash\nexec gosu root "$@"' > /usr/local/bin/sudo && \
+RUN echo '#!/bin/bash\nif [ "$EUID" -eq 0 ]; then exec "$@"; else exec gosu root "$@"; fi' > /usr/local/bin/sudo && \
+chmod 4755 /usr/local/bin/sudo && \
 chmod +x /usr/local/bin/sudo
 RUN useradd -m -u 1000 -s /bin/bash builder
 USER builder
