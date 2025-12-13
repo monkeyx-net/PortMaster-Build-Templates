@@ -55,13 +55,12 @@ jobs:
       - name: Extract metadata
         id: meta
         run: |
-          echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-sdl-${{ github.event.inputs.sdl_version }}" >> $GITHUB_OUTPUT
           echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest" >> $GITHUB_OUTPUT
 
       - name: Check if image exists
         id: check-image
         run: |
-          IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-sdl-${{ github.event.inputs.sdl_version }}"
+          IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest"
           if docker manifest inspect $IMAGE_TAG > /dev/null 2>&1; then
             echo "image_exists=true" >> $GITHUB_OUTPUT
           else
@@ -184,7 +183,7 @@ jobs:
             -e DEBIAN_FRONTEND=noninteractive \
             -e HOME=/tmp \
             --user $(id -u):$(id -g) \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-sdl-${{ github.event.inputs.sdl_version }} \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
             /bin/bash -c "
             set -e
             cd new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
