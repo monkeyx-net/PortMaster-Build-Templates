@@ -9,16 +9,16 @@ Thanks to ??? for creating this game.
 | Button | Action |
 |--|--|
 | Dpad | Move |
-| Left Analog | Move|
-| Right Analog | Run |
-| A | Interact(Equip/Acivate) |
+| Left Analog | Move |
+| Right Analog | Move |
+| A | Start/wait |
 | B | Inventory |
 | X | Examine |
-| Y | Answer Y |
-| L1 | View Messages |
-| L2 | Settings |
-| R1 | Goto |
-| R2 | Wizard Mode|
+| Y |  Interact(Equip/Activate) |
+| L1 | Settings/Help |
+| L2 | Message |
+| R1 | Quit |
+| R2 | Use as Y to confirm |
 
 ## Compiling
 
