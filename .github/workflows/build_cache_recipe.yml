@@ -161,6 +161,8 @@ jobs:
             exit 1
           fi
           curl -L -o "$output_file" "$URL"
+          pwd
+          ls -ah
 
       - name: Extract archive
         run: |
@@ -186,6 +188,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
             /bin/bash -c "
             set -e
+            mkdir -p new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
             cd new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
             mkdir -p build
             cd build

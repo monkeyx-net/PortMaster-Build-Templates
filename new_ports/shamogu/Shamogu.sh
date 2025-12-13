@@ -18,21 +18,15 @@ source $controlfolder/control.txt
 get_controls
 
 GAMEBINARY=shamogu
-GAMEDIR=/$directory/ports/$GAMEBINARY
+GAMEDIR=/$directory/ports/shamogu
 exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
-bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
-if [ $DISPLAY_WIDTH -eq 720 ] && [ $DISPLAY_HEIGHT -eq 720 ]; then
- WIDTH="0.56"
- HEIGHT="1.35"
-elif [ $DISPLAY_WIDTH -lt 1024 ] && [ $DISPLAY_HEIGHT -lt 768 ]; then
- WIDTH="0.50"
- HEIGHT="1.00"
-else
- WIDTH="1.00"
- HEIGHT="1.00"
-fi
+# Needed if config data binding to the conf folder
+#bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
+# Needed if any extra libs addded.
+#export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
-SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH} -F -w $WIDTH -h $HEIGHT
+SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH}
 pm_finish
