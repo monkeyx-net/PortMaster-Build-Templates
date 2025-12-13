@@ -1,15 +1,15 @@
 {
   "version": 4,
-  "name": "shamogu.zip",
+  "name": "zz_folder.zip",
   "items": [
-    "Shamogu.sh",
-    "shamogu"
+    "zz_Port.sh",
+    "zz_folder"
   ],
   "items_opt": [],
   "attr": {
-    "title": "Shamgu",
+    "title": "Shamogu",
     "porter": [
-      "monkeyx-net"
+      "zz_porter"
     ],
     "desc": "Your text here.",
     "desc_md": null,
