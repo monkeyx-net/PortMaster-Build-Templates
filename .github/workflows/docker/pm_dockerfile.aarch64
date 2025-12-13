@@ -1,0 +1,71 @@
+ARG BASE_IMAGE=arm64v8/ubuntu:20.04
+FROM ${BASE_IMAGE}
+
+ARG SDL_VERSION=2.32.0
+
+# Install dependencies (cached layer)
+RUN apt-get update && \
+    apt-get install -y software-properties-common wget gnupg ca-certificates && \
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    add-apt-repository -y ppa:longsleep/golang-backports && \
+    apt-get update && \
+    apt-get install -y \
+      build-essential \
+      cmake \
+      tar \
+      golang-go \
+      libsdl2-dev \
+      libsdl2-image-dev \
+      libsdl2-mixer-dev \
+      libsdl2-ttf-dev \
+      libsdl1.2-dev \
+      libsdl-image1.2-dev \
+      libsdl-mixer1.2-dev \
+      libsdl-ttf2.0-dev \
+      libfuse2 \
+      appstream \
+      make \
+      patchelf \
+      jq \
+      autoconf \
+      autotools-dev \
+      automake \
+      libtool \
+      ldc \
+      dub \
+      pkgconf \
+      liballegro5-dev \
+      liballegro-acodec5-dev \
+      liballegro-audio5-dev \
+      liballegro-image5-dev \
+      liballegro-ttf5-dev \
+      libenet-dev \
+      libarchive-tools \
+      unzip \
+      git \
+      curl \
+      && rm -rf /var/lib/apt/lists/*
+
+# Build and install SDL (version-specific cached layer)
+RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
+    tar -xzf sdl.tar.gz && \
+    mv SDL-release-${SDL_VERSION} sdl-source && \
+    cd sdl-source && \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
+    make -j$(nproc) && \
+    make install && \
+    cd ../.. && \
+    rm sdl.tar.gz && \
+    rm -rf sdl-source
+
+# Verify SDL installation
+RUN sdl2-config --version
+
+# Create a non-root user for safer container execution
+RUN useradd -m -u 1000 -s /bin/bash builder
+USER builder
+WORKDIR /workspace
+
+CMD ["/bin/bash"]
