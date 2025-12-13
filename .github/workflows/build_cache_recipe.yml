@@ -11,6 +11,11 @@ on:
         description: 'Enter SDL Version required'
         required: true
         default: '2.32.0'
+      force_rebuild:
+        description: 'Force rebuild of Docker images'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: write
@@ -68,7 +73,7 @@ jobs:
           fi
 
       - name: Build and push builder image
-        if: steps.check-image.outputs.image_exists == 'false'
+        if: steps.check-image.outputs.image_exists == 'false' || github.event.inputs.force_rebuild == 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
