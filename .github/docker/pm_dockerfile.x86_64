@@ -44,11 +44,10 @@ RUN apt-get update && \
       libarchive-tools \
       unzip \
       git \
-      sudo \
+      gosu \
       curl \
       && rm -rf /var/lib/apt/lists/*
 
-# Build and install SDL (version-specific cached layer)
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
     tar -xzf sdl.tar.gz && \
     mv SDL-release-${SDL_VERSION} sdl-source && \
@@ -61,12 +60,11 @@ RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/re
     rm sdl.tar.gz && \
     rm -rf sdl-source
 
-# Verify SDL installation
 RUN sdl2-config --version
 
-# Create a non-root user for safer container execution
+RUN echo '#!/bin/bash\nexec gosu root "$@"' > /usr/local/bin/sudo && \
+chmod +x /usr/local/bin/sudo
 RUN useradd -m -u 1000 -s /bin/bash builder
-RUN echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER builder
 WORKDIR /workspace
 
