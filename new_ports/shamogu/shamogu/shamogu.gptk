@@ -1,15 +1,15 @@
 back = esc
 start = enter
 
-a = enter
+a = e
 b = i
 x = x
-y = e
+y = y
 
-l1 = space
-l2 = m
-r1 = Q
-r2 = y
+l1 = m
+l2 = space
+r1 = o
+r2 = W
 
 up = k
 down = j

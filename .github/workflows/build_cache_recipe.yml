@@ -241,12 +241,6 @@ jobs:
           if [ -d "new_ports/build/${PORT_FOLDER}" ]; then
             rm -rf new_ports/build/${PORT_FOLDER}
           fi
-          if [ -f "${{ github.event.inputs.recipe_file }}" ]; then
-            PORT_JSON_PATH=$(jq -r '.port_json' "${{ github.event.inputs.recipe_file }}")
-            if [ -f "$PORT_JSON_PATH" ]; then
-              cp "$PORT_JSON_PATH" "new_ports/${PORT_FOLDER}/"
-            fi
-          fi
           cd new_ports/${PORT_FOLDER}
           zip -r "../../${PORT_FOLDER}.zip" .
 
