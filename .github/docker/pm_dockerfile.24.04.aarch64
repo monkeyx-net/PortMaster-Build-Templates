@@ -3,7 +3,8 @@ FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
-RUN apt-get update && \
+RUN add-apt-repository -y ppa:longsleep/golang-backports && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
       cmake \
