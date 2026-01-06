@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=ubuntu:24.04
-FROM --platform=linux/arm64 ${BASE_IMAGE}
+ARG BASE_IMAGE=arm64v8/ubuntu:latest
+FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
@@ -42,6 +42,18 @@ RUN apt-get update && \
       sudo \
       curl \
       && rm -rf /var/lib/apt/lists/*
+
+RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
+    tar -xzf sdl.tar.gz && \
+    mv SDL-release-${SDL_VERSION} sdl-source && \
+    cd sdl-source && \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
+    make -j$(nproc) && \
+    make install && \
+    cd ../.. && \
+    rm sdl.tar.gz && \
+    rm -rf sdl-source
 
 RUN sdl2-config --version
 

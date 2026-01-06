@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=ubuntu:20.04
-FROM --platform=linux/arm64 ${BASE_IMAGE}
+ARG BASE_IMAGE=arm64v8/ubuntu:20.04
+FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
