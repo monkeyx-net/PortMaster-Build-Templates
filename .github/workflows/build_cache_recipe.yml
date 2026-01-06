@@ -38,12 +38,15 @@ jobs:
           - arch: x86_64
             runner: ubuntu-latest
             base_image: ubuntu:20.04
+            platform: linux/amd64
           - arch: aarch64
             runner: ubuntu-22.04-arm
-            base_image: arm64v8/ubuntu:20.04
+            base_image: ubuntu:20.04
+            platform: linux/arm64
           - arch: 24.04.aarch64
             runner: ubuntu-24.04-arm
-            base_image: arm64v8/ubuntu:24.04
+            base_image: ubuntu:24.04
+            platform: linux/arm64
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
     steps:
@@ -80,7 +83,7 @@ jobs:
         with:
           context: .
           file: .github/docker/pm_dockerfile.${{ matrix.arch }}
-          platforms: linux/${{ matrix.arch }}
+          platforms: ${{ matrix.platform }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
