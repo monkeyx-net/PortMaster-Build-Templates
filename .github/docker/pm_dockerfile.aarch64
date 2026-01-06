@@ -3,6 +3,8 @@ FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
+ENV GOTOOLCHAIN=local
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends software-properties-common wget gnupg ca-certificates && \
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \

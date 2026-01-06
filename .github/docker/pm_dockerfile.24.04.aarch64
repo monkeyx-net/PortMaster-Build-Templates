@@ -11,6 +11,7 @@ RUN add-apt-repository -y ppa:longsleep/golang-backports && \
       tar \
       wget \
       ca-certificates \
+      gnupg \
       golang-go \
       libsdl2-dev \
       libsdl2-image-dev \
