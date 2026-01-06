@@ -3,16 +3,14 @@ FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
-ENV GOTOOLCHAIN=local
-
 RUN apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common wget gnupg ca-certificates && \
+    add-apt-repository -y ppa:longsleep/golang-backports && \
+    apt-get update && \
     apt-get install -y \
       build-essential \
       cmake \
       tar \
-      wget \
-      ca-certificates \
-      gnupg \
       golang-go \
       libsdl2-dev \
       libsdl2-image-dev \
