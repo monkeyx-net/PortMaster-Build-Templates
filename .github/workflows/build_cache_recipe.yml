@@ -40,10 +40,10 @@ jobs:
             base_image: ubuntu:20.04
           - arch: aarch64
             runner: ubuntu-22.04-arm
-            base_image: arm64v8/ubuntu:20.04
+            base_image: ubuntu:20.04
           - arch: 24.04.aarch64
             runner: ubuntu-24.04-arm
-            base_image: arm64v8/ubuntu:24.04
+            base_image: ubuntu:24.04
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
     steps:
