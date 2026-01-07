@@ -100,7 +100,6 @@ create_new_port () {
   cp -r recipes/templates/port_template/zz_folder/ new_ports/${port_folder}/${port_folder}
   mv new_ports/${port_folder}/${port_folder}/zz_folder.gptk new_ports/${port_folder}/${port_folder}/${port_exe}.gptk
   mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/${port_exe}_LICENSE.txt
-  mv new_ports/${port_folder}/${port_folder}/README.md new_ports/${port_folder}/${port_folder}/README.md
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
   while true; do
     echo "Enter URL for port code base. Must be in .zip or .tar.gz format"
@@ -110,7 +109,7 @@ create_new_port () {
     elif [[ "${port_url}" =~ \.zip$ || "${port_url}" =~ \.tar\.gz$ ]]; then
       echo "Creating sha256sum for ${port_url}"
       port_checksum=$(curl -s --fail "${port_url}" | sha256sum | cut -d' ' -f1)
-      local error_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      local error_hash="!e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       if [ "${port_checksum}" = "${error_hash}" ]; then
         echo "Checksum FAILURE: port_checksum or url is not valid"
       else
