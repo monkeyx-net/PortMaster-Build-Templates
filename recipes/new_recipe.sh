@@ -90,13 +90,13 @@ create_new_port () {
   read_check "Enter zip/folder name: " port_folder
   folder_name=$(echo "$port_folder" | tr '[:upper:]' '[:lower:]')
   read_check "Enter Bash file name (include .sh): " port_bash
-  if [[ "${port_bash: -3}" != ".sh" ]]; then
+  if [[ "${port_bash:(-3)}" != ".sh" ]]; then
     port_bash="${port_bash}.sh"
     echo "Added .sh extension: $port_bash"
   fi
   mkdir -p new_ports/${port_folder}
-  cp recipes/templates/port_template/zz_Port.sh new_ports/${port_folder}/${port_bash}
-  sed -i 's/zz_port/'"${port_exe}"'/g; s/zz_folder/'"${port_folder}"'/g' new_ports/${port_folder}/${port_bash}
+  cp recipes/templates/port_template/zz_Port.sh "new_ports/${port_folder}/${port_bash}"
+  sed -i 's/zz_port/'"${port_exe}"'/g; s/zz_folder/'"${port_folder}"'/g' "new_ports/${port_folder}/${port_bash}"
   cp -r recipes/templates/port_template/zz_folder/ new_ports/${port_folder}/${port_folder}
   mv new_ports/${port_folder}/${port_folder}/zz_folder.gptk new_ports/${port_folder}/${port_folder}/${port_exe}.gptk
   mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/${port_exe}_LICENSE.txt
