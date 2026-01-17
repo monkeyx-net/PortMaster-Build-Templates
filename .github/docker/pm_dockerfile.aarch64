@@ -45,6 +45,7 @@ RUN apt-get update && \
       git \
       sudo \
       curl \
+      libglm-dev \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \

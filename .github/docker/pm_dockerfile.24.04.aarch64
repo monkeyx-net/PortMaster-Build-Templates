@@ -43,6 +43,7 @@ RUN apt-get update && \
       git \
       sudo \
       curl \
+      libglm-dev \
       && rm -rf /var/lib/apt/lists/*
 
 RUN sdl2-config --version
