@@ -5,7 +5,7 @@
     "date_updated": "2026-01-19",
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "port_exe": "epiphany-game",
-    "port_build": "./configure && make && ls -lhtr src && cd src && cp epiphany-game ../ && cd ..",
+    "port_build": "./configure && makeake CXXFLAGS="-g -O0" -DTIXML_USE_STL && ls -lhtr src && cd src && cp epiphany-game ../ && cd ..",
     "port_url": "https://github.com/monkeyx-net/Epiphany_4_PortMaster/archive/refs/heads/main.zip"
   }
 }
