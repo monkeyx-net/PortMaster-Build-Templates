@@ -3,7 +3,6 @@ FROM ${BASE_IMAGE}
 ARG SDL_VERSION=2.32.0
 
 RUN apt-get update && \
-    apt-get update && \
     apt-get install -y \
       build-essential \
       cmake \
@@ -19,7 +18,7 @@ RUN apt-get update && \
       ziptool \
       libspdlog-dev \
       libboost-dev \
-      libopengl-dev \
+      libgl-dev \
       imagemagick \
       clang-18 \
       libogg-dev \
