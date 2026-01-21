@@ -20,7 +20,7 @@ RUN apt-get update && \
       libboost-dev \
       libgl-dev \
       imagemagick \
-      clang-18 \
+      clang \
       libogg-dev \
       libvorbis-dev \
       libopus-dev \
