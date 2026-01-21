@@ -12,10 +12,10 @@ RUN apt-get update && \
       nano \
       ca-certificates \
       tar \
-      all-recommends \
       ninja-build \
       libpng-dev \
-      zipcmp zipmerge \
+      zipcmp \
+      zipmerge \
       ziptool \
       libspdlog-dev \
       libboost-dev \
