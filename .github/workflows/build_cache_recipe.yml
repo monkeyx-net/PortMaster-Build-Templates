@@ -35,6 +35,8 @@ jobs:
     strategy:
       matrix:
         include:
+          # The arch: name needs to refer to a corresponding suffix on the .github/docker folder
+          # Everything before pm_dockerfile. is ignored.  
           - arch: x86_64
             runner: ubuntu-latest
             base_image: ubuntu:24.04
