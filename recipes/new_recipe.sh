@@ -35,9 +35,9 @@ mkdir -p "recipes/files/${1}"
 echo '#!/bin/bash' > "recipes/files/${1}/${port_pre}"
 echo '# Use this script for pre build configuration steps' >> "recipes/files/${1}/${port_pre}"
 echo '#!/bin/bash' > "recipes/files/${1}/${port_build}"
-echo '# Use this script for build commnds.' >> "recipes/files/${1}/${port_build}"
+echo '# Use this script for build commands.' >> "recipes/files/${1}/${port_build}"
 echo '#!/bin/bash' > "recipes/files/${1}/${port_post}"
-echo '# Use this script for post build commands and getting binaries and resources ready to create atrifact' >> "recipes/files/${1}/${port_post}"
+echo '# Use this script for post build commands and getting binaries and resources ready to create artifacts' >> "recipes/files/${1}/${port_post}"
 
 
 jq -n \
