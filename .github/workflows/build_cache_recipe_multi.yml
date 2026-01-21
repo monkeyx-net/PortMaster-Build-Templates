@@ -1,0 +1,287 @@
+name: Recipes 4 PortMaster Multi v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      Multi Stage Build:
+        description: 'Run 3 stage build process'
+        type: boolean
+        required: false
+      recipe_file:
+        description: 'Enter port.json file folder name'
+        required: true
+        default: 'recipes/files/shamogu_recipe.json'
+      sdl_version:
+        description: 'Enter SDL Version required'
+        required: true
+        default: '2.32.0'
+      force_rebuild:
+        description: 'Force rebuild of Docker images'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  packages: write
+  actions: write
+  checks: write
+
+env:
+  BUILD_TOKEN: ${{ secrets.BUILD_TOKEN }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: monkeyx-net/portmaster-build-templates/portmaster-builder
+
+jobs:
+  build-builder-image:
+    name: Build Builder Image (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          # The arch: name needs to refer to a corresponding suffix on the .github/docker folder
+          # Everything before pm_dockerfile. is ignored.  
+          - arch: x86_64
+            runner: ubuntu-latest
+            base_image: ubuntu:24.04
+            platform: linux/amd64
+          - arch: 20.04.aarch64
+            runner: ubuntu-24.04-arm
+            base_image: arm64v8/ubuntu:20.04
+            platform: linux/arm64
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            base_image: arm64v8/debian:bullseye
+            platform: linux/arm64
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest" >> $GITHUB_OUTPUT
+
+      - name: Check if image exists
+        id: check-image
+        run: |
+          IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest"
+          if docker buildx imagetools inspect $IMAGE_TAG > /dev/null 2>&1; then
+          echo "image_exists=true" >> $GITHUB_OUTPUT
+          else
+          echo "image_exists=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Build and push builder image
+        if: steps.check-image.outputs.image_exists == 'false' || github.event.inputs.force_rebuild == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .github/docker/pm_dockerfile.${{ matrix.arch }}
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            BASE_IMAGE=${{ matrix.base_image }}
+            SDL_VERSION=${{ github.event.inputs.sdl_version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build:
+    name: Build ${{ matrix.arch }} Binary
+    runs-on: ${{ matrix.runner }}
+    needs: build-builder-image
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+          - arch: 20.04.aarch64
+            runner: ubuntu-24.04-arm
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    outputs:
+      port_name: ${{ steps.parse-json.outputs.port_name }}
+      port_json: ${{ steps.parse-json.outputs.port_json }}
+      port_exe: ${{ steps.parse-json.outputs.port_exe }}
+      port_build: ${{ steps.parse-json.outputs.port_build }}
+      port_url: ${{ steps.parse-json.outputs.port_url }}
+      port_title: ${{ steps.parse-json.outputs.port_title }}
+      port_bash: ${{ steps.parse-json.outputs.port_bash }}
+      port_folder: ${{ steps.parse-json.outputs.port_folder }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for image propagation
+        run: sleep 30
+
+      - name: Parse recipe.json and port.json
+        id: parse-json
+        run: |
+          RECIPE_JSON_PATH="${{ github.event.inputs.recipe_file }}"
+          PORT_NAME=$(jq -r '.name' "$RECIPE_JSON_PATH")
+          PORT_JSON=$(jq -r '.port_json' "$RECIPE_JSON_PATH")
+          PORT_EXE=$(jq -r '.source.port_exe' "$RECIPE_JSON_PATH")
+          PORT_BUILD=$(jq -r '.source.port_build' "$RECIPE_JSON_PATH")
+          PORT_URL=$(jq -r '.source.port_url' "$RECIPE_JSON_PATH")
+          echo "port_name=$PORT_NAME" >> $GITHUB_OUTPUT
+          echo "port_json=$PORT_JSON" >> $GITHUB_OUTPUT
+          echo "port_exe=$PORT_EXE" >> $GITHUB_OUTPUT
+          echo "port_build=$PORT_BUILD" >> $GITHUB_OUTPUT
+          echo "port_url=$PORT_URL" >> $GITHUB_OUTPUT
+          PORT_JSON_PATH="${PORT_JSON}"
+          PORT_TITLE=$(jq -r '.attr.title' "$PORT_JSON_PATH")
+          PORT_BASH=$(jq -r '.items[0]' "$PORT_JSON_PATH")
+          PORT_FOLDER=$(jq -r '.items[1]' "$PORT_JSON_PATH" | sed 's|/||g')
+          echo "port_title=$PORT_TITLE" >> $GITHUB_OUTPUT
+          echo "port_bash=$PORT_BASH" >> $GITHUB_OUTPUT
+          echo "port_folder=$PORT_FOLDER" >> $GITHUB_OUTPUT
+
+      - name: Determine archive type and download
+        id: download
+        run: |
+          mkdir -p new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          URL="${{ steps.parse-json.outputs.port_url }}"
+          filename=$(basename "$URL")
+          if [[ "$filename" == *.tar.gz || "$filename" == *.tgz ]]; then
+            echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz" >> $GITHUB_OUTPUT
+            output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.tar.gz"
+          elif [[ "$filename" == *.zip ]]; then
+            echo "archive_file="${{ steps.parse-json.outputs.port_folder }}"-archive.zip" >> $GITHUB_OUTPUT
+            output_file=""${{ steps.parse-json.outputs.port_folder }}"-archive.zip"
+          else
+            exit 1
+          fi
+          curl -L -o "$output_file" "$URL"
+          pwd
+          ls -ah
+
+      - name: Extract archive
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
+          bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
+          pwd
+          ls -lha
+
+      - name: Clean up downloaded archive
+        run: |
+          cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
+          rm -f "${{ steps.parse-json.outputs.port_folder }}"-archive.*
+
+      - name: Build in container (${{ matrix.arch }})
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e DEBIAN_FRONTEND=noninteractive \
+            -e HOME=/tmp \
+            --user $(id -u):$(id -g) \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
+            /bin/bash -c "
+            set -e
+            pwd
+            ls -lha
+            cd new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
+            pwd
+            ls -lha
+            ${{ steps.parse-json.outputs.port_build }}
+            mkdir -p dist
+            cp '${{ steps.parse-json.outputs.port_exe }}' dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }}
+            strip dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }} || true
+            tar -czf /workspace/'${{ steps.parse-json.outputs.port_folder }}'-linux-${{ matrix.arch }}.tar.gz -C dist .
+            pwd
+            ls -lha
+            "
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}
+          path: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz
+          retention-days: 7
+
+  package:
+    name: Package PortMaster
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: ${{ needs.build.outputs.port_folder }}-linux-*
+          merge-multiple: true
+
+      - name: Extract binaries to correct locations
+        run: |
+          PORT_EXE="${{ needs.build.outputs.port_exe }}"
+          PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
+          mkdir -p new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
+          find artifacts -type f -name "*.tar.gz" | while read f; do
+            tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
+          done
+          if [ -d "new_ports/build/${PORT_FOLDER}" ]; then
+            rm -rf new_ports/build/${PORT_FOLDER}
+          fi
+          cd new_ports/${PORT_FOLDER}
+          zip -r "../../${PORT_FOLDER}.zip" .
+
+      - name: Commit post build changes
+        run: |
+          git config --local user.email "tim@monkeyx.net"
+          git config --local user.name "monkeyx-net"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git add new_ports/${{ needs.build.outputs.port_folder }}
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add port ${{ needs.build.outputs.port_title }} [$(date +%Y-%m-%d)]"
+            git push
+          fi
+
+      - name: Upload PortMaster package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.port_folder }}-portmaster
+          path: ${{ needs.build.outputs.port_folder }}.zip
+          retention-days: 7
+
+      - name: Show package info
+        run: |
+          echo "=== Package Information ==="
+          echo "Port Name: ${{ needs.build.outputs.port_title }}"
+          echo "Port Folder: ${{ needs.build.outputs.port_folder }}"
+          echo "Port EXE: ${{ needs.build.outputs.port_exe }}"
+          echo "==========================="

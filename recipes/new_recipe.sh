@@ -8,13 +8,13 @@ exit_nicely () {
 }
 
 read_check() {
-    local prompt="$1"
-    local var_name="$2"
+    local prompt="${1}"
+    local var_name="${2}"
 
     while true; do
-        read -rp "$prompt" input
-        if [ -n "$input" ]; then
-            eval "$var_name='$input'"
+        read -rp "${prompt}" input
+        if [ -n "${input}" ]; then
+            eval "${var_name}='${input}'"
             break
         else
             echo "Input cannot be empty. Please try again."
@@ -23,11 +23,22 @@ read_check() {
 }
 
 create_recipe (){
-local port_folder="$1"
-local port_url="$2"
-local port_build="$3"
-local port_checksum="$4"
-local port_exe="$5"
+local port_folder="${1}"
+local port_url="${2}"
+local port_build="${3}"
+local port_checksum="${4}"
+local port_exe="${5}"
+local port_pre="${port_folder}_pre.sh"
+local port_build="${port_folder}_build.sh"
+local port_post="${port_folder}_post.sh"
+mkdir -p "recipes/files/${1}"
+echo '#!/bin/bash' > "recipes/files/${1}/${port_pre}"
+echo '# Use this script for pre build configuration steps' >> "recipes/files/${1}/${port_pre}"
+echo '#!/bin/bash' > "recipes/files/${1}/${port_build}"
+echo '# Use this script for build commnds.' >> "recipes/files/${1}/${port_build}"
+echo '#!/bin/bash' > "recipes/files/${1}/${port_post}"
+echo '# Use this script for post build commands and getting binaries and resources ready to create atrifact' >> "recipes/files/${1}/${port_post}"
+
 
 jq -n \
   --arg port_name "${port_folder}.zip" \
@@ -37,6 +48,9 @@ jq -n \
   --arg port_build "${port_build}" \
   --arg port_checksum "${port_checksum}" \
   --arg port_exe "${port_exe}" \
+  --arg port_pre "${port_pre}" \
+  --arg port_build "${port_build}" \
+  --arg port_post "${port_post}" \
   '{
     name: $port_name,
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
@@ -45,21 +59,27 @@ jq -n \
       sha256: $port_checksum,
       port_exe: $port_exe,
       port_build: $port_build,
-      port_url: $port_url
+      port_url: $port_url,
+      port_pre: $port_pre,
+      port_build: $port_build,
+      port_post: $port_post
     }
   }' > recipes/files/${port_folder}_recipe.json
 
 }
 update_port_json() {
-    local port_title="$1"
-    local porter_name="$2"
-    local port_folder="$3"
-    local port_bash="$4"
+    local port_title="${1}"
+    local porter_name="${2}"
+    local port_folder="${3}"
+    local port_bash="${4}"
+    local port_pre="${port_folder}_pre.sh"
+    local port_build="${port_folder}_build.sh"
+    local port_post="${port_folder}_post.sh"
 
     jq --arg port_title "$port_title" \
        --arg porter_name "$porter_name" \
        --arg port_folder "$port_folder" \
-       --arg port_bash "$port_bash" \
+       --arg port_bash "${port_bash}" \
        '.name = $port_folder + ".zip" |
         .items[0] = $port_bash |
         .items[1] = $port_folder |
@@ -69,10 +89,10 @@ update_port_json() {
 }
 
 create_new_port () {
-  local port_title="$1"
+  local port_title="${1}"
   echo -e "\n\n"
   read -rp  "Your portname is ${port_title}. Do you wish to change the title. Y/N "  answer
-  case "$answer" in
+  case "${answer}" in
     [yY]|[yY][eE][sS])
         read -rp "Enter PortName: " port_title
         ;;
@@ -88,11 +108,11 @@ create_new_port () {
   read_check "Enter PortMaster porter name ie github, discord or nickname for your port: " porter_name
   read_check "Enter port executable name: " port_exe
   read_check "Enter zip/folder name: " port_folder
-  folder_name=$(echo "$port_folder" | tr '[:upper:]' '[:lower:]')
+  folder_name=$(echo "${port_folder}" | tr '[:upper:]' '[:lower:]')
   read_check "Enter Bash file name (include .sh): " port_bash
   if [[ "${port_bash:(-3)}" != ".sh" ]]; then
     port_bash="${port_bash}.sh"
-    echo "Added .sh extension: $port_bash"
+    echo "Added .sh extension: ${port_bash}"
   fi
   mkdir -p new_ports/${port_folder}
   cp recipes/templates/port_template/zz_Port.sh "new_ports/${port_folder}/${port_bash}"
@@ -131,7 +151,7 @@ create_new_port () {
   echo -e "\nPlease refer to this guide for further information - https://portmaster.games/porting.html"
   echo -e "\nAfter making the changes do a git add, commit, push"
   echo -e "\nOpening github ${GITHUB_URL} to run workflow"
-  xdg-open $GITHUB_URL  2>/dev/null
+  xdg-open ${GITHUB_URL}  2>/dev/null
 
   exit_nicely
 }
@@ -177,13 +197,13 @@ fi
 
 echo "Available ports with ${port_title} in the title:"
 for i in "${!ports[@]}"; do
-    echo "$((i + 1)) ${ports[i]}"
+    echo "$((i + 1)) ${ports[${i}]}"
 done
 
 while true; do
     echo -n "Enter choice: "
     read choice
-    if [[ $choice =~ ^[0-9]+$ ]] && [ $choice -ge 1 ] && [ $choice -le ${#ports[@]} ]; then
+    if [[ ${choice} =~ ^[0-9]+$ ]] && [ ${choice} -ge 1 ] && [ ${choice} -le ${#ports[@]} ]; then
         port_title="${ports[$((choice-1))]}"
         break
     else
@@ -191,7 +211,7 @@ while true; do
     fi
 done
 
-echo "Now processing: $port_title"
+echo "Now processing: ${port_title}"
 
 exit_nicely
 
