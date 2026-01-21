@@ -39,7 +39,7 @@ jobs:
             runner: ubuntu-latest
             base_image: ubuntu:24.04
             platform: linux/amd64
-          - arch: aarch64
+          - arch: ubuntu.20.04.aarch64
             runner: ubuntu-24.04-arm
             base_image: arm64v8/ubuntu:20.04
             platform: linux/arm64
@@ -102,9 +102,9 @@ jobs:
         include:
           - arch: x86_64
             runner: ubuntu-latest
-          - arch: ubuntu:20.04.aarch64
+          - arch: ubuntu.20.04.aarch64
             runner: ubuntu-24.04-arm
-          - arch: aarch64
+          - arch: bullseye.aarch64
             runner: ubuntu-24.04-arm
     outputs:
       port_name: ${{ steps.parse-json.outputs.port_name }}
