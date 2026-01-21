@@ -58,11 +58,11 @@ RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/re
 RUN sdl2-config --version
 
 RUN wget -q -O go.tar.gz https://go.dev/dl/go1.25.6.linux-arm64.tar.gz && \
-    sudo tar -C /usr/local -xzf go.tar.gz && \
+    tar -C /usr/local -xzf go.tar.gz && \
     echo 'export PATH=$PATH:/usr/local/go/bin' >> /etc/profile && \
     source /etc/profile && \
     rm go.tar.gz && \
-    go vesrion
+    go version
 
 
 RUN id -u builder >/dev/null 2>&1 || useradd -m -s /bin/bash builder
