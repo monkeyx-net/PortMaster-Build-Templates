@@ -41,7 +41,7 @@ jobs:
             platform: linux/amd64
           - arch: aarch64
             runner: ubuntu-24.04-arm
-            base_image: ubuntu:20.04
+            base_image: arm64v8/ubuntu:20.04
             platform: linux/arm64
           - arch: bullseye.aarch64
             runner: ubuntu-24.04-arm
