@@ -40,12 +40,12 @@ jobs:
             base_image: ubuntu:20.04
             platform: linux/amd64
           - arch: aarch64
-            runner: ubuntu-22.04-arm
+            runner: ubuntu-24.04-arm
             base_image: ubuntu:20.04
             platform: linux/arm64
-          - arch: 24.04.aarch64
+          - arch: bullseye.aarch64
             runner: ubuntu-24.04-arm
-            base_image: ubuntu:24.04
+            base_image: arm64v8/debian:bullseye
             platform: linux/arm64
     outputs:
       image_tag: ${{ steps.meta.outputs.tags }}
