@@ -71,4 +71,4 @@ RUN echo 'builder ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/builder
 
 USER builder
 WORKDIR /workspace
-CMD ["/bin/bash"]*
+CMD ["/bin/bash"]
