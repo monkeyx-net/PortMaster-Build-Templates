@@ -39,7 +39,7 @@ jobs:
             runner: ubuntu-latest
             base_image: ubuntu:24.04
             platform: linux/amd64
-          - arch: ubuntu.20.04.aarch64
+          - arch: 20.04.aarch64
             runner: ubuntu-24.04-arm
             base_image: arm64v8/ubuntu:20.04
             platform: linux/arm64
