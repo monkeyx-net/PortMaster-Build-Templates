@@ -8,25 +8,7 @@ RUN apt-get update && \
       build-essential \
       cmake \
       wget \
-      whiptail \
-      nano \
-      ca-certificates \
       tar \
-      all-recommends \
-      ninja-build \
-      libpng-dev \
-      zipcmp zipmerge \
-      ziptool \
-      libspdlog-dev \
-      libboost-dev \
-      libopengl-dev \
-      imagemagick \
-      clang-18 \
-      libogg-dev \
-      libvorbis-dev \
-      libopus-dev \
-      libopusfile-dev \
-      ninja-build \
       libsdl2-dev \
       libsdl2-image-dev \
       libsdl2-mixer-dev \
@@ -83,37 +65,6 @@ ENV PATH="${PATH}:/usr/local/go/bin"
 
 RUN go version
 
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.3/cmake-3.31.3-linux-`uname -m`.sh
-RUN chmod a+x ./cmake-3.31.3-linux-`uname -m`.sh
-RUN ./cmake-3.31.3-linux-`uname -m`.sh --prefix=/usr/local --exclude-subdir --skip-license
-
-
-RUN git clone https://github.com/nih-at/libzip.git && \
-    cd libzip && \
-    mkdir build-soh && cd build-soh && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && \
-    rm -rf libzip
-
-RUN git clone https://github.com/nlohmann/json.git && \
-    cd json && \
-    mkdir build-soh && cd build-soh && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && \
-    rm -rf json
-
-RUN git clone https://github.com/libarchive/bzip2.git && \
-    cd bzip2 && \
-    mkdir build-soh && cd build-soh && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && \
-    rm -rf bzip2
 
 RUN id -u builder >/dev/null 2>&1 || useradd -m -s /bin/bash builder
 RUN echo 'builder ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/builder
