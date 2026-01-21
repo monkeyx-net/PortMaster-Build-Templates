@@ -59,10 +59,11 @@ RUN sdl2-config --version
 
 RUN wget -q -O go.tar.gz https://go.dev/dl/go1.25.6.linux-arm64.tar.gz && \
     tar -C /usr/local -xzf go.tar.gz && \
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> /etc/profile && \
-    source /etc/profile && \
-    rm go.tar.gz && \
-    go version
+    rm go.tar.gz
+
+ENV PATH="${PATH}:/usr/local/go/bin"
+
+RUN go version
 
 
 RUN id -u builder >/dev/null 2>&1 || useradd -m -s /bin/bash builder
