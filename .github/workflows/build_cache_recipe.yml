@@ -3,6 +3,10 @@ name: Recipes 4 PortMaster v2
 on:
   workflow_dispatch:
     inputs:
+      Multi Stage Build:
+        description: 'Run 3 stage build process'
+        type: boolean
+        required: false
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
