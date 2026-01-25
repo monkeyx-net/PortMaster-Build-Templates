@@ -209,15 +209,15 @@ jobs:
             /bin/bash -c "
             set -e
             pwd
-            source recipes/files/${{ steps.parse-json.outputs.port_folder }}/build.sh
+            source recipes/files/${{ steps.parse-json.outputs.port_folder }}/build.sh \
+              '${{ steps.parse-json.outputs.port_folder }}' \
+              '${{ steps.parse-json.outputs.port_build }}' \
+              '${{ steps.parse-json.outputs.port_exe }}' \
+              '${{ matrix.arch }}'
             "
 
             ls -lha
 #            /bin/bash -e recipes/'${{ steps.parse-json.outputs.port_folder }}'/build.sh \
-#              '${{ steps.parse-json.outputs.port_folder }}' \
-#              '${{ steps.parse-json.outputs.port_build }}' \
-#              '${{ steps.parse-json.outputs.port_exe }}' \
-#              '${{ matrix.arch }}'
 
 
 
