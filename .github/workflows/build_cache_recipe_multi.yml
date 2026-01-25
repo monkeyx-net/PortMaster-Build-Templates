@@ -137,8 +137,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for image propagation
-        run: sleep 30
+#      - name: Wait for image propagation
+#        run: sleep 30
 
       - name: Parse recipe.json and port.json
         id: parse-json
@@ -165,6 +165,8 @@ jobs:
       - name: Determine archive type and download
         id: download
         run: |
+          pwd
+          ls -alh
           mkdir -p new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           URL="${{ steps.parse-json.outputs.port_url }}"
@@ -184,8 +186,6 @@ jobs:
 
       - name: Extract archive
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libarchive-tools
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
