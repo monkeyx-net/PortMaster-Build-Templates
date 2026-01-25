@@ -1,0 +1,11 @@
+{
+  "name": "harmonist.zip",
+  "port_json": "new_ports/harmonist/harmonist/port.json",
+  "source": {
+    "date_updated": "2025-12-15",
+    "sha256": "7d400ab2dfc280d52ebaa2ad6e87fe43ee8deaf8bde80dd1dac39a58e880219f",
+    "port_exe": "harmonist",
+    "port_build": "go build --tags sdl",
+    "port_url": "https://codeberg.org/anaseto/harmonist/archive/master.zip"
+  }
+}

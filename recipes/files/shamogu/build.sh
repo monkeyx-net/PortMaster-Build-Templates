@@ -7,7 +7,6 @@ ARCH="$4"
 
 
 echo ${PORT_FOLDER}
-exit 1
 
 #pwd
 #ls -lha
