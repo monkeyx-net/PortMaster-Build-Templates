@@ -1,13 +1,7 @@
 #!/bin/bash
-PORT_FOLDER="$1"
-PORT_BUILD="$2"
-PORT_EXE="$3"
-ARCH="$4"
 
-
-
-echo ${PORT_FOLDER}
-exit 1
+echo ${{ matrix.arch }}
+echo ${{ steps.parse-json.outputs.port_folder }}
 
 #pwd
 #ls -lha
