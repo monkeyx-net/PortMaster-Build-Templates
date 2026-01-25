@@ -4,60 +4,59 @@ ARG SDL_VERSION=2.32.0
 
 RUN apt-get update && \
     apt-get install -y \
-      build-essential \
-      cmake \
-      wget \
-      whiptail \
-      nano \
-      ca-certificates \
-      tar \
-      ninja-build \
-      libpng-dev \
-      zipcmp \
-      zipmerge \
-      ziptool \
-      libspdlog-dev \
-      libboost-dev \
-      libgl-dev \
-      imagemagick \
-      clang \
-      libogg-dev \
-      libvorbis-dev \
-      libopus-dev \
-      libopusfile-dev \
-      ninja-build \
-      libsdl2-dev \
-      libsdl2-image-dev \
-      libsdl2-mixer-dev \
-      libsdl2-ttf-dev \
-      libsdl1.2-dev \
-      libsdl-image1.2-dev \
-      libsdl-mixer1.2-dev \
-      libsdl-ttf2.0-dev \
-      libfuse2 \
       appstream \
-      make \
-      patchelf \
-      jq \
       autoconf \
-      autotools-dev \
       automake \
-      libtool \
-      ldc \
+      autotools-dev \
+      build-essential \
+      ca-certificates \
+      clang \
+      cmake \
+      curl \
       dub \
-      pkg-config \
-      liballegro5-dev \
+      git \
+      imagemagick \
+      jq \
+      ldc \
       liballegro-acodec5-dev \
       liballegro-audio5-dev \
       liballegro-image5-dev \
       liballegro-ttf5-dev \
-      libenet-dev \
+      liballegro5-dev \
       libarchive-tools \
-      unzip \
-      git \
-      sudo \
-      curl \
+      libboost-dev \
+      libenet-dev \
+      libfuse2 \
+      libgl-dev \
       libglm-dev \
+      libogg-dev \
+      libopus-dev \
+      libopusfile-dev \
+      libpng-dev \
+      libsdl-image1.2-dev \
+      libsdl-mixer1.2-dev \
+      libsdl-ttf2.0-dev \
+      libsdl1.2-dev \
+      libsdl2-dev \
+      libsdl2-image-dev \
+      libsdl2-mixer-dev \
+      libsdl2-ttf-dev \
+      libspdlog-dev \
+      libtool \
+      libvorbis-dev \
+      make \
+      nano \
+      ninja-build \
+      patchelf \
+      pkg-config \
+      sudo \
+      tar \
+      unzip \
+      wget \
+      whiptail \
+      zipcmp \
+      zipmerge \
+      ziptool \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \

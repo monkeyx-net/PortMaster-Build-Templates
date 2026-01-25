@@ -10,42 +10,58 @@ RUN apt-get update && \
     add-apt-repository -y ppa:longsleep/golang-backports && \
     apt-get update && \
     apt-get install -y \
-      build-essential \
-      cmake \
-      tar \
-      golang-go \
-      libsdl2-dev \
-      libsdl2-image-dev \
-      libsdl2-mixer-dev \
-      libsdl2-ttf-dev \
-      libsdl1.2-dev \
-      libsdl-image1.2-dev \
-      libsdl-mixer1.2-dev \
-      libsdl-ttf2.0-dev \
-      libfuse2 \
       appstream \
-      make \
-      patchelf \
-      jq \
       autoconf \
-      autotools-dev \
       automake \
-      libtool \
-      ldc \
+      autotools-dev \
+      build-essential \
+      ca-certificates \
+      clang \
+      clang-18 \
+      cmake \
+      curl \
       dub \
-      pkgconf \
-      liballegro5-dev \
+      git \
+      imagemagick \
+      jq \
+      ldc \
       liballegro-acodec5-dev \
       liballegro-audio5-dev \
       liballegro-image5-dev \
       liballegro-ttf5-dev \
-      libenet-dev \
+      liballegro5-dev \
       libarchive-tools \
-      unzip \
-      git \
-      sudo \
-      curl \
+      libboost-dev \
+      libenet-dev \
+      libfuse2 \
+      libgl-dev \
       libglm-dev \
+      libogg-dev \
+      libopus-dev \
+      libopusfile-dev \
+      libpng-dev \
+      libsdl-image1.2-dev \
+      libsdl-mixer1.2-dev \
+      libsdl-ttf2.0-dev \
+      libsdl1.2-dev \
+      libsdl2-dev \
+      libsdl2-image-dev \
+      libsdl2-mixer-dev \
+      libsdl2-ttf-dev \
+      libspdlog-dev \
+      libtool \
+      libvorbis-dev \
+      libzip-tools \
+      make \
+      nano \
+      ninja-build \
+      patchelf \
+      pkg-config \
+      sudo \
+      tar \
+      unzip \
+      wget \
+      whiptail \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
@@ -62,10 +78,6 @@ RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/re
 
 RUN sdl2-config --version
 
-RUN id -u builder >/dev/null 2>&1 || useradd -m -s /bin/bash builder
-RUN echo 'builder ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/builder
-
-USER builder
 WORKDIR /workspace
 
 CMD ["/bin/bash"]

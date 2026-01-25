@@ -206,21 +206,12 @@ jobs:
             -e HOME=/tmp \
             --user $(id -u):$(id -g) \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
-            /bin/bash -c "
-            set -e
-            pwd
-            ls -lha
-            cd new_ports/build/'${{ steps.parse-json.outputs.port_folder }}'
-            pwd
-            ls -lha
-            ${{ steps.parse-json.outputs.port_build }}
-            mkdir -p dist
-            cp '${{ steps.parse-json.outputs.port_exe }}' dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }}
-            strip dist/'${{ steps.parse-json.outputs.port_exe }}'.${{ matrix.arch }} || true
-            tar -czf /workspace/'${{ steps.parse-json.outputs.port_folder }}'-linux-${{ matrix.arch }}.tar.gz -C dist .
-            pwd
-            ls -lha
-            "
+            /bin/bash -e /workspace/build.sh \
+              '${{ steps.parse-json.outputs.port_folder }}' \
+              '${{ steps.parse-json.outputs.port_build }}' \
+              '${{ steps.parse-json.outputs.port_exe }}' \
+              '${{ matrix.arch }}'
+
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
