@@ -206,7 +206,7 @@ jobs:
             -e HOME=/tmp \
             --user $(id -u):$(id -g) \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
-            /bin/bash -e /workspace/build.sh \
+            /bin/bash -e recipes/'${{ steps.parse-json.outputs.port_folder }}'/build.sh \
               '${{ steps.parse-json.outputs.port_folder }}' \
               '${{ steps.parse-json.outputs.port_build }}' \
               '${{ steps.parse-json.outputs.port_exe }}' \
