@@ -216,11 +216,6 @@ jobs:
               '${{ matrix.arch }}'
             "
 
-            ls -lha
-#            /bin/bash -e recipes/'${{ steps.parse-json.outputs.port_folder }}'/build.sh \
-
-
-
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
