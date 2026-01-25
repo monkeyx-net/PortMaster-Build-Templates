@@ -17,6 +17,7 @@ RUN apt-get update && \
       build-essential \
       ca-certificates \
       clang \
+      clang-18 \
       cmake \
       curl \
       dub \
@@ -47,9 +48,9 @@ RUN apt-get update && \
       libsdl2-image-dev \
       libsdl2-mixer-dev \
       libsdl2-ttf-dev \
+      libspdlog-dev \
       libtool \
       libvorbis-dev \
-      libzip-tools \
       make \
       nano \
       ninja-build \
@@ -60,6 +61,7 @@ RUN apt-get update && \
       unzip \
       wget \
       whiptail \
+      zipmerge \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
