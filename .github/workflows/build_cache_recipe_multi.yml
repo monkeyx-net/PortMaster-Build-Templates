@@ -186,11 +186,11 @@ jobs:
 
       - name: Extract archive
         run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libarchive-tools
           cd new_ports/build/"${{ steps.parse-json.outputs.port_folder }}"
           ARCHIVE_FILE="${{ steps.download.outputs.archive_file }}"
           bsdtar -xf "$ARCHIVE_FILE" --strip-components=1
-          pwd
-          ls -lha
 
       - name: Clean up downloaded archive
         run: |
@@ -206,11 +206,19 @@ jobs:
             -e HOME=/tmp \
             --user $(id -u):$(id -g) \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
-            /bin/bash -e recipes/'${{ steps.parse-json.outputs.port_folder }}'/build.sh \
-              '${{ steps.parse-json.outputs.port_folder }}' \
-              '${{ steps.parse-json.outputs.port_build }}' \
-              '${{ steps.parse-json.outputs.port_exe }}' \
-              '${{ matrix.arch }}'
+            /bin/bash -c "
+            set -e
+            pwd
+            cat recipes/files/${{ steps.parse-json.outputs.port_folder }}/build.sh
+            "
+
+            ls -lha
+#            /bin/bash -e recipes/'${{ steps.parse-json.outputs.port_folder }}'/build.sh \
+#              '${{ steps.parse-json.outputs.port_folder }}' \
+#              '${{ steps.parse-json.outputs.port_build }}' \
+#              '${{ steps.parse-json.outputs.port_exe }}' \
+#              '${{ matrix.arch }}'
+
 
 
       - name: Upload binary artifact
