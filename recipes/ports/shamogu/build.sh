@@ -7,6 +7,9 @@ PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
 
+ls -lha /lib/aarch64-linux-gnu/
+ls -lha /usr/lib/aarch64-linux-gnu/
+
 echo ${PORT_FOLDER}
 echo ${PORT_BUILD}
 cd "new_ports/build/${PORT_FOLDER}"
