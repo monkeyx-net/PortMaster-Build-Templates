@@ -207,7 +207,7 @@ jobs:
             --user $(id -u):$(id -g) \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
             /bin/bash -c "
-            source recipes/files/${{ steps.parse-json.outputs.port_folder }}/build.sh \
+            source recipes/ports/${{ steps.parse-json.outputs.port_folder }}/build.sh \
               '${{ steps.parse-json.outputs.port_folder }}' \
               '${{ steps.parse-json.outputs.port_build }}' \
               '${{ steps.parse-json.outputs.port_exe }}' \
