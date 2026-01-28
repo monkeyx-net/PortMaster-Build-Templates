@@ -10,7 +10,7 @@ on:
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
-        default: 'recipes/files/shamogu_recipe.json'
+        default: 'recipes/ports/shamogu/recipe.json'
       sdl_version:
         description: 'Enter SDL Version required'
         required: true
