@@ -28,17 +28,7 @@ local port_url="${2}"
 local port_build="${3}"
 local port_checksum="${4}"
 local port_exe="${5}"
-local port_pre="${port_folder}_pre.sh"
-local port_build="${port_folder}_build.sh"
-local port_post="${port_folder}_post.sh"
-mkdir -p "recipes/files/${1}"
-echo '#!/bin/bash' > "recipes/files/${1}/${port_pre}"
-echo '# Use this script for pre build configuration steps' >> "recipes/files/${1}/${port_pre}"
-echo '#!/bin/bash' > "recipes/files/${1}/${port_build}"
-echo '# Use this script for build commands.' >> "recipes/files/${1}/${port_build}"
-echo '#!/bin/bash' > "recipes/files/${1}/${port_post}"
-echo '# Use this script for post build commands and getting binaries and resources ready to create artifacts' >> "recipes/files/${1}/${port_post}"
-
+mkdir -p "recipes/ports/${1}"
 
 jq -n \
   --arg port_name "${port_folder}.zip" \
@@ -48,9 +38,6 @@ jq -n \
   --arg port_build "${port_build}" \
   --arg port_checksum "${port_checksum}" \
   --arg port_exe "${port_exe}" \
-  --arg port_pre "${port_pre}" \
-  --arg port_build "${port_build}" \
-  --arg port_post "${port_post}" \
   '{
     name: $port_name,
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
@@ -59,12 +46,9 @@ jq -n \
       sha256: $port_checksum,
       port_exe: $port_exe,
       port_build: $port_build,
-      port_url: $port_url,
-      port_pre: $port_pre,
-      port_build: $port_build,
-      port_post: $port_post
+      port_url: $port_url
     }
-  }' > recipes/files/${port_folder}_recipe.json
+  }' > recipes/ports/${port_folder}/recipe.json
 
 }
 update_port_json() {
@@ -72,9 +56,6 @@ update_port_json() {
     local porter_name="${2}"
     local port_folder="${3}"
     local port_bash="${4}"
-    local port_pre="${port_folder}_pre.sh"
-    local port_build="${port_folder}_build.sh"
-    local port_post="${port_folder}_post.sh"
 
     jq --arg port_title "$port_title" \
        --arg porter_name "$porter_name" \
@@ -144,7 +125,7 @@ create_new_port () {
   read_check 'Enter build command(s): ' port_build
   create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}"
   echo -e "\nCreated recipe for ${port_folder}_recipe.json\n"
-  cat recipes/files/${port_folder}_recipe.json | jq '.'
+  cat recipes/ports/${port_folder}_recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
   tree new_ports/${port_folder}/
   echo -e "\nBefore disappearing to github. Please review the files created, add screenshots etc\n"
