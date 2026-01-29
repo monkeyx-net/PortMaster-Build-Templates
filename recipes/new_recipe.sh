@@ -100,7 +100,7 @@ create_new_port () {
   sed -i 's/zz_port/'"${port_exe}"'/g; s/zz_folder/'"${port_folder}"'/g' "new_ports/${port_folder}/${port_bash}"
   cp -r recipes/templates/port_template/zz_folder/ new_ports/${port_folder}/${port_folder}
   mv new_ports/${port_folder}/${port_folder}/zz_folder.gptk new_ports/${port_folder}/${port_folder}/${port_exe}.gptk
-  mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/${port_exe}_LICENSE.txt
+  mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/licenses/LICENSE_${port_exe}.txt
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
   while true; do
     echo "Enter URL for port code base. Must be in .zip or .tar.gz format"
@@ -124,8 +124,8 @@ create_new_port () {
   # TODO seperate build commands? shared libs?
   read_check 'Enter build command(s): ' port_build
   create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}"
-  echo -e "\nCreated recipe for ${port_folder}_recipe.json\n"
-  cat recipes/ports/${port_folder}_recipe.json | jq '.'
+  echo -e "\nCreated recipe for ${port_folder}/recipe.json\n"
+  cat recipes/ports/${port_folder}/recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
   tree new_ports/${port_folder}/
   echo -e "\nBefore disappearing to github. Please review the files created, add screenshots etc\n"

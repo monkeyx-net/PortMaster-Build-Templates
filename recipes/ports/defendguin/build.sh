@@ -39,6 +39,7 @@ ${PORT_BUILD}
 mkdir -p dist
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
+cp -r data/ dist/
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
 pwd
 ls -lha
