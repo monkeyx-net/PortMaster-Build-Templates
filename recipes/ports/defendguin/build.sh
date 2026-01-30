@@ -38,8 +38,6 @@ strip "dist/${PORT_EXE}.${ARCH}" || true
 cp -r data/ dist/
 ls -lha ${SOURCE_DIR}
 
-find / -name libfluidsynth.so.* -print
-
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"
