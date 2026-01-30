@@ -26,8 +26,8 @@ elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu/"
 fi
 
-
-
+echo ${ARCH}
+echo ${SOURCE_DIR}
 echo ${PORT_FOLDER}
 echo ${PORT_BUILD}
 cd "new_ports/build/${PORT_FOLDER}"
@@ -36,7 +36,6 @@ mkdir -p dist
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
 cp -r data/ dist/
-ls -lha ${SOURCE_DIR}
 
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
