@@ -3,62 +3,89 @@ FROM ${BASE_IMAGE}
 
 ARG SDL_VERSION=2.32.0
 
-# Install dependencies (cached layer)
 RUN apt-get update && \
-    apt-get update && \
-    apt-get install -y \
-      build-essential \
-      cmake \
-      wget \
-      tar \
-      golang-go \
-      libsdl2-dev \
-      libsdl2-image-dev \
-      libsdl2-mixer-dev \
-      libsdl2-ttf-dev \
-      libsdl1.2-dev \
-      libsdl-image1.2-dev \
-      libsdl-mixer1.2-dev \
-      libsdl-ttf2.0-dev \
-      libfuse2 \
+    apt-get install -y --no-install-recommends \
       appstream \
-      make \
-      patchelf \
-      jq \
       autoconf \
-      autotools-dev \
       automake \
-      libtool \
-      ldc \
+      autotools-dev \
+      build-essential \
+      ca-certificates \
+      clang \
+      clang-18 \
+      cmake \
+      curl \
       dub \
-      pkgconf \
-      liballegro5-dev \
+      git \
+      golang \
+      imagemagick \
+      jq \
+      ldc \
       liballegro-acodec5-dev \
       liballegro-audio5-dev \
       liballegro-image5-dev \
       liballegro-ttf5-dev \
-      libenet-dev \
+      liballegro5-dev \
       libarchive-tools \
-      unzip \
-      git \
-      sudo \
-      curl \
+      libboost-dev \
+      libenet-dev \
+      libfuse2 \
+      libgl-dev \
       libglm-dev \
+      libogg-dev \
+      libopus-dev \
+      libopusfile-dev \
+      libpng-dev \
+      libsdl-image1.2-dev \
+      libsdl-mixer1.2-dev \
+      libsdl-ttf2.0-dev \
+      libsdl1.2-dev \
+      libsdl2-dev \
+      libsdl2-image-dev \
+      libsdl2-mixer-dev \
+      libsdl2-ttf-dev \
+      libspdlog-dev \
+      libtool \
+      libvorbis-dev \
+      make \
+      nano \
+      ninja-build \
+      patchelf \
+      pkg-config \
+      sudo \
+      tar \
+      unzip \
+      wget \
+      whiptail \
+      zipmerge \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
-    tar -xzf sdl.tar.gz && \
-    mv SDL-release-${SDL_VERSION} sdl-source && \
-    cd sdl-source && \
+    mkdir sdl2 && tar -xzf sdl.tar.gz -C sdl2 --strip-components=1 && \
+    cd sdl2 && \
     mkdir -p build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
     make -j$(nproc) && \
     make install && \
     cd ../.. && \
     rm sdl.tar.gz && \
-    rm -rf sdl-source
+    rm -rf sdl2
 
 RUN sdl2-config --version
+
+RUN wget -O sdl.tar.gz https://github.com/libsdl-org/sdl12-compat/archive/refs/tags/$(curl -s https://api.github.com/repos/libsdl-org/sdl12-compat/releases/latest | jq -r '.tag_name').tar.gz && \
+    mkdir sdl12 && tar -xzf sdl.tar.gz -C sdl12 --strip-components=1 && \
+    cd sdl12 && \
+    mkdir -p build && cd build && \
+    cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu && \
+    make -j$(nproc) && \
+    make install && \
+    cd ../.. && \
+    rm sdl.tar.gz && \
+    rm -rf sdl12
+
+RUN sdl-config --version
+
 
 WORKDIR /workspace
 
