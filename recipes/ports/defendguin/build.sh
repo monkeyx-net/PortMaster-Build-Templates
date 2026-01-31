@@ -31,6 +31,8 @@ ${PORT_BUILD}
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
+
+# add if folder?
 cp -r data/ dist/
 
 # if sourcedir !null and files !null
