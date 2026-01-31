@@ -7,6 +7,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends software-properties-common wget gnupg ca-certificates && \
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
     echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C631127F87FA12D1 F6BC817356A3D45E && \
     add-apt-repository -y ppa:longsleep/golang-backports && \
     apt-get update && \
     apt-get install -y \
