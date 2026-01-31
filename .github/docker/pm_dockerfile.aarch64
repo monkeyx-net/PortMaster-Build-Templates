@@ -1,8 +1,14 @@
-ARG BASE_IMAGE=arm64v8/debian:bullseye
+ARG BASE_IMAGE=arm64v8/ubuntu:20.04
 FROM ${BASE_IMAGE}
+
 ARG SDL_VERSION=2.32.0
 
 RUN apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common wget gnupg ca-certificates && \
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    add-apt-repository -y ppa:longsleep/golang-backports && \
+    apt-get update && \
     apt-get install -y \
       appstream \
       autoconf \
@@ -11,10 +17,12 @@ RUN apt-get update && \
       build-essential \
       ca-certificates \
       clang \
+      clang-18 \
       cmake \
       curl \
       dub \
       git \
+      golang \
       imagemagick \
       jq \
       ldc \
@@ -54,64 +62,35 @@ RUN apt-get update && \
       unzip \
       wget \
       whiptail \
-      zipcmp \
       zipmerge \
-      ziptool \
       && rm -rf /var/lib/apt/lists/*
 
-RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
-    tar -xzf sdl.tar.gz && \
-    mv SDL-release-${SDL_VERSION} sdl-source && \
-    cd sdl-source && \
+RUN wget -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
+    mkdir sdl2 && tar -xzf sdl.tar.gz -C sdl2 --strip-components=1 && \
+    cd sdl2 && \
     mkdir -p build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
     make -j$(nproc) && \
     make install && \
     cd ../.. && \
     rm sdl.tar.gz && \
-    rm -rf sdl-source
+    rm -rf sdl2
 
 RUN sdl2-config --version
 
-RUN wget -q -O go.tar.gz https://go.dev/dl/go1.25.6.linux-arm64.tar.gz && \
-    tar -C /usr/local -xzf go.tar.gz && \
-    rm go.tar.gz
-
-ENV PATH="${PATH}:/usr/local/go/bin"
-
-RUN go version
-
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.3/cmake-3.31.3-linux-`uname -m`.sh
-RUN chmod a+x ./cmake-3.31.3-linux-`uname -m`.sh
-RUN ./cmake-3.31.3-linux-`uname -m`.sh --prefix=/usr/local --exclude-subdir --skip-license
-
-
-RUN git clone https://github.com/nih-at/libzip.git && \
-    cd libzip && \
-    mkdir build-soh && cd build-soh && \
+RUN wget -O sdl.tar.gz https://github.com/libsdl-org/sdl12-compat/archive/refs/tags/$(curl -s https://api.github.com/repos/libsdl-org/sdl12-compat/releases/latest | jq -r '.tag_name').tar.gz && \
+    mkdir sdl12 && tar -xzf sdl.tar.gz -C sdl12 --strip-components=1 && \
+    cd sdl12 && \
+    mkdir -p build && cd build && \
     cmake .. && \
     make -j$(nproc) && \
     make install && \
     cd ../.. && \
-    rm -rf libzip
+    rm sdl.tar.gz && \
+    rm -rf sdl12
 
-RUN git clone https://github.com/nlohmann/json.git && \
-    cd json && \
-    mkdir build-soh && cd build-soh && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && \
-    rm -rf json
-
-RUN git clone https://github.com/libarchive/bzip2.git && \
-    cd bzip2 && \
-    mkdir build-soh && cd build-soh && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && \
-    rm -rf bzip2
+RUN sdl-config --version
 
 WORKDIR /workspace
+
 CMD ["/bin/bash"]
