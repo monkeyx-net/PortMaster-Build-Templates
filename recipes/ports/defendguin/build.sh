@@ -20,7 +20,7 @@ FILES=(
 )
 
 
-if [[ ${ARCH} ==  "aarch64" ]] || [[ "${ARCH}" == "20.04.aarch64" ]]; then
+if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
 elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu/"
