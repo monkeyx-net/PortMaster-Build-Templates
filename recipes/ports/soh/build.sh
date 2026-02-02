@@ -39,6 +39,17 @@ else
     export CXX=clang++-18
 fi
 
+
+
+git clone https://github.com/nih-at/libzip.git
+cd libzip
+git checkout 0581df510597b46c28509e9d4b5998cf5fecb636
+mkdir build-soh && cd build-soh
+cmake ..
+make -j8
+make install
+cd ../..
+
 mkdir build-soh && cd build-soh
 cmake .. -GNinja -DUSE_OPENGLES=1 \
  -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
