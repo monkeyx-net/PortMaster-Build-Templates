@@ -17,6 +17,7 @@ FILES=(
     "libSDL_mixer-1.2.so.0"
     "libSDL-1.2.so.0"
     "libtinfo.so.6"
+    "libFLAC.so.8"
 )
 
 
