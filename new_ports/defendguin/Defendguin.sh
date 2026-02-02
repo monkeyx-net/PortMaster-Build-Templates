@@ -22,6 +22,7 @@ GAMEDIR=/$directory/ports/defendguin
 exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
+controls/constrols.${DEVICE_ARCH} controls/controls.png
 # Needed if config data binding to the conf folder
 bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
 # Needed if any extra libs addded.
