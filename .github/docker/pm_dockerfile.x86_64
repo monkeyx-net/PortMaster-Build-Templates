@@ -33,6 +33,7 @@ RUN apt-get update && \
       libgl-dev \
       libglm-dev \
       libogg-dev \
+      libopengl-dev \
       libopus-dev \
       libopusfile-dev \
       libpng-dev \
@@ -47,6 +48,7 @@ RUN apt-get update && \
       libspdlog-dev \
       libtool \
       libvorbis-dev \
+      lsb-release \
       make \
       nano \
       ninja-build \
@@ -57,7 +59,9 @@ RUN apt-get update && \
       unzip \
       wget \
       whiptail \
+      zipcmp \
       zipmerge \
+      ziptool \
       && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
