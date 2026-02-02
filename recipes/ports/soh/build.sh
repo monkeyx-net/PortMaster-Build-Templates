@@ -20,47 +20,6 @@ elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu/"
 fi
 
-cd "new_ports/build/${PORT_FOLDER}"
-git clone https://github.com/nih-at/libzip.git
-cd libzip
-git checkout 0581df510597b46c28509e9d4b5998cf5fecb636
-mkdir build-soh && cd build-soh
-cmake ..
-make -j8
-make install
-cd ../..
-
-git clone https://github.com/nlohmann/json.git
-cd json
-git checkout f3dc4684b40a124cabc8554967c2cd8db54f15dd
-mkdir build-soh && cd build-soh
-cmake ..
-make -j8
-make install
-cd ../..
-
-git clone https://github.com/libarchive/bzip2.git
-cd bzip2
-git checkout 1ea1ac188ad4b9cb662e3f8314673c63df95a589
-mkdir build-soh && cd build-soh
-cmake ..
-make -j8
-make install
-cd ../..
-
-git clone https://github.com/leethomason/tinyxml2.git
-cd tinyxml2
-git checkout 57ec94127bda7979282315b7d4b0059eeb6f3b5d
-git checkout .
-mkdir build-soh && cd build-soh
-cmake -DBUILD_SHARED_LIBS=ON ..
-make -j8
-make install
-
-# prevent this file being found by cmake when SoH is compiled
-cd ..
-mv cmake/tinyxml2-config.cmake cmake/tinyxml2-config.cmake.disabled
-cd ..
 
 #### SoH ####
 git clone https://github.com/HarbourMasters/Shipwright.git
