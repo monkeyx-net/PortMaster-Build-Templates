@@ -35,6 +35,8 @@ strip "dist/${PORT_EXE}.${ARCH}" || true
 # add if folder?
 cp -r data/ dist/
 
+#get license file
+
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"

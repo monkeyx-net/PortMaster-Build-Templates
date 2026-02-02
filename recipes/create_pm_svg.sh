@@ -5,7 +5,7 @@ extract_buttons_from_file() {
     unset button_mapping
     declare -gA button_mapping
 
-    buttons=(A B X Y L1 L2 R1 R2)
+    buttons=(A B X Y L1 L2 R1 R2 SELECT START)
     for button in "${buttons[@]}"; do
         button_mapping["$button"]="n/a"
     done
@@ -14,20 +14,17 @@ extract_buttons_from_file() {
         if [[ "$line" =~ ^\|\ +([A-Z0-9]+)\ +\|\ +([^|]+)\ +\| ]]; then
             button="${BASH_REMATCH[1]}"
             action="${BASH_REMATCH[2]}"
-            if [[ "$button" =~ ^(A|B|X|Y|L1|L2|R1|R2)$ ]]; then
+            if [[ "$button" =~ ^(A|B|X|Y|L1|L2|R1|R2|SELECT|START)$ ]]; then
                 action=$(echo "$action" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
                 button_mapping["$button"]="$action"
-                # echo "Button $button maps to: $action"
+                #echo "Button $button maps to: $action"
             fi
         fi
     done < "${readme}"
-
-    show_button_mappings() {
     echo "=== Button Mappings ==="
     for button in "${buttons[@]}"; do
         printf "%-3s : %s\n" "$button" "${button_mapping[$button]}"
     done
-    }
     export buttons
     export button_mapping
     return 0
@@ -76,8 +73,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-
-
 # Check if files exist
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "Error: Config file $CONFIG_FILE not found!"
@@ -101,13 +96,16 @@ OUTPUT_FILE=$CONFIG_BASENAME.svg
 extract_buttons_from_file $README_FILE
 for button in "${buttons[@]}"; do
     case $button in
-         L1|L2|R1|R2|A|B|X|Y)
+         L1|L2|R1|R2|A|B|X|Y|SELECT|START)
             if [[ ${#button} -eq 1 ]]; then
                 # Single-character buttons: A, B, X, Y
                 placeholder="Z${button}D1"
-            else
+            elif [[ ${#button} -eq 2 ]]; then
                 # Two-character buttons: L1, L2, R1, R2
                 placeholder="Z${button:0:1}D${button:1:1}"
+            else
+                # Longer buttons: SELECT, START
+                placeholder="Z${button}"
             fi
             replacement="${button_mapping[$button]//\//\\/}"
             content=$(echo "$content" | sed "s/$placeholder/$replacement/g")
@@ -123,16 +121,16 @@ while IFS='=' read -r key value; do
     fi
     zkey=$(echo "$key" | tr '[:lower:]' '[:upper:]')
     case $key in
-        "back")
-            content=$(echo "$content" | sed "s/ZSELECT/${value}/g")
+        "select")
+            content=$(echo "$content" | sed "s/ZSELECT/${zkey}/g")
             content=$(echo "$content" | sed "s/ZTITLE/$TITLE/g")
             ;;
         "start")
-            content=$(echo "$content" | sed "s/ZSTART/${value}/g")
+            content=$(echo "$content" | sed "s/ZSTART/${zkey}/g")
             ;;
         "a"|"b"|"x"|"y"|"up"|"down"|"left"|"right"|"l1"|"l2"|"r1"|"r2")
-            content=$(echo "$content" | sed "s/Z${zkey}/${value}/g")
-            #content=$(echo "$content" | sed "s/${zkey} - Z${zkey} -/${zkey} - ${value} -/g")
+            content=$(echo "$content" | sed "s/Z${zkey}/${zkey}/g")
+           #content=$(echo "$content" | sed "s/${zkey} - Z${zkey} -/${zkey} - ${value} -/g")
             ;;
     esac
 done < "$CONFIG_FILE"

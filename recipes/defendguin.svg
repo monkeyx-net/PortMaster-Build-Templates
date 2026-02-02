@@ -80,7 +80,7 @@
            sodipodi:role="line"
            id="tspan16"
            x="-121.75633"
-           y="5.913044">ZY-ZYD1</tspan></text>
+           y="5.913044">Y-Reverse</tspan></text>
       <text
          x="-67.951988"
          y="3.1956522"
@@ -116,7 +116,7 @@
            sodipodi:role="line"
            id="tspan13"
            x="-5.5962281"
-           y="-56.395321">ZX-ZXD1</tspan></text>
+           y="-56.395321">X-Boost</tspan></text>
       <text
          x="-12.661446"
          y="-54.764885"
@@ -167,7 +167,7 @@
            id="tspan18"
            x="-24.097124"
            y="53.191708"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.33329968px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.941917;fill:#000000">ZB-ZBD1</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.33329968px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.941917;fill:#000000">B-Smart Bomb</tspan></text>
     </g>
     <g
        id="a_button">
@@ -191,7 +191,7 @@
            sodipodi:role="line"
            id="tspan20"
            x="35.218632"
-           y="10.557495">ZA-ZAD1</tspan></text>
+           y="10.557495">A-Fire</tspan></text>
       <text
          x="42.967133"
          y="8.3445292"
@@ -230,7 +230,7 @@
          sodipodi:role="line"
          id="tspan74"
          x="-19.177847"
-         y="-59.257156">ZUP</tspan></text>
+         y="-59.257156">UP</tspan></text>
     <text
        x="-34.449242"
        y="71.78344"
@@ -242,7 +242,7 @@
          sodipodi:role="line"
          id="tspan71"
          x="-34.449242"
-         y="71.78344">ZDOWN</tspan></text>
+         y="71.78344">DOWN</tspan></text>
     <text
        x="-95.563568"
        y="8.2072887"
@@ -254,7 +254,7 @@
          sodipodi:role="line"
          id="tspan72"
          x="-95.563568"
-         y="8.2072887">ZLEFT</tspan></text>
+         y="8.2072887">LEFT</tspan></text>
     <text
        x="44.226238"
        y="8.3494701"
@@ -266,7 +266,7 @@
          sodipodi:role="line"
          id="tspan70"
          x="44.226238"
-         y="8.3494701">ZRIGHT</tspan></text>
+         y="8.3494701">RIGHT</tspan></text>
     <circle
        cx="0"
        cy="0"
@@ -319,7 +319,7 @@
          sodipodi:role="line"
          id="tspan69"
          x="37.526287"
-         y="5.1597533">ZRIGHT</tspan></text>
+         y="5.1597533">RIGHT</tspan></text>
     <text
        x="-18.727583"
        y="-48.976883"
@@ -331,7 +331,7 @@
          sodipodi:role="line"
          id="tspan66"
          x="-18.727583"
-         y="-48.976883">ZUP</tspan></text>
+         y="-48.976883">UP</tspan></text>
     <text
        x="-36.201317"
        y="72.710716"
@@ -343,7 +343,7 @@
          sodipodi:role="line"
          id="tspan68"
          x="-36.201317"
-         y="72.710716">ZDOWN</tspan></text>
+         y="72.710716">DOWN</tspan></text>
     <text
        x="-87.141457"
        y="132.11467"
@@ -368,7 +368,7 @@
          sodipodi:role="line"
          id="tspan67"
          x="-109.21542"
-         y="4.0444479">ZLEFT</tspan></text>
+         y="4.0444479">LEFT</tspan></text>
   </g>
   <!-- Button labels with keyboard mappings -->
   <g
@@ -413,7 +413,7 @@
          sodipodi:role="line"
          id="tspan4"
          x="-105.46724"
-         y="7.1105537">ZLEFT</tspan></text>
+         y="7.1105537">LEFT</tspan></text>
     <text
        x="-60.7243"
        y="8.5972738"
@@ -436,7 +436,7 @@
          sodipodi:role="line"
          id="tspan6"
          x="-38.513802"
-         y="56.159611">ZDOWN</tspan></text>
+         y="56.159611">DOWN</tspan></text>
     <text
        x="30.580051"
        y="55.336403"
@@ -470,7 +470,7 @@
          sodipodi:role="line"
          id="tspan8"
          x="-17.892529"
-         y="-48.085712">ZUP</tspan></text>
+         y="-48.085712">UP</tspan></text>
     <text
        x="98.514832"
        y="4.2494459"
@@ -493,7 +493,7 @@
          sodipodi:role="line"
          id="tspan2"
          x="37.645267"
-         y="9.1407499">ZRIGHT</tspan></text>
+         y="9.1407499">RIGHT</tspan></text>
     <text
        x="-102.68648"
        y="90.860199"
@@ -546,7 +546,7 @@
          sodipodi:role="line"
          id="tspan54"
          x="37.417061"
-         y="54.952606">ZSELECT</tspan></text>
+         y="54.952606">Back</tspan></text>
   </g>
   <!-- START button with mapping -->
   <g
@@ -581,7 +581,7 @@
          sodipodi:role="line"
          id="tspan53"
          x="15.947867"
-         y="60.758293">ZSTART</tspan></text>
+         y="60.758293">Start</tspan></text>
   </g>
   <!-- Left analog stick mappings -->
   <!-- Right analog stick mappings -->
@@ -610,7 +610,7 @@
          sodipodi:role="line"
          id="tspan27"
          x="922.45465"
-         y="41.294048">ZRD2</tspan></text>
+         y="41.294048">n/a</tspan></text>
     <text
        x="937.67206"
        y="36.946224"
@@ -647,7 +647,7 @@
          sodipodi:role="line"
          id="tspan29"
          x="923.59564"
-         y="42.63858">ZRD1</tspan></text>
+         y="42.63858">n/a</tspan></text>
     <text
        x="956.74786"
        y="36.660316"
@@ -686,7 +686,7 @@
          sodipodi:role="line"
          id="tspan26"
          x="221.13849"
-         y="41.780861">ZLD2</tspan></text>
+         y="41.780861">n/a</tspan></text>
     <text
        x="234.72545"
        y="34.715645"
@@ -725,7 +725,7 @@
          sodipodi:role="line"
          id="tspan23"
          x="66.327019"
-         y="60.885025">ZLD1</tspan></text>
+         y="60.885025">Pause</tspan></text>
     <text
        x="97.305283"
        y="53.819805"
@@ -804,13 +804,13 @@
          sodipodi:role="line"
          id="tspan36">Face Buttons:-</tspan><tspan
          sodipodi:role="line"
-         id="tspan37">A - ZAD1</tspan><tspan
+         id="tspan37">A - Fire</tspan><tspan
          sodipodi:role="line"
-         id="tspan38">B - ZBD1</tspan><tspan
+         id="tspan38">B - Smart Bomb</tspan><tspan
          sodipodi:role="line"
-         id="tspan39">X - ZXD1</tspan><tspan
+         id="tspan39">X - Boost</tspan><tspan
          sodipodi:role="line"
-         id="tspan40">Y - ZYD1</tspan></text>
+         id="tspan40">Y - Reverse</tspan></text>
     <text
        x="320.1087"
        y="265.97827"
@@ -823,13 +823,13 @@
          sodipodi:role="line"
          id="tspan41">Shoulder Buttons:-</tspan><tspan
          sodipodi:role="line"
-         id="tspan42">L1 - ZLD1</tspan><tspan
+         id="tspan42">L1 - Pause</tspan><tspan
          sodipodi:role="line"
-         id="tspan43">L2 - ZLD2</tspan><tspan
+         id="tspan43">L2 - n/a</tspan><tspan
          sodipodi:role="line"
-         id="tspan44">R1 - ZRD1</tspan><tspan
+         id="tspan44">R1 - n/a</tspan><tspan
          sodipodi:role="line"
-         id="tspan45">R2 - ZRD2</tspan></text>
+         id="tspan45">R2 - n/a</tspan></text>
     <text
        x="319.56525"
        y="224.78259"
@@ -851,7 +851,7 @@
          sodipodi:role="line"
          id="tspan31"
          x="320.13705"
-         y="187.92447">Analog: ↑=ZUP ↓=ZDOWN ←=ZLEFT →=ZRIGHT</tspan></text>
+         y="187.92447">Analog: ↑=UP ↓=DOWN ←=LEFT →=RIGHT</tspan></text>
     <text
        x="322.31094"
        y="157.15331"
@@ -862,7 +862,7 @@
        inkscape:label="dpad"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.6667px;font-family:Monospace;-inkscape-font-specification:'Monospace, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a0e0a0"><tspan
          sodipodi:role="line"
-         id="tspan32">D-Pad : ↑=ZUP ↓=ZDOWN ←=ZLEFT →=ZRIGHT</tspan></text>
+         id="tspan32">D-Pad : ↑=UP ↓=DOWN ←=LEFT →=RIGHT</tspan></text>
     <text
        x="588.38861"
        y="83.672989"
@@ -873,6 +873,6 @@
        id="main_title"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.3333px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:middle;fill:#ffffff"><tspan
          sodipodi:role="line"
-         id="tspan11">PortMaster - Button Mappings for ZTITLE</tspan></text>
+         id="tspan11">PortMaster - Button Mappings for Defendguin</tspan></text>
   </g>
 </svg>

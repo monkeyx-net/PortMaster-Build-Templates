@@ -7,7 +7,9 @@ Thanks to [New Breed Software](http://www.newbreedsoftware.com/) for creating th
 |--|--|
 | Dpad | Move |
 | Left Analog | Move|
-| Right Analog | Run |
+| Right Analog | Move |
+| SELECT | Back |
+| START | Start |
 | A | Fire |
 | B | Smart Bomb |
 | X | Boost |
