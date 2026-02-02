@@ -41,8 +41,7 @@ fi
 
 
 mkdir build-soh && cd build-soh
-cmake .. -GNinja -DUSE_OPENGLES=1 \
- -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
+cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
 cmake --build . -j8
 
 cmake --build . --target GenerateSohOtr -j8
