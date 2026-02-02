@@ -131,8 +131,8 @@ RUN git clone https://github.com/leethomason/tinyxml2.git && \
     mkdir build-soh && cd build-soh && \
     cmake .. && \
     make -j$(nproc) && \
-    make install
-    cd ..
+    make install && \
+    cd .. && \
     mv cmake/tinyxml2-config.cmake cmake/tinyxml2-config.cmake.disabled
 
 WORKDIR /workspace
