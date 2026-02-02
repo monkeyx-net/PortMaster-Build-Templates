@@ -49,9 +49,9 @@ cmake --build . --target GenerateSohOtr -j8
 
 
 mkdir -p dist/libs.${ARCH}
-cp "${PORT_EXE}" "dist/${PORT_EXE}.elf.${ARCH}"
-strip "dist/${PORT_EXE}.elf.${ARCH}" || true
-cp "${PORT_EXE}.o2r" "dist/"
+cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
+#strip "dist/${PORT_EXE}.elf.${ARCH}" || true
+cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
 mkdir -p ./assets/extractor
 cp "Shipwright/build-soh/ZAPD/ZAPD.out" dist/assets/extractor/ZAPD.out
 
