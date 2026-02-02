@@ -1,0 +1,11 @@
+{
+  "name": "soh.zip",
+  "port_json": "new_ports/soh/soh/port.json",
+  "source": {
+    "date_updated": "2026-02-02",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "port_exe": "soh",
+    "port_build": "cmake",
+    "port_url": "https://github.com/HarbourMasters/Shipwright/archive/refs/tags/9.1.2.zip"
+  }
+}
