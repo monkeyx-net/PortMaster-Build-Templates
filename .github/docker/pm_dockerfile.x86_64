@@ -48,6 +48,7 @@ RUN apt-get update && \
       libspdlog-dev \
       libtool \
       libvorbis-dev \
+      libzip-dev \
       lsb-release \
       make \
       nano \
