@@ -85,7 +85,7 @@ RUN wget -O sdl.tar.gz https://github.com/libsdl-org/sdl12-compat/archive/refs/t
     cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
     make -j$(nproc) && \
     make install && \
-    cp /usr/bin/sdl-config /usr/local/bin/
+    cp /usr/bin/sdl-config /usr/local/bin/ && \
     cd ../.. && \
     rm sdl.tar.gz && \
     rm -rf sdl12
