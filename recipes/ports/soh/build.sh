@@ -46,7 +46,7 @@ cmake --build . -j8
 
 cmake --build . --target GenerateSohOtr -j8
 
-cd ..
+cd ../..
 
 mkdir -p dist/libs.${ARCH}
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
