@@ -16,7 +16,6 @@ RUN apt-get update && \
       autotools-dev \
       build-essential \
       ca-certificates \
-      clang \
       clang-18 \
       cmake \
       curl \
@@ -36,6 +35,9 @@ RUN apt-get update && \
       libenet-dev \
       libfuse2 \
       libgl-dev \
+      libgl1-mesa-dev \
+      libegl1-mesa-dev \
+      libgles2-mesa-dev \
       libglm-dev \
       libogg-dev \
       libopengl-dev \
