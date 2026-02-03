@@ -41,6 +41,7 @@ RUN apt-get update && \
       libopengl-dev \
       libopus-dev \
       libopusfile-dev \
+      libpkgconf-dev \
       libpng-dev \
       libsdl-image1.2-dev \
       libsdl-mixer1.2-dev \
