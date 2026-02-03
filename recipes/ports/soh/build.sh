@@ -59,7 +59,7 @@ mkdir -p dist/libs.${ARCH}
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 #strip "dist/${PORT_EXE}.elf.${ARCH}" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-mkdir -p ./assets/extractor
+mkdir -p dist/assets/extractor
 cp "Shipwright/build-soh/ZAPD/ZAPD.out" dist/assets/extractor/ZAPD.out
 
 
