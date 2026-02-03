@@ -42,9 +42,16 @@ fi
 
 mkdir build-soh && cd build-soh
 cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
+pwd
+echo "500 build?"
+ls -lha
 cmake --build . -j8
+echo "600 build?"
+ls -lha
 
 cmake --build . --target GenerateSohOtr -j8
+echo "1500 build?"
+ls -lha
 
 cd ../..
 
