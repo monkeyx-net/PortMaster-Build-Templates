@@ -65,7 +65,7 @@ mkdir assets_zip
 cp -r "Shipwright/soh/assets/extractor" assets_zip
 cp -r "Shipwright/soh/assets/xml" assets_zip
 cd assets_zip
-zip -r ../extractor.zip ./*
+zip -r ../dist/extractor.zip ./*
 cd ..
 rm -rf assets_zip
 
