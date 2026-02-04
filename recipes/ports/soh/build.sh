@@ -61,11 +61,12 @@ cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
 mkdir -p dist/assets/extractor
 cp "Shipwright/build-soh/ZAPD/ZAPD.out" dist/assets/extractor/ZAPD.out
+cd assets
 mkdir assets_zip
 cp -r "Shipwright/soh/assets/extractor" assets_zip
 cp -r "Shipwright/soh/assets/xml" assets_zip
 cd assets_zip
-zip -r ../dist/extractor.zip ./*
+zip -r ../extractor.zip ./*
 cd ..
 rm -rf assets_zip
 
