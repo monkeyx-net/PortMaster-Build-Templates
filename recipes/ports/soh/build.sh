@@ -6,13 +6,13 @@ PORT_FOLDER="$1"
 PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
-DEST_DIR="dist/libs.${ARCH}"
 FILES=(
   "libz.so.1"
   "libpng16.so.16"
   "libspdlog.so.[0-9]*"
 )
 CDIR=$(pwd)
+DEST_DIR="${CDIR}/dist/libs.${ARCH}"
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
