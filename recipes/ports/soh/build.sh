@@ -12,7 +12,7 @@ FILES=(
   "libpng16.so.16"
   "libspdlog.so.1"
 )
-CDIR=pwd
+CDIR=$(pwd)
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
