@@ -9,11 +9,14 @@ ARCH="$4"
 # needs file.arch?
 FILES=(
   "libz.so.1"
+  "libz2.so.1"
   "libopus.so.0"
   "libogg.so.0"
   "libpng16.so.16"
   "libspdlog.so.1"
   "libspdlog.so.1.12"
+  "libzip.so.5"
+  "libtinyxml2.so.10"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
@@ -23,7 +26,6 @@ if [[ ${ARCH} ==  "aarch64" ]]; then
 elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
-
 
 #### SoH ####
 git clone https://github.com/HarbourMasters/Shipwright.git
