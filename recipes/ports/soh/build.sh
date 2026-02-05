@@ -12,7 +12,7 @@ FILES=(
   "libpng16.so.16"
   "libspdlog.so.1"
 )
-
+CDIR=pwd
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
@@ -55,17 +55,18 @@ ls -lha
 
 cd ../..
 mkdir -p dist/assets
+ls -lha Shipwright/build-soh/soh/
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
 cp "Shipwright/build-soh/ZAPD/ZAPD.out" "Shipwright/soh/assets/extractorZAPD.out"
-
+ls -lha dist/
 cd dist/assets
 mkdir assets_zip
-cp -r "Shipwright/soh/assets/extractor" assets_zip/
-cp -r "Shipwright/soh/assets/xml" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/extractor" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/xml" assets_zip/
 cd assets_zip
-zip -r ../dist/assets/extractor.zip ./*
+zip -r ../assets/extractor.zip ./*
 cd ..
 rm -rf assets_zip
 
