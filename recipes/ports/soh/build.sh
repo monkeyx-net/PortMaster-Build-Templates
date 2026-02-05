@@ -10,7 +10,7 @@ DEST_DIR="dist/libs.${ARCH}"
 FILES=(
   "libz.so.1"
   "libpng16.so.16"
-  "libspdlog.so.1"
+  "libspdlog.so.[0-9]*"
 )
 CDIR=$(pwd)
 
@@ -54,7 +54,7 @@ echo "1500 build?"
 ls -lha
 
 cd ../..
-mkdir -p dist/assets
+mkdir -p ${CDIR}/dist/assets
 ls -lha Shipwright/build-soh/soh/
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
@@ -66,19 +66,19 @@ mkdir assets_zip
 cp -r "${CDIR}/Shipwright/soh/assets/extractor" assets_zip/
 cp -r "${CDIR}/Shipwright/soh/assets/xml" assets_zip/
 cd assets_zip
-zip -r ../assets/extractor.zip ./*
+zip -r ../extractor.zip ./*
 cd ..
 rm -rf assets_zip
 
 #get license file
 
-mkdir -p dist/libs.${ARCH}
+mkdir -p ${CDIR}/dist/libs.${ARCH}
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"
 done
 
 
-tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
+tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C ${CDIR}/dist .
 pwd
 ls -lha
