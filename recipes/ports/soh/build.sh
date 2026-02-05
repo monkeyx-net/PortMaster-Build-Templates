@@ -6,10 +6,12 @@ PORT_FOLDER="$1"
 PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
+# needs file.arch?
 FILES=(
   "libz.so.1"
   "libpng16.so.16"
-  "libspdlog.so.[0-9]*"
+  "libspdlog.so.1"
+  "libspdlog.so.12"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
@@ -39,20 +41,10 @@ else
     export CXX=clang++-18
 fi
 
-
 mkdir build-soh && cd build-soh
 cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
-pwd
-echo "500 build?"
-ls -lha
 cmake --build . -j8
-echo "600 build?"
-ls -lha
-
 cmake --build . --target GenerateSohOtr -j8
-echo "1500 build?"
-ls -lha
-
 cd ../..
 mkdir -p ${CDIR}/dist/assets
 ls -lha Shipwright/build-soh/soh/
@@ -75,7 +67,7 @@ rm -rf assets_zip
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
-    cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"
+    cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
 
 
