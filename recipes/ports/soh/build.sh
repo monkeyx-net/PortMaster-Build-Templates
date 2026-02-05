@@ -55,13 +55,13 @@ ls -lha
 
 cd ../..
 
-mkdir -p dist/libs.${ARCH}
+strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
-#strip "dist/${PORT_EXE}.elf.${ARCH}" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-mkdir -p dist/assets/extractor
-cp "Shipwright/build-soh/ZAPD/ZAPD.out" dist/assets/extractor/ZAPD.out
-cd assets
+cp "Shipwright/build-soh/ZAPD/ZAPD.out" "Shipwright/soh/assets/extractorZAPD.out"
+
+mkdir -p dist/assets
+cd dist/assets
 mkdir assets_zip
 cp -r "Shipwright/soh/assets/extractor" assets_zip/
 cp -r "Shipwright/soh/assets/xml" assets_zip/
@@ -72,6 +72,7 @@ rm -rf assets_zip
 
 #get license file
 
+mkdir -p dist/libs.${ARCH}
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"
