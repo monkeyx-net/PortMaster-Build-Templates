@@ -54,13 +54,12 @@ echo "1500 build?"
 ls -lha
 
 cd ../..
-
+mkdir -p dist/assets
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
 cp "Shipwright/build-soh/ZAPD/ZAPD.out" "Shipwright/soh/assets/extractorZAPD.out"
 
-mkdir -p dist/assets
 cd dist/assets
 mkdir assets_zip
 cp -r "Shipwright/soh/assets/extractor" assets_zip/
