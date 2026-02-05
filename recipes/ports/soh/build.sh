@@ -11,7 +11,7 @@ FILES=(
   "libz.so.1"
   "libpng16.so.16"
   "libspdlog.so.1"
-  "libspdlog.so.12"
+  "libspdlog.so.1.12"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
