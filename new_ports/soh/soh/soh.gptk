@@ -1,34 +1,49 @@
-back = esc
-start = enter
+###########################
+#DEFAULT KEYBOARD CONTROLS#
+###########################
+# A = X
+# B = C
+# L = E
+# R = R
+# Z = Z
+# D-PAD UP = T
+# D-PAD DOWN = G
+# D-PAD LEFT = F
+# D-PAD RIGHT = H
+# ANALOG = WASD
+# C-BUTTONS = UP/DOWN/LEFT/RIGHT
+# START = SPACE
 
-a = e
-b = i
-x = x
-y = y
+guide = \"
+back = \"
+start = \"
+up = \"
+down = \"
+left = \"
+right = \"
 
-l1 = m
-l2 = space
-r1 = o
-r2 = W
+a = \"
+a_hk = right
+b = \"
+b_hk = down
+y = \"
+y_hk = left
+x = \"
+x_hk = up
 
-up = k
-down = j
-left = h
-right = l
+l1 = \"
+l2 = \"
+r1 = \"
+r2 = \"
 
-left_analog_up = k
-left_analog_down = j
-left_analog_left = h
-left_analog_right = l
+l3 = \"
+r3 = tab
 
-right_analog_up = k
-right_analog_down = j
-right_analog_left = h
-right_analog_right = l
-
-deadzone_mode = scaled_radial
-deadzone = 2000
-deadzone_scale = 8
-deadzone_delay = 16 
-mouse_scale = 512
-mouse_delay = 16
+left_analog_up = \"
+left_analog_down = \"
+left_analog_left = \"
+left_analog_right = \"
+right_analog_up = \"
+right_analog_down = \"
+right_analog_left = \"
+right_analog_right = \"
