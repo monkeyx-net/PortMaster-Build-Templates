@@ -9,6 +9,8 @@ ARCH="$4"
 # needs file.arch?
 FILES=(
   "libz.so.1"
+  "libopus.so.0"
+  "libogg.so.0"
   "libpng16.so.16"
   "libspdlog.so.1"
   "libspdlog.so.1.12"

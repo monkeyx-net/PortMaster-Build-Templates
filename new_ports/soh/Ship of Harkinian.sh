@@ -13,20 +13,101 @@ else
 fi
 
 source $controlfolder/control.txt
-
 [ -f "${controlfolder}/mod_${CFW_NAME}.txt" ] && source "${controlfolder}/mod_${CFW_NAME}.txt"
 get_controls
 
-GAMEBINARY=soh
-GAMEDIR=/$directory/ports/soh
-exec > >(tee "$GAMEDIR/log.txt") 2>&1
+# Set variables
+GAMEDIR="/$directory/ports/soh"
 
+# Exports
+export LD_LIBRARY_PATH="$GAMEDIR/libs":$LD_LIBRARY_PATH
+export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
+
+# CD and set log
 cd $GAMEDIR
-# Needed if config data binding to the conf folder
-#bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
-# Needed if any extra libs addded.
-#export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+$ESUDO chmod +x "$GAMEDIR/soh.elf"
+$ESUDO chmod +x "$GAMEDIR/assets/otrgen"
 
-$GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
-SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH}
+# Close the menu if open
+sed -i 's/"Menu": *1/"Menu": 0/' shipofharkinian.json
+
+# -------------------- BEGIN FUNCTIONS --------------------
+
+# Check imgui.ini and modify if needed
+imgui_reset() {
+    input_file="imgui.ini"
+    temp_file="imgui_temp.ini"
+    skip_section=0
+    # Loop through each line in the input file
+    while IFS= read -r line; do
+        # Check if the line is a window header
+        if [[ "$line" =~ ^\[Window\]\[Main\ Game\] || "$line" =~ ^\[Window\]\[Main\ -\ Deck\] ]]; then
+            skip_section=1  # Set the flag to skip modifications for this section
+        elif [[ "$line" =~ ^\[Window\] ]]; then
+            skip_section=0  # Reset the flag for other windows
+        fi
+
+        # Modify Pos and Size only if the current section is not skipped
+        if [[ $skip_section -eq 0 ]]; then
+            if [[ "$line" =~ ^Pos=.* ]]; then
+                echo "Pos=30,30" >> "$temp_file"
+            elif [[ "$line" =~ ^Size=.* ]]; then
+                echo "Size=400,300" >> "$temp_file"
+            else
+                echo "$line" >> "$temp_file"
+            fi
+        else
+            # If skipping, write the line unchanged
+            echo "$line" >> "$temp_file"
+        fi
+    done < "$input_file"
+
+    # Replace the original file with the modified one
+    mv "$temp_file" "$input_file"
+}
+
+otr_check() {
+    if [ ! -f "oot.o2r" ] || [ ! -f "oot-mq.o2r" ]; then
+        # Ensure we have a rom file before attempting to generate otr
+        if ls "$GAMEDIR/baseroms/"*.*64 1> /dev/null 2>&1; then
+            if [ -f "$controlfolder/utils/patcher.txt" ]; then
+                export PATCHER_FILE="$GAMEDIR/assets/otrgen"
+                export PATCHER_GAME="$(basename "${0%.*}")"
+                export PATCHER_TIME="5 to 10 minutes"
+                export controlfolder
+                export DEVICE_ARCH
+                source "$controlfolder/utils/patcher.txt"
+                $ESUDO kill -9 $(pidof gptokeyb)
+            else
+                pm_message "This port requires the latest version of PortMaster."
+            fi
+        else
+            echo "Missing ROM files! Can't generate o2r!"
+        fi
+
+        # Check if OTR files were generated
+        if [ ! -f "oot.o2r" ] && [ ! -f "oot-mq.o2r" ]; then
+            echo "No o2r files, can't run the game!"
+            exit 1
+        fi
+    fi
+}
+
+# --------------------- END FUNCTIONS ---------------------
+
+# Perform functions
+otr_check
+
+if [ -f "imgui.ini" ]; then
+    imgui_reset
+fi
+
+# Run the game
+$GPTOKEYB "soh.elf" -c "soh.gptk" &
+pm_platform_helper "soh.elf" >/dev/null
+./soh.elf
+
+# Cleanup
+rm -rf "$GAMEDIR/logs/"
 pm_finish
