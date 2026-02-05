@@ -15,9 +15,9 @@ CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
-  SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
+  SOURCE_DIR="/usr/lib/aarch64-linux-gnu"
 elif [[ ${ARCH} == "x86_64" ]]; then
-  SOURCE_DIR="/usr/lib/x86_64-linux-gnu/"
+  SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
 
 
