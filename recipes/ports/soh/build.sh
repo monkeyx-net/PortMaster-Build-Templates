@@ -59,7 +59,7 @@ cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/Shipwright/soh/assets/extractor
 ls -lha dist/
 cd dist/assets
 mkdir assets_zip
-cp -r "${CDIR}/Shipwright/soh/assets/extractor/" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/extractor/extractor/" assets_zip/
 cp -r "${CDIR}/Shipwright/soh/assets/xml/" assets_zip/
 cd assets_zip
 zip -r ../extractor.zip ./*
