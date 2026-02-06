@@ -50,16 +50,16 @@ cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Rel
 cmake --build . -j8
 cmake --build . --target GenerateSohOtr -j8
 cd ../..
-mkdir -p ${CDIR}/dist/assets
+mkdir -p ${CDIR}/dist/assets/extractor
 ls -lha Shipwright/build-soh/soh/
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/Shipwright/soh/assets/extractor/ZAPD.out"
+cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out"
 ls -lha dist/
 cd dist/assets
 mkdir assets_zip
-cp -r "${CDIR}/Shipwright/soh/assets/extractor/extractor/" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/extractor/." assets_zip/
 cp -r "${CDIR}/Shipwright/soh/assets/xml/" assets_zip/
 cd assets_zip
 zip -r ../extractor.zip ./*
