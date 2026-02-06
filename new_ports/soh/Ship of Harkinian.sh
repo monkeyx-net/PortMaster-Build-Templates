@@ -20,13 +20,13 @@ get_controls
 GAMEDIR="/$directory/ports/soh"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}":$LD_LIBRARY_PATH
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # CD and set log
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
-$ESUDO chmod +x "$GAMEDIR/soh.elf"
+$ESUDO chmod +x "$GAMEDIR/soh.elf.${DEVICE_ARCH}"
 $ESUDO chmod +x "$GAMEDIR/assets/otrgen"
 
 # Close the menu if open
@@ -104,9 +104,9 @@ if [ -f "imgui.ini" ]; then
 fi
 
 # Run the game
-$GPTOKEYB "soh.elf" -c "soh.gptk" &
-pm_platform_helper "soh.elf" >/dev/null
-./soh.elf
+$GPTOKEYB "soh.elf.${DEVICE_ARCH}" -c "soh.gptk" &
+pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
+./soh.elf.${DEVICE_ARCH}
 
 # Cleanup
 rm -rf "$GAMEDIR/logs/"

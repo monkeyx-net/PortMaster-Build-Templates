@@ -9,7 +9,7 @@ ARCH="$4"
 # needs file.arch?
 FILES=(
   "libz.so.1"
-  "libz2.so.1"
+  "libbz2.so.1"
   "libopus.so.0"
   "libogg.so.0"
   "libpng16.so.16"
@@ -55,7 +55,7 @@ ls -lha Shipwright/build-soh/soh/
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-cp "Shipwright/build-soh/ZAPD/ZAPD.out" "Shipwright/soh/assets/extractorZAPD.out"
+cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/Shipwright/soh/assets/extractor/ZAPD.out"
 ls -lha dist/
 cd dist/assets
 mkdir assets_zip
@@ -74,6 +74,7 @@ for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
 
+find / -name libtinyxml2.so.* -print
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C ${CDIR}/dist .
 pwd
