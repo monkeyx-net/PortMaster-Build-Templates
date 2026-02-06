@@ -10,7 +10,7 @@ i=1
 exec > >(tee "$LOGFILE") 2>&1
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 
 unzip_assets() {
     # Define 7zzs binary
@@ -63,6 +63,6 @@ unzip_assets || { echo "Patching process failed!"; exit 1; }
 process_roms || { echo "Patching process failed!"; exit 1; }
 
 # Run soh.elf with all ROM arguments
-eval "$GAMEDIR/soh.elf" $ARGS > "$GAMEDIR/otrlog.txt"
+eval "$GAMEDIR/soh.elf.${DEVICE_ARCH}" $ARGS > "$GAMEDIR/otrlog.txt"
 
 echo "Patching process complete!"
