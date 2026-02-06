@@ -59,8 +59,8 @@ cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/Shipwright/soh/assets/extractor
 ls -lha dist/
 cd dist/assets
 mkdir assets_zip
-cp -r "${CDIR}/Shipwright/soh/assets/extractor" assets_zip/
-cp -r "${CDIR}/Shipwright/soh/assets/xml" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/extractor/" assets_zip/
+cp -r "${CDIR}/Shipwright/soh/assets/xml/" assets_zip/
 cd assets_zip
 zip -r ../extractor.zip ./*
 cd ..
@@ -73,8 +73,6 @@ mkdir -p ${CDIR}/dist/libs.${ARCH}
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
-
-find / -name libtinyxml2.so.* -print
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C ${CDIR}/dist .
 pwd
