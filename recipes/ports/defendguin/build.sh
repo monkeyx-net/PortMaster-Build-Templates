@@ -18,6 +18,7 @@ FILES=(
     "libSDL-1.2.so.0"
     "libtinfo.so.6"
     "libFLAC.so.8"
+    "libFLAC.so.12"
 )
 
 
@@ -40,7 +41,7 @@ cp -r data/ dist/
 
 # if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
-    cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/"
+    cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
 
 
