@@ -10,6 +10,7 @@ ARCH="$4"
 FILES=(
   "libz.so.1"
   "libbz2.so.1"
+  "libbz2.so.1.0"
   "libopus.so.0"
   "libogg.so.0"
   "libpng16.so.16"
