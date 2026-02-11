@@ -17,20 +17,20 @@ source $controlfolder/control.txt
 get_controls
 
 # Set variables
-GAMEDIR="/$directory/ports/soh"
+GAMEDIR="/$directory/ports/soh2"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
-# CD and set log
+# CD and set permissions
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
-$ESUDO chmod +x "$GAMEDIR/soh.elf.${DEVICE_ARCH}"
+$ESUDO chmod +x "$GAMEDIR/2s2h.elf"
 $ESUDO chmod +x "$GAMEDIR/assets/otrgen"
 
 # Close the menu if open
-sed -i 's/"Menu": *1/"Menu": 0/' shipofharkinian.json
+sed -i 's/"Menu": *1/"Menu": 0/' 2ship2harkinian.json
 
 # -------------------- BEGIN FUNCTIONS --------------------
 
@@ -67,47 +67,60 @@ imgui_reset() {
     mv "$temp_file" "$input_file"
 }
 
-otr_check() {
-    if [ ! -f "oot.o2r" ] && [ ! -f "oot-mq.o2r" ]; then
-        # Ensure we have a rom file before attempting to generate otr
-        if ls "$GAMEDIR/baseroms/"*.*64 1> /dev/null 2>&1; then
-            if [ -f "$controlfolder/utils/patcher.txt" ]; then
-                export PATCHER_FILE="$GAMEDIR/assets/otrgen"
-                export PATCHER_GAME="$(basename "${0%.*}")"
-                export PATCHER_TIME="5 to 10 minutes"
-                export controlfolder
-                export DEVICE_ARCH
-                source "$controlfolder/utils/patcher.txt"
-                $ESUDO kill -9 $(pidof gptokeyb)
-            else
-                pm_message "This port requires the latest version of PortMaster."
-            fi
-        else
-            echo "Missing ROM files! Can't generate o2r!"
-        fi
+o2r_check() {
 
-        # Check if OTR files were generated
-        if [ ! -f "oot.o2r" ] && [ ! -f "oot-mq.o2r" ]; then
-            echo "No o2r files, can't run the game!"
-            exit 1
-        fi
+# Warn if mm.o2r is older than 2s2h.elf or 2ship.o2r
+if [ -f "$GAMEDIR/mm.o2r" ]; then
+    if [ -f "$GAMEDIR/2s2h.elf" ] && [ "$GAMEDIR/2s2h.elf" -nt "$GAMEDIR/mm.o2r" ] \
+       || [ -f "$GAMEDIR/2ship.o2r" ] && [ "$GAMEDIR/2ship.o2r" -nt "$GAMEDIR/mm.o2r" ]; then
+        echo "Notice: mm.o2r is older than 2s2h.elf and/or 2ship.o2r. Forcing regeneration."
+        rm -f "$GAMEDIR/mm.o2r"
+        REGEN=1
+        export REGEN
     fi
+fi
+
+if [ ! -f "mm.o2r" ]; then
+    # Ensure we have a rom file before attempting to generate o2r
+    if ls "$GAMEDIR/baseroms/"*.*64 1> /dev/null 2>&1; then
+        if [ -f "$controlfolder/utils/patcher.txt" ]; then
+            export PATCHER_FILE="$GAMEDIR/assets/otrgen"
+            export PATCHER_GAME="$(basename "${0%.*}")"
+            export PATCHER_TIME="5 to 10 minutes"
+            export controlfolder
+            export DEVICE_ARCH
+            source "$controlfolder/utils/patcher.txt"
+            $ESUDO kill -9 $(pidof gptokeyb)
+        else
+            pm_message "This port requires the latest version of PortMaster."
+        fi
+    else
+        echo "Missing ROM files in $GAMEDIR/baseroms! Can't generate o2r!"
+        exit 1
+    fi
+    
+    # Check if OTR files were generated
+    if [ ! -f "mm.o2r" ]; then
+        echo "No o2r files, can't run the game!"
+        exit 1
+    fi
+fi
 }
 
 # --------------------- END FUNCTIONS ---------------------
 
 # Perform functions
-otr_check
+o2r_check
 
 if [ -f "imgui.ini" ]; then
     imgui_reset
 fi
 
 # Run the game
-$GPTOKEYB "soh.elf.${DEVICE_ARCH}" -c "soh.gptk" &
-pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
-./soh.elf.${DEVICE_ARCH}
+$GPTOKEYB "2s2h.elf" -c "soh2.gptk" & 
+pm_platform_helper "2s2h.elf" >/dev/null
+./2s2h.elf
 
 # Cleanup
-rm -rf "$GAMEDIR/logs/"
+rm -rf "$GAMEDIR/logs"
 pm_finish
