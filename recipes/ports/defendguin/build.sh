@@ -19,6 +19,7 @@ FILES=(
     "libtinfo.so.6"
     "libFLAC.so.8"
     "libFLAC.so.12"
+    "libdb-5.3.so"
 )
 
 
