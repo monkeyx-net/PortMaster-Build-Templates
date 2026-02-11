@@ -12,6 +12,7 @@ FILES=(
   "libbz2.so.1"
   "libbz2.so.1.0"
   "libopus.so.0"
+  "liblzma.so.5"
   "libogg.so.0"
   "libpng16.so.16"
   "libspdlog.so.1"
