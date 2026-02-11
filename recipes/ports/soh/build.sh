@@ -17,6 +17,7 @@ FILES=(
   "libspdlog.so.1.12"
   "libzip.so.5"
   "libtinyxml2.so.10"
+  "libfmt.so.9"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
