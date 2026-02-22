@@ -3,10 +3,11 @@ name: Recipes 4 PortMaster Multi v1
 on:
   workflow_dispatch:
     inputs:
-      Multi Stage Build:
-        options: ["Update_Port", "New_Port"]
-        default: "Update_Port"
+      MultiStageBuild:
         description: 'Run PortMaster Update'
+        type: choice
+        options: ['Update_Port', 'New_Port']
+        default: 'Update_Port'
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
