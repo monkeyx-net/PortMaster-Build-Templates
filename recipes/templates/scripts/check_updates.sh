@@ -30,6 +30,8 @@ RECIPES_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"  # recipes/templates/scripts →
 RECIPES_DIR="$RECIPES_ROOT/ports"
 WORK_DIR="$(mktemp -d)"
 DOWNLOADS_DIR="$RECIPES_ROOT/downloads"
+PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
+PM_PORTS_URL="https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/main/ports.json"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -77,6 +79,23 @@ cb_branch_sha() {                            # args: owner repo branch
 # Download URL to file; return 1 on failure.
 fetch() { wget -q -O "$2" "$1" 2>/dev/null; }
 
+# Look up a port zip name in the cached PortMaster ports.json, download it
+# to dest_dir using the source.url field, and print the result.
+pm_zip_download() {
+    local zip_name="$1" dest_dir="$2"
+    local pm_url
+    pm_url=$(jq -r --arg n "$zip_name" '.ports[$n].source.url // empty' "$PM_PORTS_JSON" 2>/dev/null)
+    if [[ -z "$pm_url" ]]; then
+        echo -e "         ${DIM}portmaster: $zip_name not found in ports.json${NC}"
+        return
+    fi
+    if fetch "$pm_url" "$dest_dir/$zip_name"; then
+        echo -e "         ${DIM}portmaster: saved → $dest_dir/$zip_name${NC}"
+    else
+        echo -e "         ${RED}portmaster: download failed${NC} — $pm_url"
+    fi
+}
+
 # ─── check one port ──────────────────────────────────────────────────────────
 check_port() {
     local port_name="$1"
@@ -88,7 +107,8 @@ check_port() {
     }
     TOTAL=$((TOTAL+1))
 
-    local port_url stored_version stored_checksum
+    local port_zip port_url stored_version stored_checksum
+    port_zip=$(jq -r '.name // empty' "$recipe")
     port_url=$(jq -r '.source.port_url // empty' "$recipe")
     stored_version=$(jq -r '.source.port_version // empty' "$recipe")
     stored_checksum=$(jq -r '.source.port_checksum // empty' "$recipe")
@@ -237,6 +257,7 @@ check_port() {
         mkdir -p "$DOWNLOADS_DIR/$port_name"
         mv "$tmpdir"/port.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo -e "         ${DIM}saved → $DOWNLOADS_DIR/$port_name/${NC}"
+        [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
         UPDATES=$((UPDATES+1))
 
     elif [[ "$version_unset" == true || "$checksum_unset" == true ]]; then
@@ -251,6 +272,7 @@ check_port() {
         mkdir -p "$DOWNLOADS_DIR/$port_name"
         mv "$tmpdir"/port.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo -e "         ${DIM}saved → $DOWNLOADS_DIR/$port_name/${NC}"
+        [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
         INFO=$((INFO+1))
 
     else
@@ -266,6 +288,14 @@ echo -e "${BOLD}PortMaster Recipe Update Checker${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 [[ -d "$RECIPES_DIR" ]] || { echo "Directory not found: $RECIPES_DIR"; exit 1; }
+
+echo -n "Fetching PortMaster ports.json … "
+if fetch "$PM_PORTS_URL" "$PM_PORTS_JSON"; then
+    echo -e "${GREEN}done${NC}"
+else
+    echo -e "${RED}failed${NC} — PortMaster zip lookup will be skipped"
+    echo '{"ports":{}}' > "$PM_PORTS_JSON"
+fi
 
 # Default to all ports when no arguments given
 if [[ $# -eq 0 ]]; then
