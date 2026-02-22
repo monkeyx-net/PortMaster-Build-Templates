@@ -23,6 +23,7 @@ read_check() {
 }
 
 create_recipe (){
+local recipe_version=1
 local port_folder="${1}"
 local port_url="${2}"
 local port_build="${3}"
@@ -31,6 +32,7 @@ local port_exe="${5}"
 mkdir -p "recipes/ports/${1}"
 
 jq -n \
+  --arg recipe_version ${recipe_version} \
   --arg port_name "${port_folder}.zip" \
   --arg port_folder "${port_folder}" \
   --arg port_updated "${port_date}" \
@@ -38,15 +40,18 @@ jq -n \
   --arg port_build "${port_build}" \
   --arg port_checksum "${port_checksum}" \
   --arg port_exe "${port_exe}" \
+  --arg port_version "${port_version}" \
   '{
+    recipe_version: ($recipe_version | tonumber),
     name: $port_name,
     port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
     source: {
       date_updated: $port_updated,
-      sha256: $port_checksum,
       port_exe: $port_exe,
       port_build: $port_build,
-      port_url: $port_url
+      port_checksum: $port_checksum,
+      port_url: $port_url,
+      port_version: $port_version
     }
   }' > recipes/ports/${port_folder}/recipe.json
 
@@ -103,27 +108,28 @@ create_new_port () {
   mv new_ports/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/licenses/LICENSE_${port_exe}.txt
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
   while true; do
-    echo "Enter URL for port code base. Must be in .zip or .tar.gz format"
+    echo "Enter Project and Repo Name ie HarbourMasters/Shipwright do not include https://github.com/"
     read_check 'Enter URL for code: ' port_url
     if [ -z "${port_url}" ]; then
-      echo "Empty input received. Please enter a valid URL."
-    elif [[ "${port_url}" =~ \.zip$ || "${port_url}" =~ \.tar\.gz$ ]]; then
-      echo "Creating sha256sum for ${port_url}"
-      port_checksum=$(curl -s --fail "${port_url}" | sha256sum | cut -d' ' -f1)
-      local error_hash="!e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-      if [ "${port_checksum}" = "${error_hash}" ]; then
-        echo "Checksum FAILURE: port_checksum or url is not valid"
-      else
-        echo "Checksum SUCCESS: port_checksum set ${port_checksum}"
+      echo "Empty input received. Please enter a valid Project/Repo."
+    fi
+    port_version=$(curl -sf "https://api.github.com/repos/${port_url}/releases/latest" | jq -r '.tag_name')
+    if [[ -n "$port_version" && "$port_version" != "null" ]]; then
+        tmp_url="https://github.com/${port_url}/archive/refs/tags/${port_version}.tar.gz"
+        wget -O port.tar.gz $tmp_url
+        port_checksum=$(sha256sum port.tar.gz | cut -d' ' -f1)
         break
-      fi
     else
-      echo "URL must end with .zip or .tar.gz. Please try again."
+        branch=$(curl -sf "https://api.github.com/repos/${port_url}" | jq -r '.default_branch')
+        tmp_url="https://github.com/${port_url}/archive/refs/heads/${branch}.zip"
+        wget -O port.zip $tmp_url
+        port_checksum=$(sha256sum port.zip | cut -d' ' -f1)
+        break
     fi
   done
-  # TODO seperate build commands? shared libs?
+  # TODO separate build commands? shared libs?
   read_check 'Enter build command(s): ' port_build
-  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}"
+  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}" "${port_version}"
   echo -e "\nCreated recipe for ${port_folder}/recipe.json\n"
   cat recipes/ports/${port_folder}/recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
