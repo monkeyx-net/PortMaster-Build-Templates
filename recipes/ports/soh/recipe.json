@@ -6,8 +6,8 @@
     "date_updated": "2026-02-02",
     "port_exe": "soh",
     "port_build": "cmake",
-    "port_checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "port_url": "https://github.com/HarbourMasters/Shipwright/archive/refs/tags/9.1.2.zip",
-    "port_version": ""
+    "port_checksum": "c8ef222945595f3119dad127f3a0be41b7755a2df519b008f99a2abe5c1ee0bd",
+    "port_url": "HarbourMasters/Shipwright",
+    "port_version": "9.1.2"
   }
 }
