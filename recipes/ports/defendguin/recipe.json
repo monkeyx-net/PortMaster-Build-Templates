@@ -1,11 +1,13 @@
 {
+  "recipe_version": 1,
   "name": "defendguin.zip",
   "port_json": "new_ports/defendguin/defendguin/port.json",
   "source": {
     "date_updated": "2026-01-29",
-    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "port_exe": "defendguin",
     "port_build": "make",
-    "port_url": "https://github.com/monkeyx-net/defendguin_PortMaster/archive/refs/heads/main.zip"
+    "port_checksum": "8dec1008dabe6bb680e33a66a0d1f967ccd97233e93b4cae77898b57a14c67d3",
+    "port_url": "monkeyx-net/defendguin_PortMaster",
+    "port_version": "commit:8143007"
   }
 }
