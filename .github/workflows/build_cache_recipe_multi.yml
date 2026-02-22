@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       Multi Stage Build:
-        description: 'Run PortMaster Update'
         options: ["Update_Port", "New_Port"]
         default: "Update_Port"
+        description: 'Run PortMaster Update'
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
