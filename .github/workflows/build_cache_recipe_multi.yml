@@ -5,8 +5,8 @@ on:
     inputs:
       Multi Stage Build:
         description: 'Run PortMaster Update'
-        options: ["Update Port", "New Port"]
-        default: "Update Port"
+        options: ["Update_Port", "New_Port"]
+        default: "Update_Port"
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
