@@ -24,12 +24,12 @@
 #   ./check_updates.sh soh shamogu  # check specific ports
 
 set -uo pipefail
-
+CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RECIPES_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"  # recipes/templates/scripts → recipes/
 RECIPES_DIR="$RECIPES_ROOT/ports"
 WORK_DIR="$(mktemp -d)"
-DOWNLOADS_DIR="$RECIPES_ROOT/downloads"
+DOWNLOADS_DIR="$CURRENT_DIR/new_ports"
 PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
 PM_PORTS_URL="https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/main/ports.json"
 
@@ -256,8 +256,6 @@ check_port() {
         mkdir -p "$DOWNLOADS_DIR/$port_name/source"
         mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo "         saved -> $DOWNLOADS_DIR/$port_name/"
-        #_srcs=("$DOWNLOADS_DIR/$port_name"/source.*)
-        #[[ -f "${_srcs[0]}" ]] && bsdtar -xf "${_srcs[0]}" -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
         bsdtar -xf "$DOWNLOADS_DIR/$port_name"/source.* -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
     else
