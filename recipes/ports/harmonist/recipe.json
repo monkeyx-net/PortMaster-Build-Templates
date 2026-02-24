@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
   "name": "harmonist.zip",
-  "port_json": "recipes/ports/harmonist/port.json",
+  "port_json": "new_ports/harmonist/harmonist/harmonist/port.json",
   "source": {
     "date_updated": "2026-02-24",
     "port_exe": "harmonist",
