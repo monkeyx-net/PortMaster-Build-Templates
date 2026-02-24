@@ -54,6 +54,7 @@ jq -n \
       port_version: $port_version
     }
   }' > recipes/ports/${port_folder}/recipe.json
+cp recipes/templates/scripts/build.sh recipes/ports/${port_folder}/
 
 }
 update_port_json() {
