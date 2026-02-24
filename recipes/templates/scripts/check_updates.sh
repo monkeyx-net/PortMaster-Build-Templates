@@ -25,9 +25,7 @@
 
 set -uo pipefail
 CURRENT_DIR="$(pwd)"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RECIPES_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"  # recipes/templates/scripts → recipes/
-RECIPES_DIR="$RECIPES_ROOT/ports"
+RECIPES_DIR="$CURRENT_DIR/recipes/ports"
 WORK_DIR="$(mktemp -d)"
 DOWNLOADS_DIR="$CURRENT_DIR/new_ports"
 PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
