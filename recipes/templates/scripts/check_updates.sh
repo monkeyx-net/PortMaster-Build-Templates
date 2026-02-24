@@ -33,14 +33,6 @@ DOWNLOADS_DIR="$RECIPES_ROOT/downloads"
 PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
 PM_PORTS_URL="https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/main/ports.json"
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-DIM='\033[2m'
-BOLD='\033[1m'
-NC='\033[0m'
-
 TOTAL=0; OK=0; INFO=0; UPDATES=0; ERRORS=0; SKIPPED=0
 
 cleanup() { rm -rf "$WORK_DIR"; }
@@ -86,13 +78,13 @@ pm_zip_download() {
     local pm_url
     pm_url=$(jq -r --arg n "$zip_name" '.ports[$n].source.url // empty' "$PM_PORTS_JSON" 2>/dev/null)
     if [[ -z "$pm_url" ]]; then
-        echo -e "         ${DIM}portmaster: $zip_name not found in ports.json${NC}"
+        echo "         portmaster: $zip_name not found in ports.json"
         return
     fi
     if fetch "$pm_url" "$dest_dir/$zip_name"; then
-        echo -e "         ${DIM}portmaster: saved → $dest_dir/$zip_name${NC}"
+        echo "         portmaster: saved -> $dest_dir/$zip_name"
     else
-        echo -e "         ${RED}portmaster: download failed${NC} — $pm_url"
+        echo "         portmaster: download failed -- $pm_url"
     fi
 }
 
@@ -102,7 +94,7 @@ check_port() {
     local recipe="$RECIPES_DIR/$port_name/recipe.json"
 
     [[ -f "$recipe" ]] || {
-        echo -e "${RED}[ERROR]${NC}  $port_name — recipe.json not found"
+        echo "[ERROR]  $port_name -- recipe.json not found"
         ERRORS=$((ERRORS+1)); return
     }
     TOTAL=$((TOTAL+1))
@@ -114,7 +106,7 @@ check_port() {
     stored_checksum=$(jq -r '.source.port_checksum // empty' "$recipe")
 
     if [[ -z "$port_url" ]]; then
-        echo -e "${YELLOW}[SKIP]${NC}   $port_name — port_url is empty"
+        echo "[SKIP]   $port_name -- port_url is empty"
         SKIPPED=$((SKIPPED+1)); return
     fi
 
@@ -132,10 +124,10 @@ check_port() {
         if [[ -n "$tag" && "$tag" != "null" ]]; then
             upstream_version="$tag"
             fetch "https://github.com/${repo}/archive/refs/tags/${tag}.tar.gz" \
-                  "$tmpdir/port.tar.gz" \
+                  "$tmpdir/source.tar.gz" \
                 || { fetch_error=true; }
             [[ "$fetch_error" == false ]] \
-                && upstream_checksum=$(sha256sum "$tmpdir/port.tar.gz" | cut -d' ' -f1)
+                && upstream_checksum=$(sha256sum "$tmpdir/source.tar.gz" | cut -d' ' -f1)
         else
             local branch
             branch=$(gh_default_branch "$repo")
@@ -146,10 +138,10 @@ check_port() {
                 sha=$(gh_branch_sha "$repo" "$branch")
                 [[ -n "$sha" ]] && upstream_version="commit:$sha"
                 fetch "https://github.com/${repo}/archive/refs/heads/${branch}.zip" \
-                      "$tmpdir/port.zip" \
+                      "$tmpdir/source.zip" \
                     || { fetch_error=true; }
                 [[ "$fetch_error" == false ]] \
-                    && upstream_checksum=$(sha256sum "$tmpdir/port.zip" | cut -d' ' -f1)
+                    && upstream_checksum=$(sha256sum "$tmpdir/source.zip" | cut -d' ' -f1)
             fi
         fi
 
@@ -172,9 +164,9 @@ check_port() {
         [[ -n "$latest_tag" ]] && upstream_version="$latest_tag"
 
         # Verify checksum against the URL that's actually stored (not the latest)
-        fetch "$port_url" "$tmpdir/port.$ext" || { fetch_error=true; }
+        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
-            && upstream_checksum=$(sha256sum "$tmpdir/port.$ext" | cut -d' ' -f1)
+            && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
     # ── (3) Full GitHub branch URL ────────────────────────────────────────────
     # e.g. https://github.com/Owner/Repo/archive/refs/heads/main.zip
@@ -187,9 +179,9 @@ check_port() {
         sha=$(gh_branch_sha "$repo" "$branch")
         [[ -n "$sha" ]] && upstream_version="commit:$sha"
 
-        fetch "$port_url" "$tmpdir/port.$ext" || { fetch_error=true; }
+        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
-            && upstream_checksum=$(sha256sum "$tmpdir/port.$ext" | cut -d' ' -f1)
+            && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
     # ── (4) Codeberg URL ──────────────────────────────────────────────────────
     # e.g. https://codeberg.org/owner/repo/archive/master.zip
@@ -203,17 +195,17 @@ check_port() {
         sha=$(cb_branch_sha "$cb_owner" "$cb_repo" "$cb_ref")
         [[ -n "$sha" ]] && upstream_version="commit:$sha"
 
-        fetch "$port_url" "$tmpdir/port.$ext" || { fetch_error=true; }
+        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
-            && upstream_checksum=$(sha256sum "$tmpdir/port.$ext" | cut -d' ' -f1)
+            && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
     # ── (5) Any other direct URL ──────────────────────────────────────────────
     else
         local clean_url="${port_url%%\?*}"
         local ext="${clean_url##*.}"
-        fetch "$port_url" "$tmpdir/port.$ext" || { fetch_error=true; }
+        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
-            && upstream_checksum=$(sha256sum "$tmpdir/port.$ext" | cut -d' ' -f1)
+            && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
     fi
 
     # ── Compare stored vs upstream ────────────────────────────────────────────
@@ -238,14 +230,14 @@ check_port() {
 
     # ── Report ────────────────────────────────────────────────────────────────
     if [[ "$fetch_error" == true ]]; then
-        echo -e "${RED}[ERROR]${NC}  ${BOLD}$port_name${NC}"
-        echo -e "         ${DIM}$port_url${NC}"
-        echo    "         download or API call failed"
+        echo "[ERROR]  $port_name"
+        echo "         $port_url"
+        echo "         download or API call failed"
         ERRORS=$((ERRORS+1))
 
     elif [[ "$version_diff" == true || "$checksum_diff" == true ]]; then
-        echo -e "${YELLOW}[UPDATE]${NC} ${BOLD}$port_name${NC}"
-        echo -e "         ${DIM}$port_url${NC}"
+        echo "[UPDATE] $port_name"
+        echo "         $port_url"
         if [[ "$version_diff" == true ]]; then
             printf   "         version:  %-40s  (stored)\n"   "$stored_version"
             printf   "                   %-40s  (upstream)\n" "$upstream_version"
@@ -255,45 +247,45 @@ check_port() {
             printf   "                   %s  (upstream)\n" "$upstream_checksum"
         fi
         mkdir -p "$DOWNLOADS_DIR/$port_name"
-        mv "$tmpdir"/port.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
-        echo -e "         ${DIM}saved → $DOWNLOADS_DIR/$port_name/${NC}"
+        mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
+        echo "         saved -> $DOWNLOADS_DIR/$port_name/"
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
         UPDATES=$((UPDATES+1))
 
     elif [[ "$version_unset" == true || "$checksum_unset" == true ]]; then
-        echo -e "${CYAN}[INFO]${NC}   ${BOLD}$port_name${NC}"
-        echo -e "         ${DIM}$port_url${NC}"
+        echo "[INFO]   $port_name"
+        echo "         $port_url"
         if [[ "$version_unset" == true ]]; then
-            printf   "         version:  %-40s  (unset → populate recipe)\n" "$upstream_version"
+            printf   "         version:  %-40s  (unset -- populate recipe)\n" "$upstream_version"
         fi
         if [[ "$checksum_unset" == true ]]; then
-            printf   "         checksum: %s  (unset → populate recipe)\n" "$upstream_checksum"
+            printf   "         checksum: %s  (unset -- populate recipe)\n" "$upstream_checksum"
         fi
         mkdir -p "$DOWNLOADS_DIR/$port_name"
-        mv "$tmpdir"/port.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
-        echo -e "         ${DIM}saved → $DOWNLOADS_DIR/$port_name/${NC}"
+        mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
+        echo "         saved -> $DOWNLOADS_DIR/$port_name/"
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
         INFO=$((INFO+1))
 
     else
         local detail=""
-        [[ -n "$upstream_version" ]] && detail="  ${DIM}$upstream_version${NC}"
-        echo -e "${GREEN}[OK]${NC}     ${BOLD}$port_name${NC}$detail"
+        [[ -n "$upstream_version" ]] && detail="  $upstream_version"
+        echo "[OK]     $port_name$detail"
         OK=$((OK+1))
     fi
 }
 
 # ─── main ─────────────────────────────────────────────────────────────────────
-echo -e "${BOLD}PortMaster Recipe Update Checker${NC}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "PortMaster Recipe Update Checker"
+echo "=================================================="
 
 [[ -d "$RECIPES_DIR" ]] || { echo "Directory not found: $RECIPES_DIR"; exit 1; }
 
-echo -n "Fetching PortMaster ports.json … "
+echo -n "Fetching PortMaster ports.json ... "
 if fetch "$PM_PORTS_URL" "$PM_PORTS_JSON"; then
-    echo -e "${GREEN}done${NC}"
+    echo "done"
 else
-    echo -e "${RED}failed${NC} — PortMaster zip lookup will be skipped"
+    echo "failed -- PortMaster zip lookup will be skipped"
     echo '{"ports":{}}' > "$PM_PORTS_JSON"
 fi
 
@@ -308,5 +300,5 @@ for port_name in "$@"; do
     check_port "$port_name"
 done
 
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "Checked: ${BOLD}$TOTAL${NC}  ${GREEN}OK: $OK${NC}  ${CYAN}Info: $INFO${NC}  ${YELLOW}Updates: $UPDATES${NC}  ${RED}Errors: $ERRORS${NC}  Skipped: $SKIPPED"
+echo "=================================================="
+echo "Checked: $TOTAL  OK: $OK  Info: $INFO  Updates: $UPDATES  Errors: $ERRORS  Skipped: $SKIPPED"
