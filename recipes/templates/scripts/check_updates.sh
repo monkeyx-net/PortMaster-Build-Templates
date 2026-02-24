@@ -33,7 +33,7 @@ DOWNLOADS_DIR="$RECIPES_ROOT/downloads"
 PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
 PM_PORTS_URL="https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/main/ports.json"
 
-TOTAL=0; OK=0; INFO=0; UPDATES=0; ERRORS=0; SKIPPED=0
+TOTAL=0; OK=0; UPDATES=0; ERRORS=0; SKIPPED=0
 
 cleanup() { rm -rf "$WORK_DIR"; }
 trap cleanup EXIT
@@ -83,6 +83,8 @@ pm_zip_download() {
     fi
     if fetch "$pm_url" "$dest_dir/$zip_name"; then
         echo "         portmaster: saved -> $dest_dir/$zip_name"
+        mkdir -p "$dest_dir/$port_name"
+        bsdtar -xf "$dest_dir/$zip_name" -C "$dest_dir/$port_name/"
     else
         echo "         portmaster: download failed -- $pm_url"
     fi
@@ -235,38 +237,29 @@ check_port() {
         echo "         download or API call failed"
         ERRORS=$((ERRORS+1))
 
-    elif [[ "$version_diff" == true || "$checksum_diff" == true ]]; then
+    elif [[ "$version_diff" == true || "$checksum_diff" == true || "$version_unset" == true || "$checksum_unset" == true ]]; then
         echo "[UPDATE] $port_name"
+        UPDATES=$((UPDATES+1))
         echo "         $port_url"
         if [[ "$version_diff" == true ]]; then
             printf   "         version:  %-40s  (stored)\n"   "$stored_version"
             printf   "                   %-40s  (upstream)\n" "$upstream_version"
+        elif [[ "$version_unset" == true ]]; then
+            printf   "         version:  %-40s  (unset -- populate recipe)\n" "$upstream_version"
         fi
         if [[ "$checksum_diff" == true ]]; then
             printf   "         checksum: %s  (stored)\n"   "$stored_checksum"
             printf   "                   %s  (upstream)\n" "$upstream_checksum"
-        fi
-        mkdir -p "$DOWNLOADS_DIR/$port_name"
-        mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
-        echo "         saved -> $DOWNLOADS_DIR/$port_name/"
-        [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
-        UPDATES=$((UPDATES+1))
-
-    elif [[ "$version_unset" == true || "$checksum_unset" == true ]]; then
-        echo "[INFO]   $port_name"
-        echo "         $port_url"
-        if [[ "$version_unset" == true ]]; then
-            printf   "         version:  %-40s  (unset -- populate recipe)\n" "$upstream_version"
-        fi
-        if [[ "$checksum_unset" == true ]]; then
+        elif [[ "$checksum_unset" == true ]]; then
             printf   "         checksum: %s  (unset -- populate recipe)\n" "$upstream_checksum"
         fi
-        mkdir -p "$DOWNLOADS_DIR/$port_name"
+        mkdir -p "$DOWNLOADS_DIR/$port_name/source"
         mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo "         saved -> $DOWNLOADS_DIR/$port_name/"
+        #_srcs=("$DOWNLOADS_DIR/$port_name"/source.*)
+        #[[ -f "${_srcs[0]}" ]] && bsdtar -xf "${_srcs[0]}" -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
+        bsdtar -xf "$DOWNLOADS_DIR/$port_name"/source.* -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
-        INFO=$((INFO+1))
-
     else
         local detail=""
         [[ -n "$upstream_version" ]] && detail="  $upstream_version"
@@ -301,4 +294,4 @@ for port_name in "$@"; do
 done
 
 echo "=================================================="
-echo "Checked: $TOTAL  OK: $OK  Info: $INFO  Updates: $UPDATES  Errors: $ERRORS  Skipped: $SKIPPED"
+echo "Checked: $TOTAL  OK: $OK  Updates: $UPDATES  Errors: $ERRORS  Skipped: $SKIPPED"
