@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
   "name": "shamogu.zip",
-  "port_json": "recipes/ports/shamogu/port.json",
+  "port_json": "new_ports/shamogu/shamogu/shamogu/port.json",
   "source": {
     "date_updated": "2026-02-24",
     "port_exe": "shamogu",
