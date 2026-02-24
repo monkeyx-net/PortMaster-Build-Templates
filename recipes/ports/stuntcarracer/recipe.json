@@ -7,7 +7,7 @@
     "port_exe": "stuntcarracer",
     "port_build": "make LINUX=1 SDL=2",
     "port_checksum": "",
-    "port_url": "https://github.com/monkeyx-net/stuntcarremake/archive/refs/heads/CLI.zip",
+    "port_url": "ptitSeb/stuntcarremake",
     "port_version": ""
   }
 }

@@ -1,0 +1,19 @@
+Simple Todo list
+
+
+Short term:
+ - normalize samples;
+
+Medium term:
+  - automagic help screen pressing "h" or "F1"
+  - resizable menu screen
+  - screen resizable via menu
+  - fullscreen menu option
+ - add new levels;
+ - add level editor
+ - add "boss" levels (every ten normal levels, different music, slow, "thinking" levels)
+
+Long term:
+ - No bugs ;)
+ - add a *real* resource manager;
+ 
