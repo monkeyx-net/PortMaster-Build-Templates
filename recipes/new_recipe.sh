@@ -44,7 +44,7 @@ jq -n \
   '{
     recipe_version: ($recipe_version | tonumber),
     name: $port_name,
-    port_json: ("new_ports/" + $port_folder + "/" + $port_folder + "/port.json"),
+    port_json: ("recipes/ports/" + $port_folder + "/port.json"),
     source: {
       date_updated: $port_updated,
       port_exe: $port_exe,
@@ -113,20 +113,24 @@ create_new_port () {
     read_check 'Enter URL for code: ' port_url
     if [ -z "${port_url}" ]; then
       echo "Empty input received. Please enter a valid Project/Repo."
+    else
+      break
     fi
+<<'###BLOCK-COMMENT'
     port_version=$(curl -sf "https://api.github.com/repos/${port_url}/releases/latest" | jq -r '.tag_name')
     if [[ -n "$port_version" && "$port_version" != "null" ]]; then
         tmp_url="https://github.com/${port_url}/archive/refs/tags/${port_version}.tar.gz"
-        wget -O port.tar.gz $tmp_url
-        port_checksum=$(sha256sum port.tar.gz | cut -d' ' -f1)
+        wget -O source.tar.gz $tmp_url
+        port_checksum=$(sha256sum source.tar.gz | cut -d' ' -f1)
         break
     else
         branch=$(curl -sf "https://api.github.com/repos/${port_url}" | jq -r '.default_branch')
         tmp_url="https://github.com/${port_url}/archive/refs/heads/${branch}.zip"
-        wget -O port.zip $tmp_url
-        port_checksum=$(sha256sum port.zip | cut -d' ' -f1)
+        wget -O source.zip $tmp_url
+        port_checksum=$(sha256sum source.zip | cut -d' ' -f1)
         break
     fi
+###BLOCK-COMMENT
   done
   # TODO separate build commands? shared libs?
   read_check 'Enter build command(s): ' port_build

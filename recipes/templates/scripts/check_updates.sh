@@ -254,8 +254,19 @@ check_port() {
         mkdir -p "$DOWNLOADS_DIR/$port_name/source"
         mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo "         saved -> $DOWNLOADS_DIR/$port_name/"
-        bsdtar -xf "$DOWNLOADS_DIR/$port_name"/source.* -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
+        _archives=("$DOWNLOADS_DIR/$port_name"/source.*)
+        [[ -f "${_archives[0]}" ]] && bsdtar -xf "${_archives[0]}" -C "$DOWNLOADS_DIR/$port_name/source/" --strip-components=1
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
+        local today
+        today=$(date '+%Y-%m-%d')
+        jq --arg v "$upstream_version" \
+           --arg c "$upstream_checksum" \
+           --arg d "$today" \
+           '.source.port_version  = (if $v != "" then $v else .source.port_version  end) |
+            .source.port_checksum = (if $c != "" then $c else .source.port_checksum end) |
+            .source.date_updated  = $d' \
+           "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
+        echo "         recipe.json updated ($today)"
     else
         local detail=""
         [[ -n "$upstream_version" ]] && detail="  $upstream_version"

@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
   "name": "defendguin.zip",
-  "port_json": "new_ports/defendguin/defendguin/port.json",
+  "port_json": "recipes/ports/defendguin/port.json",
   "source": {
     "date_updated": "2026-01-29",
     "port_exe": "defendguin",

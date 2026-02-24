@@ -1,13 +1,13 @@
 {
   "recipe_version": 1,
   "name": "harmonist.zip",
-  "port_json": "new_ports/harmonist/harmonist/port.json",
+  "port_json": "recipes/ports/harmonist/port.json",
   "source": {
-    "date_updated": "2025-12-15",
+    "date_updated": "2026-02-24",
     "port_exe": "harmonist",
     "port_build": "go build --tags sdl",
-    "port_checksum": "needs new version",
+    "port_checksum": "267354e09909dc93535aed90d4cb18fe1d01b7041571abe8cd2102d0b692ad5d",
     "port_url": "https://codeberg.org/anaseto/harmonist/archive/master.zip",
-    "port_version": "needs new version"
+    "port_version": "commit:31ee02f"
   }
 }
