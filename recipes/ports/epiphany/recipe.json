@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
   "name": "epiphany.zip",
-  "port_json": "new_ports/epiphany/epiphany/port.json",
+  "port_json": "recipes/ports/epiphany/port.json",
   "source": {
     "date_updated": "2026-01-19",
     "port_exe": "epiphany-game",

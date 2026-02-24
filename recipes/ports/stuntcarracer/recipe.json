@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
   "name": "stuntcarracer.zip",
-  "port_json": "new_ports/stuntcarracer/stuntcarracer/port.json",
+  "port_json": "recipes/ports/stuntcarracer/port.json",
   "source": {
     "date_updated": "2026-01-17",
     "port_exe": "stuntcarracer",
