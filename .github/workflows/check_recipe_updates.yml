@@ -28,7 +28,6 @@ jobs:
 
       - name: Run check_updates.sh
         run: |
-          chmod +x recipes/templates/scripts/check_updates.sh
           recipes/templates/scripts/check_updates.sh
 
       - name: Commit updated recipes
@@ -37,6 +36,7 @@ jobs:
           git config --local user.name "monkeyx-net"
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git add recipes/ports/*/recipe.json
+          git add new_ports/
           if git diff --staged --quiet; then
             echo "No recipe updates to commit"
           else
