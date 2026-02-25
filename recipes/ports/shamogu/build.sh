@@ -7,6 +7,8 @@ PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
 DEST_DIR="${PORT_FOLDER}/libs.${ARCH}"
+echo $ARCH
+echo $DEST_DIR
 
 if [[${ARCH} == "aarch64"]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu/"
