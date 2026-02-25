@@ -8,6 +8,6 @@
     "port_build": "make LINUX=1 SDL=2",
     "port_checksum": "1df7cf59d6621a655f3b23a024434e421379a0d7c4282813a059d111edc8f323",
     "port_url": "ptitSeb/stuntcarremake",
-    "port_version": ""
+    "port_version": "continuous"
   }
 }

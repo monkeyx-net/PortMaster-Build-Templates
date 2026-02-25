@@ -6,7 +6,7 @@
     "date_updated": "2026-02-25",
     "port_exe": "shamogu",
     "port_build": "go build -tags sdl",
-    "port_checksum": "",
+    "port_checksum": "71ca797f60a0b11137796935431273417a053757df49b9ba6031eb62087764a9",
     "port_url": "https://codeberg.org/anaseto/shamogu/archive/master.zip",
     "port_version": "commit:4f2c754"
   }
