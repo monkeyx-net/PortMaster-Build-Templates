@@ -1,0 +1,47 @@
+name: Check Recipe Updates
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-updates:
+    name: Check Recipe Updates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            jq \
+            curl \
+            wget \
+            libarchive-tools
+
+      - name: Run check_updates.sh
+        run: |
+          chmod +x recipes/templates/scripts/check_updates.sh
+          recipes/templates/scripts/check_updates.sh
+
+      - name: Commit updated recipes
+        run: |
+          git config --local user.email "tim@monkeyx.net"
+          git config --local user.name "monkeyx-net"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git add recipes/ports/*/recipe.json
+          if git diff --staged --quiet; then
+            echo "No recipe updates to commit"
+          else
+            git commit -m "Update recipe checksums and versions [$(date +%Y-%m-%d)]"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
