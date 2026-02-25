@@ -239,11 +239,9 @@ jobs:
           find artifacts -type f -name "*.tar.gz" | while read f; do
             tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
           done
-          if [ -d "new_ports/build/${PORT_FOLDER}" ]; then
-            rm -rf new_ports/build/${PORT_FOLDER}
-          fi
           cd new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
-          zip -r "../../${PORT_FOLDER}.zip" .
+          # Reference CWD
+          zip -r "../../../${PORT_FOLDER}.zip" .
 
       - name: Commit post build changes
         run: |
