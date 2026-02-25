@@ -3,11 +3,11 @@
   "name": "stuntcarracer.zip",
   "port_json": "recipes/ports/stuntcarracer/port.json",
   "source": {
-    "date_updated": "2026-02-24",
+    "date_updated": "2026-02-25",
     "port_exe": "stuntcarracer",
     "port_build": "make LINUX=1 SDL=2",
     "port_checksum": "1df7cf59d6621a655f3b23a024434e421379a0d7c4282813a059d111edc8f323",
     "port_url": "ptitSeb/stuntcarremake",
-    "port_version": ""
+    "port_version": "continuous"
   }
 }
