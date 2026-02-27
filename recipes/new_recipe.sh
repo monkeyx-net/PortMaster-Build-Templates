@@ -78,7 +78,7 @@ update_port_json() {
 create_new_port () {
   local port_title="${1}"
   echo -e "\n\n"
-  read -rp  "Your portname is ${port_title}. Do you wish to change the title. Y/N "  answer
+  read -rp  "Your PortName is ${port_title}. Do you wish to change the title. Y/N "  answer
   case "${answer}" in
     [yY]|[yY][eE][sS])
         read -rp "Enter PortName: " port_title
@@ -153,6 +153,7 @@ clear
 green='\033[32m'
 nocolour='\033[0m'
 port_date=$(date +%Y-%m-%d)
+wget https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/refs/heads/main/ports.json -O releases/ports.json
 
 if ! command -v jq &> /dev/null; then
     echo "Error: jq is not installed. Please install jq to continue."
