@@ -66,6 +66,18 @@ cb_branch_sha() {                            # args: owner repo branch
         | jq -r '.commit.id // empty' 2>/dev/null | cut -c1-7 || true
 }
 
+# Latest release tag for a Codeberg repo, empty string if none.
+cb_latest_release() {                        # args: owner repo
+    local tag
+    tag=$(curl -sf "https://codeberg.org/api/v1/repos/$1/$2/releases/latest" \
+        | jq -r '.tag_name // empty' 2>/dev/null) || tag=''
+    if [[ -z "$tag" || "$tag" == 'null' ]]; then
+        tag=$(curl -sf "https://codeberg.org/api/v1/repos/$1/$2/tags?limit=1" \
+            | jq -r '.[0].name // empty' 2>/dev/null) || tag=''
+    fi
+    echo "$tag"
+}
+
 # Download URL to file; return 1 on failure.
 fetch() { wget -q -O "$2" "$1" 2>/dev/null; }
 
@@ -191,9 +203,15 @@ check_port() {
         local cb_ref="${BASH_REMATCH[3]}"
         local ext="${BASH_REMATCH[4]}"
 
-        local sha
-        sha=$(cb_branch_sha "$cb_owner" "$cb_repo" "$cb_ref")
-        [[ -n "$sha" ]] && upstream_version="commit:$sha"
+        local release
+        release=$(cb_latest_release "$cb_owner" "$cb_repo")
+        if [[ -n "$release" && "$release" != 'null' ]]; then
+            upstream_version="$release"
+        else
+            local sha
+            sha=$(cb_branch_sha "$cb_owner" "$cb_repo" "$cb_ref")
+            [[ -n "$sha" ]] && upstream_version="commit:$sha"
+        fi
 
         fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
