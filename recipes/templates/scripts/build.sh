@@ -27,7 +27,7 @@ elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu/"
 fi
 
-cd "new_ports/build/${PORT_FOLDER}"
+cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
