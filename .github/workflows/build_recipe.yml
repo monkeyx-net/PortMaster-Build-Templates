@@ -198,10 +198,9 @@ jobs:
 
       - name: Extract binaries to correct locations
         run: |
-          ls -lha new_ports/${PORT_FOLDER}/source/
           PORT_EXE="${{ needs.build.outputs.port_exe }}"
           PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
-          mkdir -p new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
+          ls -lha new_ports/${PORT_FOLDER}/source/
           find artifacts -type f -name "*.tar.gz" | while read f; do
             tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
           done
