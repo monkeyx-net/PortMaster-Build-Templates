@@ -1043,12 +1043,21 @@ Renderer::Renderer(const Config& config)
     log->log(Log::INFO, logstr::info_fullscreen_mode);
   }
 
+  if(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _config._openglVersionMajor) < 0){
+    log->log(Log::FATAL, logstr::fail_set_opengl_attribute, std::string{SDL_GetError()});
+    exit(EXIT_FAILURE);
+  }
+  if(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _config._openglVersionMinor) < 0){
+    log->log(Log::FATAL, logstr::fail_set_opengl_attribute, std::string{SDL_GetError()});
+    exit(EXIT_FAILURE);
+  }
+
   std::stringstream ss {};
   ss << "{w:" << _config._windowWidth << ",h:" << _config._windowHeight << "}";
   log->log(Log::INFO, logstr::info_creating_window, std::string{ss.str()});
 
   _window = SDL_CreateWindow(
-      _config._windowTitle.c_str(), 
+      _config._windowTitle.c_str(),
       SDL_WINDOWPOS_UNDEFINED,
       SDL_WINDOWPOS_UNDEFINED,
       _config._windowWidth,
@@ -1069,15 +1078,6 @@ Renderer::Renderer(const Config& config)
   _glContext = SDL_GL_CreateContext(_window);
   if(_glContext == nullptr){
     log->log(Log::FATAL, logstr::fail_create_opengl_context, std::string{SDL_GetError()});
-    exit(EXIT_FAILURE);
-  }
-
-  if(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _config._openglVersionMajor) < 0){
-    log->log(Log::FATAL, logstr::fail_set_opengl_attribute, std::string{SDL_GetError()});
-    exit(EXIT_FAILURE);
-  }
-  if(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _config._openglVersionMinor) < 0){
-    log->log(Log::FATAL, logstr::fail_set_opengl_attribute, std::string{SDL_GetError()});
     exit(EXIT_FAILURE);
   }
 

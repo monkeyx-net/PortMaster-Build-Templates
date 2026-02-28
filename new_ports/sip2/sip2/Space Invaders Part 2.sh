@@ -22,6 +22,12 @@ GAMEDIR=/$directory/ports/sip2
 exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
+
+if [ -f "${controlfolder}/libgl_${CFW_NAME}.txt" ]; then
+  source "${controlfolder}/libgl_${CFW_NAME}.txt"
+else
+  source "${controlfolder}/libgl_default.txt"
+fi
 # Needed if config data binding to the conf folder
 #bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
 # Needed if any extra libs addded.
