@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "folder.zip",
+  "port_json": "new_ports/port/port/port/port.json",
+  "source": {
+    "date_updated": "",
+    "port_exe": "port",
+    "port_build": "make",
+    "port_checksum": "",
+    "port_url": "monkeyx-net/space_invaders_part_ii",
+    "port_version": ""
+  }
+}
