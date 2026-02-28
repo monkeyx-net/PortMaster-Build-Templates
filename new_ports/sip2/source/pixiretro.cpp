@@ -154,7 +154,9 @@ Log::~Log()
 
 void Log::log(Level level, const char* error, const std::string& addendum)
 {
-  std::ostream& o {_os ? _os : std::cerr}; 
+  if(level > FATAL)
+    return;
+  std::ostream& o {_os ? _os : std::cerr};
   o << lvlstr[level] << delim << error;
   if(!addendum.empty())
     o << delim << addendum;
@@ -459,6 +461,8 @@ int32_t Dataset::write(const std::string& filename, bool genComments)
     ss << '\n';
     file << ss.str();
   }
+
+  return 0;
 }
 
 int32_t Dataset::getIntValue(int32_t key) const

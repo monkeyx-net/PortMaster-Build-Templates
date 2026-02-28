@@ -11,7 +11,7 @@
     "porter": [
       "monkeyx-net"
     ],
-    "desc": "Your text here.",
+    "desc": "This is clone of the 1979 game space invaders part II implemented in C++ with a single file custom engine using SDL2 and Opengl 2.1. SDL2 is used for window management and to create the Opengl context whereas Opengl is used for all rendering.",
     "desc_md": null,
     "inst": "Ready to play",
     "inst_md": null,
@@ -23,7 +23,7 @@
     "exp": false,
     "runtime": [],
     "store": [],
-    "availability": "",
+    "availability": "full",
     "reqs": [],
     "arch": [
       "aarch64",

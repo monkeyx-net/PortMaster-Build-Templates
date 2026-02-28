@@ -258,6 +258,8 @@ size_t SpaceInvaders::findScoreBoardPosition(int32_t scoreValue)
   for(int i{0}; i < hiscoreCount - 1; ++i)
     if(_hiscores[i]._value < scoreValue && scoreValue <= _hiscores[i + 1]._value)
       return i;
+
+  return hiscoreCount - 1;
 }
 
 void SpaceInvaders::updateHudHiScore()
@@ -811,7 +813,7 @@ void GameState::updateActiveCycle()
 void GameState::updateActiveCycleBeat()
 {
   ++_activeBeat;
-  if(_cycles[_activeCycle][_activeBeat] == cycleEnd)
+  if(_activeBeat >= cycleLength || _cycles[_activeCycle][_activeBeat] == cycleEnd)
     _activeBeat = cycleStart;
 }
 
@@ -2819,9 +2821,10 @@ bool HiScoreBoardState::doScoreSwap()
     if(i == (_scoreBoard.size() - 1)) return true;
     if(_scoreBoard[i]->_value <= _scoreBoard[i + 1]->_value) return true;
     std::swap(_scoreBoard[i], _scoreBoard[i + 1]);
-    mixer->playSound(SpaceInvaders::SK_SCORE_BEEP); 
+    mixer->playSound(SpaceInvaders::SK_SCORE_BEEP);
     return false;
   }
+  return true;
 }
 
 void HiScoreBoardState::populateHud()
