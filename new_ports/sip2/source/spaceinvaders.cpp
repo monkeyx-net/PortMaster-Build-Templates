@@ -241,7 +241,7 @@ bool SpaceInvaders::registerHiScore(const Score& score)
 {
   size_t position = findScoreBoardPosition(score._value);
   if(position == -1) return false;
-  std::shift_left(_hiscores.begin(), _hiscores.begin() + position + 1, 1); 
+  std::copy(_hiscores.begin() + 1, _hiscores.begin() + position + 1, _hiscores.begin());
   _hiscores[position] = score;
   updateHudHiScore();
   return true;
