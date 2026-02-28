@@ -440,7 +440,7 @@ public:
   using Manifest_t = std::vector<std::tuple<Key_t, Name_t, Scale_t>>;
   
 public:
-  static constexpr const int32_t maxScale {8};
+  static constexpr const int32_t maxScale {16};
 
 public:
   Assets() = default;
