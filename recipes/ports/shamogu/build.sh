@@ -18,7 +18,7 @@ fi
 
 echo ${PORT_FOLDER}
 echo ${PORT_BUILD}
-cd "new_ports/build/${PORT_FOLDER}"
+cd "new_ports/build/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 mkdir -p dist
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
