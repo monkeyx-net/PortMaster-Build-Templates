@@ -22,6 +22,8 @@ ${PORT_BUILD}
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
+cp engine.config dist/
+cp -r assets dist/
 
 
 for file in "${FILES[@]}"; do
