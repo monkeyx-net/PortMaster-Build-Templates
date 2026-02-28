@@ -29,7 +29,6 @@ else
   source "${controlfolder}/libgl_default.txt"
 fi
 controls/controls.${DEVICE_ARCH} controls/controls.png
-bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/c
 
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH}
