@@ -975,13 +975,80 @@ void Bitmap::regenerateBytes()
         byte = 0;
         bitNo = 0;
       }
-      if(bit) 
+      if(bit)
         byte |= 0x01 << (7 - bitNo);
       bitNo++;
     }
     _bytes.push_back(byte);
     byte = 0;
     bitNo = 0;
+  }
+  _texDirty = true;
+}
+
+Bitmap::Bitmap(const Bitmap& other)
+  : _bits(other._bits), _bytes(other._bytes),
+    _width(other._width), _height(other._height),
+    _texId(0), _texDirty(true)
+{}
+
+Bitmap& Bitmap::operator=(const Bitmap& other)
+{
+  if(this != &other){
+    _bits = other._bits;
+    _bytes = other._bytes;
+    _width = other._width;
+    _height = other._height;
+    _texId = 0;
+    _texDirty = true;
+  }
+  return *this;
+}
+
+Bitmap::Bitmap(Bitmap&& other) noexcept
+  : _bits(std::move(other._bits)), _bytes(std::move(other._bytes)),
+    _width(other._width), _height(other._height),
+    _texId(other._texId), _texDirty(other._texDirty)
+{
+  other._texId = 0;
+  other._texDirty = true;
+}
+
+Bitmap& Bitmap::operator=(Bitmap&& other) noexcept
+{
+  if(this != &other){
+    _bits = std::move(other._bits);
+    _bytes = std::move(other._bytes);
+    _width = other._width;
+    _height = other._height;
+    _texId = other._texId;
+    _texDirty = other._texDirty;
+    other._texId = 0;
+    other._texDirty = true;
+  }
+  return *this;
+}
+
+void Bitmap::uploadTexture() const
+{
+  if(_texId == 0)
+    glGenTextures(1, &_texId);
+
+  if(_texDirty){
+    std::vector<uint8_t> pixels(_width * _height);
+    for(int32_t row = 0; row < _height; ++row)
+      for(int32_t col = 0; col < _width; ++col)
+        pixels[row * _width + col] = _bits[row][col] ? 255u : 0u;
+
+    glBindTexture(GL_TEXTURE_2D, _texId);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, _width, _height, 0,
+                 GL_ALPHA, GL_UNSIGNED_BYTE, pixels.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    _texDirty = false;
   }
 }
 
@@ -1102,39 +1169,80 @@ void Renderer::setViewport(iRect viewport)
   _viewport = viewport;
 }
 
-void Renderer::blitText(Vector2f position, const std::string& text,  const Font& font, const Color3f& color)
+void Renderer::blitText(Vector2f position, const std::string& text, const Font& font, const Color3f& color)
 {
-  glColor3f(color.getRed(), color.getGreen(), color.getBlue());  
-  glRasterPos2f(position._x, position._y);
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glColor4f(color.getRed(), color.getGreen(), color.getBlue(), 1.0f);
+
+  float cursorX = position._x;
+  float baseY   = position._y;
 
   for(char c : text){
     if(!(' ' <= c && c <= '~'))
       continue;
 
     if(c == ' '){
-      glBitmap(0, 0, 0, 0, font.getWordSpace(), 0, nullptr);
+      cursorX += font.getWordSpace();
+      continue;
     }
-    else{
-      const Glyph& g = font.getGlyph(c);      
-      glBitmap(g._width, g._height, g._offsetX, g._offsetY, g._advance + font.getGlyphSpace(), 0, g._bitmap.getBytes().data());
-    }
+
+    const Glyph& g = font.getGlyph(c);
+    g._bitmap.uploadTexture();
+
+    float bx = cursorX - static_cast<float>(g._offsetX);
+    float by = baseY   - static_cast<float>(g._offsetY);
+    float bw = static_cast<float>(g._bitmap.getWidth());
+    float bh = static_cast<float>(g._bitmap.getHeight());
+
+    glBindTexture(GL_TEXTURE_2D, g._bitmap.getTexId());
+    glBegin(GL_QUADS);
+      glTexCoord2f(0.0f, 0.0f); glVertex2f(bx,      by);
+      glTexCoord2f(1.0f, 0.0f); glVertex2f(bx + bw, by);
+      glTexCoord2f(1.0f, 1.0f); glVertex2f(bx + bw, by + bh);
+      glTexCoord2f(0.0f, 1.0f); glVertex2f(bx,      by + bh);
+    glEnd();
+
+    cursorX += g._advance + font.getGlyphSpace();
   }
+
+  glDisable(GL_BLEND);
+  glDisable(GL_TEXTURE_2D);
 }
 
 void Renderer::blitBitmap(Vector2f position, const Bitmap& bitmap, const Color3f& color)
 {
-  // For viewports which are a subegion of the window the glBitmap function will overdraw
-  // the viewport bounds if the bitmap position is within the viewport but the bitmap itself
-  // partially falls outside the viewport. Hence will clip any overdraw manually.
   if(position._x + bitmap.getWidth() > _viewport._w)
     return;
 
   if(position._y + bitmap.getHeight() > _viewport._h)
     return;
 
-  glColor3f(color.getRed(), color.getGreen(), color.getBlue());  
-  glRasterPos2f(position._x, position._y);
-  glBitmap(bitmap.getWidth(), bitmap.getHeight(), 0, 0, 0, 0, bitmap.getBytes().data());
+  bitmap.uploadTexture();
+
+  float x = position._x;
+  float y = position._y;
+  float w = static_cast<float>(bitmap.getWidth());
+  float h = static_cast<float>(bitmap.getHeight());
+
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glBindTexture(GL_TEXTURE_2D, bitmap.getTexId());
+  glColor4f(color.getRed(), color.getGreen(), color.getBlue(), 1.0f);
+
+  glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(x,     y);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(x + w, y);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(x + w, y + h);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(x,     y + h);
+  glEnd();
+
+  glDisable(GL_BLEND);
+  glDisable(GL_TEXTURE_2D);
 }
 
 void Renderer::drawBorderRect(const iRect& rect, const Color3f& background, const Color3f& borderColor, int32_t borderWidth)

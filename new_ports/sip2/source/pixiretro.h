@@ -557,16 +557,18 @@ class Bitmap final
   friend Assets;
 
 public:
-  Bitmap(const Bitmap&) = default;
-  Bitmap(Bitmap&&) = default;
-  Bitmap& operator=(const Bitmap&) = default;
-  Bitmap& operator=(Bitmap&&) = default;
+  Bitmap(const Bitmap& other);
+  Bitmap(Bitmap&& other) noexcept;
+  Bitmap& operator=(const Bitmap& other);
+  Bitmap& operator=(Bitmap&& other) noexcept;
   ~Bitmap() = default;
 
   bool getBit(int32_t row, int32_t col) const;
   int32_t getWidth() const {return _width;}
   int32_t getHeight() const {return _height;}
   const std::vector<uint8_t>& getBytes() const {return _bytes;}
+  void uploadTexture() const;
+  GLuint getTexId() const {return _texId;}
 
   void setBit(int32_t row, int32_t col, bool value, bool regen = true);
   void setRect(int32_t rowMin, int32_t colMin, int32_t rowMax, int32_t colMax, bool value, bool regen = true);
@@ -585,9 +587,11 @@ private:
 
 private:
   std::vector<std::vector<bool>> _bits;  // used for bit manipulation ops - indexed [row][col]
-  std::vector<uint8_t> _bytes;           // used for rendering
+  std::vector<uint8_t> _bytes;           // packed bits for legacy use
   int32_t _width;
   int32_t _height;
+  mutable GLuint _texId {0};
+  mutable bool _texDirty {true};
 };
 
 struct Glyph // note -- cannot nest in font as it needs to be forward declared.
