@@ -28,10 +28,8 @@ if [ -f "${controlfolder}/libgl_${CFW_NAME}.txt" ]; then
 else
   source "${controlfolder}/libgl_default.txt"
 fi
-# Needed if config data binding to the conf folder
-#bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
-# Needed if any extra libs addded.
-#export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+controls/controls.${DEVICE_ARCH} controls/controls.png
+bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/c
 
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH}
