@@ -1,6 +1,6 @@
 
 LDLIBS = -lSDL2 -lSDL2_mixer -lm -lGL -lGLX_mesa
-CXXFLAGS = -g -Wall -std=c++20
+CXXFLAGS = -g -Wall -std=c++2a
 SRC = spaceinvaders.cpp pixiretro.cpp main.cpp
 INC = spaceinvaders.h pixiretro.h
 
