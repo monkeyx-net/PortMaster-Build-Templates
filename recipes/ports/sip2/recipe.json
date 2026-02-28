@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "sip2.zip",
+  "port_json": "new_ports/sip2/sip2/sip2/port.json",
+  "source": {
+    "date_updated": "2026-02-28",
+    "port_exe": "si",
+    "port_build": "make",
+    "port_checksum": "c9400a7256d182530ece76e4d88a71e9b5c166d14771968e095a994facef4678",
+    "port_url": "monkeyx-net/space_invaders_part_ii",
+    "port_version": "commit:3f844d5"
+  }
+}
