@@ -1,0 +1,248 @@
+#include <SDL.h>
+
+#include "misc.h"
+#include "video.h"
+#include "audio.h"
+
+static SDL_Window           *sdlWindow;
+static SDL_Renderer         *sdlRenderer;
+static SDL_Texture          *sdlTexture, *sdlTarget;
+static SDL_Surface          *sdlSurface;
+static SDL_Rect             sdlViewport;
+static SDL_AudioDeviceID    sdlAudio;
+
+static const Uint8          *keyState;
+
+const COLOUR                *sysBorder = &videoColour[0];
+
+static int                  gameRunning = 1;
+
+int                         gameInput;
+
+int                         videoSync = 0;
+
+TIMER                       audioTimer;
+
+EVENT                       Action = Loader_Action;
+EVENT                       Responder = DoNothing;
+EVENT                       Ticker = DoNothing;
+EVENT                       Drawer = DoNothing;
+
+static const SDL_Keycode    sdlKey[16] =
+{
+    SDLK_LEFT, SDLK_RIGHT, SDLK_SPACE, SDLK_RETURN, SDLK_LSHIFT, SDLK_RSHIFT,
+    SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7, SDLK_8, SDLK_9, SDLK_0
+};
+
+void DoNothing()
+{
+}
+
+void DoQuit()
+{
+    gameRunning = 0;
+    Drawer = DoNothing;
+    Ticker = DoNothing;
+}
+
+static void SdlCallback(void *unused, Uint8 *stream, int length)
+{
+    (void)unused;
+
+    short   *output = (short *)stream;
+
+    while (length)
+    {
+        if (Timer_Update(&audioTimer))
+        {
+            Audio_MusicEvent();
+            Audio_SfxEvent();
+            videoSync = 1;
+        }
+
+        Audio_Output(output);
+        output += 2;
+        length -= 4;
+    }
+}
+
+int System_IsKey(int key)
+{
+    return keyState[SDL_GetScancodeFromKey(sdlKey[key])];
+}
+
+static int System_GetEvent()
+{
+    SDL_Event   event;
+
+    gameInput = KEY_NONE;
+
+    if (SDL_PollEvent(&event) == 0)
+    {
+        return 0;
+    }
+
+    if (event.type == SDL_QUIT)
+    {
+        DoQuit();
+    }
+
+    if (event.type != SDL_KEYDOWN)
+    {
+        return 1;
+    }
+
+    if (event.key.repeat)
+    {
+        return 1;
+    }
+
+    switch (event.key.keysym.sym)
+    {
+      case SDLK_RETURN:
+        gameInput = KEY_ENTER;
+        break;
+
+      case SDLK_ESCAPE:
+        gameInput = KEY_ESCAPE;
+        break;
+
+      case SDLK_PAUSE:
+      case SDLK_TAB:
+        gameInput = KEY_PAUSE;
+        break;
+
+      case SDLK_LALT:
+      case SDLK_RALT:
+        gameInput = KEY_MUTE;
+        break;
+
+      case SDLK_0:
+      case SDLK_1:
+      case SDLK_2:
+      case SDLK_3:
+      case SDLK_4:
+      case SDLK_5:
+      case SDLK_6:
+      case SDLK_7:
+      case SDLK_8:
+      case SDLK_9:
+        gameInput = KEY_0 + (event.key.keysym.sym - SDLK_0);
+        break;
+
+      default:
+        gameInput = KEY_ELSE;
+    }
+
+    return 1;
+}
+
+void System_SetPixel(int point, int index)
+{
+    Uint8   *pixel = (Uint8 *)sdlSurface->pixels;
+
+    pixel += (point / WIDTH) * sdlSurface->pitch;
+    pixel += (point & 255) * sdlSurface->format->BytesPerPixel;
+
+    *pixel++ = videoColour[index].b;
+    *pixel++ = videoColour[index].g;
+    *pixel++ = videoColour[index].r;
+}
+
+void System_Border(int index)
+{
+    sysBorder = &videoColour[index];
+}
+
+int main()
+{
+    SDL_AudioSpec   want;
+    SDL_DisplayMode mode;
+    int             multiply;
+    TIMER           timerFrame;
+    int             frame = 0;
+
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+
+    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+
+    SDL_GetDesktopDisplayMode(0, &mode);
+
+    multiply = Video_Viewport(mode.w, mode.h, &sdlViewport.x, &sdlViewport.y, &sdlViewport.w, &sdlViewport.h);
+
+    sdlWindow = SDL_CreateWindow("Manic Miner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    sdlTarget = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, WIDTH * multiply, HEIGHT * multiply);
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
+
+    SDL_ShowCursor(SDL_DISABLE);
+
+    want.freq = SAMPLERATE;
+    want.format = AUDIO_S16SYS;
+    want.channels = 2;
+    want.samples = 256;
+    want.callback = SdlCallback;
+
+    sdlAudio = SDL_OpenAudioDevice(NULL, 0, &want, NULL, 0);
+    SDL_PauseAudioDevice(sdlAudio, 0);
+
+    keyState = SDL_GetKeyboardState(NULL);
+
+    Timer_Set(&timerFrame, TICKRATE, mode.refresh_rate);
+    Timer_Set(&audioTimer, TICKRATE, SAMPLERATE);
+
+    while (gameRunning)
+    {
+        SDL_LockTextureToSurface(sdlTexture, NULL, &sdlSurface);
+
+        frame = Timer_Update(&timerFrame);
+
+        while (frame--)
+        {
+            Action();
+
+            while (System_GetEvent())
+            {
+                if (gameInput != KEY_NONE)
+                {
+                    Responder();
+                }
+            }
+
+            Ticker();
+            Drawer();
+
+            while (!videoSync)
+            {
+                SDL_Delay(1);
+            }
+            videoSync = 0;
+        }
+
+        SDL_UnlockTexture(sdlTexture);
+
+        SDL_SetRenderDrawColor(sdlRenderer, sysBorder->r, sysBorder->g, sysBorder->b, 0xff);
+        SDL_RenderClear(sdlRenderer);
+        SDL_SetRenderTarget(sdlRenderer, sdlTarget);
+        SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+        SDL_SetRenderTarget(sdlRenderer, NULL);
+        SDL_RenderCopy(sdlRenderer, sdlTarget, NULL, &sdlViewport);
+
+        SDL_RenderPresent(sdlRenderer);
+    }
+
+    SDL_CloseAudioDevice(sdlAudio);
+
+    SDL_DestroyTexture(sdlTexture);
+    SDL_DestroyTexture(sdlTarget);
+    SDL_DestroyRenderer(sdlRenderer);
+    SDL_DestroyWindow(sdlWindow);
+
+    SDL_Quit();
+
+    return 0;
+}
