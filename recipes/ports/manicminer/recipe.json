@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "manicminer.zip",
+  "port_json": "new_ports/manicminer/manicminer/manicminer/port.json",
+  "source": {
+    "date_updated": "2026-03-01",
+    "port_exe": "manic",
+    "port_build": "make",
+    "port_checksum": "",
+    "port_url": "fawtytoo/ManicMiner",
+    "port_version": ""
+  }
+}
