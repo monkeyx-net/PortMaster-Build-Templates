@@ -116,21 +116,6 @@ create_new_port () {
     else
       break
     fi
-<<'###BLOCK-COMMENT'
-    port_version=$(curl -sf "https://api.github.com/repos/${port_url}/releases/latest" | jq -r '.tag_name')
-    if [[ -n "$port_version" && "$port_version" != "null" ]]; then
-        tmp_url="https://github.com/${port_url}/archive/refs/tags/${port_version}.tar.gz"
-        wget -O source.tar.gz $tmp_url
-        port_checksum=$(sha256sum source.tar.gz | cut -d' ' -f1)
-        break
-    else
-        branch=$(curl -sf "https://api.github.com/repos/${port_url}" | jq -r '.default_branch')
-        tmp_url="https://github.com/${port_url}/archive/refs/heads/${branch}.zip"
-        wget -O source.zip $tmp_url
-        port_checksum=$(sha256sum source.zip | cut -d' ' -f1)
-        break
-    fi
-###BLOCK-COMMENT
   done
   # TODO separate build commands? shared libs?
   read_check 'Enter build command(s): ' port_build
@@ -167,10 +152,7 @@ echo -e "${green}"
 echo -e "*******************************************"
 echo -e "* Welcome to the PortMaster recipe system *"
 echo -e "*******************************************"
-
-
 echo -e "\n\nThis script should be run from the recipes folder to ensure correct paths are used. \n\n"
-
 read -rp 'Enter port name or part name: ' port_title
 
 # Case insensitive search "i"
@@ -198,6 +180,19 @@ while true; do
     read choice
     if [[ ${choice} =~ ^[0-9]+$ ]] && [ ${choice} -ge 1 ] && [ ${choice} -le ${#ports[@]} ]; then
         port_title="${ports[$((choice-1))]}"
+        port_folder=$(jq -r --arg title "${port_title}" '.ports | to_entries[] | select(.value.attr.title == $title) | .key | gsub("\\.zip$"; "")' releases/ports.json)
+        read_check "Enter port executable name: " port_exe
+        read_check 'Enter build command(s): ' port_build
+        while true; do
+          echo "Enter Project and Repo Name ie HarbourMasters/Shipwright do not include https://github.com/"
+          read_check 'Enter URL for code: ' port_url
+          if [ -z "${port_url}" ]; then
+          echo "Empty input received. Please enter a valid Project/Repo."
+          else
+            break
+          fi
+        done
+        create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}" "${port_version}"
         break
     else
         echo "Invalid selection! Please enter a number between 1 and ${#ports[@]}"
