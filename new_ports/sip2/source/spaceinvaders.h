@@ -17,7 +17,7 @@ public:
   static constexpr int32_t version_major {0};
   static constexpr int32_t version_minor {1};
 
-  static constexpr Vector2i baseWorldSize {224, 256};
+  static constexpr Vector2i baseWorldSize {448, 256};
 
 public:
   enum BitmapKey : Assets::Key_t
@@ -938,6 +938,7 @@ private:
 
 private:
   int32_t _worldScale;
+  int32_t _xOffset;
 
   HUD::uid_t _uidMenuText;
   HUD::uid_t _uidMenuBitmap;
