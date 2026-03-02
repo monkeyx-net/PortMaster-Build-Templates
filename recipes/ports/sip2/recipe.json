@@ -8,6 +8,6 @@
     "port_build": "make",
     "port_checksum": "62a824569ad377b4336342f75eb74d24206486cf7a652854fbfb12501b1cfbb0",
     "port_url": "https://github.com/monkeyx-net/space_invaders_part_ii/tree/wider",
-    "port_version": "commit:63576e7"
+    "port_version": "commit:63577"
   }
 }
