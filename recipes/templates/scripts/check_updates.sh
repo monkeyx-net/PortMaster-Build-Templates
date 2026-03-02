@@ -195,7 +195,22 @@ check_port() {
         [[ "$fetch_error" == false ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
-    # ── (4) Codeberg URL ──────────────────────────────────────────────────────
+    # ── (4) GitHub tree/branch web URL ───────────────────────────────────────
+    # e.g. https://github.com/Owner/Repo/tree/branch-name
+    elif [[ "$port_url" =~ ^https://github\.com/([^/]+/[^/]+)/tree/([^/]+)$ ]]; then
+        local repo="${BASH_REMATCH[1]}"
+        local branch="${BASH_REMATCH[2]}"
+
+        local sha
+        sha=$(gh_branch_sha "$repo" "$branch")
+        [[ -n "$sha" ]] && upstream_version="commit:$sha"
+
+        fetch "https://github.com/${repo}/archive/refs/heads/${branch}.zip" \
+              "$tmpdir/source.zip" || { fetch_error='true'; }
+        [[ "$fetch_error" == 'false' ]] \
+            && upstream_checksum=$(sha256sum "$tmpdir/source.zip" | cut -d' ' -f1)
+
+    # ── (6) Codeberg URL ──────────────────────────────────────────────────────
     # e.g. https://codeberg.org/owner/repo/archive/master.zip
     elif [[ "$port_url" =~ ^https://codeberg\.org/([^/]+)/([^/]+)/archive/([^.]+)\.(zip|tar\.gz)$ ]]; then
         local cb_owner="${BASH_REMATCH[1]}"
@@ -217,7 +232,7 @@ check_port() {
         [[ "$fetch_error" == false ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
-    # ── (5) Any other direct URL ──────────────────────────────────────────────
+    # ── (7) Any other direct URL ──────────────────────────────────────────────
     else
         local clean_url="${port_url%%\?*}"
         local ext="${clean_url##*.}"

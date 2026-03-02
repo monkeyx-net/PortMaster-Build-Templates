@@ -153,7 +153,7 @@ echo -e "*******************************************"
 echo -e "* Welcome to the PortMaster recipe system *"
 echo -e "*******************************************"
 echo -e "\n\nThis script should be run from the recipes folder to ensure correct paths are used. \n\n"
-read -rp 'Enter port name or part name: ' port_title
+read -rp 'Enter port name or part port name: ' port_title
 
 # Case insensitive search "i"
 mapfile -t ports < <(

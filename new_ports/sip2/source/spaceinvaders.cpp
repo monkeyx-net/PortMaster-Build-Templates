@@ -44,17 +44,17 @@ bool SpaceInvaders::initialize(Engine* engine, int32_t windowWidth, int32_t wind
   _hud.initialize(&(pxr::assets->getFont(fontKey, _worldScale)), flashPeriod, phasePeriod);
   _uidScoreText = _hud.addTextLabel({Vector2i{10, 240} * _worldScale, pxr::colors::magenta, "SCORE"});
   _uidScoreValue = _hud.addIntLabel({Vector2i{10, 230} * _worldScale, pxr::colors::white, &_score, 5});
-  _uidHiScoreText = _hud.addTextLabel({Vector2i{85, 240} * _worldScale, pxr::colors::red, "HI-SCORE"});
-  _uidHiScoreValue = _hud.addIntLabel({Vector2i{95, 230} * _worldScale, pxr::colors::green, &_hiscore, 5});
-  _uidRoundText = _hud.addTextLabel({Vector2i{170, 240} * _worldScale, pxr::colors::yellow, "ROUND"});
-  _uidRoundValue = _hud.addIntLabel({Vector2i{170, 230} * _worldScale, pxr::colors::magenta, &_round, 5});
-  _uidCreditText = _hud.addTextLabel({Vector2i{130, 6} * _worldScale, pxr::colors::magenta, "CREDIT"});
-  _uidCreditValue = _hud.addIntLabel({Vector2i{190, 6} * _worldScale, pxr::colors::cyan, &_credit, 1});
+  _uidHiScoreText = _hud.addTextLabel({Vector2i{170, 240} * _worldScale, pxr::colors::red, "HI-SCORE"});
+  _uidHiScoreValue = _hud.addIntLabel({Vector2i{190, 230} * _worldScale, pxr::colors::green, &_hiscore, 5});
+  _uidRoundText = _hud.addTextLabel({Vector2i{340, 240} * _worldScale, pxr::colors::yellow, "ROUND"});
+  _uidRoundValue = _hud.addIntLabel({Vector2i{340, 230} * _worldScale, pxr::colors::magenta, &_round, 5});
+  _uidCreditText = _hud.addTextLabel({Vector2i{260, 6} * _worldScale, pxr::colors::magenta, "CREDIT"});
+  _uidCreditValue = _hud.addIntLabel({Vector2i{380, 6} * _worldScale, pxr::colors::cyan, &_credit, 1});
   _uidLivesValue = _hud.addIntLabel({Vector2i{10, 6} * _worldScale, pxr::colors::yellow, &_lives, 1});
 
   for(int i{0}; i < maxLivesHudCannons; ++i){
     _uidLivesBitmaps[i] = _hud.addBitmapLabel({
-      Vector2i{(20 + (16 * i)), 6} * _worldScale, 
+      Vector2i{(20 + (16 * i)), 6} * _worldScale,
       pxr::colors::green, 
       &(assets->getBitmap(SpaceInvaders::BMK_CANNON0, _worldScale))
     });
@@ -294,7 +294,7 @@ void SplashState::initialize(Vector2i worldSize, int32_t worldScale)
 
   _blockSize = 3 * _worldScale;
   _blockSpace = 1 * _worldScale;
-  _signX = 16 * _worldScale;
+  _signX = (_worldSize._x - 192 * _worldScale) / 2;
   _spaceY = 192 * _worldScale;
   _invadersY = 112 * _worldScale;
 
@@ -350,7 +350,7 @@ void SplashState::initialize(Vector2i worldSize, int32_t worldScale)
     _blockSize
   });
 
-  _partiiPosition = Vector2i{80, 48} * _worldScale;
+  _partiiPosition = {(_worldSize._x - 57 * _worldScale) / 2, 48 * _worldScale};
   _partiiColor = pxr::colors::red;
   _partiiVisible = false;
 
@@ -526,7 +526,7 @@ void GameState::initialize(Vector2i worldSize, int32_t worldScale)
   _alienXSeperation = baseAlienDropDisplacement * _worldScale;
   _alienYSeperation = baseAlienDropDisplacement * _worldScale;
 
-  _aliensSpawnPosition._x = (_worldSize._x - (gridWidth * _alienXSeperation)) / 2;
+  _aliensSpawnPosition._x = 5 * _worldScale;
   _aliensSpawnPosition._y = ((baseAlienTopRowHeight + (minSpawnDrops * baseAlienSpawnDropDisplacement))
                              - ((gridHeight - 1) * baseAlienDropDisplacement)) * _worldScale; 
 
@@ -645,9 +645,9 @@ void GameState::initialize(Vector2i worldSize, int32_t worldScale)
   _laser._bitmapKey = SpaceInvaders::BMK_LASER0;
 
   _bunkerColorIndex = 0;
-  _bunkerSpawnX = 32 * _worldScale;
+  _bunkerSpawnX = 64 * _worldScale;
   _bunkerSpawnY = 48 * _worldScale;
-  _bunkerSpawnGapX = 45 * _worldScale;
+  _bunkerSpawnGapX = 90 * _worldScale;
   _bunkerSpawnCount = 4;
   _bunkerWidth = 22 * _worldScale;
   _bunkerHeight = 16 * _worldScale;
@@ -1409,9 +1409,11 @@ void GameState::doCollisionsBombsHitbar()
     
     // Apply damage to the bar.
     for(int32_t i = 0; i < _bombBoomWidth; ++i){
-      bool bitval = (bithit + i / _worldScale) % 2;
+      int32_t col = bithit + i;
+      if(col < 0 || col >= (int32_t)_hitbar->_bitmap.getWidth()) continue;
+      bool bitval = (col / _worldScale) % 2;
       for(int32_t j = 0; j < _hitbar->_height; ++j)
-        _hitbar->_bitmap.setBit(j, bithit + i, bitval, false);
+        _hitbar->_bitmap.setBit(j, col, bitval, false);
     }
     _hitbar->_bitmap.regenerateBytes();
 
@@ -2404,6 +2406,7 @@ void SosState::doEndTest()
 void MenuState::initialize(Vector2i worldSize, int32_t worldScale)
 {
   _worldScale = worldScale;
+  _xOffset = (worldSize._x - 224 * worldScale) / 2;
 }
 
 void MenuState::onUpdate(double now, float dt)
@@ -2440,22 +2443,22 @@ void MenuState::populateHud()
 {
   SpaceInvaders* si = static_cast<SpaceInvaders*>(_app);
   HUD& hud = si->getHud();
-  _uidMenuText = hud.addTextLabel({Vector2i{91, 204} * _worldScale, pxr::colors::cyan, "*MENU*"});
-  _uidMenuBitmap = hud.addBitmapLabel({Vector2i{56, 182} * _worldScale, pxr::colors::white, &(pxr::assets->getBitmap(SpaceInvaders::BMK_MENU, _worldScale))});
-  _uidControlsText = hud.addTextLabel({Vector2i{76, 162} * _worldScale, pxr::colors::cyan, "*CONTROLS*"});
-  _uidControlsBitmap = hud.addBitmapLabel({Vector2i{58, 134} * _worldScale, pxr::colors::white, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CONTROLS, _worldScale))});
-  _uidTablesText = hud.addTextLabel({Vector2i{40, 108} * _worldScale, pxr::colors::cyan, "*SCORE ADVANCE TABLE*"});
-  _uidSchroBitmap = hud.addBitmapLabel({Vector2i{62, 90} * _worldScale, pxr::colors::magenta, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SCHRODINGER, _worldScale))});
-  _uidSaucerBitmap = hud.addBitmapLabel({Vector2i{62, 74} * _worldScale, pxr::colors::magenta, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SAUCER, _worldScale))});
-  _uidSquidBitmap = hud.addBitmapLabel({Vector2i{66, 58} * _worldScale, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SQUID0, _worldScale))});
-  _uidCuttleBitmap = hud.addBitmapLabel({Vector2i{52, 58} * _worldScale, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CUTTLE0, _worldScale))});
-  _uidCrabBitmap = hud.addBitmapLabel({Vector2i{64, 42} * _worldScale, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CRAB0, _worldScale))});
-  _uidOctopusBitmap = hud.addBitmapLabel({Vector2i{64, 26} * _worldScale, pxr::colors::red, &(pxr::assets->getBitmap(SpaceInvaders::BMK_OCTOPUS0, _worldScale))});
-  _uid500PointsText = hud.addTextLabel({Vector2i{82, 90} * _worldScale, pxr::colors::magenta, "= 500 POINTS", 0.f, true});
-  _uidMysteryPointsText = hud.addTextLabel({Vector2i{82, 74} * _worldScale, pxr::colors::magenta, "= ? MYSTERY", 1.f, true});
-  _uid30PointsText = hud.addTextLabel({Vector2i{82, 58} * _worldScale, pxr::colors::yellow, "= 30 POINTS", 2.f, true});
-  _uid20PointsText = hud.addTextLabel({Vector2i{82, 42} * _worldScale, pxr::colors::yellow, "= 20 POINTS", 3.f, true});
-  _uid10PointsText = hud.addTextLabel({Vector2i{82, 26} * _worldScale, pxr::colors::red, "= 10 POINTS", 4.f, true});
+  _uidMenuText = hud.addTextLabel({{_xOffset + 91 * _worldScale, 204 * _worldScale}, pxr::colors::cyan, "*MENU*"});
+  _uidMenuBitmap = hud.addBitmapLabel({{_xOffset + 56 * _worldScale, 182 * _worldScale}, pxr::colors::white, &(pxr::assets->getBitmap(SpaceInvaders::BMK_MENU, _worldScale))});
+  _uidControlsText = hud.addTextLabel({{_xOffset + 76 * _worldScale, 162 * _worldScale}, pxr::colors::cyan, "*CONTROLS*"});
+  _uidControlsBitmap = hud.addBitmapLabel({{_xOffset + 58 * _worldScale, 134 * _worldScale}, pxr::colors::white, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CONTROLS, _worldScale))});
+  _uidTablesText = hud.addTextLabel({{_xOffset + 40 * _worldScale, 108 * _worldScale}, pxr::colors::cyan, "*SCORE ADVANCE TABLE*"});
+  _uidSchroBitmap = hud.addBitmapLabel({{_xOffset + 62 * _worldScale, 90 * _worldScale}, pxr::colors::magenta, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SCHRODINGER, _worldScale))});
+  _uidSaucerBitmap = hud.addBitmapLabel({{_xOffset + 62 * _worldScale, 74 * _worldScale}, pxr::colors::magenta, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SAUCER, _worldScale))});
+  _uidSquidBitmap = hud.addBitmapLabel({{_xOffset + 66 * _worldScale, 58 * _worldScale}, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_SQUID0, _worldScale))});
+  _uidCuttleBitmap = hud.addBitmapLabel({{_xOffset + 52 * _worldScale, 58 * _worldScale}, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CUTTLE0, _worldScale))});
+  _uidCrabBitmap = hud.addBitmapLabel({{_xOffset + 64 * _worldScale, 42 * _worldScale}, pxr::colors::yellow, &(pxr::assets->getBitmap(SpaceInvaders::BMK_CRAB0, _worldScale))});
+  _uidOctopusBitmap = hud.addBitmapLabel({{_xOffset + 64 * _worldScale, 26 * _worldScale}, pxr::colors::red, &(pxr::assets->getBitmap(SpaceInvaders::BMK_OCTOPUS0, _worldScale))});
+  _uid500PointsText = hud.addTextLabel({{_xOffset + 82 * _worldScale, 90 * _worldScale}, pxr::colors::magenta, "= 500 POINTS", 0.f, true});
+  _uidMysteryPointsText = hud.addTextLabel({{_xOffset + 82 * _worldScale, 74 * _worldScale}, pxr::colors::magenta, "= ? MYSTERY", 1.f, true});
+  _uid30PointsText = hud.addTextLabel({{_xOffset + 82 * _worldScale, 58 * _worldScale}, pxr::colors::yellow, "= 30 POINTS", 2.f, true});
+  _uid20PointsText = hud.addTextLabel({{_xOffset + 82 * _worldScale, 42 * _worldScale}, pxr::colors::yellow, "= 20 POINTS", 3.f, true});
+  _uid10PointsText = hud.addTextLabel({{_xOffset + 82 * _worldScale, 26 * _worldScale}, pxr::colors::red, "= 10 POINTS", 4.f, true});
 }
 
 void MenuState::depopulateHud()
