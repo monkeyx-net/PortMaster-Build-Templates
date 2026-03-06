@@ -111,7 +111,7 @@ func (g *Game) monsterBumpDisoriented(i ID, ai *Actor) bool {
 	pl := g.PlayerEntity()
 	to := ei.P.Add(g.Dir.Mul(-1)) // redirection target due to disorientation
 	if to == pl.P || paths.DistanceManhattan(pl.P, to) < paths.DistanceManhattan(pl.P, ei.P) &&
-		g.ActorInRange(to, pl.P) == PlayerID {
+		g.ActorInRange(ei.P, pl.P) == PlayerID {
 		if ai.Has(StatusFear) || (ai.DoesAny(MonsMusic) && !ai.Has(StatusBerserk)) {
 			// The disoriented and afraid monster loses a turn when
 			// it wants to go toward the player.

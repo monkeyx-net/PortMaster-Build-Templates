@@ -3,10 +3,10 @@
   "name": "shamogu.zip",
   "port_json": "new_ports/shamogu/shamogu/shamogu/port.json",
   "source": {
-    "date_updated": "2026-02-28",
+    "date_updated": "2026-03-06",
     "port_exe": "shamogu",
     "port_build": "go build -tags sdl",
-    "port_checksum": "71ca797f60a0b11137796935431273417a053757df49b9ba6031eb62087764a9",
+    "port_checksum": "e8d237bf3a45a2c4d44400d0fd327131154a9b1e69cce46c7d5220b400755940",
     "port_url": "https://codeberg.org/anaseto/shamogu/archive/master.zip",
     "port_version": "v1.4.1"
   }
