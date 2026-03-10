@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -e
+set -e
 
 PORT_FOLDER="$1"
 PORT_BUILD="$2"
@@ -39,7 +39,7 @@ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 git submodule update --init
 
 cd libultraship
-patch -p1 < /recipes/ports/soh2/soh2.patch
+patch -p1 < $CDIR/recipes/ports/soh2/soh2.patch
 cd 
 
 export CFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
