@@ -40,7 +40,7 @@ git submodule update --init
 
 cd libultraship
 patch -p1 < $CDIR/recipes/ports/soh2/soh2.patch
-cd 
+cd ..
 
 export CFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
 export CXXFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
