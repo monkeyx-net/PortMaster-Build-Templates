@@ -3,11 +3,11 @@
   "name": "soh2.zip",
   "port_json": "new_ports/soh2/soh2/soh2/port.json",
   "source": {
-    "date_updated": "2026-02-28",
+    "date_updated": "2026-03-10",
     "port_exe": "2s2h",
     "port_build": "cmake",
-    "port_checksum": "",
+    "port_checksum": "514647bce3d5b7c26635c6c28007ae0a0e169d265254f3c9c9b2002f0fa4fb4e",
     "port_url": "HarbourMasters/2ship2harkinian",
-    "port_version": ""
+    "port_version": "4.0.2"
   }
 }

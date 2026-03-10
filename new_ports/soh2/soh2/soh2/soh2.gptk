@@ -14,7 +14,7 @@
 # C-BUTTONS = UP/DOWN/LEFT/RIGHT
 # START = SPACE
 
-guide = \"
+guide = f1
 back = \"
 start = \"
 up = \"
@@ -36,7 +36,7 @@ l2 = \"
 r1 = \"
 r2 = \"
 
-l3 = \"
+l3 = f1
 r3 = tab
 
 left_analog_up = \"
