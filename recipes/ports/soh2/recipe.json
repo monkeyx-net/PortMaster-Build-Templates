@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "soh2.zip",
+  "port_json": "new_ports/soh2/soh2/soh2/port.json",
+  "source": {
+    "date_updated": "2026-02-28",
+    "port_exe": "2s2h",
+    "port_build": "cmake",
+    "port_checksum": "",
+    "port_url": "HarbourMasters/2ship2harkinian",
+    "port_version": ""
+  }
+}
