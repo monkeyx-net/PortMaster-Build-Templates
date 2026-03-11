@@ -71,7 +71,7 @@ cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/." "${CDIR}/dist/assets/xml/"
 ls -lha dist/
 cd "${CDIR}/dist/assets"
 zip -r ${CDIR}/dist/assets/extractor.zip ./*
-rm -rf extractor xml
+rm -rf extractor/* xml
 cp "2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
 
 
