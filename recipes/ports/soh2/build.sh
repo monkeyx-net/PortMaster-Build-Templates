@@ -19,6 +19,8 @@ FILES=(
   "libspdlog.so.1.12"
   "libzip.so.5"
   "libtinyxml2.so.10"
+  "libcrypto.so.1.1"
+  "libfmt.so.9"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
@@ -64,7 +66,7 @@ ls -lha 2ship2harkinian/build-soh2/mm/
 strip "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" || true
 cp "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "2ship2harkinian/build-soh2/mm/2ship.o2r" "dist/"
-cp "2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out"
+cp "2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
 cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." "${CDIR}/dist/assets/extractor/"
 cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/." "${CDIR}/dist/assets/xml/"
 ls -lha dist/
