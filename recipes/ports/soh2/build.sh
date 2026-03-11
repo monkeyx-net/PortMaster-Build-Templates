@@ -69,9 +69,8 @@ cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." "${CDIR}/dist/assets/extra
 cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/." "${CDIR}/dist/assets/xml/"
 ls -lha dist/
 cd "${CDIR}/dist/assets"
-zip -r ${CDIR}/dist/extractor.zip ./*
-cd ..
-rm -rf assets
+zip -r ${CDIR}/dist/assets/extractor.zip ./*
+rm -rf extractor xml
 
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 # if sourcedir !null and files !null
