@@ -72,7 +72,7 @@ ls -lha dist/
 cd "${CDIR}/dist/assets"
 zip -r ${CDIR}/dist/assets/extractor.zip ./*
 rm -rf extractor/* xml
-cp "2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
+cp "${CDIR}/2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
 
 
 mkdir -p ${CDIR}/dist/libs.${ARCH}
