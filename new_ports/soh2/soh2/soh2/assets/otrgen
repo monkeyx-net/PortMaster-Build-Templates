@@ -61,7 +61,7 @@ process_rom() {
     OTRNAME="mm.o2r"
     if [ ! -e "$GAMEDIR/$OTRNAME" ]; then
         echo "Generating $OTRNAME from $romfile..." | tee -a $LOGFILE
-        if "$GAMEDIR/assets/extractor/ZAPD.out" ed -eh -i "$GAMEDIR/assets/xml/$ROM" -b "$romfile" -fl "$GAMEDIR/assets/extractor/filelists/" -o placeholder -osf placeholder -gsf 1 -rconf "$GAMEDIR/assets/extractor/Config_$ROM.xml" -se OTR --otrfile "$OTRNAME" --portVer "4.0.2" >> "$LOGFILE" 2>&1; then
+        if "$GAMEDIR/assets/extractor/ZAPD.out.${DEVICE_ARCH}" ed -eh -i "$GAMEDIR/assets/xml/$ROM" -b "$romfile" -fl "$GAMEDIR/assets/extractor/filelists/" -o placeholder -osf placeholder -gsf 1 -rconf "$GAMEDIR/assets/extractor/Config_$ROM.xml" -se OTR --otrfile "$OTRNAME" --portVer "4.0.2" >> "$LOGFILE" 2>&1; then
             echo "[OTRGEN] Successfully generated $OTRNAME"
         else
             echo "[OTRGEN] Failed to generate $OTRNAME."
