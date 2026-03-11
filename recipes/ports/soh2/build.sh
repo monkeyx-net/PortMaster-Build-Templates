@@ -65,15 +65,17 @@ strip "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" || true
 cp "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "2ship2harkinian/build-soh2/mm/2ship.o2r" "dist/"
 cp "2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out"
+cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." "${CDIR}/dist/assets/"
+cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/." "${CDIR}/dist/assets/"
 ls -lha dist/
-cd dist/assets
-mkdir assets_zip
-cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." assets_zip/
-cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/" assets_zip/
-cd assets_zip
+#cd dist/assets
+#mkdir assets_zip
+#cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." assets_zip/
+#cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/" assets_zip/
+#cd assets_zip
+cd "${CDIR}/dist/assets"
 zip -r ../extractor.zip ./*
-cd ..
-rm -rf assets_zip
+#rm -rf assets_zip
 
 #get license file
 
