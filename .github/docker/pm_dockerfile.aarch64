@@ -42,6 +42,7 @@ RUN apt-get update && \
       libogg-dev \
       libopengl-dev \
       libopus-dev \
+      libopusfile0 \
       libopusfile-dev \
       libpkgconf-dev \
       libpng-dev \
