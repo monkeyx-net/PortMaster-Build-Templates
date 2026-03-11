@@ -10,7 +10,7 @@ exec > >(tee "$LOGFILE") 2>&1
 echo "GAMEDIR is set to: $GAMEDIR"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 
 # Check if we need to unzip the assets archive
 unzip_assets() {
