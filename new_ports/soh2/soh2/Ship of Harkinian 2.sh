@@ -20,13 +20,13 @@ get_controls
 GAMEDIR="/$directory/ports/soh2"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # CD and set permissions
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
-$ESUDO chmod +x "$GAMEDIR/2s2h.elf"
+$ESUDO chmod +x "$GAMEDIR/2s2h.elf.${DEVICE_ARCH}"
 $ESUDO chmod +x "$GAMEDIR/assets/otrgen"
 
 # Close the menu if open
@@ -71,9 +71,9 @@ o2r_check() {
 
 # Warn if mm.o2r is older than 2s2h.elf or 2ship.o2r
 if [ -f "$GAMEDIR/mm.o2r" ]; then
-    if [ -f "$GAMEDIR/2s2h.elf" ] && [ "$GAMEDIR/2s2h.elf" -nt "$GAMEDIR/mm.o2r" ] \
+    if [ -f "$GAMEDIR/2s2h.elf.${DEVICE_ARCH}" ] && [ "$GAMEDIR/2s2h.elf.${DEVICE_ARCH}" -nt "$GAMEDIR/mm.o2r" ] \
        || [ -f "$GAMEDIR/2ship.o2r" ] && [ "$GAMEDIR/2ship.o2r" -nt "$GAMEDIR/mm.o2r" ]; then
-        echo "Notice: mm.o2r is older than 2s2h.elf and/or 2ship.o2r. Forcing regeneration."
+        pm_message "Notice: mm.o2r is older than 2s2h.elf and/or 2ship.o2r. Forcing regeneration."
         rm -f "$GAMEDIR/mm.o2r"
         REGEN=1
         export REGEN
@@ -95,13 +95,13 @@ if [ ! -f "mm.o2r" ]; then
             pm_message "This port requires the latest version of PortMaster."
         fi
     else
-        echo "Missing ROM files in $GAMEDIR/baseroms! Can't generate o2r!"
+        pm_message "Missing ROM files in $GAMEDIR/baseroms! Can't generate o2r!"
         exit 1
     fi
     
     # Check if OTR files were generated
     if [ ! -f "mm.o2r" ]; then
-        echo "No o2r files, can't run the game!"
+        pm_message "No o2r files, can't run the game!"
         exit 1
     fi
 fi
@@ -117,9 +117,9 @@ if [ -f "imgui.ini" ]; then
 fi
 
 # Run the game
-$GPTOKEYB "2s2h.elf" -c "soh2.gptk" & 
-pm_platform_helper "2s2h.elf" >/dev/null
-./2s2h.elf
+$GPTOKEYB "2s2h.elf.${DEVICE_ARCH}" -c "soh2.gptk" & 
+pm_platform_helper "2s2h.elf.${DEVICE_ARCH}" >/dev/null
+./2s2h.elf.${DEVICE_ARCH}
 
 # Cleanup
 rm -rf "$GAMEDIR/logs"
