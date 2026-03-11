@@ -32,7 +32,9 @@ The [MM Reloaded](https://github.com/GhostlyDark/MM-Reloaded-2S2H) texture pack 
 ## Thanks
 - Nintendo for the game  
 - HarbourMasters for the native pc port  
+- beniamino for the build steps allowing this to run on older Ubuntu-based systems  
 - AkerHasReawakened for the cover art  
+- Testers and Devs from the PortMaster Discord  
 
 
 
