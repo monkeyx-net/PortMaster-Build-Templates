@@ -8,7 +8,6 @@ RUN apt-get update && \
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
     echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
     add-apt-repository -y ppa:longsleep/golang-backports && \
-    add-apt-repository -y "deb http://ports.ubuntu.com/ubuntu-ports focal main" && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
       appstream \
@@ -43,7 +42,6 @@ RUN apt-get update && \
       libogg-dev \
       libopengl-dev \
       libopus-dev \
-      libopusfile0 \
       libopusfile-dev \
       libpkgconf-dev \
       libpng-dev \
@@ -128,6 +126,13 @@ RUN git clone https://github.com/libarchive/bzip2.git && \
     git checkout 1ea1ac188ad4b9cb662e3f8314673c63df95a589 && \
     mkdir build-soh && cd build-soh && \
     cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
+
+RUN git clone https://github.com/xiph/opusfile.git
+    cd opusfile && \
+    ./autogen.sh && \
+    PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --prefix=/usr/local --libdir=/usr/lib/aarch64-linux-gnu && \
     make -j$(nproc) && \
     make install
 
