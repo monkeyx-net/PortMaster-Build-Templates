@@ -21,6 +21,7 @@ FILES=(
   "libtinyxml2.so.10"
   "libcrypto.so.1.1"
   "libfmt.so.9"
+  "liblzma.so.5"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
