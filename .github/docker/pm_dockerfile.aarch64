@@ -25,6 +25,7 @@ RUN apt-get update && \
       imagemagick \
       jq \
       ldc \
+      lld-18 \
       liballegro-acodec5-dev \
       liballegro-audio5-dev \
       liballegro-image5-dev \
@@ -53,8 +54,10 @@ RUN apt-get update && \
       libsdl2-dev \
       libsdl2-image-dev \
       libsdl2-mixer-dev \
+      libsdl2-net-dev \
       libsdl2-ttf-dev \
       libspdlog-dev \
+      libstdc++-10-dev \
       libtool \
       libvorbis-dev \
       libzip-dev \
@@ -102,6 +105,14 @@ RUN wget -O sdl.tar.gz https://github.com/libsdl-org/sdl12-compat/archive/refs/t
 
 RUN sdl-config --version
 
+RUN git clone https://github.com/libsdl-org/SDL_net.git && \
+    cd SDL_net && \
+    git checkout release-2.2.0 && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
+
 RUN git clone https://github.com/nih-at/libzip.git && \
     cd libzip && \
     git checkout 0581df510597b46c28509e9d4b5998cf5fecb636 && \
@@ -144,8 +155,23 @@ RUN git clone https://github.com/leethomason/tinyxml2.git && \
     cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu -DBUILD_SHARED_LIBS=ON && \
     make -j$(nproc) && \
     make install && \
-    cd .. && \
-    mv cmake/tinyxml2-config.cmake cmake/tinyxml2-config.cmake.disabled
+ 
+RUN git clone https://github.com/microsoft/GSL.git && \
+    cd GSL && \
+    git checkout 2828399820ef4928cc89b65605dca5dc68efca6e && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu -DBUILD_SHARED_LIBS=ON && \
+    make -j$(nproc) && \
+    make install
+
+RUN git clone https://github.com/fmtlib/fmt.git && \
+    cd fmt && \
+    git checkout 10.1.1 && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
+
 
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.3/cmake-3.31.3-linux-`uname -m`.sh
 RUN chmod a+x ./cmake-3.31.3-linux-`uname -m`.sh

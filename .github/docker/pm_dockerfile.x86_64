@@ -20,6 +20,7 @@ RUN apt-get update && \
       imagemagick \
       jq \
       ldc \
+      lld-18 \
       liballegro-acodec5-dev \
       liballegro-audio5-dev \
       liballegro-image5-dev \
@@ -43,6 +44,7 @@ RUN apt-get update && \
       libpng-dev \
       libsdl-image1.2-dev \
       libsdl-mixer1.2-dev \
+      libsdl2-net-dev \
       libsdl-ttf2.0-dev \
       libsdl1.2-dev \
       libsdl2-dev \
@@ -50,6 +52,7 @@ RUN apt-get update && \
       libsdl2-mixer-dev \
       libsdl2-ttf-dev \
       libspdlog-dev \
+      libstdc++-10-dev \
       libtool \
       libvorbis-dev \
       libzip-dev \
@@ -97,6 +100,14 @@ RUN wget -O sdl.tar.gz https://github.com/libsdl-org/sdl12-compat/archive/refs/t
 
 RUN sdl-config --version
 
+RUN git clone https://github.com/libsdl-org/SDL_net.git && \
+    cd SDL_net && \
+    git checkout release-2.2.0 && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
+
 RUN git clone https://github.com/nih-at/libzip.git && \
     cd libzip && \
     git checkout 0581df510597b46c28509e9d4b5998cf5fecb636 && \
@@ -131,9 +142,23 @@ RUN git clone https://github.com/leethomason/tinyxml2.git && \
     mkdir build-soh && cd build-soh && \
     cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu -DBUILD_SHARED_LIBS=ON && \
     make -j$(nproc) && \
-    make install && \
-    cd .. && \
-    mv cmake/tinyxml2-config.cmake cmake/tinyxml2-config.cmake.disabled
+    make install
+
+RUN git clone https://github.com/microsoft/GSL.git && \
+    cd GSL && \
+    git checkout 2828399820ef4928cc89b65605dca5dc68efca6e && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu -DBUILD_SHARED_LIBS=ON && \
+    make -j$(nproc) && \
+    make install
+
+RUN git clone https://github.com/fmtlib/fmt.git && \
+    cd fmt && \
+    git checkout 10.1.1 && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
 
 WORKDIR /workspace
 

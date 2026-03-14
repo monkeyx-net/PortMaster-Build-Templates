@@ -1,0 +1,35 @@
+{
+  "version": 4,
+  "name": "spaghettikart.zip",
+  "items": [
+    "SpaghettiKart.sh",
+    "spaghettikart"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "SpaghettiKart",
+    "porter": [
+      "Jeod",
+      "monkeyx-net"
+    ],
+    "desc": "A source port of Mario Kart 64. It features extensive and significant enhancements over the original game, such as improved performance, increased frame-rate, native ultra-widescreen support, and extensive mod support (especially compared to emulated versions of the original), among other features.",
+    "desc_md": null,
+    "inst": "Follow the guide in the readme to generate your mk64.o2r file.",
+    "inst_md": null,
+    "genres": [
+      "racing"
+    ],
+    "image": null,
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "free",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}
