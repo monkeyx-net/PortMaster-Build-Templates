@@ -86,8 +86,8 @@ cp "SpaghettiKart/build-spaghettikart/spaghetti.o2r" "dist/"
 wget -O "dist/gamecontrollerdb.txt" "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt"
 cp -r "${CDIR}/SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal-build/torch" "${CDIR}/dist/tools/torch.${ARCH}"
 
-rm -rf "${CDIR)/tools/yamls"
-rm -f "${CDIR)/tools/config.yml"
+rm -rf "${CDIR}/tools/yamls"
+rm -f "${CDIR}/tools/config.yml"
 cp -r "${CDIR}/SpaghettiKart/config.yml/." "${CDIR}/dist/tools"
 ls -lha dist/
 
