@@ -1,0 +1,40 @@
+{
+    "CVars": {
+        "gAdvancedResolution": {
+            "Enabled": 1
+        },
+        "gBetterResultPortraits": 1,
+        "gControlNav": 1,
+        "gControllers": {
+        },
+        "gDisableLod": 1,
+        "gDisableRubberbanding": 1,
+        "gEnhancements": {
+            "Mods": {
+                "AlternateAssets": 1
+            }
+        },
+        "gForceCursorVisibility": 0,
+        "gFreecam": 0,
+        "gMainMusicVolume": 1.0,
+        "gMatchRefreshRate": 0,
+        "gNoCulling": 1,
+        "gOpenMenu": 0,
+        "gSdlWindowedFullscreen": 0,
+        "gSettings": {
+            "Menu": {
+                "ActiveHeader": "Settings",
+                "EnhancementsSidebarSection": "Rulesets",
+                "SettingsSidebarSection": "Graphics"
+            }
+        },
+        "gVsyncEnabled": 1
+    },
+    "Window": {
+        "AudioBackend": "sdl",
+        "Backend": {
+            "Id": 1,
+            "Name": "OpenGL"
+        }
+    }
+}

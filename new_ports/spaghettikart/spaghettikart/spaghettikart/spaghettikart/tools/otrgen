@@ -1,0 +1,131 @@
+#!/bin/bash
+
+# Set GAMEDIR to the current directory and set logfile
+GAMEDIR="$PWD"
+LOGFILE="$GAMEDIR/tools/otrlog.txt"
+ASSETS_ZIP="$GAMEDIR/tools/assets.zip"
+ASSETS_DIR="$GAMEDIR/tools"
+
+# Redirect output and error to the log file
+rm -rf $LOGFILE
+exec > >(tee -a "$LOGFILE") 2>&1
+echo "GAMEDIR is set to: $GAMEDIR"
+
+# Check if we need to unzip the assets archive
+unzip_assets() {
+    # Define 7zzs binary
+    SEVENZIP="$controlfolder/7zzs.${DEVICE_ARCH}"
+    if [ ! -x "$SEVENZIP" ]; then
+        echo "7zzs binary not found at $SEVENZIP"
+        return 1
+    fi
+
+    if [ -f "$ASSETS_ZIP" ]; then
+        echo "Extracting assets.zip..."
+        if "$SEVENZIP" x -y "$ASSETS_ZIP" -o"$ASSETS_DIR" >/dev/null; then
+            rm -f "$ASSETS_ZIP"
+        else
+            echo "[OTRGEN] Unable to extract assets.zip."
+            return 1
+        fi
+    fi
+}
+
+# Function handle the ROM file.
+process_rom() {
+    cd "$GAMEDIR/tools"
+    local input_file="$1"
+    if [ ! -f "../baseroms/$input_file" ]; then
+        echo "[OTRGEN] Error: File $input_file not found!"
+        exit 1
+    fi
+
+    # Run the extraction
+    echo "Extracting data from ../baseroms/$input_file..."
+    if ./torch header -o "../baseroms/$input_file" > /dev/null; then
+        if ./torch o2r "../baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
+            echo "[OTRGEN] Extraction complete. O2R generated."
+            mv mk64.o2r ../mk64.o2r
+        else
+            echo "[OTRGEN] Error: O2R generation failed for ../baseroms/$input_file."
+            exit 1
+        fi
+    else
+        echo "[OTRGEN] Error: Header extraction failed for ../baseroms/$input_file."
+    fi
+    cd "$GAMEDIR"
+}
+
+# Function to convert N64 ROM to Z64 format
+convert_n64() {
+    local rom_file="$1"
+    local base_name
+    base_name=$(basename "$rom_file")
+    local output_file="baseroms/${base_name%.*}.z64"
+
+    if [[ ! -f "$rom_file" ]]; then
+        echo "Error: File $rom_file not found!"
+        return 1
+    fi
+
+    # Read the first 4 bytes of the file
+    word=$(hexdump -n 4 -e '4/1 "%02x"' "$rom_file")
+
+    case "$word" in
+        "37804012")
+            echo "[OTRGEN] Detected Big Endian format. Converting to Z64..."
+            dd if="$rom_file" of="$output_file" conv=swab 2>/dev/null || return 1
+            ;;
+        "40123780")
+            echo "[OTRGEN] Detected Little Endian format. Converting to Z64..."
+            dd if="$rom_file" of="$output_file" conv=swab,notrunc bs=4 2>/dev/null || return 1
+            ;;
+        "80371240")
+            echo "[OTRGEN] ROM already uses Z64 byte ordering. Copying as-is."
+            cp "$rom_file" "$output_file" || return 1
+            ;;
+        *)
+            echo "Error: Format identification failed for $rom_file."
+            return 1
+            ;;
+    esac
+
+    echo "[OTRGEN] Conversion complete. Saved as $output_file."
+    echo "$output_file"
+}
+
+# Main logic
+rom_file=$(find "$GAMEDIR/baseroms" -maxdepth 1 \( -name "*.z64" -o -name "*.n64" \) -print -quit)
+
+# Test if regenerating o2r
+if [ -n "$REGEN" ] && [ ! -f "$ASSETS_ZIP" ]; then
+    echo "[OTRGEN] Attempt to regenerate o2r with old assets!"
+    echo "[OTRGEN] Copy tools/assets.zip and remove the old tools/assets directory!"
+    echo "Patching process failed!"
+    exit 1
+fi
+
+if [ -z "$rom_file" ]; then
+    echo "[OTRGEN] No ROM file found in baseroms!"
+    exit 1
+fi
+
+if [ -f "$ASSETS_ZIP" ]; then
+    unzip_assets
+fi
+
+echo "Processing $rom_file..."
+
+case "$rom_file" in
+    *.n64)
+        converted_file=$(convert_n64 "$rom_file") || { echo "Patching process failed!"; exit 1; }
+        rm -f "$rom_file"
+        process_rom "$(basename "$converted_file")"  || { echo "Patching process failed!"; exit 1; }
+        ;;
+    *.z64)
+        process_rom "$(basename "$rom_file")"  || { echo "Patching process failed!"; exit 1; }
+        ;;
+esac
+
+# Cleanup
+echo "Patching process complete!"

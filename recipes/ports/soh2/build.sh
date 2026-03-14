@@ -32,7 +32,7 @@ elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
 
-#### SoH ####
+#### SoH2 ####
 git clone https://github.com/HarbourMasters/2ship2harkinian.git
 cd 2ship2harkinian
 
