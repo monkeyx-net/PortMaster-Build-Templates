@@ -26,6 +26,16 @@ elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
 
+git clone https://github.com/gabime/spdlog.git
+cd spdlog
+git checkout 3335c380a08c5e0f5117a66622df6afdb3d74959
+mkdir build && cd build
+cmake -DSPDLOG_FMT_EXTERNAL=ON -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+make install
+cd ../..
+
+
 #### SpaghettiKart ####
 git clone https://github.com/HarbourMasters/SpaghettiKart.git
 cd SpaghettiKart
