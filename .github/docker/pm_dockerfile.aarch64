@@ -172,6 +172,13 @@ RUN git clone https://github.com/fmtlib/fmt.git && \
     make -j$(nproc) && \
     make install
 
+RUN git clone https://github.com/gabime/spdlog.git && \
+    cd spdlog && \
+    git checkout 3335c380a08c5e0f5117a66622df6afdb3d74959 && \
+    mkdir build && cd build && \
+    cmake .. -DSPDLOG_FMT_EXTERNAL=ON -DCMAKE_INSTALL_PREFIX=-DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
+    make -j$(nproc) && \
+    make install
 
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.3/cmake-3.31.3-linux-`uname -m`.sh
 RUN chmod a+x ./cmake-3.31.3-linux-`uname -m`.sh
