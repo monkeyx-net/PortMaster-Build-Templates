@@ -75,9 +75,9 @@ fi
 mkdir build-spaghettikart && cd build-spaghettikart
 cmake .. -GNinja \
   -DUSE_OPENGLES=1 \
-  -DCMAKE_BUILD_TYPE=Debug 
+  -DCMAKE_BUILD_TYPE=Release 
 
-cmake --build . -j$(nproc) --config Debug --target GenerateO2R
+cmake --build . -j$(nproc) --config Release --target GenerateO2R
 cmake --build . -j$(nproc)
 cd ../..
 
