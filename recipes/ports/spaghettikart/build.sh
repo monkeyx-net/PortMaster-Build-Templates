@@ -30,7 +30,7 @@ git clone https://github.com/gabime/spdlog.git
 cd spdlog
 git checkout 3335c380a08c5e0f5117a66622df6afdb3d74959
 mkdir build && cd build
-cmake -DSPDLOG_FMT_EXTERNAL=ON -DCMAKE_INSTALL_PREFIX=/usr/local ..
+cmake .. -DSPDLOG_FMT_EXTERNAL=ON -DCMAKE_INSTALL_PREFIX=-DCMAKE_INSTALL_LIBDIR=/usr/lib/${ARCH}-linux-gnu
 make -j$(nproc)
 make install
 cd ../..
@@ -103,8 +103,8 @@ ls -lha dist/
 
 # use a subshell to avoid changing the current working directory of the main script
 (
-  cd "$(CDIR)/SpaghettiKart" || exit
-  zip -r "$(CDIR)/tools/assets.zip" yamls/ meta/ include/
+  cd "${CDIR}/SpaghettiKart" || exit
+  zip -r "${CDIR}/tools/assets.zip" yamls/ meta/ include/
 )
 
 
