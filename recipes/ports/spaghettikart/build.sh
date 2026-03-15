@@ -35,7 +35,7 @@ cd SpaghettiKart
 git fetch --tags
 git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
-# Grab SpaghettiKart PR
+# Grab SpaghettiKart PR Need and IF statement here as only for aarch64?
 git fetch origin pull/650/head:pr-650-spaghettikart
 git checkout pr-650-spaghettikart
 
