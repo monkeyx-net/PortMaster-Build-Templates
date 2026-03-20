@@ -170,12 +170,21 @@ RUN git clone https://github.com/microsoft/GSL.git && \
     make -j$(nproc) && \
     make install
 
+RUN git clone https://github.com/fmtlib/fmt.git && \
+    cd fmt && \
+    git checkout 10.1.1 && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
+    make -j$(nproc)  && \
+    make install
+
+
 RUN git clone https://github.com/gabime/spdlog.git && \
     cd spdlog && \
     git checkout 3335c380a08c5e0f5117a66622df6afdb3d74959 && \
     mkdir build && cd build && \
     cmake .. \
-        -DSPDLOG_FMT_EXTERNAL=OFF \
+        -DSPDLOG_FMT_EXTERNAL=ON \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib/aarch64-linux-gnu && \
     make -j$(nproc) && \
