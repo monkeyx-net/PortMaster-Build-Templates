@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -e
+set -e
 
 PORT_FOLDER="$1"
 PORT_BUILD="$2"
@@ -25,11 +25,6 @@ if [[ ${ARCH} ==  "aarch64" ]]; then
 elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
-
-ENV CC=clang-18
-ENV CXX=clang++-18
-ENV LD=lld-18
-
 
 #### SpaghettiKart ####
 git clone https://github.com/HarbourMasters/SpaghettiKart.git
