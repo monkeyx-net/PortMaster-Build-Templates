@@ -42,8 +42,8 @@ process_rom() {
 
     # Run the extraction
     echo "Extracting data from ../baseroms/$input_file..."
-    if ./torch header -o "../baseroms/$input_file" > /dev/null; then
-        if ./torch o2r "../baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
+    if ./torch.${DEVICE_ARCH} header -o "../baseroms/$input_file" > /dev/null; then
+        if ./torch.${DEVICE_ARCH} o2r "../baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
             echo "[OTRGEN] Extraction complete. O2R generated."
             mv mk64.o2r ../mk64.o2r
         else

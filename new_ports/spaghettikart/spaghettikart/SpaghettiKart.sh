@@ -24,11 +24,12 @@ export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # Set up logging
+BINARY="Spaghettify.${DEVICE_ARCH}"
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 # Permissions
-$ESUDO chmod +x "$GAMEDIR/Spaghettify"
+$ESUDO chmod +x "$GAMEDIR/$BINARY
 $ESUDO chmod +x "$GAMEDIR/tools/otrgen"
 $ESUDO chmod +x "$GAMEDIR/tools/torch"
 
@@ -37,7 +38,7 @@ sed -i 's/"gOpenMenu": *1/"gOpenMenu": 0/' spaghettify.cfg.json
 
 # Warn if mk64.o2r is older than Spaghettify or spaghetti.o2r
 if [ -f "$GAMEDIR/mk64.o2r" ]; then
-    if [ -f "$GAMEDIR/Spaghettify" ] && [ "$GAMEDIR/Spaghettify" -nt "$GAMEDIR/mk64.o2r" ] \
+    if [ -f "$GAMEDIR/$BINARY" ] && [ "$GAMEDIR/$BINARY" -nt "$GAMEDIR/mk64.o2r" ] \
        || [ -f "$GAMEDIR/spaghetti.o2r" ] && [ "$GAMEDIR/spaghetti.o2r" -nt "$GAMEDIR/mk64.o2r" ]; then
         echo "Notice: mk64.o2r is older than Spaghettify and/or spaghetti.o2r. Forcing regeneration."
         rm -f "$GAMEDIR/mk64.o2r"
@@ -67,14 +68,14 @@ fi
 
 # Check if O2R files were generated
 if [ ! -f "$GAMEDIR/mk64.o2r" ]; then
-    echo "No o2r found, can't run the game!"
+    pm_message "No o2r found, can't run the game!"
     exit 1
 fi
 
 # Run the game
-$GPTOKEYB "Spaghettify" -c "spaghetti.gptk" & 
-pm_platform_helper "$GAMEDIR/Spaghettify" > /dev/null
-./Spaghettify
+$GPTOKEYB "$BINARY" -c "spaghetti.gptk" &
+pm_platform_helper "$GAMEDIR/$BINARY" > /dev/null
+./$BINARY
 
 # Cleanup
 rm -rf logs
