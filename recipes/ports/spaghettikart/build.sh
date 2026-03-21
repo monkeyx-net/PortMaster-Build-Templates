@@ -65,7 +65,10 @@ fi
 mkdir build-spaghettikart && cd build-spaghettikart
 cmake .. -GNinja \
   -DUSE_OPENGLES=1 \
-  -DCMAKE_BUILD_TYPE=Release 
+  -DCMAKE_BUILD_TYPE=Release
+  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char" \
+  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char" \
+  -DCMAKE_EXE_LINKER_FLAGS="-ldl -pthread -Wl,--no-relax"
 
 cmake --build . -j$(nproc) --config Release --target GenerateO2R
 cmake --build . -j$(nproc)
