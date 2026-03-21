@@ -29,7 +29,7 @@ cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 # Permissions
-$ESUDO chmod +x "$GAMEDIR/$BINARY
+$ESUDO chmod +x "$GAMEDIR/${BINARY}"
 $ESUDO chmod +x "$GAMEDIR/tools/otrgen"
 $ESUDO chmod +x "$GAMEDIR/tools/torch"
 
@@ -73,9 +73,9 @@ if [ ! -f "$GAMEDIR/mk64.o2r" ]; then
 fi
 
 # Run the game
-$GPTOKEYB "$BINARY" -c "spaghetti.gptk" &
-pm_platform_helper "$GAMEDIR/$BINARY" > /dev/null
-./$BINARY
+$GPTOKEYB "${BINARY}" -c "spaghetti.gptk" &
+pm_platform_helper "$GAMEDIR/${BINARY}" > /dev/null
+"./${BINARY}"
 
 # Cleanup
 rm -rf logs

@@ -35,19 +35,19 @@ git fetch --tags
 git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 # Grab SpaghettiKart PR Need and IF statement here as only for aarch64?
-git fetch origin pull/650/head:pr-650-spaghettikart
-git checkout pr-650-spaghettikart
+#git fetch origin pull/650/head:pr-650-spaghettikart
+#git checkout pr-650-spaghettikart
 
 # Initialize and sync submodules
 git submodule sync
 git submodule update --init --recursive
 
 # libultraship PR
-cd libultraship
-git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
-git fetch kenix pull/1004/head:pr-1004-libultraship
-git checkout pr-1004-libultraship
-cd ..
+#cd libultraship
+#git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
+#git fetch kenix pull/1004/head:pr-1004-libultraship
+#git checkout pr-1004-libultraship
+#cd ..
 
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
