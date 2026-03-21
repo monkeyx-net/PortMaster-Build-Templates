@@ -94,7 +94,7 @@ ls -lha dist/
 # use a subshell to avoid changing the current working directory of the main script
 (
   cd "/workspace/SpaghettiKart" || exit
-  zip -r "/workspace/tools/assets.zip" yamls/ meta/ include/
+  zip -r "/workspace/dist/tools/assets.zip" yamls/ meta/ include/
 )
 
 
