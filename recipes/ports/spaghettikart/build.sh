@@ -49,9 +49,6 @@ git fetch kenix pull/1004/head:pr-1004-libultraship
 git checkout pr-1004-libultraship
 cd ..
 
-export CFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
-export CXXFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
-
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
@@ -76,11 +73,11 @@ cmake .. -GNinja \
 
 cmake --build . -j$(nproc) --config Release --target GenerateO2R
 cmake --build . -j$(nproc)
-ls -lha
 cd ../..
 
 
 mkdir -p ${CDIR}/dist/tools
+ls -lha SpaghettiKart/
 ls -lha SpaghettiKart/build-spaghettikart/
 strip "SpaghettiKart/build-spaghettikart/${PORT_EXE}" || true
 cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
@@ -91,13 +88,13 @@ cp -r "${CDIR}/SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal
 
 rm -rf "${CDIR}/tools/yamls"
 rm -f "${CDIR}/tools/config.yml"
-cp -r "${CDIR}/SpaghettiKart/config.yml/." "${CDIR}/dist/tools"
+cp -r "${CDIR}/SpaghettiKart/config.yml" "${CDIR}/dist/tools"
 ls -lha dist/
 
 # use a subshell to avoid changing the current working directory of the main script
 (
-  cd "${CDIR}/SpaghettiKart" || exit
-  zip -r "${CDIR}/tools/assets.zip" yamls/ meta/ include/
+  cd "/workspace/SpaghettiKart" || exit
+  zip -r "/workspace/tools/assets.zip" yamls/ meta/ include/
 )
 
 
