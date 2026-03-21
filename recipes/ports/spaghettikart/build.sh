@@ -76,6 +76,7 @@ cmake .. -GNinja \
 
 cmake --build . -j$(nproc) --config Release --target GenerateO2R
 cmake --build . -j$(nproc)
+ls -lha
 cd ../..
 
 
