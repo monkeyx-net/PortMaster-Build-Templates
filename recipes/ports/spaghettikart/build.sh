@@ -64,11 +64,15 @@ fi
 ## Build
 mkdir build-spaghettikart && cd build-spaghettikart
 cmake .. -GNinja \
+  -DCMAKE_C_COMPILER=clang-18 \
+  -DCMAKE_CXX_COMPILER=clang++-18 \
+  -DCMAKE_LINKER=lld-18 \
   -DUSE_OPENGLES=1 \
-  -DCMAKE_BUILD_TYPE=Release
-  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char" \
-  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char" \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
+  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
   -DCMAKE_EXE_LINKER_FLAGS="-ldl -pthread -Wl,--no-relax"
+
 
 cmake --build . -j$(nproc) --config Release --target GenerateO2R
 cmake --build . -j$(nproc)
