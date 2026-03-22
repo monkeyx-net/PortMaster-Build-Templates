@@ -67,9 +67,9 @@ fi
 ## Build
 mkdir build-spaghettikart && cd build-spaghettikart
 cmake .. -GNinja \
-  -DCMAKE_C_COMPILER=clang-18 \
-  -DCMAKE_CXX_COMPILER=clang++-18 \
-  -DCMAKE_LINKER=lld-18 \
+#  -DCMAKE_C_COMPILER=clang-18 \
+#  -DCMAKE_CXX_COMPILER=clang++-18 \
+#  -DCMAKE_LINKER=lld-18 \
   -DUSE_OPENGLES=1 \
   -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
