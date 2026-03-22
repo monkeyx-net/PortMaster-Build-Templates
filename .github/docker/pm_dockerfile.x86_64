@@ -12,6 +12,7 @@ RUN apt-get update && \
       build-essential \
       ca-certificates \
       clang-18 \
+      clang-tools-18 \
       cmake \
       curl \
       dub \
