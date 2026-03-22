@@ -66,8 +66,8 @@ cmake .. -GNinja \
   -DCMAKE_LINKER=lld-18 \
   -DUSE_OPENGLES=1 \
   -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char" \
-  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char" \
+  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
+  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
   -DCMAKE_EXE_LINKER_FLAGS="-ldl -pthread -Wl,--no-relax"
 
 
