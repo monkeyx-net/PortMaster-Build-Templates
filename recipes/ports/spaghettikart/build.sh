@@ -15,7 +15,7 @@ FILES=(
   "libvorbisfile.so.3"
   "libvorbisenc.so.2"
   "libcrypto.so.1.1"
-
+  "liblzma.so.5"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"

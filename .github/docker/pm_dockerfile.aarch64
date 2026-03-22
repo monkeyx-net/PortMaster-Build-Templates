@@ -45,6 +45,7 @@ RUN apt-get update && \
       libssl-dev \
       libopus-dev \
       libopusfile-dev \
+      libopusfile0 \
       libpkgconf-dev \
       libpng-dev \
       libsdl-image1.2-dev \

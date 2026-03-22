@@ -37,6 +37,7 @@ RUN apt-get update && \
       libglm-dev \
       libogg-dev \
       libopengl-dev \
+      libssl-dev \
       libopus-dev \
       libopusfile0 \
       libopusfile-dev \
