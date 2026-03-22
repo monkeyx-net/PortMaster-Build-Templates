@@ -35,19 +35,25 @@ git fetch --tags
 git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 # Grab SpaghettiKart PR Need and IF statement here as only for aarch64?
-#git fetch origin pull/650/head:pr-650-spaghettikart
-#git checkout pr-650-spaghettikart
+git fetch origin pull/650/head:pr-650-spaghettikart
+git checkout pr-650-spaghettikart
 
 # Initialize and sync submodules
 git submodule sync
 git submodule update --init --recursive
 
 # libultraship PR
-#cd libultraship
-#git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
-#git fetch kenix pull/1004/head:pr-1004-libultraship
-#git checkout pr-1004-libultraship
-#cd ..
+cd libultraship
+git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
+git fetch kenix pull/1004/head:pr-1004-libultraship
+git checkout pr-1004-libultraship
+
+
+sed -i 's/ma_sound_get_cursor_in_pcm_frames(channel->sound, \&channel->cursor);/{ ma_uint64 _cur = 0; ma_sound_get_cursor_in_pcm_frames(channel->sound, \&_cur); channel->cursor = (uint64_t)_cur; }/' \
+  src/port/audio/HMAS.cpp
+
+
+cd ..
 
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
@@ -81,7 +87,7 @@ ls -lha SpaghettiKart/
 ls -lha SpaghettiKart/build-spaghettikart/
 strip "SpaghettiKart/build-spaghettikart/${PORT_EXE}" || true
 cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
-cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}.pdb" "dist/"
+# cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}.pdb" "dist/"
 cp "SpaghettiKart/build-spaghettikart/spaghetti.o2r" "dist/"
 wget -O "dist/gamecontrollerdb.txt" "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt"
 cp -r "${CDIR}/SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal-build/torch" "${CDIR}/dist/tools/torch.${ARCH}"
