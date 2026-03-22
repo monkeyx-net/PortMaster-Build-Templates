@@ -47,12 +47,6 @@ cd libultraship
 git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
 git fetch kenix pull/1004/head:pr-1004-libultraship
 git checkout pr-1004-libultraship
-
-
-sed -i 's/ma_sound_get_cursor_in_pcm_frames(channel->sound, \&channel->cursor);/{ ma_uint64 _cur = 0; ma_sound_get_cursor_in_pcm_frames(channel->sound, \&_cur); channel->cursor = (uint64_t)_cur; }/' \
-  src/port/audio/HMAS.cpp
-
-
 cd ..
 
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
