@@ -1,18 +1,15 @@
 #include "Menu.h"
 #include "UIWidgets.hpp"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/controls/SohInputEditorWindow.h"
 #include <ship/window/gui/GuiMenuBar.h>
 #include <ship/window/gui/GuiElement.h>
 #include "SohModals.h"
 #include <variant>
 #include <spdlog/fmt/fmt.h>
-#include "variables.h"
 #include <tuple>
 
 extern "C" {
 #include "z64.h"
-#include "functions.h"
 extern PlayState* gPlayState;
 }
 std::vector<ImVec2> windowTypeSizes = { {} };
@@ -204,7 +201,7 @@ uint32_t Menu::DrawSearchResults(std::string& menuSearchText) {
             auto& menuEntry = menuEntries.at(menuLabel);
             for (auto& sidebarLabel : menuEntry.sidebarOrder) {
                 auto& sidebar = menuEntry.sidebars[sidebarLabel];
-                for (int i = 0; i < sidebar.columnWidgets.size(); i++) {
+                for (size_t i = 0; i < sidebar.columnWidgets.size(); i++) {
                     auto& column = sidebar.columnWidgets.at(i);
                     for (auto& info : column) {
                         if (info.type == WIDGET_SEARCH || info.type == WIDGET_SEPARATOR ||
@@ -463,6 +460,15 @@ void Menu::MenuDrawItem(WidgetInfo& widget, uint32_t width, UIWidgets::Colors me
                     }
                 }
             } break;
+            case WIDGET_CVAR_BTN_SELECTOR: {
+                auto options = std::static_pointer_cast<UIWidgets::BtnSelectorOptions>(widget.options);
+                options->color = menuThemeIndex;
+                if (UIWidgets::CVarBtnSelector(widget.name.c_str(), widget.cVar, *options)) {
+                    if (widget.callback != nullptr) {
+                        widget.callback(widget);
+                    }
+                }
+            } break;
             case WIDGET_BUTTON: {
                 auto options = std::static_pointer_cast<UIWidgets::ButtonOptions>(widget.options);
                 options->color = menuThemeIndex;
@@ -562,6 +568,9 @@ void Menu::Draw() {
 
 static bool freshOpen = true;
 void Menu::DrawElement() {
+    if (OTRGlobals::Instance->fontStandardLargest == nullptr) {
+        return;
+    }
     for (auto& [reason, info] : disabledMap) {
         info.active = info.evaluation(info);
     }
@@ -859,7 +868,7 @@ void Menu::DrawElement() {
     ImGui::SetNextWindowPos(pos + style.ItemSpacing);
     float sectionWidth = menuSize.x - sidebarWidth - 4 - style.ItemSpacing.x * 4;
     std::string sectionMenuId = sectionIndex + " Settings";
-    int columns = sidebar->at(sectionIndex).columnCount;
+    size_t columns = sidebar->at(sectionIndex).columnCount;
     size_t columnFuncs = sidebar->at(sectionIndex).columnWidgets.size();
     if (windowWidth < 800) {
         columns = 1;
@@ -902,7 +911,7 @@ void Menu::DrawElement() {
                 }
             }
         }
-        for (int i = 0; i < columnFuncs; i++) {
+        for (size_t i = 0; i < columnFuncs; i++) {
             std::string sectionId = fmt::format("{} Column {}", sectionMenuId, i);
             if (useColumns) {
                 ImGui::SetNextWindowSizeConstraints({ columnWidth, 0 }, { columnWidth, columnHeight });

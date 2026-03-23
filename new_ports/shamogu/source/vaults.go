@@ -220,7 +220,7 @@ func (g *Game) RandomVaultsPlaceWithFunc(mg *MapGen, vs []*vault, kind placeKind
 			return 0, g.randomFreeItemFloor(mg)
 		}
 		i := rf(len(vs))
-		p := mg.RandomVaultPlace(vs[i], kind)
+		p := g.RandomVaultPlace(mg, vs[i], kind)
 		if p != InvalidPos {
 			return i, p
 		}
@@ -230,7 +230,7 @@ func (g *Game) RandomVaultsPlaceWithFunc(mg *MapGen, vs []*vault, kind placeKind
 // RandomVaultPlace returns a random free place of the given kind in the given
 // vault, or returns an invalid position if there is no such place. It sets the
 // terrain to Floor for PlaceStatic and PlaceItem place kinds.
-func (mg *MapGen) RandomVaultPlace(v *vault, kind placeKind) gruid.Point {
+func (g *Game) RandomVaultPlace(mg *MapGen, v *vault, kind placeKind) gruid.Point {
 	var ps []int
 	for i, pl := range v.places {
 		if pl.kind == kind && !pl.used {
@@ -245,6 +245,10 @@ func (mg *MapGen) RandomVaultPlace(v *vault, kind placeKind) gruid.Point {
 	p := v.places[j].p
 	if kind == PlaceItem || kind == PlaceStatic {
 		mg.terrain.Set(p, Floor)
+		if g.Mod(ModCorruptedDungeon) && g.IntN(7*MapLevels) == 0 {
+			// Very small chance of hiding the location.
+			g.hideLocation(p)
+		}
 	}
 	return p
 }

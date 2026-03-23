@@ -76,15 +76,21 @@ func (g *Game) SensePassable(p gruid.Point) {
 // SeeEntities handles knowledge changes about the last known position of
 // map entities that are in the field of view.
 func (g *Game) SeeEntities() {
-	for i, e := range g.NPMapEntities() {
-		if g.InFOV(e.P) {
-			g.SenseEntity(i, "see")
-		} else if g.InFOV(e.KnownP) {
-			e.KnownP = InvalidPos
-		}
+	for i, ei := range g.NPMapEntities() {
+		g.SeeEntity(i, ei)
 	}
 	if g.PlayerActor().Has(StatusClarity) {
 		g.senseMonsters()
+	}
+}
+
+// SeeEntity handles FOV-related knowledge changes about the last known
+// position of the given entity.
+func (g *Game) SeeEntity(i ID, ei *Entity) {
+	if g.InFOV(ei.P) {
+		g.SenseEntity(i, "see")
+	} else if g.InFOV(ei.KnownP) {
+		ei.KnownP = InvalidPos
 	}
 }
 
@@ -113,7 +119,7 @@ func (g *Game) SenseEntity(i ID, verb string) {
 			}
 			pa := g.PlayerActor()
 			switch {
-			case pa.DoesAny(Elephanty) && ri.IsMonster(HungryRat):
+			case pa.DoesAny(Elephanty) && ri.Is(HungryRat):
 				g.Logf("You trumpet at the %s", ei.Name)
 				g.MakeNoise(g.PP(), NoiseTrumpet)
 			case pa.DoesAny(ScaryRoar):
@@ -126,7 +132,16 @@ func (g *Game) SenseEntity(i ID, verb string) {
 				pp := g.PP()
 				g.md.RoarAnimation(pp)
 				g.MakeNoise(pp, NoiseRoar)
-				g.PutStatus(i, ri, StatusFear, DurationFearRoar)
+				d := DurationFearRoar
+				if g.IntN(1+MaxFOVRange) < paths.DistanceManhattan(pp, ei.P) {
+					// Bias fear duration toward d+1 the
+					// furthest the target is, for
+					// balancing purposes (you need to get
+					// over the fear earlier when the
+					// danger is close).
+					d++
+				}
+				g.PutStatus(i, ri, StatusFear, d)
 			}
 		case *Comestible:
 			g.LogfStyled("You %s %s.", logNotable, verb, One(ei.Name))
@@ -185,17 +200,11 @@ func (g *Game) senseMonsters() {
 		if !ei.IsActor() {
 			continue
 		}
-		if clarityRange(pp, ei.P) {
+		if SensingRange(pp, ei.P) {
 			g.SenseEntity(i, "sense")
 			g.SensePassable(ei.P)
 		}
 	}
-}
-
-// clarityRange reports whether p and q are within Clarity's range from each
-// other.
-func clarityRange(p, q gruid.Point) bool {
-	return paths.DistanceManhattan(p, q) <= 2*MaxFOVRange
 }
 
 // ResetKnowledge initializes player's knowledge of map terrain.
@@ -316,22 +325,11 @@ func (lt *lighter) diagonalVisibility(from, to gruid.Point) visibility {
 	// allows diagonals for light rays in normal circumstances.
 	var ps [2]gruid.Point
 	delta := to.Sub(from)
-	switch delta {
-	case gruid.Point{1, -1}:
-		ps[0] = from.Shift(1, 0)
-		ps[1] = from.Shift(0, -1)
-	case gruid.Point{-1, -1}:
-		ps[0] = from.Shift(-1, 0)
-		ps[1] = from.Shift(0, -1)
-	case gruid.Point{-1, 1}:
-		ps[0] = from.Shift(-1, 0)
-		ps[1] = from.Shift(0, 1)
-	case gruid.Point{1, 1}:
-		ps[0] = from.Shift(1, 0)
-		ps[1] = from.Shift(0, 1)
-	default:
+	if delta.X == 0 || delta.Y == 0 {
 		return Clear
 	}
+	ps[0] = from.Shift(delta.X, 0)
+	ps[1] = from.Shift(0, delta.Y)
 	vis := Opaque
 	g := lt.g
 	for _, p := range ps {

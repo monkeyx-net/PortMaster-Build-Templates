@@ -346,7 +346,7 @@ void SohInputEditorWindow::DrawButtonLineEditMappingButton(uint8_t port, N64Butt
         if (ImGui::BeginPopup(popupId.c_str())) {
             mInputEditorPopupOpen = true;
             ImGui::Text("Axis Threshold\n\nThe extent to which the joystick\nmust be moved or the trigger\npressed to "
-                        "initiate the assigned\nbutton action.\n\n");
+                        "initiate the assigned\nbutton action.");
 
             auto globalSettings = Ship::Context::GetInstance()->GetControlDeck()->GetGlobalSDLDeviceSettings();
 
@@ -1601,58 +1601,6 @@ void SohInputEditorWindow::DrawLinkTab() {
         if (ImGui::CollapsingHeader("Modifier Buttons")) {
             DrawButtonLine("M1", portIndex, BTN_CUSTOM_MODIFIER1);
             DrawButtonLine("M2", portIndex, BTN_CUSTOM_MODIFIER2);
-
-            ImGui::BeginDisabled(CVarGetInteger(CVAR_SETTING("DisableChanges"), 0));
-            CVarCheckbox("Enable speed modifiers", CVAR_SETTING("WalkModifier.Enabled"),
-                         CheckboxOptions()
-                             .Color(THEME_COLOR)
-                             .Tooltip("Hold the assigned button to change the maximum walking or swimming speed"));
-            if (CVarGetInteger(CVAR_SETTING("WalkModifier.Enabled"), 0)) {
-                UIWidgets::Spacer(5);
-                Ship::GuiWindow::BeginGroupPanel("Speed Modifier", ImGui::GetContentRegionAvail());
-                CVarCheckbox("Toggle modifier instead of holding", CVAR_SETTING("WalkModifier.SpeedToggle"),
-                             CheckboxOptions().Color(THEME_COLOR));
-                Ship::GuiWindow::BeginGroupPanel("Walk Modifier", ImGui::GetContentRegionAvail());
-                CVarCheckbox("Don't affect jump distance/velocity", CVAR_SETTING("WalkModifier.DoesntChangeJump"),
-                             CheckboxOptions().Color(THEME_COLOR));
-                CVarSliderFloat("Walk Modifier 1: %.0f %%", CVAR_SETTING("WalkModifier.Mapping1"),
-                                FloatSliderOptions()
-                                    .Color(THEME_COLOR)
-                                    .IsPercentage()
-                                    .Min(0.0f)
-                                    .Max(5.0f)
-                                    .DefaultValue(1.0f)
-                                    .ShowButtons(true));
-                CVarSliderFloat("Walk Modifier 2: %.0f %%", CVAR_SETTING("WalkModifier.Mapping2"),
-                                FloatSliderOptions()
-                                    .Color(THEME_COLOR)
-                                    .IsPercentage()
-                                    .Min(0.0f)
-                                    .Max(5.0f)
-                                    .DefaultValue(1.0f)
-                                    .ShowButtons(true));
-                Ship::GuiWindow::EndGroupPanel(0);
-                Ship::GuiWindow::BeginGroupPanel("Swim Modifier", ImGui::GetContentRegionAvail());
-                CVarSliderFloat("Swim Modifier 1: %.0f %%", CVAR_SETTING("WalkModifier.SwimMapping1"),
-                                FloatSliderOptions()
-                                    .Color(THEME_COLOR)
-                                    .IsPercentage()
-                                    .Min(0.0f)
-                                    .Max(5.0f)
-                                    .DefaultValue(1.0f)
-                                    .ShowButtons(true));
-                CVarSliderFloat("Swim Modifier 2: %.0f %%", CVAR_SETTING("WalkModifier.SwimMapping2"),
-                                FloatSliderOptions()
-                                    .Color(THEME_COLOR)
-                                    .IsPercentage()
-                                    .Min(0.0f)
-                                    .Max(5.0f)
-                                    .DefaultValue(1.0f)
-                                    .ShowButtons(true));
-                Ship::GuiWindow::EndGroupPanel(0);
-                Ship::GuiWindow::EndGroupPanel(0);
-            }
-            ImGui::EndDisabled();
         }
 
         if (ImGui::CollapsingHeader("Ocarina Controls")) {

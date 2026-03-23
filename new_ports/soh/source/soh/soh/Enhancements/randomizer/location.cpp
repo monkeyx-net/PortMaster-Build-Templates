@@ -72,10 +72,6 @@ bool Rando::Location::IsVanillaCompletion() const {
     return isVanillaCompletion;
 }
 
-uint32_t Rando::Location::Getuint32_t() const {
-    return hintKey;
-}
-
 const HintText& Rando::Location::GetHint() const {
     return StaticData::hintTextTable[hintKey];
 }
@@ -581,6 +577,15 @@ Rando::Location Rando::Location::NLTree(RandomizerCheck rc, RandomizerCheckQuest
                                         RandomizerHintTextKey hintKey, RandomizerGet vanillaItem,
                                         SpoilerCollectionCheck collectionCheck) {
     return { rc,     quest_,         RCTYPE_NLTREE,         area_,   ACTOR_EN_WOOD02,
+             scene_, actorParams_,   std::move(shortName_), hintKey, vanillaItem,
+             false,  collectionCheck };
+}
+
+Rando::Location Rando::Location::Bush(RandomizerCheck rc, RandomizerCheckQuest quest_, RandomizerCheckArea area_,
+                                      SceneID scene_, int32_t actorParams_, std::string&& shortName_,
+                                      RandomizerHintTextKey hintKey, RandomizerGet vanillaItem,
+                                      SpoilerCollectionCheck collectionCheck) {
+    return { rc,     quest_,         RCTYPE_BUSH,           area_,   ACTOR_EN_WOOD02,
              scene_, actorParams_,   std::move(shortName_), hintKey, vanillaItem,
              false,  collectionCheck };
 }

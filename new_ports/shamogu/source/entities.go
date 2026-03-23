@@ -32,7 +32,7 @@ func (e *Entity) String() string {
 func (e *Entity) Color() (fg gruid.Color) {
 	switch r := e.Role.(type) {
 	case *Actor:
-		if r.IsPlayer() {
+		if r.Is(Player) {
 			return ColorBlue
 		}
 		fg = ColorOrange
@@ -148,6 +148,10 @@ func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point, movk movementKind) boo
 		// Already at destination (usually shouldn't happen).
 		return true
 	}
+	if movk == MovTeleport && i != PlayerID {
+		// Ensure that footsteps don't leak destination after teleport.
+		ei.Noise = false
+	}
 	if movk == MovBump || movk == MovJump {
 		if ai.DoesAny(TrailingCloud) && g.Map.Terrain.At(from) == Floor {
 			g.NormalCloudAt(from, 2)
@@ -177,8 +181,8 @@ func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point, movk movementKind) boo
 		ei.P = to
 		g.Map.ActorCache.SetU(to, i)
 	}
-	switch {
-	case ai.IsPlayer():
+	switch i {
+	case PlayerID:
 		ei.KnownP = ei.P
 		if i, it := g.ItemAt(to); i >= 0 {
 			ei := g.Entity(i)
@@ -194,12 +198,9 @@ func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point, movk movementKind) boo
 			ai.Behavior.Path = ai.Behavior.Path[1:]
 		}
 	}
-	if i != PlayerID && g.InFOV(ei.P) {
-		g.SenseEntity(i, "see")
-	}
 	switch movk {
 	case MovTeleport:
-		g.md.TeleportAnimation(from, to, i == PlayerID || g.InFOV(to))
+		g.md.TeleportAnimation(i, from, to)
 	case MovBump, MovJump:
 		g.ApplyBumpMoveEffects(i, ai)
 		if paths.DistanceManhattan(from, to) > 1 && (g.InFOV(from) || g.InFOV(to)) {
@@ -209,6 +210,9 @@ func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point, movk movementKind) boo
 		if from != to {
 			g.md.MoveAnimation(from, to)
 		}
+	}
+	if i != PlayerID {
+		g.SeeEntity(i, ei)
 	}
 	if movk != MovJump {
 		g.TriggerTrap(i, ai)

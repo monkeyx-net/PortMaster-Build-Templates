@@ -187,13 +187,13 @@ void EnTa_Init(Actor* thisx, PlayState* play2) {
                         this->unk_2C4[0] = this->unk_2C4[1] = this->unk_2C4[2] = 7;
                         this->superCuccos[0] = (EnNiw*)Actor_Spawn(
                             &play->actorCtx, play, ACTOR_EN_NIW, this->actor.world.pos.x + 5.0f,
-                            this->actor.world.pos.y + 3.0f, this->actor.world.pos.z + 26.0f, 0, 0, 0, 0xD, true);
+                            this->actor.world.pos.y + 3.0f, this->actor.world.pos.z + 26.0f, 0, 0, 0, 0xD);
                         this->superCuccos[1] = (EnNiw*)Actor_Spawn(
                             &play->actorCtx, play, ACTOR_EN_NIW, this->actor.world.pos.x - 20.0f,
-                            this->actor.world.pos.y + 40.0f, this->actor.world.pos.z - 30.0f, 0, 0, 0, 0xD, true);
+                            this->actor.world.pos.y + 40.0f, this->actor.world.pos.z - 30.0f, 0, 0, 0, 0xD);
                         this->superCuccos[2] = (EnNiw*)Actor_Spawn(
                             &play->actorCtx, play, ACTOR_EN_NIW, this->actor.world.pos.x + 20.0f,
-                            this->actor.world.pos.y + 40.0f, this->actor.world.pos.z - 30.0f, 0, 0, 0, 0xD, true);
+                            this->actor.world.pos.y + 40.0f, this->actor.world.pos.z - 30.0f, 0, 0, 0, 0xD);
                         func_80B13AAC(this, play);
 
                         if (gSaveContext.eventInf[0] & 0x400) {
@@ -239,7 +239,7 @@ void EnTa_Destroy(Actor* thisx, PlayState* play) {
     Collider_DestroyCylinder(play, &this->collider);
 
     if (this->actor.params != 1 && this->actor.params != 2 && play->sceneNum == SCENE_LON_LON_BUILDINGS) {
-        gSaveContext.timerState = 0;
+        gSaveContext.timerState = TIMER_STATE_OFF;
     }
 
     if (this->unk_2E0 & 0x200) {
@@ -697,7 +697,7 @@ void EnTa_RunCuccoGame(EnTa* this, PlayState* play) {
                 this->superCuccos[i]->actor.gravity -= 0.03f;
             }
 
-            if (func_80B150AC(this, play, i)) {
+            if (!GameInteractor_Should(VB_PREVENT_STRENGTH, !func_80B150AC(this, play, i))) {
                 if (this->unk_2C4[i] > 0) {
                     this->unk_2C4[i]--;
                 } else {
@@ -707,7 +707,7 @@ void EnTa_RunCuccoGame(EnTa* this, PlayState* play) {
 
                     switch (EnTa_GetSuperCuccosCount(this, play)) {
                         case 1:
-                            gSaveContext.timerState = 0;
+                            gSaveContext.timerState = TIMER_STATE_OFF;
                             Player_SetCsActionWithHaltedActors(play, &this->actor, 1);
 
                             Message_StartTextbox(play, 0x2084, &this->actor);
@@ -749,7 +749,7 @@ void EnTa_RunCuccoGame(EnTa* this, PlayState* play) {
         Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_STOP);
         this->unk_2E0 &= ~0x200;
         Sfx_PlaySfxCentered(NA_SE_SY_FOUND);
-        gSaveContext.timerState = 0;
+        gSaveContext.timerState = TIMER_STATE_OFF;
         Player_SetCsActionWithHaltedActors(play, &this->actor, 1);
         Message_StartTextbox(play, 0x2081, &this->actor);
         this->actionFunc = func_80B15424;
@@ -814,7 +814,7 @@ void func_80B15AD4(EnTa* this, PlayState* play) {
         Animation_Change(&this->skelAnime, &gTalonSitHandsUpAnim, 1.0f, 1.0f,
                          Animation_GetLastFrame(&gTalonSitHandsUpAnim), ANIMMODE_ONCE, 0.0f);
         this->unk_2CC = 50;
-        func_80088B34(0x1E);
+        Interface_SetTimer(0x1E);
         func_800F5ACC(NA_BGM_TIMED_MINI_GAME);
         this->unk_2E0 |= 0x200;
         Message_CloseTextbox(play);

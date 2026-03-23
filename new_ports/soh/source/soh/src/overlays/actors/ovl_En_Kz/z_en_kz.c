@@ -6,7 +6,6 @@
 
 #include "z_en_kz.h"
 #include "objects/object_kz/object_kz.h"
-#include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 
@@ -519,7 +518,7 @@ void EnKz_SetupGetItem(EnKz* this, PlayState* play) {
 void EnKz_StartTimer(EnKz* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
         if (GameInteractor_Should(VB_TRADE_TIMER_FROG, INV_CONTENT(ITEM_TRADE_ADULT) == ITEM_FROG)) {
-            func_80088AA0(180); // start timer2 with 3 minutes
+            Interface_SetSubTimer(180); // start timer2 with 3 minutes
             gSaveContext.eventInf[1] &= ~1;
         }
         this->interactInfo.talkState = NPC_TALK_STATE_IDLE;

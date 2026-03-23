@@ -2,7 +2,6 @@
 #include "vt.h"
 #include "overlays/actors/ovl_En_Bom_Chu/z_en_bom_chu.h"
 #include "overlays/actors/ovl_En_Ex_Item/z_en_ex_item.h"
-#include "soh/OTRGlobals.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
@@ -206,7 +205,7 @@ void EnBomBowlPit_Reset(EnBomBowlPit* this, PlayState* play) {
         // "Normal termination"/"completion"
         osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 正常終了 ☆☆☆☆☆ \n" VT_RST);
         if (this->getItemId == GI_HEART_PIECE) {
-            gSaveContext.healthAccumulator = 0x140;
+            gSaveContext.healthAccumulator = MAX_HEALTH;
             // "Ah recovery!" (?)
             osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ あぁ回復！ ☆☆☆☆☆ \n" VT_RST);
         }

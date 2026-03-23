@@ -127,7 +127,16 @@ func (md *model) updateStatus() {
 				Text:     stt.WithText("≡ ").WithStyle(gruid.Style{Attrs: AttrInMap}),
 				Disabled: true})
 		}
-		if md.targ.kb {
+		switch {
+		case md.mode == modeCritical:
+			entries = append(entries, ui.MenuEntry{
+				Text:     stt.WithText("@O[Warning]@N "),
+				Disabled: true})
+		case md.mode == modeQuitConfirmation || md.mode == modeWizardConfirmation:
+			entries = append(entries, ui.MenuEntry{
+				Text:     stt.WithText("@C[Confirm]@N "),
+				Disabled: true})
+		case md.targ.kb:
 			entries = append(entries, ui.MenuEntry{
 				Text:     stt.WithText("@C[Examine]@N "),
 				Disabled: true})
@@ -177,27 +186,40 @@ func statusHPColor(hp, hpmax int) rune {
 
 func (a *Actor) fmtHP() string {
 	hp := max(0, a.HP)
-	debt := 0
-	m := 1 // minimum return HP after bonus expiration (if above)
-	if a.Has(StatusLignification) {
-		debt += a.HPBonus()
-		m = 3
-	}
-	if a.Has(StatusBerserk) {
-		debt += a.HPBonus()
+	var base, debt int // base HP without bonus, temporary hp bonus debt
+	switch {
+	case a.Has(StatusLignification) && a.Has(StatusBerserk):
+		hpbonus := a.HPBonus()
+		debt = 2 * hpbonus
+		// When both statuses are active at the same time, we use as
+		// base the HP the actor would have after both statuses expire.
+		// Result depends on the (expected) expiration order.
+		// Note that when both expire on the same turn, Berserk always
+		// expires first.
+		if a.Statuses[StatusBerserk] <= a.Statuses[StatusLignification] {
+			nhp := min(hp, max(1, hp-hpbonus))
+			base = min(nhp, max(3, nhp-hpbonus))
+		} else {
+			nhp := min(hp, max(3, hp-hpbonus))
+			base = min(nhp, max(1, nhp-hpbonus))
+		}
+	case a.Has(StatusLignification):
+		debt = a.HPBonus()
+		base = min(hp, max(3, hp-debt))
+	case a.Has(StatusBerserk):
+		debt = a.HPBonus()
+		base = min(hp, max(1, hp-debt))
+	default:
+		base = hp
 	}
 	hpmax := a.MaxHP + debt
-	base := hp - debt // HP without bonus
-	if base < m {
-		base = min(hp, m)
-	}
 	bonus := hp - base // HP bonus
 	if base == 0 || bonus == 0 {
 		hpColor := statusHPColor(hp, hpmax)
 		return fmt.Sprintf("@%c%d/%d@N", hpColor, base, hpmax)
 	}
 	returnHPColor := statusHPColor(base, a.MaxHP)
-	hpColor := statusHPColor(bonus, debt)
+	hpColor := statusHPColor(bonus, debt-base)
 	return fmt.Sprintf("@%c%d@%c+%d/%d@N", returnHPColor, base, hpColor, bonus, hpmax)
 }
 

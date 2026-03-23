@@ -9,7 +9,7 @@ import (
 )
 
 // Version is the game's version string of the last release.
-const Version = "v1.4.1"
+const Version = "v1.5.0-dev.2"
 
 // InvalidPos is a special variable containing an invalid position.
 var InvalidPos = gruid.Point{-1, -1}
@@ -40,10 +40,11 @@ type Game struct {
 	PR       *paths.PathRange // path range for most pathfinding
 	PRnoise  *paths.PathRange // path range for noise computations (to avoid conflict with PR)
 
-	Dir            gruid.Point // last bump-direction
-	Prev           gruid.Point // previous position of player
-	Turn           int         // current game's turn
-	CorruptionTurn int         // next corruption event (corrupted dungeon mod)
+	Dir            gruid.Point    // last bump-direction
+	Prev           gruid.Point    // previous position of player
+	Turn           int            // current game's turn
+	StatusTurn     [NStatuses]int // last turn with specific status
+	CorruptionTurn int            // next corruption event (corrupted dungeon mod)
 
 	Logs     *Logs     // game log
 	Mods     []bool    // active game mods
@@ -143,6 +144,7 @@ func (g *Game) EndTurn() {
 	g.UpdateKnowledge()
 	g.ComputeNoise()
 	g.HandleTurnCount()
+	// g.md.AnimateClouds()
 }
 
 // HandleTurnCount() increments the turn count and handles watching.
@@ -168,6 +170,7 @@ func (g *Game) HandleTurnCount() {
 		g.genMonster(BlazingGolem)
 		g.genMonster(BlazingGolem)
 	}
+	g.RememberStatusTurns()
 }
 
 // handleCorruptionEvent handles a corruption event for the corrupted dungeon
@@ -321,11 +324,11 @@ func (g *Game) ComputeNoise() {
 				dist += maxFOVRange / 2
 			default:
 				// Silent monsters like spiders cannot be
-				// heared without good hearing.
+				// heard without good hearing.
 				continue
 			}
 		case ai.DoesAny(MonsHeavyFootsteps):
-			// Heavy footsteps can be heared from a greater distance.
+			// Heavy footsteps can be heard from a greater distance.
 			dist -= 3
 		case ai.DoesAny(MonsLightFootsteps | MonsCreep):
 			// Light footsteps and creeping are slightly harder to
@@ -512,6 +515,12 @@ func (nt NoiseType) Msg() string {
 	}
 }
 
+// SensingRange reports whether p and q are within sensing range from each
+// other (for food, monster, rune sensing).
+func SensingRange(p, q gruid.Point) bool {
+	return paths.DistanceManhattan(p, q) <= 2*MaxFOVRange
+}
+
 // SmellFood performs item sensing of the GoodSmell trait.
 func (g *Game) SmellFood() {
 	pp := g.PP()
@@ -520,7 +529,7 @@ func (g *Game) SmellFood() {
 		if ei.KnownP == ei.P {
 			continue
 		}
-		if paths.DistanceManhattan(ei.P, pp) <= 2*MaxFOVRange {
+		if SensingRange(ei.P, pp) {
 			// NOTE: using path-distance would leak information
 			// about walls (if the player goes through the tedious
 			// task of doing some math).
@@ -540,7 +549,7 @@ func (g *Game) SenseItems(ty itemType) {
 		if it, ok := ei.Role.(Item); !ok || item2type(it) != ty {
 			continue
 		}
-		if paths.DistanceManhattan(ei.P, pp) <= 2*MaxFOVRange {
+		if SensingRange(ei.P, pp) {
 			// NOTE: using path-distance would leak information
 			// about walls (if the player goes through the tedious
 			// task of doing some math).
