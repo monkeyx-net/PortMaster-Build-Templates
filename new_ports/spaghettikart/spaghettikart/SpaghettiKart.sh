@@ -20,7 +20,7 @@ get_controls
 GAMEDIR="/$directory/ports/spaghettikart"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.$DEVICE_ARCH:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # Set up logging
@@ -31,7 +31,7 @@ cd $GAMEDIR
 # Permissions
 $ESUDO chmod +x "$GAMEDIR/${BINARY}"
 $ESUDO chmod +x "$GAMEDIR/tools/otrgen"
-$ESUDO chmod +x "$GAMEDIR/tools/torch"
+$ESUDO chmod +x "$GAMEDIR/tools/torch.$DEVICE_ARCH"
 
 # Close the menu if open
 sed -i 's/"gOpenMenu": *1/"gOpenMenu": 0/' spaghettify.cfg.json

@@ -34,6 +34,7 @@ unzip_assets() {
 # Function handle the ROM file.
 process_rom() {
     cd "$GAMEDIR/tools"
+    SWAP=false
     local input_file="$1"
     if [ ! -f "../baseroms/$input_file" ]; then
         echo "[OTRGEN] Error: File $input_file not found!"
@@ -42,27 +43,37 @@ process_rom() {
 
     # Run the extraction
     echo "Extracting data from ../baseroms/$input_file..."
+    # Create zram for torch process if 1GB of ram
+    if [ ${DEVICE_RAM} = "1" ]; then
+        $ESUDO modprobe zram
+        $ESUDO zramctl --find --size 575M --algorithm lzo
+        $ESUDO mkswap /dev/zram0
+        $ESUDO swapon /dev/zram0 --priority 100
+        SWAP=true
+    fi
     if ./torch.${DEVICE_ARCH} header -o "../baseroms/$input_file" > /dev/null; then
-        # Create zram for torch process if 1GB of ram
-        if [${DEVICE_RAM} eq 1] ; then
-             $ESUDO modprobe zram
-             $ESUDO zramctl --find --size 400M --algorithm lzo
-             $ESUDO mkswap /dev/zram0
-             $ESUDO swapon /dev/zram0 --priority 100
-            if ./torch.${DEVICE_ARCH} o2r "../baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
-                echo "[OTRGEN] Extraction complete. O2R generated."
-                mv mk64.o2r ../mk64.o2r
-            else
-                echo "[OTRGEN] Error: O2R generation failed for ../baseroms/$input_file."
-                exit 1
-            fi
-            $ESUDO swapoff /dev/zram0
-            $ESUDO zramctl --reset /dev/zram0
-        fi
+        if ./torch.${DEVICE_ARCH} o2r "../baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
+            echo "[OTRGEN] Extraction complete. O2R generated."
+            mv mk64.o2r ../mk64.o2r
+            end_swap
+        else
+            echo "[OTRGEN] Error: O2R generation failed for ../baseroms/$input_file."
+            end_swap
+            exit 1
+        fi    
     else
         echo "[OTRGEN] Error: Header extraction failed for ../baseroms/$input_file."
     fi
     cd "$GAMEDIR"
+}
+
+end_swap() {
+    if [ "$SWAP" = true ]; then
+        echo "Cleaning up zram swap..."
+        $ESUDO swapoff /dev/zram0
+        $ESUDO zramctl -r /dev/zram0
+        SWAP=false
+    fi
 }
 
 # Function to convert N64 ROM to Z64 format
