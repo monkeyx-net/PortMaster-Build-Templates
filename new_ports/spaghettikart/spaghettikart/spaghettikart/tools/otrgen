@@ -46,7 +46,7 @@ process_rom() {
     # Create zram for torch process if 1GB of ram
     if [ ${DEVICE_RAM} = "1" ]; then
         $ESUDO modprobe zram
-        $ESUDO zramctl --find --size 575M --algorithm lzo
+        $ESUDO zramctl --find --size 650M --algorithm lzo
         $ESUDO mkswap /dev/zram0
         $ESUDO swapon /dev/zram0 --priority 100
         SWAP=true
