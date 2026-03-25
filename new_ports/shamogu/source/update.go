@@ -252,14 +252,41 @@ func (md *model) updateMouse(msg gruid.MsgMouse) {
 
 func (md *model) updateStatusMouse(msg gruid.MsgMouse) {
 	msg.P.Y = 0
+	msg.P.X = max(0, msg.P.X-1)
 	if !msg.P.In(md.status.menu.Bounds()) || md.targ.kb {
 		md.status.focus = false
-		return
+		if md.targ.kb {
+			return
+		}
+		md.targ.CancelExamine()
+		switch msg.Action {
+		case gruid.MouseWheelDown, gruid.MouseWheelUp:
+			op := msg.P
+			msg.P.X = 0
+			md.status.menu.Update(msg)
+			msg.P = op
+			if !msg.P.In(md.status.menu.Bounds()) {
+				return
+			}
+			// After scrolling, mouse is within the status bar, so
+			// an extra update is needed.
+			msg.Action = gruid.MouseMove
+		default:
+			return
+		}
 	}
+	page := md.status.menu.Page()
 	md.status.menu.Update(msg)
 	update := !md.status.focus
 	switch md.status.menu.Action() {
 	case ui.MenuMove:
+		if page != md.status.menu.Page() {
+			if !msg.P.In(md.status.menu.Bounds()) {
+				// After scrolling, mouse is outside the status bar.
+				md.status.focus = false
+				return
+			}
+		}
 		update = true
 	case ui.MenuInvoke:
 		i := statusEntry(md.status.menu.Active())

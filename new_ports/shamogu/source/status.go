@@ -34,9 +34,9 @@ func (md *model) updateStatus() {
 	stt := ui.StyledText{}.WithMarkups(Markups)
 
 	// Map level.
-	level := fmt.Sprintf(" L:%d ", g.Map.Level)
+	level := fmt.Sprintf("L:%d ", g.Map.Level)
 	if md.g.win {
-		level = " L:@GOut!@N "
+		level = "L:@GOut!@N "
 	}
 	entries = append(entries, ui.MenuEntry{Text: stt.WithText(level), Disabled: true})
 

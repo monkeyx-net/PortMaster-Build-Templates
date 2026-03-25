@@ -20,8 +20,9 @@ func (g *Game) UpdateFOV() {
 	}
 	pa := g.PlayerActor()
 	lt := &lighter{
-		g:      g,
-		flying: pa.DoesAny(NocturnalFlying) && !pa.Has(StatusLignification) && !pa.Has(StatusGardener),
+		g:         g,
+		flying:    pa.DoesAny(NocturnalFlying) && !pa.Has(StatusLignification) && !pa.Has(StatusGardener),
+		nocturnal: pa.DoesAny(NocturnalFlying),
 	}
 	g.Map.FOV.VisionMap(lt, pp)
 	g.Map.FOVPts = g.Map.FOV.SSCVisionMap(pp, g.MaxFOVRange(), passable, false)
@@ -254,12 +255,13 @@ func (g *Game) dangerousCloudInFOV() bool {
 
 // lighter implements rl.Lighter
 type lighter struct {
-	g      *Game
-	flying bool // owl flying a bit above the ground
+	g         *Game
+	flying    bool // flying a bit above the ground
+	nocturnal bool // nocturnal
 }
 
 func (lt *lighter) MaxCost(src gruid.Point) int {
-	if lt.flying {
+	if lt.nocturnal {
 		return MaxFOVRange - 2
 	}
 	return MaxFOVRange + 1

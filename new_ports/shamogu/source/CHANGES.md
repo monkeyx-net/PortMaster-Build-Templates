@@ -31,6 +31,10 @@ New content:
   imbalance dances less likely, so that they remain fun and not repetitive.
 * The Tips help topic features extra text about monster examination and rats
   hunting by smell (see #11).
+* On the project's website: new game manual in html form that includes bonus
+  sections with lists of comestibles, menhirs, runes, spirits and monsters.
+  Most other content is simply from the in-game help, but replicated there for
+  convenience.
 
 Improvements in Corrupted Dungeon expansion (see issue #11):
 
@@ -107,6 +111,11 @@ Reworked and improved content:
   menhirs and comestibles.  Same base number of vaults in mid and late game,
   but slightly higher chance of extra vault in late game with respect to mid
   game (chances for extra vault were the same for both before).
+* When Owl is not flying (gardening or lignified), fuzzy visibility has been
+  improved (still affected by nocturnal range, but when close you can see
+  behind foliage now, like without the Owl, as it was a bit unintuitive that
+  nocturnality would make foliage the same as rubble, even though not absurd
+  either).
 
 UI, graphics, QoL:
 
@@ -127,10 +136,9 @@ UI, graphics, QoL:
   cannot be done with the mouse, but it's not required for anything in normal
   play, and quitting a game without saving can be done quickly enough by
   playing badly and dying.
-* On the project's website: new game manual in html form that includes bonus
-  sections with lists of comestibles, menhirs, runes, spirits and monsters.
-  Most other content is simply from the in-game help, but replicated there for
-  convenience.
+* In the (unlikely) case that status effects don't fit in the status bar, now
+  an arrow shows up at the end of the line, suggesting that scrolling is
+  possible (either with the mouse or using page up/down).
 
 Fixes:
 

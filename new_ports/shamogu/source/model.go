@@ -138,8 +138,6 @@ func (md *model) initWidgets() {
 	md.desc.AdjustWidth = false
 	md.equipLabel = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.equipLabel.AdjustWidth = false
-	md.status = &gameStatus{}
-	md.status.desc = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.pager = &pager{}
 	md.pager.pg = ui.NewPager(ui.PagerConfig{
 		Grid: gruid.NewGrid(UIWidth, UIHeight-1),
@@ -150,6 +148,12 @@ func (md *model) initWidgets() {
 	style := ui.MenuStyle{
 		Active: gruid.Style{Fg: ColorYellow},
 	}
+	md.status = &gameStatus{}
+	md.status.desc = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
+	md.status.menu = ui.NewMenu(ui.MenuConfig{
+		Grid:  gruid.NewGrid(UIWidth-2, 1),
+		Style: ui.MenuStyle{Layout: gruid.Point{0, 1}, Active: style.Active},
+	})
 	md.menu = &menu{}
 	md.menu.main = ui.NewMenu(ui.MenuConfig{
 		Grid:  gruid.NewGrid(UIWidth/2, UIHeight-1),
@@ -162,10 +166,6 @@ func (md *model) initWidgets() {
 		Box:   &ui.Box{},
 		Style: style,
 		Keys:  ui.MenuKeys{Quit: []gruid.Key{gruid.KeySpace, "x", "X", gruid.KeyEscape}},
-	})
-	md.status.menu = ui.NewMenu(ui.MenuConfig{
-		Grid:  gruid.NewGrid(UIWidth, 1),
-		Style: ui.MenuStyle{Layout: gruid.Point{0, 1}, Active: style.Active},
 	})
 }
 

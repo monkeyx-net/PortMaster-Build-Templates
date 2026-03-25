@@ -92,6 +92,8 @@ pm_zip_download() {
         return
     fi
     if fetch "$pm_url" "$dest_dir/$zip_name"; then
+        echo "Removing previous port if exists"
+        rm -rf "$dest_dir/$port_name" "$port_name/$zip_name"
         echo "         portmaster: saved -> $dest_dir/$zip_name"
         mkdir -p "$dest_dir/$port_name"
         bsdtar -xf "$dest_dir/$zip_name" -C "$dest_dir/$port_name/"
@@ -284,6 +286,7 @@ check_port() {
         elif [[ "$checksum_unset" == true ]]; then
             printf   "         checksum: %s  (unset -- populate recipe)\n" "$upstream_checksum"
         fi
+        rm -rf "$DOWNLOADS_DIR/$port_name"/source.* "$DOWNLOADS_DIR/$port_name/source"
         mkdir -p "$DOWNLOADS_DIR/$port_name/source"
         mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
         echo "         saved -> $DOWNLOADS_DIR/$port_name/"

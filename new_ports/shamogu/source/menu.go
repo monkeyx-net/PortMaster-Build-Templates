@@ -50,6 +50,7 @@ func (md *model) updateMainMenu(msg gruid.Msg) {
 	case ui.MenuMove, ui.MenuInvoke:
 		idx := md.menu.main.ActiveInvokable()
 		if idx < 0 {
+			md.desc.Content = ui.StyledText{}
 			break
 		}
 		switch md.menu.mode {
