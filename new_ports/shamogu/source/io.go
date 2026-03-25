@@ -139,13 +139,9 @@ func LoadConfig() (bool, error) {
 	}
 	c, err := DecodeConfigSave(data)
 	if err != nil {
-		log.Printf("ignoring incompatible old config: %v", err)
-		if err := RemoveDataFile("config"); err != nil {
-			log.Printf("removing old config: %v", err)
-		}
-		return false, nil
+		return false, err
 	}
-	if c.VersionNumber != GameConfig.VersionNumber {
+	if c.Version != GameConfig.Version {
 		log.Print("ignoring incompatible old config")
 		if err := RemoveDataFile("config"); err != nil {
 			log.Printf("removing old config: %v", err)

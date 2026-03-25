@@ -47,7 +47,7 @@ func (mr MagicRune) String() string {
 }
 
 // Color returns the color of the runic trap.
-func (rt *RunicTrap) Color() gruid.Color {
+func (rt RunicTrap) Color() gruid.Color {
 	if rt.KnownUsed {
 		return ColorForeground
 	}
@@ -69,7 +69,7 @@ func (rt *RunicTrap) Color() gruid.Color {
 }
 
 // Desc returns the description of the runic trap.
-func (rt *RunicTrap) Desc() string {
+func (rt RunicTrap) Desc() string {
 	if rt.KnownUsed {
 		return "The rune has already been triggered."
 	}
@@ -92,7 +92,7 @@ func (rt *RunicTrap) Desc() string {
 }
 
 // RunicTraps are items but they cannot be used like other items.
-func (rt *RunicTrap) Use(g *Game, id ID) bool {
+func (rt RunicTrap) Use(g *Game, id ID) bool {
 	g.Log("You cannot interact with a trap.")
 	return false
 }
@@ -108,40 +108,33 @@ func (g *Game) TriggerTrap(i ID, ai *Actor) {
 	if ai.DoesAny(RunicChicken) {
 		return
 	}
-	ei := g.Entity(i)
-	pi := ei.P
-	rt, ok := g.RunicTrapAt(pi)
+	pi := g.Entity(i).P
+	j := g.Map.RuneCache.At(pi)
+	if j <= 0 {
+		return
+	}
+	ei := g.Entity(j)
+	rt, ok := ei.Role.(*RunicTrap)
 	if !ok || rt.Used {
 		return
 	}
 	switch {
-	case rt.Rune == RuneLignification && (ai.Has(StatusLignification) || ai.Is(WalkingTree)):
+	case rt.Rune == RuneLignification && (ai.Has(StatusLignification) || ai.DoesAny(MonsLignify)):
 		// Do not trigger lignification traps while lignified.
 		return
 	case rt.Rune == RuneBerserk && ai.Has(StatusBerserk):
 		// Do not trigger berserk traps while berserk.
 		return
 	}
-	switch {
-	case i == PlayerID:
+	if i == PlayerID {
 		g.LogfStyled("You trigger the %s.", logSpecial, rt.Rune.String())
 		g.StoryLogf("Triggered %s", One(rt.Rune.String()))
 		g.Stats.PlayerTrapTriggers++
-		rt.KnownUsed = true
-	case g.InFOV(pi):
-		g.LogfStyled("The %s triggers the %s.", logSpecial, ei.Name, rt.Rune.String())
-		rt.KnownUsed = true
-	case SensingRange(pi, g.PP()) && g.PlayerActor().DoesAny(RunicChicken):
-		g.LogfStyled("The %s triggers.", logSpecial, ei.Name)
-		rt.KnownUsed = true
-	}
-	if i != PlayerID {
+	} else {
+		g.LogfStyled("The %s triggers the %s.", logSpecial, g.Entity(i).Name, rt.Rune.String())
 		g.Stats.MonsterTrapTriggers++
 	}
 	g.Stats.MapTriggeredTraps[g.Map.Level-1]++
-	rt.Used = true
-	g.Map.RuneCache.SetU(pi, 0)
-	// Apply runic effect.
 	switch rt.Rune {
 	case RuneBerserk:
 		g.PutStatus1(i, ai, StatusBerserk, DurationBerserkTrap)
@@ -155,15 +148,9 @@ func (g *Game) TriggerTrap(i ID, ai *Actor) {
 	case RuneWarp:
 		g.TeleportActor(i, ai, 1)
 	}
-}
-
-// RunicTrapAt returns any runic trap at the given position.
-func (g *Game) RunicTrapAt(at gruid.Point) (*RunicTrap, bool) {
-	i := g.Map.RuneCache.At(at)
-	if i <= 0 {
-		return nil, false
+	rt.Used = true
+	if g.InFOV(pi) {
+		rt.KnownUsed = true
 	}
-	ei := g.Entity(i)
-	rt, ok := ei.Role.(*RunicTrap)
-	return rt, ok
+	g.Map.RuneCache.SetU(pi, 0)
 }

@@ -3,7 +3,7 @@ module codeberg.org/anaseto/shamogu
 go 1.24.0
 
 require (
-	codeberg.org/anaseto/gruid v0.27.0
+	codeberg.org/anaseto/gruid v0.25.0
 	codeberg.org/anaseto/gruid-js v0.5.0
 	codeberg.org/anaseto/gruid-sdl v0.10.1
 	codeberg.org/anaseto/gruid-tcell v0.5.0

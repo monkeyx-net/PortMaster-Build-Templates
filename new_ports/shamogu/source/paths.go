@@ -151,39 +151,38 @@ func (g *Game) MonPath(i ID, ai *Actor, from, to gruid.Point) []gruid.Point {
 	if beh.State != Hunting {
 		passable = g.Map.PassableWithoutTraps
 	}
-	var path []gruid.Point
-	if beh.State != Hunting && paths.DistanceManhattan(from, pp) > MaxFOVRange &&
-		paths.DistanceManhattan(from, to) > MaxFOVRange {
-		// When monster does a long trip and is far enough, we try the
-		// cheap JPS algorithm that only cares about simple boolean
-		// passability.
-		path = g.PR.JPSPath(beh.Path, from, to, passable, false)
-		if len(path) > 0 {
-			return path
-		}
-	}
-	// We use a boolean cache marking actor positions for faster
-	// cost computations during AstarPath.
-	g.Map.BoolCache = g.Map.BoolCache.New()
 	aip := &MonPath{
 		actorAt:  g.Map.BoolCache.At,
 		pp:       pp,
 		passable: passable,
 		rand:     g.rand,
 		confused: ai.Has(StatusConfusion)}
-	for _, ne := range g.Entities {
-		if ne.IsAlive() {
-			g.Map.BoolCache.Set(ne.P, true)
+	var path []gruid.Point
+	if beh.State != Hunting && paths.DistanceManhattan(from, pp) > MaxFOVRange &&
+		paths.DistanceManhattan(from, to) > MaxFOVRange {
+		path = g.PR.JPSPath(beh.Path, from, to, aip.passable, false)
+	}
+	if len(path) == 0 {
+		// We use a boolean cache marking actor positions for faster
+		// cost computations during AstarPath.
+		g.Map.BoolCache = g.Map.BoolCache.New()
+		for _, ne := range g.Entities {
+			if ne.IsAlive() {
+				g.Map.BoolCache.Set(ne.P, true)
+			}
 		}
+		if beh.State == Hunting && ai.DoesAny(MonsDig) {
+			aip.passable = func(p gruid.Point) bool { return true }
+		}
+		path = g.PR.AstarPath(aip, from, to)
 	}
-	if beh.State == Hunting && ai.DoesAny(MonsDig) {
-		aip.passable = func(p gruid.Point) bool { return true }
-	}
-	path = g.PR.AstarPath(aip, from, to)
 	if len(path) == 0 && beh.State != Hunting {
 		// Ignore traps if there's no other way.
 		aip.passable = g.Map.Passable
 		path = g.PR.AstarPath(aip, from, to)
+	}
+	if len(path) == 0 {
+		return nil
 	}
 	return path
 }

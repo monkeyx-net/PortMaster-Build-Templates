@@ -39,11 +39,7 @@ const (
 var CustomKeys bool
 
 // GameConfig contains the current game config.
-var GameConfig = Config{
-	DarkColors:    true, // default to dark theme
-	Tiles:         true, // default to tiles (when available)
-	VersionNumber: ConfigVersionNumber,
-}
+var GameConfig Config
 
 // mode represents the main model mode
 type mode int
@@ -101,11 +97,7 @@ func (md *model) init() gruid.Effect {
 		// Initialize mods before starting the game, because we need
 		// that information during the advanced new game settings.
 		if GameConfig.AdvancedNewGame {
-			if len(GameConfig.Mods) == NMods {
-				g.Mods = slices.Clone(GameConfig.Mods)
-			} else {
-				g.Mods = make([]bool, NMods)
-			}
+			g.Mods = slices.Clone(GameConfig.Mods)
 			md.openSpiritSelectionMenu(modeNewGameAdvanced)
 		} else {
 			g.Mods = make([]bool, NMods)
@@ -138,6 +130,8 @@ func (md *model) initWidgets() {
 	md.desc.AdjustWidth = false
 	md.equipLabel = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.equipLabel.AdjustWidth = false
+	md.status = &gameStatus{}
+	md.status.desc = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.pager = &pager{}
 	md.pager.pg = ui.NewPager(ui.PagerConfig{
 		Grid: gruid.NewGrid(UIWidth, UIHeight-1),
@@ -148,12 +142,6 @@ func (md *model) initWidgets() {
 	style := ui.MenuStyle{
 		Active: gruid.Style{Fg: ColorYellow},
 	}
-	md.status = &gameStatus{}
-	md.status.desc = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
-	md.status.menu = ui.NewMenu(ui.MenuConfig{
-		Grid:  gruid.NewGrid(UIWidth-2, 1),
-		Style: ui.MenuStyle{Layout: gruid.Point{0, 1}, Active: style.Active},
-	})
 	md.menu = &menu{}
 	md.menu.main = ui.NewMenu(ui.MenuConfig{
 		Grid:  gruid.NewGrid(UIWidth/2, UIHeight-1),
@@ -166,6 +154,10 @@ func (md *model) initWidgets() {
 		Box:   &ui.Box{},
 		Style: style,
 		Keys:  ui.MenuKeys{Quit: []gruid.Key{gruid.KeySpace, "x", "X", gruid.KeyEscape}},
+	})
+	md.status.menu = ui.NewMenu(ui.MenuConfig{
+		Grid:  gruid.NewGrid(UIWidth, 1),
+		Style: ui.MenuStyle{Layout: gruid.Point{0, 1}, Active: style.Active},
 	})
 }
 
@@ -211,7 +203,6 @@ func (md *model) initKeys() {
 		"d":                 ActionScroll{Delta: gruid.Point{0, -1}},
 		gruid.KeyPageUp:     ActionScroll{Delta: gruid.Point{0, 1}},
 		"u":                 ActionScroll{Delta: gruid.Point{0, 1}},
-		"»":                 ActionWizardNextLevel{},
 	}
 	md.keysTarget = map[gruid.Key]Action{
 		gruid.KeyArrowLeft:  ActionCursorBump{Delta: gruid.Point{-1, 0}},
@@ -239,11 +230,6 @@ func (md *model) applyKeyConfig() {
 		// For ensuring menu access and esc functionality.
 		md.keysNormal[gruid.KeySpace] = ActionMenu{}
 		md.keysNormal[gruid.KeyEscape] = ActionNone{}
-		// Ensure some new non-configurable actions are set on old
-		// but compatible configs.
-		if _, ok := md.keysNormal["»"]; !ok {
-			md.keysNormal["»"] = ActionWizardNextLevel{}
-		}
 	}
 	if GameConfig.ExamineModeKeys != nil {
 		md.keysTarget = GameConfig.ExamineModeKeys
@@ -254,6 +240,9 @@ func (md *model) applyKeyConfig() {
 
 // InitConfig loads saved config, if any, and initializes GameConfig.
 func InitConfig() error {
+	GameConfig.DarkColors = true // default to dark theme
+	GameConfig.Tiles = true      // default to tiles (when available)
+	GameConfig.Version = Version
 	load, err := LoadConfig()
 	if err != nil {
 		err = fmt.Errorf("error loading config: %v", err)

@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 // Mod represents the various kinds of advanced mods for the game.
 type Mod int
 
@@ -65,7 +63,7 @@ func (m Mod) Desc() string {
 	case ModNoRecharges:
 		return "Spirit ability charges are doubled but don’t recharge when going to the next map level. Use them wisely!"
 	case ModHealingCombat:
-		return fmt.Sprintf("Healing happens through combat. When a monster dies, you may heal for 1 HP, with higher chance at low HP. However, comestibles don’t provide healing anymore, except for ambrosia berries still healing %d HP.\n\nVampiric Bat players start with an extra “vampirism” charge and get another one at map level 5, instead of healing on monster death. Less frequent healing but better tactical control over it!", HealAmbrosiaHC)
+		return "Healing happens through combat. When a monster dies, you may heal for 1 HP, with higher chance at low HP. However, comestibles don’t provide healing anymore.\n\nVampiric Bat players start with an extra “vampirism” charge and get another one at map level 5, instead of healing on monster death. Less frequent healing but better tactical control over it!\n\n@MNote.@N This experimental mod is playable but lacks polish with respect to the default experience. It will be reworked in a future version."
 	default:
 		return "(unknown mod)"
 	}

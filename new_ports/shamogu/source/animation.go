@@ -234,7 +234,7 @@ func (md *model) RangedAttackAnimation(a *Actor, from, to gruid.Point) {
 	}
 	fg := ColorForeground
 	switch {
-	case a.Is(FireLlama):
+	case a.DoesAny(MonsSpitFire):
 		fg = ColorOrange
 	case a.DoesAny(MonsFear):
 		fg = ColorMagenta
@@ -338,23 +338,16 @@ func (md *model) FloodAnimation(ps []paths.Node, c gruid.Color) {
 	md.anims.Frame(AnimDurVeryShort)
 }
 
-// TeleportAnimation animates an actor teleport between two positions.
-func (md *model) TeleportAnimation(i ID, from, to gruid.Point) {
+// TeleportAnimation animates an actor teleport between two positions. Should
+// be called while the actor is still at from.
+func (md *model) TeleportAnimation(from, to gruid.Point, showto bool) {
 	if DisableAnimations {
-		return
-	}
-	g := md.g
-	if i != PlayerID && !g.InFOV(from) && !g.InFOV(to) {
-		// Neither origin nor destination are visible, so skip
-		// animation.
 		return
 	}
 	md.startAnimSeq()
 	c := md.anims.mgrid.At(from)
-	if i == PlayerID || g.InFOV(from) {
-		md.anims.Draw(from, 'Φ', c.Style.Fg)
-	}
-	if i == PlayerID || g.InFOV(to) {
+	md.anims.Draw(from, 'Φ', c.Style.Fg)
+	if showto {
 		md.anims.Draw(to, 'Φ', c.Style.Fg)
 	}
 	md.anims.Frame(AnimDurMediumLong)
@@ -446,29 +439,6 @@ func (md *model) ExplosionAnimation(ps []gruid.Point) {
 		md.anims.Frame(AnimDurShortMedium)
 	}
 }
-
-// // AnimateClouds briefly shows dangerous clouds that are hidden by a monster.
-// func (md *model) AnimateClouds() {
-// 	if DisableAnimations {
-// 		return
-// 	}
-// 	g := md.g
-// 	draw := false
-// 	for i := range g.Monsters() {
-// 		ei := g.Entity(i)
-// 		if !g.InFOV(ei.P) {
-// 			continue
-// 		}
-// 		switch cl := g.Map.Clouds.At(ei.P); cl.Kind {
-// 		case CloudFire, CloudPoison:
-// 			md.anims.Draw(ei.P, '≡', cl.Kind.Color())
-// 			draw = true
-// 		}
-// 	}
-// 	if draw {
-// 		md.anims.Frame(AnimDurMediumLong)
-// 	}
-// }
 
 // OrbDestructionAnimation animates the destruction of the orb.
 func (md *model) OrbDestructionAnimation() {

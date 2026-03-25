@@ -49,7 +49,6 @@ const (
 	ThemeBerserk
 	ThemeFire
 	ThemeLignification
-	ThemePoison
 	ThemeWarp
 )
 
@@ -110,7 +109,7 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 	}
 
 	mg.genFoliage()
-	// Vault placement (6-8 vaults per map).
+	// Vault placement.
 	bigCenter := g.IntN(2) == 0
 	if bigCenter {
 		mg.genVaults(BigVaultTemplates, 1, PlacementCenter)
@@ -119,19 +118,8 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 		mg.genVaults(BigVaultTemplates, 1, PlacementEdge)
 		mg.genVaults(SmallVaultTemplates, 1, PlacementCenter)
 	}
-	nsv := 4 // number of small vaults
-	switch {
-	case g.Map.Level < 3:
-		// In the very early game, we generate one less small vault,
-		// because they are much more likely to be empty.
-		nsv--
-	case g.IntN(2+g.Map.Level/3) > 1:
-		// In the late game, make it more likely to generate an extra
-		// small vault, as there are more items and menhirs.
-		nsv++
-	}
 	mg.genVaults(BigVaultTemplates, 1, PlacementRandom)
-	mg.genVaults(SmallVaultTemplates, nsv, PlacementRandom)
+	mg.genVaults(SmallVaultTemplates, 4+mg.rand.IntN(2), PlacementRandom)
 	mg.connectAllVaults()
 	g.computeWaypoints(mg)
 	// Terrain effects: may introduce new unreachable passable terrain, but
@@ -159,17 +147,15 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 // choseTheme choses the theme for thematic levels.
 func (g *Game) choseTheme(mg *MapGen) {
 	if g.ProcInfo.ThemedLevel == g.Map.Level {
-		switch g.IntN(11) {
-		case 0, 1:
+		switch g.IntN(5) {
+		case 0:
 			mg.theme = ThemeBerserk
-		case 2, 3:
+		case 1:
 			mg.theme = ThemeFire
-		case 4, 5:
+		case 2:
 			mg.theme = ThemeLignification
-		case 6, 7:
-			mg.theme = ThemePoison
 		default:
-			// Higher chance for the warp theme.
+			// Double chance for the warp theme.
 			mg.theme = ThemeWarp
 		}
 	}
@@ -847,16 +833,6 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 				nt = Floor
 			}
 			st := ts[g.IntN(3)]
-			if st == nt {
-				// Make secondary terrain unlikely of being the
-				// same as primary terrain.
-				st = ts[g.IntN(3)]
-			}
-			if nt == Rubble && g.IntN(2) == 0 {
-				// Floor more likely as secondary terrain for
-				// rubble corruption.
-				st = Floor
-			}
 			switch {
 			case nt == Rubble || g.IntN(4) == 0:
 				// Walls may be destroyed.
@@ -868,7 +844,7 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 						}
 						return mixfn()
 					}
-					if g.IntN(4) == 0 {
+					if g.IntN(5) == 0 {
 						return st
 					}
 					return nt
@@ -879,7 +855,7 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 					if !Passable(t) {
 						return TranslucentWall
 					}
-					if g.IntN(6) == 0 {
+					if g.IntN(10) == 0 {
 						return st
 					}
 					return nt

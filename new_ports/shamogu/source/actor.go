@@ -17,23 +17,26 @@ type Actor struct {
 	FirePos   gruid.Point // position at start of turn while on Fire
 	KnownDead bool        // whether it's a monster known to be dead
 	Statuses  Statuses    // statuses (confused, etc.)
-	Kind      ActorKind   // actor kind (player or some kind of monster)
 	Traits    Traits      // passives traits
 	Behavior  *Behavior   // behavior component (monsters only)
 }
 
 // NewActor returns a new actor with the given combat stats and traits.
-func NewActor(attack, defense, hp int, ak ActorKind, t Traits) *Actor {
+func NewActor(attack, defense, hp int, t Traits) *Actor {
 	a := &Actor{
 		Attack:   attack,
 		Defense:  defense,
 		HP:       hp,
 		MaxHP:    hp,
-		Kind:     ak,
 		Statuses: make(Statuses, NStatuses),
 		Traits:   t,
 	}
 	return a
+}
+
+// IsPlayer reports whether the actor has the Player trait.
+func (a *Actor) IsPlayer() bool {
+	return a.DoesAny(Player)
 }
 
 // DoesAny reports whether the player has all traits in t.
@@ -51,9 +54,9 @@ func (a *Actor) Has(st Status) bool {
 	return a.Statuses.Has(st)
 }
 
-// Is reports whether the actor is of the given kind.
-func (a *Actor) Is(ak ActorKind) bool {
-	return a.Kind == ak
+// IsMonster reports whether the actor is a monster of the given kind.
+func (a *Actor) IsMonster(mk monsterKind) bool {
+	return a.Behavior != nil && a.Behavior.Kind == mk
 }
 
 // CanMove reports whether the actor isn't under any status that prevents
@@ -66,7 +69,7 @@ func (a *Actor) CanMove() bool {
 // includes lignified actors that can still move due to woodylegs as well as
 // walking trees.
 func (a *Actor) ResistsMove() bool {
-	return a.Has(StatusLignification) || a.Is(WalkingTree)
+	return a.Has(StatusLignification) || a.DoesAny(MonsLignify)
 }
 
 // IsAlive reports whether the actor is still alive.
@@ -95,7 +98,7 @@ func (g *Game) AdjustHPWithMin(i ID, ai *Actor, amount int, m int) {
 	}
 	hp, maxHP := ai.HP, ai.GetMaxHP()
 	ai.HP = min(maxHP, max(min(m, hp), hp+amount))
-	if i == PlayerID {
+	if ai.IsPlayer() {
 		if ai.HP > hp {
 			g.Logf("You feel better (+%d HP).", ai.HP-hp)
 		} else if ai.HP < hp {
@@ -128,36 +131,35 @@ func (t Traits) All(of Traits) bool {
 	return t&of == of
 }
 
-// Extra Traits. NOTE: there shouldn't be more than 64 (remaining free: 12).
-//
-// Mostly to be used for player traits and traits that may be shared by more
-// than a single actor kind (but currently various traits are specific to
-// single monsters).
+// Traits. NOTE: there shouldn't be more than 64 (remaining free: 0).
 const (
-	PatternCatch = 1 << iota // unbalancing and catching attack (frog, octopode)
+	Player Traits = 1 << iota
 
-	PatternDragging     // dragging attack pattern (crocodile players, alligator)
-	PatternFourDirs     // four-directional attack in 4 dirs (hydra, undead knight)
+	PatternBat          // sneaky attack pattern (bat)
+	PatternCatch        // unbalancing and catching attack (frog, octopode)
+	PatternCrocodile    // requires extra turn for changing directions (advanced)
+	PatternFourDirs     // four-directional attack in 4 dirs (hydra players)
+	PatternFourDirsMons // four-directional attack (four-headed hydra, undead knight)
 	PatternRampage      // rampaging (boar, phoenix)
 	PatternRanged       // ranged attack (eye, llama, lich)
 	PatternRangedRecoil // ranged attack with recoil (wind fox)
-	PatternSneaky       // sneaky attack pattern (vampiric bat, chaos megabat)
 	PatternSwap         // swapping-attack (crazy druid)
 	PatternSwapDaze     // dazing swapping-attack (temporal cat)
 
 	BadHearing      // worse hearing of noise (footsteps)
 	BurningHits     // hits may burn
-	DazingSpines    // body covered in dazing spines (porcupine)
 	Dazzling        // zebra's camouflage
-	Elephanty       // rat phobia, difficult rotation when facing a wall, immune to berserk after-effects
-	Gawalt          // wall-jumping, weakened hits, menhir sensing and hiding
+	DazingSpines    // body covered in dazing spines (porcupine)
+	Gawalt          // wall-jumping, weakened attacks, menhir sensing and hiding
 	Gluttony        // gluttony status after eating
 	GoodHearing     // better hearing of noise (footsteps)
 	GoodSmell       // smell food from a distance
 	NocturnalFlying // flying a bit above the ground like an owl
+	Pushing         // unbalancing pushing (earth-dragon)
 	PushingCharge   // unbalancing pushing when charging (boar)
-	RunicChicken    // doesn't trigger traps, cackles loudly on sighting a portal or totem
 	ScaryRoar       // intimidating roar on first sight
+	Elephanty       // rat phobia, difficult rotation when facing a wall, immune to berserk after-effects
+	RunicChicken    // doesn't trigger traps, cackles loudly on sighting a portal or totem
 	TrailingCloud   // leave dust behind after moving (on floor tiles)
 	VenomousMelee   // (non-ranged) attacks may poison foes
 	WoodyLegs       // can move while lignified
@@ -171,146 +173,116 @@ const (
 	ResistanceImbalance // halves duration of imbalance status
 	ResistancePoison    // halves duration of poison status
 
-	ImmunityConfusion     // immune to confusion
-	ImmunityDaze          // immune to daze status effect
-	ImmunityFear          // immune to fear
-	ImmunityFire          // immune to fire
-	ImmunityImbalance     // immune to imbalance
-	ImmunityLignification // immune to lignification
-	ImmunityPoison        // immune to poison
+	// Monster-only traits, often similar to player's spirit passive or
+	// active abilities but not exactly the same and with different
+	// activation conditions.
 
-	// Monster-only traits shared by various monsters.
+	MonsBarking        // bark with a fear inducing chance on noticing the player
+	MonsBerserking     // berserking spiders may make you berserk
+	MonsBlink          // attack makes you blink
+	MonsConfusion      // confusing attack (like floating eyes)
+	MonsDig            // dig walls when hunting
+	MonsExplodingDeath // explode on death
+	MonsFear           // attack may frighten
+	MonsFourHeaded     // perform 4 attacks per attack
+	MonsHungry         // hunts you with smell, becomes berserk if you eat in view
+	MonsIgnoreDefense  // attack ignores defense
+	MonsLignify        // attack may lignify you (also makes unmovable by force)
+	MonsSpores         // lignifying spores
+	MonsMusic          // makes music for you (noisy imp)
+	MonsScales         // scales provide extra protection from ranged attacks
+	MonsSpitFire       // spit fire when ranged (requires PatternRanged)
+	MonsTeleport       // attack may teleport you
 
-	MonsBerserking     // hits may make you berserk (spiders, crazy druid)
-	MonsConfusion      // confusing attack (floating eyes, walking mushroom)
-	MonsDig            // dig walls when hunting (boars, dragons)
-	MonsExplodingDeath // explode on death (nadres, golems)
-	MonsFear           // attack may frighten (lich, knight)
-	MonsIgnoreDefense  // attack ignores defense (acid mound, lich)
-	MonsScales         // scales provide extra protection from ranged attacks (viper, hydra, nadre, dragon, alligator)
+	MonsImmunityConfusion     // immune to confusion
+	MonsImmunityDaze          // immune to daze status effect
+	MonsImmunityFear          // immune to fear
+	MonsImmunityFire          // immune to fire
+	MonsImmunityImbalance     // immune to imbalance
+	MonsImmunityLignification // immune to lignification
+	MonsImmunityPoison        // immune to poison
 
 	// NOTE: we don't do descriptions for the traits below (beyond the log
 	// messages about noise), so they could be moved to another struct
-	// field to make place for more traits if we ever need it.
+	// field to make place for more traits.
 
 	MonsCreep          // creep noise (instead of footsteps)
 	MonsHeavyFootsteps // heavy footsteps
 	MonsLightFootsteps // light footsteps
-	MonsSilent         // silent movement (spiders, wraith)
+	MonsSilent         // silent movement
 	MonsWingFlap       // wing flapping noise (instead of footsteps)
-
-	MonsNotable // notable monster (mention in timeline)
+	MonsNotable        // dangerous monster (mention in timeline)
 
 	NoTraits = 0
 )
 
-// TraitDesc returns a suitable trait description for the given actor kind and
-// extra traits. For monsters, it includes the description of some
-// monster-specific traits.
-func TraitDesc(ak ActorKind, t Traits) string {
+func (t Traits) String() string {
 	desc := []string{}
-
-	// Attack patterns.
+	desc = traitDesc(desc, t, PatternFourDirs, "four-directional attack with attack bonus per extra foe")
+	desc = traitDesc(desc, t, PatternFourDirsMons, "four-directional attack")
+	desc = traitDesc(desc, t, PatternBat, "sneaky attack pattern")
 	desc = traitDesc(desc, t, PatternCatch, "ranged catching attack that @Ounbalances@N foes")
-	desc = traitDesc(desc, t, PatternDragging, "@Ounbalancing@N dragging attack")
-	desc = traitDesc(desc, t, PatternFourDirs, "four-directional attack")
+	desc = traitDesc(desc, t, PatternCrocodile, "@Ounbalancing@N dragging attack, slow rotation (cannot turn and attack)")
 	desc = traitDesc(desc, t, PatternRampage, "rampaging charge")
 	desc = traitDesc(desc, t, PatternRanged, "ranged attack")
 	desc = traitDesc(desc, t, PatternRangedRecoil, "ranged attack with recoil")
-	desc = traitDesc(desc, t, PatternSneaky, "sneaky attack pattern")
 	desc = traitDesc(desc, t, PatternSwap, "ranged space-distorting silent attack")
 	desc = traitDesc(desc, t, PatternSwapDaze, "ranged space-distorting silent attack that may @Odaze@N foes")
-	switch ak {
-	case Player:
-		// Player crocodile gets slow rotation, too.
-		switch {
-		case t.Any(PatternDragging):
-			desc = append(desc, "slow rotation (cannot turn and attack)")
-		case t.Any(PatternFourDirs):
-			desc = append(desc, "attack bonus per extra foe")
-		case t.Any(PatternSneaky):
-			desc = append(desc, "confusing charge")
-		}
-	case DraggingAlligator:
-		desc = append(desc, "confusing bite")
-	case ChaosMegabat:
-		desc = append(desc, "chaos bite (random effect)")
-	}
 
-	// Extra traits.
-	desc = traitDesc(desc, t, BurningHits, "hits may @Oburn@N foes")
-	desc = traitDesc(desc, t, DazingSpines, "spines may @Odaze@N attacking foes in melee")
-	desc = traitDesc(desc, t, Dazzling, "dazzling (redirect attacks just behind you, easily noticed)")
-	desc = traitDesc(desc, t, Elephanty, "rat phobia, difficult rotation when facing a wall, unnoticed in dead-ends, immune to berserk after-effects")
-	desc = traitDesc(desc, t, Gawalt, "wall-jumping movement and attack, weakened hits, menhir sensing and hiding")
-	desc = traitDesc(desc, t, Gluttony, "gluttony (needs to eat in pairs)")
-	desc = traitDesc(desc, t, GoodSmell, "smells food from afar")
-	desc = traitDesc(desc, t, NocturnalFlying, "nocturnal (reduced view range), flies over foliage")
+	desc = traitDesc(desc, t, Pushing, "hits may push and @Ounbalance@N foes")
 	desc = traitDesc(desc, t, PushingCharge, "charging pushes and @Ounbalances@N foes")
+	desc = traitDesc(desc, t, BurningHits, "hits may @Oburn@N foes")
 	desc = traitDesc(desc, t, RunicChicken, "senses and doesn’t trigger runes, cackles loudly on sighting a portal or totem, confusion vulnerability (longer duration)")
-	desc = traitDesc(desc, t, ScaryRoar, "scary roar on first sight")
-	desc = traitDesc(desc, t, TrailingCloud, "movement leaves dust behind")
 	desc = traitDesc(desc, t, VenomousMelee, "@Ovenomous@N melee attack")
-	desc = traitDesc(desc, t, WoodyLegs, "woody legs (can move while lignified)")
+	desc = traitDesc(desc, t, Gawalt, "wall-jumping movement and attack, weakened attacks, menhir sensing and hiding")
+	desc = traitDesc(desc, t, Gluttony, "gluttony (needs to eat in pairs)")
+	desc = traitDesc(desc, t, ScaryRoar, "scary roar on first sight")
+	desc = traitDesc(desc, t, Elephanty, "rat phobia, difficult rotation when facing a wall, unnoticed in dead-ends, immune to berserk after-effects")
+	desc = traitDesc(desc, t, NocturnalFlying, "nocturnal (reduced view range), flies over foliage")
+	desc = traitDesc(desc, t, Dazzling, "dazzling (redirect attacks just behind you, easily noticed)")
+	desc = traitDesc(desc, t, DazingSpines, "spines may @Odaze@N foes in melee")
 	switch {
-	case t.Any(GoodHearing) && !t.Any(BadHearing):
+	case t.All(GoodHearing) && !t.All(BadHearing):
 		desc = append(desc, "good hearing")
-	case !t.Any(GoodHearing) && t.Any(BadHearing):
+	case !t.All(GoodHearing) && t.All(BadHearing):
 		desc = append(desc, "bad hearing")
 	}
+	desc = traitDesc(desc, t, GoodSmell, "smells food from afar")
+	desc = traitDesc(desc, t, TrailingCloud, "movement leaves dust behind")
+	desc = traitDesc(desc, t, WoodyLegs, "woody legs (can move while lignified)")
 
-	// Extra monster-specific traits.
-	switch ak {
-	case BarkingHound:
-		desc = append(desc, "barks on sight and @Ofrightens@N you")
-	case BlinkButterfly:
-		desc = append(desc, "hits makes you blink")
-	case BurningPhoenix:
-		desc = append(desc, "imbalance vulnerability (decreased burning chance)")
-	case ChaosMegabat:
-		// Megabat hunts by sound (when out-of-view for noises
-		// originating on the player's tile).
-		desc = append(desc, "hunts by sound")
-	case EarthDragon:
-		desc = append(desc, "hits may push and @Ounbalance@N foes")
-	case FireLlama:
-		desc = append(desc, "spites @Ofire@N from afar")
-	case FourHeadedHydra:
-		desc = append(desc, "attacks with all four heads")
-	case HungryRat:
-		desc = append(desc, "hunts you by smell, becomes berserk if you eat in view")
-	case NoisyImp:
-		desc = append(desc, "plays guitar for you, avoids fights")
-	case WalkingMushroom:
-		desc = append(desc, "releases @Blignifying@N spores on sight")
-	case WalkingTree:
-		desc = append(desc, "hits may @Blignify@N you, hits ignore lignification’s defense bonus, woody legs, permanently lignified")
-	case WarpingWraith:
-		desc = append(desc, "hits teleport you away")
-	}
-	desc = traitDesc(desc, t, MonsBerserking, "hits may @Bberserk@N you briefly")
-	desc = traitDesc(desc, t, MonsConfusion, "hits may @Oconfuse@N you")
-	desc = traitDesc(desc, t, MonsDig, "digs walls when hunting")
-	desc = traitDesc(desc, t, MonsExplodingDeath, "explodes on death")
-	desc = traitDesc(desc, t, MonsFear, "hits may @Ofrighten@N you")
-	desc = traitDesc(desc, t, MonsIgnoreDefense, "attack ignores defense")
-	desc = traitDesc(desc, t, MonsScales, "scales (+1 Defense against ranged attacks)")
-
-	// Vulnerabilities, Resistances, Immunities.
 	desc = traitDesc(desc, t, VulnerabilityFire, "@OFire@N vulnerability (longer duration)")
+
 	desc = traitDesc(desc, t, ResistanceConfusion, "@OConfusion@N resistance (half duration)")
 	desc = traitDesc(desc, t, ResistanceDaze, "@ODaze@N resistance (can invoke spirits while dazed)")
 	desc = traitDesc(desc, t, ResistanceFear, "@OFear@N resistance (half duration)")
 	desc = traitDesc(desc, t, ResistanceFire, "@OFire@N resistance (delayed burning)")
 	desc = traitDesc(desc, t, ResistanceImbalance, "@OImbalance@N resistance (half duration)")
 	desc = traitDesc(desc, t, ResistancePoison, "@OPoison@N resistance (half duration)")
-	desc = traitDesc(desc, t, ImmunityConfusion, "immune to @OConfusion@N")
-	desc = traitDesc(desc, t, ImmunityDaze, "@ODaze@N immunity")
-	desc = traitDesc(desc, t, ImmunityFear, "@OFear@N immunity")
-	desc = traitDesc(desc, t, ImmunityFire, "@OFire@N immunity")
-	desc = traitDesc(desc, t, ImmunityImbalance, "@OImbalance@N immunity")
-	desc = traitDesc(desc, t, ImmunityLignification, "@BLignification@N immunity")
-	desc = traitDesc(desc, t, ImmunityPoison, "@OPoison@N immunity")
+
+	desc = traitDesc(desc, t, MonsBarking, "barks on sight and @Ofrightens@N you")
+	desc = traitDesc(desc, t, MonsBerserking, "hits may @Bberserk@N you briefly")
+	desc = traitDesc(desc, t, MonsBlink, "hits makes you blink")
+	desc = traitDesc(desc, t, MonsConfusion, "@Oconfusing@N hits")
+	desc = traitDesc(desc, t, MonsDig, "digs walls when hunting")
+	desc = traitDesc(desc, t, MonsExplodingDeath, "explodes on death")
+	desc = traitDesc(desc, t, MonsFear, "@Ofrightening@N hits")
+	desc = traitDesc(desc, t, MonsFourHeaded, "attacks with all four heads")
+	desc = traitDesc(desc, t, MonsHungry, "hunts you with smell, becomes berserk if you eat in view")
+	desc = traitDesc(desc, t, MonsIgnoreDefense, "attack ignores defense")
+	desc = traitDesc(desc, t, MonsLignify, "hits may @Blignify@N you briefly, woody legs, permanently @Blignified@N")
+	desc = traitDesc(desc, t, MonsMusic, "plays guitar for you, avoids fights")
+	desc = traitDesc(desc, t, MonsScales, "scales (+1 Defense against ranged attacks)")
+	desc = traitDesc(desc, t, MonsSpitFire, "spites @Ofire@N from afar")
+	desc = traitDesc(desc, t, MonsSpores, "releases @Blignifying@N spores on sight")
+
+	desc = traitDesc(desc, t, MonsImmunityConfusion, "immune to @OConfusion@N")
+	desc = traitDesc(desc, t, MonsImmunityDaze, "@ODaze@N immunity")
+	desc = traitDesc(desc, t, MonsImmunityFear, "@OFear@N immunity")
+	desc = traitDesc(desc, t, MonsImmunityFire, "@OFire@N immunity")
+	desc = traitDesc(desc, t, MonsImmunityImbalance, "@OImbalance@N immunity")
+	desc = traitDesc(desc, t, MonsImmunityLignification, "@BLignification@N immunity")
+	desc = traitDesc(desc, t, MonsImmunityPoison, "@OPoison@N immunity")
 
 	return strings.Join(desc, ", ")
 }
@@ -458,7 +430,7 @@ var statusDesc = []string{
 	StatusConfusion: "Using spirit abilities will hurt you for 1 damage. Doubles duration of new @OImbalance@N, @ODaze@N and @OFear@N effects.",
 	StatusDaze:      "Forbids all actions except waiting or eating until you’re hurt or it expires.",
 	StatusDig:       "Allows walking into walls. Gives +1 effective damage when charging and guarantees pushing hits (even in melee).",
-	StatusDisorient: "Makes any hunting monsters in view move in the opposite direction with respect to your current direction. Monsters may mistakenly attack any monster on the way while doing so. Disoriented monsters do not perform four-directional charges.",
+	StatusDisorient: "Makes any foes in view move in the opposite direction with respect to your current direction. Monsters may mistakenly attack any monster on the way while doing so. Disoriented monsters do not perform four-directional charges.",
 	StatusFear:      "Forbids attacking and walking toward foes.",
 	StatusFire:      fmt.Sprintf("Remaining in place or moving into a cloud of fire will burn you for %d damage. When first catching @OFire@N, you also get burned once immediately.", FireDamage),
 	StatusFocus:     "Attack frontally with all four heads.",
@@ -471,7 +443,7 @@ var statusDesc = []string{
 		LignificationDefenseBonus, DurationImbalanceLignification),
 	StatusPoison: fmt.Sprintf("Walking will hurt you for %d damage. Stinky toxins are exuded on expiration, confusing other creatures for %d turns.",
 		PoisonDamage, DurationConfusionToxins),
-	StatusShadow:   "Harmonic shadows make non-hunting monsters not notice you unless you attack them. You can move instantly through translucent walls. It makes combat silent and hits make hunting monsters lose track of you.",
+	StatusShadow:   "Harmonic shadows make non-hunting monsters not notice you unless you attack them. You can move instantly through translucent walls. It makes combat silent and removes the weakening debuff.",
 	StatusSprint:   "You can move to a visible destination three times as fast on the current direction and twice as fast laterally. You can jump over foes, unbalancing them. Canceled by waiting.",
 	StatusTimeStop: "Time is frozen for everyone but you until expiration. Status effects affecting you will still progress.",
 	StatusVampirism: fmt.Sprintf("Guarantees successful melee bite that restores HP for the amount of damage you deal. Gives %+d Attack.",
@@ -495,6 +467,8 @@ func (st Status) Details() string {
 		details = "Player-only effect obtainable by eating clarity leaves. May be removed by eating a berserking flower for half the @BBerserk@N duration."
 	case StatusDaze:
 		details = fmt.Sprintf("Players with “daze resistance” can still invoke spirits; status shows as @O%s*@N for them.", StatusDaze.Abbr())
+	case StatusLignification:
+		details = fmt.Sprintf("The player’s HP never falls below 3 after losing bonus HP. Monsters’ HP floor is only 1, like for @BBerserk@N. Duration and HP bonus may be renewed by eating a lignification fruit. Cancels @BSprint@N. Actors with “woody legs” aren’t rooted, so they lack delayed burning protection but can move while lignified at the cost of reducing the duration by an extra turn; status shows as @B%s*@N for them, and there is no @OImbalance@N on expiration, because no root withdrawing happens. ", StatusLignification.Abbr())
 	case StatusConfusion:
 		details = "Confused monsters will attack other monsters too when adjacent. Some monsters may even hurt or affect themselves when performing special actions like digging, spitting fire, barking, or pushing."
 	case StatusDisorient:
@@ -503,26 +477,24 @@ func (st Status) Details() string {
 		details = "Monsters will flee when facing you. Ambushing charges against unseen foes can still happen. At the end of a turn, a cornered and afraid actor with no possible escape will become berserk. When lignified and afraid, getting hit makes you berserk, too."
 	case StatusFire:
 		details = "Players with “fire resistance” from the upgraded Fire Salamander don’t take that extra immediate damage."
-	case StatusFocus:
-		details = "Cancels @BSprint@N. Player-only effect obtainable with the Four-Headed Hydra spirit."
-	case StatusFoggySkin:
-		details = "Player-only effect obtainable by eating a foggy-skin onion. May be removed by eating a lignification fruit for half the @BLignification@N duration."
 	case StatusGardener:
 		details = "Player-only effect obtainable with the Gardening Lion spirit."
 	case StatusGluttony:
 		details = "Player-only effect obtainable with the Gluttonous Bear spirit."
 	case StatusImbalance:
 		details = "Sprinting or jumping while imbalanced may sometimes lead to a @Odazing@N fall."
-	case StatusLignification:
-		details = fmt.Sprintf("The player’s HP never falls below 3 after losing bonus HP. Monsters’ HP floor is only 1, like for @BBerserk@N. Duration and HP bonus may be renewed by eating a lignification fruit. Cancels @BSprint@N. Actors with “woody legs” aren’t rooted, so they lack delayed burning protection but can move while lignified at the cost of reducing the duration by an extra turn; status shows as @B%s*@N for them, and there is no @OImbalance@N on expiration, because no root withdrawing happens.", StatusLignification.Abbr())
 	case StatusPoison:
 		details = "Watch out for confusion if any monsters survive poisoning!"
+	case StatusFoggySkin:
+		details = "Player-only effect obtainable by eating a foggy-skin onion. May be removed by eating a lignification fruit for half the @BLignification@N duration."
 	case StatusShadow:
-		details = "Note that hitting a wandering monster will make it hunt you as usual. Player-only effect obtainable with the Gawalt Monkey spirit."
+		details = "Player-only effect obtainable with the Gawalt Monkey spirit."
 	case StatusSprint:
 		details = "Disables normal attack. Player-only effect obtainable with the Sprinting Gazelle spirit."
 	case StatusTimeStop:
 		details = "Player-only effect obtainable with the Temporal Cat spirit."
+	case StatusFocus:
+		details = "Cancels @BSprint@N. Player-only effect obtainable with the Four-Headed Hydra spirit."
 	case StatusVampirism:
 		details = "Player-only effect obtainable with the Vampiric Bat spirit."
 	}
@@ -571,7 +543,7 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 			return false
 		}
 	case StatusFire:
-		if ai.Has(StatusFoggySkin) || ai.DoesAny(ImmunityFire) {
+		if ai.Has(StatusFoggySkin) || ai.DoesAny(MonsImmunityFire) {
 			return false
 		}
 		if ai.DoesAny(VulnerabilityFire) {
@@ -588,7 +560,7 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 			return false
 		}
 	case StatusFear:
-		if ai.Has(StatusBerserk) || ai.DoesAny(ImmunityFear) {
+		if ai.Has(StatusBerserk) || ai.DoesAny(MonsImmunityFear) {
 			return false
 		}
 		if ai.DoesAny(ResistanceFear) {
@@ -598,14 +570,14 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 			turns *= 2
 		}
 	case StatusDaze:
-		if ai.Has(StatusClarity) || ai.DoesAny(ImmunityDaze) {
+		if ai.Has(StatusClarity) || ai.DoesAny(MonsImmunityDaze) {
 			return false
 		}
 		if ai.Has(StatusConfusion) {
 			turns *= 2
 		}
 	case StatusConfusion:
-		if ai.Has(StatusClarity) || ai.DoesAny(ImmunityConfusion) {
+		if ai.Has(StatusClarity) || ai.DoesAny(MonsImmunityConfusion) {
 			return false
 		}
 		if ai.DoesAny(RunicChicken) {
@@ -615,7 +587,7 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 			turns = (turns + 1) / 2
 		}
 	case StatusImbalance:
-		if ai.Has(StatusLignification) || ai.DoesAny(ImmunityImbalance) {
+		if ai.Has(StatusLignification) || ai.DoesAny(MonsImmunityImbalance) {
 			return false
 		}
 		if ai.DoesAny(ResistanceImbalance) {
@@ -625,11 +597,11 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 			turns *= 2
 		}
 	case StatusLignification:
-		if ai.DoesAny(ImmunityLignification) || active || ai.Has(StatusFoggySkin) {
+		if ai.DoesAny(MonsImmunityLignification) || active || ai.Has(StatusFoggySkin) {
 			return false
 		}
 	case StatusPoison:
-		if ai.Has(StatusLignification) || ai.DoesAny(ImmunityPoison) {
+		if ai.Has(StatusLignification) || ai.DoesAny(MonsImmunityPoison) {
 			return false
 		}
 		if ai.DoesAny(ResistancePoison) {
@@ -778,50 +750,6 @@ func (g *Game) randomComestible() (ID, *Comestible) {
 	return id, g.Entity(id).Role.(*Comestible)
 }
 
-// RememberStatusTurns updates the last turn the player spent with each status
-// at the start of turn.
-func (g *Game) RememberStatusTurns() {
-	pa := g.PlayerActor()
-	for st, turns := range pa.Statuses {
-		if turns <= 0 {
-			continue
-		}
-		g.StatusTurn[st] = g.Turn
-	}
-}
-
-// ResistStatusRoll reports whether the actor got lucky and was granted
-// resistance to the given status. The intention is similar as with lucky rolls
-// when at low HP: make it so the player feels unlucky less often. It's only
-// used for close re-applications due to some chance-based on-hit effects;
-// deterministic applications shouldn't use such a resist roll.
-func (g *Game) ResistStatusRoll(i ID, st Status) bool {
-	if i != PlayerID {
-		return false
-	}
-	switch g.Turn - g.StatusTurn[st] {
-	case 0:
-		// A decent chance to resist re-application of
-		// statuses if they're already active or just expired
-		// on the same turn.
-		// In particular, this reduces the likeliness of an
-		// annoying immediate re-application of Daze or a
-		// helpful Berserk or Lignification.
-		return g.IntN(2) == 0
-	case 1:
-		switch st {
-		case StatusDaze, StatusFire, StatusImbalance:
-			// A decent chance to resist re-application of some
-			// statuses that can feel annoying if repeated on the
-			// turn following expiration without a pause. In
-			// particular, this make consecutive fire or imbalance
-			// dances less likely.
-			return g.IntN(2) == 0
-		}
-	}
-	return false
-}
-
 // ProgressStatus reduces the number of remaining turns for a status by one.
 func (g *Game) ProgressStatus(i ID, ai *Actor, st Status) {
 	turns := ai.Statuses[st]
@@ -846,6 +774,7 @@ type Behavior struct {
 	Path     []gruid.Point // path to destination
 	Guard    gruid.Point   // position to guard (InvalidPos if not)
 	Target   gruid.Point   // Current goal (if not static)
+	Kind     monsterKind   // specific kind of monster
 	State    Mindstate     // Wandering, Hunting, ...
 	SkipTurn bool          // skip turn (like after swapped positions with another monster)
 }
@@ -1016,7 +945,7 @@ func (g *Game) handleCornered(i ID, ai *Actor) {
 	case ai.Has(StatusClarity):
 		// Players under clarity cannot become Berserk.
 		return
-	case ai.Has(StatusFear) || ai.Is(NoisyImp) && !ai.Has(StatusBerserk):
+	case ai.Has(StatusFear) || ai.DoesAny(MonsMusic) && !ai.Has(StatusBerserk):
 		// Actor is afraid or is playing music while not berserk: it
 		// may become berserk if cornered.
 	case i == PlayerID && ai.DoesAny(Elephanty):
@@ -1098,23 +1027,10 @@ func (g *Game) TeleportActor(i ID, ai *Actor, n int) bool {
 	}
 	from := g.Entity(i).P
 	to := g.TeleportPoint(from)
-	if i == PlayerID && g.Map.Orb != InvalidPos && g.IntN(2) == 0 {
-		// On last level, give the orb a chance to drive the player
-		// away from it, to make teleport-based strategies less
-		// reliable (but still viable enough!). Greater chance with
-		// ModCorruptedDungeon, because even more unpredictability
-		// sounds thematic there.
-		//
-		// Result: teleport to furthest point from the orb among 3
-		// random possible teleport points.
-		for range 2 {
-			if nto := g.TeleportPoint(from); paths.DistanceManhattan(nto, g.Map.Orb) > paths.DistanceManhattan(to, g.Map.Orb) {
-				to = nto
-			}
-		}
-		g.LogStyled("A strange energy disturbs your teleportation!", logSpecial)
+	if i == PlayerID || g.InFOV(from) {
+		g.md.TeleportAnimation(from, to, i == PlayerID || g.InFOV(to))
 	}
-	g.MoveActor(i, ai, to, MovTeleport)
+	g.MoveActor(i, ai, to)
 	g.teleportStatuses(i, ai, n)
 	return true
 }

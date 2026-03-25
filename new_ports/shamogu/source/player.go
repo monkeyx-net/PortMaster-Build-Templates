@@ -28,7 +28,7 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 			return g.Sprint(dir)
 		}
 	}
-	if pa.DoesAny(PatternDragging) && passto && dir == g.Dir.Mul(-1) {
+	if pa.DoesAny(PatternCrocodile) && passto && dir == g.Dir.Mul(-1) {
 		// Crocodile needs to spend a turn turning before moving
 		// backwards.
 		g.Dir = dir
@@ -54,7 +54,7 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 		dist := paths.DistanceManhattan(pl.P, ej.P)
 		if dist == 1 {
 			switch {
-			case pa.DoesAny(PatternDragging):
+			case pa.DoesAny(PatternCrocodile):
 				if dirChange {
 					g.Dir = dir
 					break
@@ -81,19 +81,19 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 			g.md.RangedAttackAnimation(pa, pl.P, ej.P)
 			g.BumpAttackActor(PlayerID, j, pa, aj, AttackRanged, dist, 0)
 			return true
-		case pa.DoesAny(PatternRampage|PatternSneaky) && pa.CanMove() && (pa.HP > 1 || !pa.Has(StatusPoison)):
+		case pa.DoesAny(PatternRampage|PatternBat) && pa.CanMove() && (pa.HP > 1 || !pa.Has(StatusPoison)):
 			g.Dir = dir
 			to := ej.P.Sub(dir)
-			if !g.BumpMoveActor(PlayerID, pa, to) {
-				return true
-			}
+			from := pl.P
+			g.BumpMoveActor(PlayerID, pa, to)
+			g.md.MoveAnimation(from, to)
 			g.BumpAttackActor(PlayerID, j, pa, aj, AttackCharge, dist, 0)
 			return true
 		}
 	}
 	// We're not ranged and next position is not a monster: move.
 	if !pa.CanMove() {
-		if pa.DoesAny(PatternDragging) && dirChange && passto {
+		if pa.DoesAny(PatternCrocodile) && dirChange && passto {
 			g.Dir = dir
 			return true
 		}
@@ -101,7 +101,7 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 		return false
 	}
 	if pa.HP == 1 && pa.Has(StatusPoison) {
-		if pa.DoesAny(PatternDragging) && dirChange && passto {
+		if pa.DoesAny(PatternCrocodile) && dirChange && passto {
 			g.Dir = dir
 			return true
 		}
@@ -122,11 +122,9 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 		}
 	}
 	g.Dir = dir
-	if !g.BumpMoveActor(PlayerID, pa, to) {
-		return true
-	}
+	g.BumpMoveActor(PlayerID, pa, to)
 	// Try charge.
-	if pa.DoesAny(PatternDragging) && dirChange {
+	if pa.DoesAny(PatternCrocodile) && dirChange {
 		return true
 	}
 	nto := to.Add(dir)
@@ -145,7 +143,7 @@ func (g *Game) PlayerBump(dir gruid.Point) bool {
 // PlayerFears reports whether the players fears the given actor.
 func (g *Game) PlayerFears(j ID, aj *Actor) bool {
 	pa := g.PlayerActor()
-	return pa.Has(StatusFear) || pa.DoesAny(Elephanty) && aj.Is(HungryRat) && !pa.Has(StatusBerserk)
+	return pa.Has(StatusFear) || pa.DoesAny(Elephanty) && aj.IsMonster(HungryRat) && !pa.Has(StatusBerserk)
 }
 
 func (g *Game) logDaze() {
@@ -199,7 +197,7 @@ func (g *Game) Sprint(dir gruid.Point) bool {
 		return false
 	}
 	g.Dir = dir
-	g.MoveActor(PlayerID, pa, to, MovJump)
+	g.BumpMoveActor(PlayerID, pa, to)
 	if jump {
 		// Path contains a monster or two: jumping over them unbalances them.
 		for p := from; p != to; p = p.Add(dir) {
@@ -208,11 +206,11 @@ func (g *Game) Sprint(dir gruid.Point) bool {
 			}
 		}
 	}
-	if n > 1 && pa.Has(StatusImbalance) && g.IntN(3*DurationSprint/2) == 0 {
+	g.md.MoveAnimation(from, to)
+	if n > 1 && pa.Has(StatusImbalance) && g.IntN(DurationSprint) == 0 {
 		g.Log("You fall due to imbalance.")
-		g.PutStatus1(PlayerID, pa, StatusDaze, DurationDazeFall)
+		g.PutStatus(PlayerID, pa, StatusDaze, DurationDazeFall)
 	}
-	g.TriggerTrap(PlayerID, pa)
 	return true
 }
 
@@ -223,7 +221,9 @@ func (g *Game) WallThrough(dir, at gruid.Point) bool {
 		g.Log("There is no room behind the translucent wall.")
 		return false
 	}
+	from := g.PP()
 	g.BumpMoveActor(PlayerID, g.PlayerActor(), to)
+	g.md.MoveAnimation(from, to)
 	g.Stats.WallThroughs++
 	return true
 }
@@ -236,6 +236,10 @@ func (g *Game) WallJump(dir gruid.Point) bool {
 		g.Log("You cannot walk out of the map.")
 		return false
 	}
+	// if dir == g.Dir || dir == g.Dir.Mul(-1) {
+	// 	g.Logf("You cannot walk into the %s.", TerrainName(g.Map.Terrain.At(at)))
+	// 	return false
+	// }
 	over := pl.P.Sub(dir)
 	to := over.Sub(dir)
 	if !g.Map.Passable(over) {
@@ -251,7 +255,9 @@ func (g *Game) WallJump(dir gruid.Point) bool {
 		return false
 	}
 	g.Dir = dir
-	g.MoveActor(PlayerID, pa, to, MovJump)
+	from := pl.P
+	g.BumpMoveActor(PlayerID, pa, to)
+	g.md.MoveAnimation(from, to)
 	if i, ai := g.ActorAt(over); i >= 0 {
 		if pa.Has(StatusSprint) {
 			g.PutStatus(i, ai, StatusImbalance, DurationImbalanceSprint)
@@ -259,11 +265,10 @@ func (g *Game) WallJump(dir gruid.Point) bool {
 			g.BumpAttackActor(PlayerID, i, pa, ai, AttackPlain, 1, 0)
 		}
 	}
-	if pa.Has(StatusImbalance) && g.IntN(4) == 0 {
+	if pa.Has(StatusImbalance) && g.IntN(10) == 0 {
 		g.Log("You fall due to imbalance.")
-		g.PutStatus1(PlayerID, pa, StatusDaze, DurationDazeFall)
+		g.PutStatus(PlayerID, pa, StatusDaze, DurationDazeFall)
 	}
-	g.TriggerTrap(PlayerID, pa)
 	g.Stats.WallJumps++
 	return true
 }
@@ -275,7 +280,7 @@ func (g *Game) ComputePlayerStats() {
 	p.Attack = 2
 	p.Defense = 1
 	p.MaxHP = 9
-	p.Traits = NoTraits
+	p.Traits = Player
 	for _, sp := range g.PlayerSpirits() {
 		p.Attack += sp.BonusAttack[sp.Level]
 		p.Defense += sp.BonusDefense[sp.Level]

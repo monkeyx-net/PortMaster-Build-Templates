@@ -318,11 +318,9 @@ func LoadConfig() (bool, error) {
 	}
 	c, err := DecodeConfigSave(s)
 	if err != nil {
-		log.Printf("ignoring incompatible old config: %v", err)
-		RemoveItem(shamoguconfig)
-		return false, nil
+		return false, err
 	}
-	if c.VersionNumber != GameConfig.VersionNumber {
+	if c.Version != GameConfig.Version {
 		log.Print("ignoring incompatible old config")
 		RemoveItem(shamoguconfig)
 		return false, nil

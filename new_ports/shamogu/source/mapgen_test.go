@@ -78,7 +78,6 @@ func testGame(t *testing.T) {
 	g.Mods = make([]bool, NMods)
 	g.Mods[ModCorruptedDungeon] = true
 	g.Mods[ModAdvancedSpirits] = true
-	// g.Mods[ModHealingCombat] = true
 	g.Init(spiritEntity(g.Mods, primarySpirits[g.rand.IntN(len(primarySpirits))]))
 	g.ComputePlayerStats()
 	g.InitLevel()
@@ -101,19 +100,16 @@ func testGame(t *testing.T) {
 		b := map[gruid.Point]bool{}
 		for i := range g.ItemEntities() {
 			p := g.Entity(i).P
-			if b[p] {
-				t.Errorf("Two items in same place: %v", p)
-			}
-			if g.Map.Terrain.At(p) != Floor {
-				t.Errorf("Item %s, on non-floor tile: %v", g.Entity(i).Name, p)
+			if i >= FirstMapID && b[p] {
+				t.Errorf("Two items in same place: %d", p)
 			}
 			b[p] = true
 		}
 		clear(b)
 		for i := range g.Actors() {
 			p := g.Entity(i).P
-			if b[p] {
-				t.Errorf("Two actors in same place: %v", p)
+			if i >= FirstMapID && b[p] {
+				t.Errorf("Two actors in same place: %d", p)
 			}
 			b[p] = true
 		}

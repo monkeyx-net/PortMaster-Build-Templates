@@ -127,7 +127,7 @@ check_port() {
     local tmpdir="$WORK_DIR/$port_name"
     mkdir -p "$tmpdir"
 
-    local upstream_version="" upstream_checksum="" fetch_error=false
+    local upstream_version="" upstream_checksum="" upstream_url="" fetch_error=false
 
     # ── (1) GitHub repo path — owner/repo, no protocol ───────────────────────
     if [[ ! "$port_url" =~ ^https?:// ]]; then
@@ -224,15 +224,18 @@ check_port() {
         release=$(cb_latest_release "$cb_owner" "$cb_repo")
         if [[ -n "$release" && "$release" != 'null' ]]; then
             upstream_version="$release"
+            upstream_url="https://codeberg.org/${cb_owner}/${cb_repo}/archive/${release}.${ext}"
+            fetch "$upstream_url" "$tmpdir/source.$ext" || { fetch_error=true; }
+            [[ "$fetch_error" == false ]] \
+                && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
         else
             local sha
             sha=$(cb_branch_sha "$cb_owner" "$cb_repo" "$cb_ref")
             [[ -n "$sha" ]] && upstream_version="commit:$sha"
+            fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
+            [[ "$fetch_error" == false ]] \
+                && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
         fi
-
-        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
-        [[ "$fetch_error" == false ]] \
-            && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
     # ── (7) Any other direct URL ──────────────────────────────────────────────
     else
@@ -297,9 +300,11 @@ check_port() {
         today=$(date '+%Y-%m-%d')
         jq --arg v "$upstream_version" \
            --arg c "$upstream_checksum" \
+           --arg u "$upstream_url" \
            --arg d "$today" \
            '.source.port_version  = (if $v != "" then $v else .source.port_version  end) |
             .source.port_checksum = (if $c != "" then $c else .source.port_checksum end) |
+            .source.port_url      = (if $u != "" then $u else .source.port_url      end) |
             .source.date_updated  = $d' \
            "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
         echo "         recipe.json updated ($today)"
