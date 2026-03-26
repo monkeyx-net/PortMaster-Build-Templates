@@ -50,15 +50,16 @@ fi
 
 mkdir build-soh && cd build-soh
 cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=1 -DCMAKE_BUILD_TYPE=Release
-cmake --build . -j8
-cmake --build . --target GenerateSohOtr -j8
+cmake --build . -j$(nproc)
+cmake --build . --target GenerateSohOtr -j$(nproc)
 cd ../..
 mkdir -p ${CDIR}/dist/assets/extractor
 ls -lha Shipwright/build-soh/soh/
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out"
+strip "Shipwright/build-soh/ZAPD/ZAPD.out" || true
+cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
 ls -lha dist/
 cd dist/assets
 mkdir assets_zip
