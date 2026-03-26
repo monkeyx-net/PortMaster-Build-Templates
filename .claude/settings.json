@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(tar -tzf /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/soh/source.tar.gz)",
+      "Bash(unzip -l /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/soh/soh.zip)"
+    ]
+  }
+}
