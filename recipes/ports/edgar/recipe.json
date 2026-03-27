@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "edgar.zip",
+  "port_json": "new_ports/edgar/edgar/edgar/port.json",
+  "source": {
+    "date_updated": "2026-03-27",
+    "port_exe": "edgar",
+    "port_build": "make install PREFIX=\"$(pwd)\" DESTDIR=\"\"",
+    "port_checksum": "",
+    "port_url": "https://github.com/riksweeney/edgar",
+    "port_version": ""
+  }
+}
