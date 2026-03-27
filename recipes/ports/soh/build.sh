@@ -49,7 +49,7 @@ else
 fi
 
 mkdir build-soh && cd build-soh
-cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=1 -DCMAKE_BUILD_TYPE=Release
+cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=1 -DCMAKE_BUILD_TYPE=DEBUG
 cmake --build . -j$(nproc)
 cmake --build . --target GenerateSohOtr -j$(nproc)
 cd ../..
