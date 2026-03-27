@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=The Legend of Edgar
+GenericName=2D platform game
+Comment=A 2D platform game with a persistent world
+Icon=edgar
+Exec=edgar
+Terminal=false
+Categories=Game;ActionGame;AdventureGame;
+Keywords=game;action;adventure;platformer;
