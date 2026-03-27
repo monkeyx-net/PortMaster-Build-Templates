@@ -4,7 +4,12 @@
       "Bash(gh api:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(tar -tzf /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/soh/source.tar.gz)",
-      "Bash(unzip -l /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/soh/soh.zip)"
+      "Bash(unzip -l /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/soh/soh.zip)",
+      "Bash(head -5 /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/boss/*.c)",
+      "Bash(git -C /run/media/tim/DATA/PM/PortMaster-Build-Templates status new_ports/edgar/source/src/system/pak.c new_ports/edgar/source/src/system/pak.h)",
+      "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/po_creator*)",
+      "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/mapeditor*)",
+      "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/save*)"
     ]
   }
 }
