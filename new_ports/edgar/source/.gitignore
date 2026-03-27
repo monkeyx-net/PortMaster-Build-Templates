@@ -9,7 +9,6 @@ diff.txt
 dist
 doc/TODO
 edgar
-edgar.pak
 en_GB
 locale/*.mo
 makefile.dep
@@ -21,7 +20,6 @@ medals
 messages.po
 readme_dfsg
 replay.dat
-save*
 src_diff.txt
 stderr.txt
 stdout.txt
