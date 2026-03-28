@@ -11,6 +11,7 @@ DEST_DIR="dist/libs.${ARCH}"
 
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
+make buildpak -j$(nproc)
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
