@@ -5,7 +5,7 @@
   "source": {
     "date_updated": "2026-03-27",
     "port_exe": "edgar",
-    "port_build": "make install PREFIX=$(CURDIR)")\" DESTDIR=\"\"",
+    "port_build": "make install PREFIX=$(CURDIR) DESTDIR=\"\"",
     "port_checksum": "23e57debc5e6995447bba3b64513e420e111ce24644a3a303237f4379ba3e710",
     "port_url": "riksweeney/edgar",
     "port_version": "1.38"
