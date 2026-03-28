@@ -36,7 +36,7 @@ LOCALE_MO = $(patsubst %.po,%.mo,$(wildcard locale/*.po))
 ifeq ($(UNIX),0)
 DATA_DIR =
 else
-DATA_DIR = $(PREFIX)/share/games/edgar/
+DATA_DIR = $(PREFIX)/
 endif
 
 CFLAGS += `sdl2-config --cflags` -Wall -pedantic
