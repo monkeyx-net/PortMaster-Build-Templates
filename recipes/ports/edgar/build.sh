@@ -18,4 +18,4 @@ if [[ ${ARCH} ==  "aarch64" ]]; then
   cp "${PORT_EXE}".pak "dist/"
 fi
 
-tar -czf - -C dist . | split -b 75m - "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz."
+tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
