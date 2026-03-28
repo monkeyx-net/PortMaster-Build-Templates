@@ -14,5 +14,6 @@ ${PORT_BUILD}
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
+cp "${PORT_EXE}".pak "dist/"
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .

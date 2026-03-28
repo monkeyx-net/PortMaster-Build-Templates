@@ -24,7 +24,7 @@ TILE_PROG = tile_creator
 endif
 
 PREFIX = $(DESTDIR)/usr
-BIN_DIR = $(PREFIX)/
+BIN_DIR = $(PREFIX)/games/
 DOC_DIR = $(PREFIX)/share/doc/$(PROG)/
 ICON_DIR = $(PREFIX)/share/icons/hicolor/
 DESKTOP_DIR = $(PREFIX)/share/applications/
@@ -36,7 +36,7 @@ LOCALE_MO = $(patsubst %.po,%.mo,$(wildcard locale/*.po))
 ifeq ($(UNIX),0)
 DATA_DIR =
 else
-DATA_DIR = $(PREFIX)/
+DATA_DIR = $(PREFIX)/share/games/edgar/
 endif
 
 CFLAGS += `sdl2-config --cflags` -Wall -pedantic
