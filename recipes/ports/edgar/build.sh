@@ -12,9 +12,11 @@ DEST_DIR="dist/libs.${ARCH}"
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 make buildpak -j$(nproc)
-mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
-cp "${PORT_EXE}".pak "dist/"
+if [[ ${ARCH} ==  "aarch64" ]]; then
+  mkdir -p dist/libs.${ARCH}
+  cp "${PORT_EXE}".pak "dist/"
+fi
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
