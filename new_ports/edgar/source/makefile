@@ -24,7 +24,7 @@ TILE_PROG = tile_creator
 endif
 
 PREFIX = $(DESTDIR)/usr
-BIN_DIR = $(PREFIX)/games/
+BIN_DIR = $(PREFIX)/
 DOC_DIR = $(PREFIX)/share/doc/$(PROG)/
 ICON_DIR = $(PREFIX)/share/icons/hicolor/
 DESKTOP_DIR = $(PREFIX)/share/applications/
