@@ -8,14 +8,13 @@ PORT_EXE="$3"
 ARCH="$4"
 DEST_DIR="dist/libs.${ARCH}"
 
-
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
-make buildpak -j$(nproc)
+mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
 if [[ ${ARCH} ==  "aarch64" ]]; then
-  mkdir -p dist/libs.${ARCH}
+  make buildpak -j$(nproc)
   cp "${PORT_EXE}".pak "dist/"
 fi
 
