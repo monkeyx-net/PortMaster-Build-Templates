@@ -1,34 +1,28 @@
 back = esc
 start = enter
 
-a = e
-b = i
-x = x
-y = y
+a = space
+b = z
+x = a
+y = c
 
-l1 = m
-l2 = space
-r1 = o
-r2 = W
+l1 = ,
+l2 = leftcontrol
+r1 = .
+r2 = rightcontrol
 
-up = k
-down = j
-left = h
-right = l
+up = up
+down = down
+left = left
+right = right
 
-left_analog_up = k
-left_analog_down = j
-left_analog_left = h
-left_analog_right = l
+left_analog_up = up
+left_analog_down = down
+left_analog_left = left
+left_analog_right = right
 
-right_analog_up = k
-right_analog_down = j
-right_analog_left = h
-right_analog_right = l
+right_analog_up = up
+right_analog_down = down
+right_analog_left = left
+right_analog_right = right
 
-deadzone_mode = scaled_radial
-deadzone = 2000
-deadzone_scale = 8
-deadzone_delay = 16 
-mouse_scale = 512
-mouse_delay = 16
