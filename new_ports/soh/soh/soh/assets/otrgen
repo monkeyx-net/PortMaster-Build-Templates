@@ -59,27 +59,10 @@ process_roms() {
     done
 }
 
-end_swap() {
-    if [ "$SWAP" = true ]; then
-        echo "Cleaning up zram swap..."
-        $ESUDO swapoff /dev/zram0
-        $ESUDO zramctl -r /dev/zram0
-        SWAP=false
-    fi
-}
-
 unzip_assets || { echo "Patching process failed!"; exit 1; }
 process_roms || { echo "Patching process failed!"; exit 1; }
 
 # Run soh.elf with all ROM arguments
-# Create zram for torch process if 1GB of ram
-if [ ${DEVICE_RAM} = "1" ]; then
-    $ESUDO modprobe zram
-    $ESUDO zramctl --find --size 650M --algorithm lzo
-    $ESUDO mkswap /dev/zram0
-    $ESUDO swapon /dev/zram0 --priority 100
-    SWAP=true
-fi
 eval "$GAMEDIR/soh.elf.${DEVICE_ARCH}" $ARGS > "$GAMEDIR/otrlog.txt" 2>&1
-end_swap
+
 echo "Patching process complete!"
