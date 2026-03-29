@@ -18,6 +18,7 @@ RUN apt-get update && \
       dub \
       gettext \
       git \
+      git-lfs \
       golang \
       imagemagick \
       jq \
@@ -73,7 +74,8 @@ RUN apt-get update && \
       zipcmp \
       zipmerge \
       ziptool \
-      && rm -rf /var/lib/apt/lists/*
+      && rm -rf /var/lib/apt/lists/* && \
+    git lfs install --system
 
 RUN wget -q -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
     mkdir sdl2 && tar -xzf sdl.tar.gz -C sdl2 --strip-components=1 && \

@@ -22,6 +22,7 @@ RUN apt-get update && \
       dub \
       gettext \
       git \
+      git-lfs \
       golang \
       imagemagick \
       jq \
@@ -78,7 +79,8 @@ RUN apt-get update && \
       zipcmp \
       zipmerge \
       ziptool \
-      && rm -rf /var/lib/apt/lists/*
+      && rm -rf /var/lib/apt/lists/* && \
+    git lfs install --system
 
 # Add LLVM apt repository
 RUN wget https://apt.llvm.org/llvm.sh && \
