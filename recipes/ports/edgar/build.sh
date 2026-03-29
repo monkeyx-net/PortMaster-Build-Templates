@@ -13,7 +13,7 @@ ${PORT_BUILD}
 mkdir -p dist/libs.${ARCH}
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
-if [[ ${ARCH} ==  "aarch64" ]]; then
+if [[ ${ARCH} ==  "x86_64" ]]; then
   make buildpak -j$(nproc)
   cp "${PORT_EXE}".pak "dist/"
 fi
