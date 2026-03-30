@@ -6,10 +6,10 @@ b = z
 x = a
 y = c
 
-l1 = ,
-l2 = leftcontrol
-r1 = .
-r2 = rightcontrol
+l1 = leftcontrol
+l2 = ,
+r1 = rightcontrol
+r2 = .
 
 up = up
 down = down

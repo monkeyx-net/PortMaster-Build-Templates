@@ -22,11 +22,8 @@ GAMEDIR=/$directory/ports/edgar
 exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
-# Needed if config data binding to the conf folder
-#bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
-# Needed if any extra libs addded.
-#export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 
+controls/controls.${DEVICE_ARCH} controls/controls.png
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH} -nojoystick
 pm_finish

@@ -2,9 +2,9 @@
 <gameList>
   <game>
     <path>./Edgar.sh</path>
-    <name>Edgar</name>
+    <name>The Legend of Edgar</name>
     <desc>The Legend of Edgar is a platform game, not unlike those found on the Amiga and SNES. Edgar must battle his way across the world, solving puzzles and defeating powerful enemies to achieve his quest.</desc>
-    <releasedate>20250925T000000</releasedate>
+    <releasedate>20180422T000000</releasedate>
     <developer>Parallel Realities</developer>
     <publisher>Parallel Realities</publisher>
     <genre>Platformer</genre>
