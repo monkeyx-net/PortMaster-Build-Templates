@@ -21,6 +21,10 @@ GAMEBINARY=edgar
 GAMEDIR=/$directory/ports/edgar
 exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
+
+bind_directories ~/.parallelrealities/edgar $GAMEDIR/conf
+/
+
 cd $GAMEDIR
 
 controls/controls.${DEVICE_ARCH} controls/controls.png
