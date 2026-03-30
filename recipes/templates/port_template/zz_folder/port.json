@@ -2,12 +2,12 @@
   "version": 4,
   "name": "zz_folder.zip",
   "items": [
-    "zz_Port.sh",
+    "zz_port.sh",
     "zz_folder"
   ],
   "items_opt": [],
   "attr": {
-    "title": "Shamogu",
+    "title": "zz_port",
     "porter": [
       "zz_porter"
     ],

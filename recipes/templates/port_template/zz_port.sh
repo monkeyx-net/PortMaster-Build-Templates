@@ -19,7 +19,7 @@ get_controls
 
 GAMEBINARY=zz_port
 GAMEDIR=/$directory/ports/zz_folder
-exec > >(tee "$GAMEDIR/log.txt") 2>&1
+> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
 # Needed if config data binding to the conf folder

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -e
+set -e
 
 PORT_FOLDER="$1"
 PORT_BUILD="$2"

@@ -10,10 +10,12 @@ exit_nicely () {
 read_check() {
     local prompt="${1}"
     local var_name="${2}"
+    local default_value="${3}"
 
     while true; do
-        read -rp "${prompt}" input
-        if [ -n "${input}" ]; then
+        read -rp "${prompt} [${default_value}]" input
+        if [ -n "${input}" ] || [ -n "${default_value}" ]; then
+            input=${input:-${default_value}}
             eval "${var_name}='${input}'"
             break
         else
@@ -92,19 +94,20 @@ create_new_port () {
   esac
   echo -e "\nCreating a recipe file for port title: ${port_title}"
   echo -e "This will create basic files for a new port"
-  read_check "Enter PortMaster porter name ie github, discord or nickname for your port: " porter_name
+  read_check "Enter PortMaster porter name ie github, discord or nickname for your port: " porter_name "monkeyx-net"
   read_check "Enter port executable name: " port_exe
-  read_check "Enter zip/folder name: " port_folder
+  read_check "Enter zip/folder name: " port_folder "${port_exe}"
   folder_name=$(echo "${port_folder}" | tr '[:upper:]' '[:lower:]')
-  read_check "Enter Bash file name (include .sh): " port_bash
+  read_check "Enter Bash file name (include .sh): " port_bash "${port_title}"
   if [[ "${port_bash:(-3)}" != ".sh" ]]; then
     port_bash="${port_bash}.sh"
     echo "Added .sh extension: ${port_bash}"
   fi
   mkdir -p new_ports/${port_folder}/${port_folder}
-  cp recipes/templates/port_template/zz_Port.sh "new_ports/${port_folder}/${port_folder}/${port_bash}"
+  cp recipes/templates/port_template/zz_port.sh "new_ports/${port_folder}/${port_folder}/${port_bash}"
   sed -i 's/zz_port/'"${port_exe}"'/g; s/zz_folder/'"${port_folder}"'/g' "new_ports/${port_folder}/${port_folder}/${port_bash}"
   cp -r recipes/templates/port_template/zz_folder/ new_ports/${port_folder}/${port_folder}/${port_folder}
+  sed -i 's/zz_port/'"${port_title}"'/g; s/zz_folder/'"${port_folder}"'/g' "new_ports/${port_folder}/${port_folder}/${port_folder}/gameinfo.xml"
   mv new_ports/${port_folder}/${port_folder}/${port_folder}/zz_folder.gptk new_ports/${port_folder}/${port_folder}/${port_folder}/${port_exe}.gptk
   mv new_ports/${port_folder}/${port_folder}/${port_folder}/zz_folder_LICENSE.txt new_ports/${port_folder}/${port_folder}/${port_folder}/licenses/LICENSE_${port_exe}.txt
   update_port_json "${port_title}" "${porter_name}" "${port_folder}" "${port_bash}"
