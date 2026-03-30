@@ -1,3 +1,5 @@
+# The Legend of Edgar
+
 ## Notes
 
 A 2D platform game with a persistent world. When Edgar's father fails to return home after venturing out one dark and stormy night, Edgar fears the worst: he has been captured by the evil sorcerer who lives in a fortress beyond the forbidden swamp.
