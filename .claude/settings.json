@@ -9,7 +9,10 @@
       "Bash(git -C /run/media/tim/DATA/PM/PortMaster-Build-Templates status new_ports/edgar/source/src/system/pak.c new_ports/edgar/source/src/system/pak.h)",
       "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/po_creator*)",
       "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/mapeditor*)",
-      "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/save*)"
+      "Bash(ls /run/media/tim/DATA/PM/PortMaster-Build-Templates/new_ports/edgar/source/src/save*)",
+      "Bash(git -C /run/media/tim/DATA/PM/PortMaster-Build-Templates log --oneline -3 -- new_ports/animalcrossing/)",
+      "Bash(git -C /run/media/tim/DATA/PM/PortMaster-Build-Templates ls-files new_ports/animalcrossing/source/include/PR/)",
+      "Bash(git -C /run/media/tim/DATA/PM/PortMaster-Build-Templates ls-files new_ports/animalcrossing/source/)"
     ]
   }
 }
