@@ -43,6 +43,5 @@ temp/
 # NOTE: include/PR/gbi.h and include/PR/ultratypes.h are force-tracked
 # (git add -f) because they have TARGET_PC modifications for LE bitfields.
 # configure.py skips download when they already exist.
-include/PR/
 include/gcc/
 include/compiler/gcc/stdlib.h
