@@ -12,10 +12,9 @@ DEST_DIR="dist/libs.${ARCH}"
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 mkdir -p dist/shaders
-cp "bin/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
+cp "pc/build32/bin/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 strip "dist/${PORT_EXE}.${ARCH}" || true
-cp -r bin/shaders/* dist/shaders/
-ls -lha
-ls -lha bin
-
+cp -r pc/build32/bin/shaders/* dist/shaders/
+ls -lha pc/build32
+ls -lha pc/build32/bin
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
