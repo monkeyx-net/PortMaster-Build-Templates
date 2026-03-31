@@ -11,7 +11,7 @@ on:
       recipe_file:
         description: 'Enter port.json file folder name'
         required: true
-        default: 'recipes/ports/spaghettikart/recipe.json'
+        default: 'recipes/ports/animalcrossing/recipe.json'
       sdl_version:
         description: 'Enter SDL Version required'
         required: true
