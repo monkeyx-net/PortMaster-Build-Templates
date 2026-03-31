@@ -10,7 +10,6 @@ DEST_DIR="dist/libs.${ARCH}"
 
 
 cd "new_ports/${PORT_FOLDER}/source"
-python3 configure.py
 ${PORT_BUILD}
 mkdir -p dist/shaders
 cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
