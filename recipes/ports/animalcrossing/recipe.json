@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "animalcrossing.zip",
+  "port_json": "new_ports/animalcrossing/animalcrossing/animalcrossing/port.json",
+  "source": {
+    "date_updated": "2026-03-31",
+    "port_exe": "AnimalCrossing",
+    "port_build": "./build_make --gles",
+    "port_checksum": "",
+    "port_url": "Dia2809/ACGC-PC-Port/tree/arm64",
+    "port_version": ""
+  }
+}

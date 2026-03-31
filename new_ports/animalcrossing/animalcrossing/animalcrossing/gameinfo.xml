@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./Unofficial Linux PC Port of Animal Crossing Gamecube.sh</path>
+    <name>Unofficial Linux PC Port of Animal Crossing Gamecube</name>
+    <desc>zz_description</desc>
+    <releasedate>20250925T000000</releasedate>
+    <developer>Anaseto</developer>
+    <publisher>Anaseto</publisher>
+    <genre>Adventure</genre>
+    <image>./animalcrossing/cover.png</image>
+  </game>
+</gameList>
