@@ -31,11 +31,11 @@ fi
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 mkdir -p ${CDIR}/dist/libs.${ARCH}
-cp "${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
-strip "dist/${PORT_EXE}.${ARCH}" || true
+cp "${PORT_EXE}" "${CDIR}/dist/${PORT_EXE}.${ARCH}"
+strip "${CDIR}/dist/${PORT_EXE}.${ARCH}" || true
 
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
 
-tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .
+tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C ${CDIR}/dist .
