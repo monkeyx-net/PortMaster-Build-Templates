@@ -29,7 +29,9 @@ elif [[ ${ARCH} == "x86_64" ]]; then
 fi
 
 cd "new_ports/${PORT_FOLDER}/source"
-${PORT_BUILD}
+
+autoreconf -fi
+./configure
 make -j$(nproc)
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 cp "src/${PORT_EXE}" "${CDIR}/dist/${PORT_EXE}.${ARCH}"

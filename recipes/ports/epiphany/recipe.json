@@ -5,7 +5,7 @@
   "source": {
     "date_updated": "2026-02-24",
     "port_exe": "epiphany-game",
-    "port_build": "./configure",
+    "port_build": "",
     "port_checksum": "5bc3a8ebca9828bb7eabbf138d4156affa09f624992ddace0d80ad0953af0aa3",
     "port_url": "monkeyx-net/Epiphany_4_PortMaster",
     "port_version": "commit:c9ba7b4"
