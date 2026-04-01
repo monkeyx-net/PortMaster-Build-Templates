@@ -9,9 +9,22 @@ on:
         options: ['Update_Port', 'New_Port']
         default: 'Update_Port'
       recipe_file:
-        description: 'Enter port.json file folder name'
+        description: 'Select recipe.json file'
         required: true
-        default: 'recipes/ports/animalcrossing/recipe.json'
+        type: choice
+        options:
+          - 'recipes/ports/animalcrossing/recipe.json'
+          - 'recipes/ports/defendguin/recipe.json'
+          - 'recipes/ports/edgar/recipe.json'
+          - 'recipes/ports/epiphany/recipe.json'
+          - 'recipes/ports/harmonist/recipe.json'
+          - 'recipes/ports/manicminer/recipe.json'
+          - 'recipes/ports/shamogu/recipe.json'
+          - 'recipes/ports/sip2/recipe.json'
+          - 'recipes/ports/soh/recipe.json'
+          - 'recipes/ports/soh2/recipe.json'
+          - 'recipes/ports/spaghettikart/recipe.json'
+          - 'recipes/ports/stuntcarracer/recipe.json'
       sdl_version:
         description: 'Enter SDL Version required'
         required: true
