@@ -30,6 +30,7 @@ fi
 
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
+make -j$(nproc)
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 cp "src/${PORT_EXE}" "${CDIR}/dist/${PORT_EXE}.${ARCH}"
 strip "${CDIR}/dist/${PORT_EXE}.${ARCH}" || true
