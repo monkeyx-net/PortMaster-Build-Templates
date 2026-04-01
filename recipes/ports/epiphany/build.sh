@@ -31,7 +31,7 @@ fi
 cd "new_ports/${PORT_FOLDER}/source"
 ${PORT_BUILD}
 mkdir -p ${CDIR}/dist/libs.${ARCH}
-cp "${PORT_EXE}" "${CDIR}/dist/${PORT_EXE}.${ARCH}"
+cp "src/${PORT_EXE}" "${CDIR}/dist/${PORT_EXE}.${ARCH}"
 strip "${CDIR}/dist/${PORT_EXE}.${ARCH}" || true
 
 for file in "${FILES[@]}"; do
