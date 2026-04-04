@@ -144,7 +144,7 @@ function love.load()
     end
 
     controlsImage = imageOrError
-    countdownFont = love.graphics.getFont()
+    countdownFont = love.graphics.newFont(48)
     fontHeight = countdownFont:getHeight()
     if targetW then
         scaleX = targetW / controlsImage:getWidth()
@@ -183,6 +183,7 @@ function love.draw()
         if secondsRemaining > 0 then
             local countdownText = "Starting in " .. secondsRemaining
             local textWidth = countdownFont:getWidth(countdownText)
+            love.graphics.setFont(countdownFont)
             love.graphics.setColor(1, 1, 1)
             love.graphics.print(countdownText, (windowWidth - textWidth) / 2, windowHeight - fontHeight - 50)
         end
