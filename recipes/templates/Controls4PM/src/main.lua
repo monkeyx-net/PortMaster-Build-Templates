@@ -1,5 +1,5 @@
 local DEFAULT_IMAGE_PATH = "controls.png"
-local DEFAULT_DURATION = 5
+local DEFAULT_DURATION = 10
 
 local converter = require("converter")
 
@@ -183,7 +183,7 @@ function love.draw()
 
         local secondsRemaining = math.max(0, math.ceil(displayDuration - elapsed))
         if secondsRemaining > 0 then
-            local countdownText = "Starting in " .. secondsRemaining
+            local countdownText = "Starting in " .. secondsRemaining .. " - Press any key or button to skip"
             local textWidth = countdownFont:getWidth(countdownText)
             love.graphics.setFont(countdownFont)
             love.graphics.setColor(1, 1, 1)
