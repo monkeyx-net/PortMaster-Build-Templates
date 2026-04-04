@@ -38,9 +38,16 @@ void VISetNextFrameBuffer(void* fb) { (void)fb; }
 
 void VIFlush(void) {}
 
+
+
+void pc_dynamic_fps_reset(void) {
+    s_dyn_ema_us = 0.0;
+    s_dyn_inited = 0;
+}
+
 /* --- Auto-adaptive FPS controller ---
  * Monitors render FPS vs target and drops/raises the FPS tier automatically
- * when fps_target == 5 (Auto). */
+ * when fps_target == 6 (Auto). */
 static void pc_adaptive_fps_update(double render_fps) {
     static int tier = 0;    /* 0=60, 1=50, 2=40, 3=30, 4=20 */
     static int stable = 0;
@@ -67,11 +74,6 @@ static void pc_adaptive_fps_update(double render_fps) {
     } else {
         stable = 0;
     }
-}
-
-void pc_dynamic_fps_reset(void) {
-    s_dyn_ema_us = 0.0;
-    s_dyn_inited = 0;
 }
 
 static void pc_dynamic_fps_update(Uint64 work_us) {
@@ -198,6 +200,7 @@ void VIWaitForRetrace(void) {
                      render_fps, speed_pct, pc_gx_draw_call_count, g_pc_fast_forward ? " [2x]" : "");
             SDL_SetWindowTitle(g_pc_window, title);
             pc_overlay_update(render_fps, speed_pct);
+            pc_adaptive_fps_update(render_fps);
 
             if (g_pc_verbose) {
                 extern int pc_emu64_frame_cmds, pc_emu64_frame_crashes;
@@ -208,7 +211,7 @@ void VIWaitForRetrace(void) {
                        pc_emu64_frame_crashes, flush_ms, texld_ms);
             }
 
-            pc_adaptive_fps_update(render_fps);
+
 
             fps_start = now;
             fps_count = 0;
