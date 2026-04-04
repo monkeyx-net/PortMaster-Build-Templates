@@ -26,7 +26,7 @@ bind_directories ~/.parallelrealities/edgar $GAMEDIR/conf
 
 cd $GAMEDIR
 
-controls/controls.${DEVICE_ARCH} controls/controls.png
+#controls/controls.${DEVICE_ARCH} controls/controls.png
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH} -nojoystick
 pm_finish
