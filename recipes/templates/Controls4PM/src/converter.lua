@@ -429,7 +429,7 @@ function M.run(arg_table)
         content = replace_all_literal(content, placeholder, default)
     end
 
-    content = wrap_long_text_in_svg(content, 10)
+    content = wrap_long_text_in_svg(content, 15)
 
     local output_file = "controls.svg"
     local out_handle, out_err = io.open(output_file, "w")

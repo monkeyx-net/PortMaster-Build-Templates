@@ -80,7 +80,9 @@
            sodipodi:role="line"
            id="tspan33"
            x="-83.712852"
-           y="7.543479">Y-n/a</tspan></text>
+           y="7.543479">Y-Interact/Pull</tspan>
+          <tspan sodipodi:role="line" x="-83.712852" y="33.543479"> Item</tspan>
+          <tspan sodipodi:role="line" x="-83.712852" y="59.543479"></tspan></text>
       <text
          x="-67.951988"
          y="3.1956522"
@@ -116,8 +118,8 @@
            sodipodi:role="line"
            id="tspan20"
            x="-28.965792"
-           y="-53.134453">X-pickup/t</tspan>
-          <tspan sodipodi:role="line" x="-28.965792" y="-27.134453">hrow</tspan>
+           y="-53.134453">X-Use Selected</tspan>
+          <tspan sodipodi:role="line" x="-28.965792" y="-27.134453">Item</tspan>
           <tspan sodipodi:role="line" x="-28.965792" y="-1.134453"></tspan></text>
       <text
          x="-12.661446"
@@ -168,10 +170,7 @@
            sodipodi:role="line"
            id="tspan18"
            x="-33.328991"
-           y="54.72744">B-hold to</tspan>
-          <tspan sodipodi:role="line" x="-33.328991" y="80.72744">restart</tspan>
-          <tspan sodipodi:role="line" x="-33.328991" y="106.72744">level</tspan>
-          <tspan sodipodi:role="line" x="-33.328991" y="132.72744"></tspan></text>
+           y="54.72744">B-Inventory</tspan></text>
     </g>
     <g
        id="a_button">
@@ -195,7 +194,7 @@
            sodipodi:role="line"
            id="tspan10"
            x="34.131676"
-           y="8.9270601">A-interact</tspan></text>
+           y="8.9270601">A-Jump</tspan></text>
       <text
          x="42.967133"
          y="8.3445292"
@@ -291,9 +290,7 @@
          sodipodi:role="line"
          id="tspan22"
          x="-69.354515"
-         y="118.27016">RIGHT</tspan>
-          <tspan sodipodi:role="line" x="-69.354515" y="144.27016">STICK</tspan>
-          <tspan sodipodi:role="line" x="-69.354515" y="170.27016"></tspan></text>
+         y="118.27016">RIGHT STICK</tspan></text>
   </g>
   <g
      id="lstick"
@@ -616,7 +613,7 @@
          sodipodi:role="line"
          id="tspan27"
          x="900.17206"
-         y="39.663612">n/a</tspan></text>
+         y="39.663612">Next Item</tspan></text>
     <text
        x="937.67206"
        y="36.946224"
@@ -653,7 +650,9 @@
          sodipodi:role="line"
          id="tspan29"
          x="923.59564"
-         y="42.63858">n/a</tspan></text>
+         y="42.63858">Block with</tspan>
+          <tspan sodipodi:role="line" x="923.59564" y="68.63858">equipped shield</tspan>
+          <tspan sodipodi:role="line" x="923.59564" y="94.63858"></tspan></text>
     <text
        x="956.74786"
        y="36.660316"
@@ -692,7 +691,7 @@
          sodipodi:role="line"
          id="tspan26"
          x="215.16023"
-         y="41.780861">n/a</tspan></text>
+         y="41.780861">Previous Item</tspan></text>
     <text
        x="234.72545"
        y="34.715645"
@@ -731,7 +730,9 @@
          sodipodi:role="line"
          id="tspan23"
          x="66.327019"
-         y="60.885025">n/a</tspan></text>
+         y="60.885025">Attack with</tspan>
+          <tspan sodipodi:role="line" x="66.327019" y="86.885025">equipped weapon</tspan>
+          <tspan sodipodi:role="line" x="66.327019" y="112.885025"></tspan></text>
     <text
        x="97.305283"
        y="53.819805"
@@ -810,13 +811,13 @@
          sodipodi:role="line"
          id="tspan36">Face Buttons:-</tspan><tspan
          sodipodi:role="line"
-         id="tspan37">A - interact</tspan><tspan
+         id="tspan37">A - Jump</tspan><tspan
          sodipodi:role="line"
-         id="tspan38">B - hold to restart level</tspan><tspan
+         id="tspan38">B - Inventory</tspan><tspan
          sodipodi:role="line"
-         id="tspan39">X - pickup/throw</tspan><tspan
+         id="tspan39">X - Use Selected Item</tspan><tspan
          sodipodi:role="line"
-         id="tspan40">Y - n/a</tspan></text>
+         id="tspan40">Y - Interact/Pull Item</tspan></text>
     <text
        x="320.1087"
        y="265.97827"
@@ -829,13 +830,13 @@
          sodipodi:role="line"
          id="tspan41">Shoulder Buttons:-</tspan><tspan
          sodipodi:role="line"
-         id="tspan42">L1 - n/a</tspan><tspan
+         id="tspan42">L1 - Attack with equipped weapon</tspan><tspan
          sodipodi:role="line"
-         id="tspan43">L2 - n/a</tspan><tspan
+         id="tspan43">L2 - Previous Item</tspan><tspan
          sodipodi:role="line"
-         id="tspan44">R1 - n/a</tspan><tspan
+         id="tspan44">R1 - Block with equipped shield</tspan><tspan
          sodipodi:role="line"
-         id="tspan45">R2 - n/a</tspan></text>
+         id="tspan45">R2 - Next Item</tspan></text>
     <text
        x="319.56525"
        y="224.78259"
@@ -881,6 +882,6 @@
        id="main_title"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.3333px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:middle;fill:#ffffff"><tspan
          sodipodi:role="line"
-         id="tspan11">Controls for Lode</tspan></text>
+         id="tspan11">Controls for The Legend of Edgar</tspan></text>
   </g>
 </svg>
