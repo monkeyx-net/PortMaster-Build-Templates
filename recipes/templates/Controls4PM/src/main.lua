@@ -55,7 +55,8 @@ local function getActualArgs()
     local cliArgs = {}
     if arg then
         local startIndex = 1
-        if #arg >= 1 and arg[1]:sub(1, 1) ~= "-" then
+        if not love.filesystem.isFused() and #arg >= 1 and arg[1]:sub(1, 1) ~= "-" then
+            -- In non-fused mode (e.g. `love .`), arg[1] is the game directory; skip it
             startIndex = 2
         end
 
@@ -123,24 +124,40 @@ function love.load()
     end
 
     parseArgs(cliArgs)
-    love.window.setFullscreen(true, "desktop")
     love.window.setTitle("Controls")
 
-    local f = io.open(imagePath, "rb")
-    if not f then
-        print("Image loading failed: Could not open file " .. imagePath .. ". Does not exist.")
+    local candidates = {
+        imagePath,
+        love.filesystem.getWorkingDirectory() .. "/" .. imagePath,
+        love.filesystem.getSourceBaseDirectory() .. "/" .. imagePath,
+        love.filesystem.getSourceBaseDirectory() .. "/" .. (imagePath:match("[^/\\]+$") or imagePath),
+    }
+
+    local data = nil
+    for _, path in ipairs(candidates) do
+        print("Trying image path: " .. path)
+        local f = io.open(path, "rb")
+        if f then
+            print("Opened: " .. path)
+            data = f:read("*a")
+            f:close()
+            break
+        end
+    end
+
+    if not data then
+        print("Image loading failed. Tried:")
+        for _, path in ipairs(candidates) do print("  " .. path) end
         love.event.quit()
         return
     end
-    local data = f:read("*a")
-    f:close()
 
-    local ok, imageOrError = pcall(function()
-        local fileData = love.filesystem.newFileData(data, imagePath)
-        return love.graphics.newImage(love.image.newImageData(fileData))
-    end)
+    local tmpName = "_controls_img.png"
+    love.filesystem.write(tmpName, data)
+    local ok, imageOrError = pcall(love.graphics.newImage, tmpName)
+    love.filesystem.remove(tmpName)
     if not ok then
-        print("Image loading failed:", imageOrError)
+        print("Image loading failed: " .. tostring(imageOrError))
         love.event.quit()
         return
     end
@@ -162,11 +179,15 @@ function love.resize(w, h)
 end
 
 function love.keypressed(key)
-    love.event.quit()
+    if elapsed > 0.5 then
+        love.event.quit()
+    end
 end
 
 function love.joystickpressed(joystick, button)
-    love.event.quit()
+    if elapsed > 0.5 then
+        love.event.quit()
+    end
 end
 
 function love.update(dt)
@@ -179,6 +200,7 @@ end
 function love.draw()
     love.graphics.clear(0, 0, 0)
     if controlsImage then
+        updateImagePosition()
         love.graphics.draw(controlsImage, imageX, imageY, 0, scaleX, scaleY)
 
         local secondsRemaining = math.max(0, math.ceil(displayDuration - elapsed))
