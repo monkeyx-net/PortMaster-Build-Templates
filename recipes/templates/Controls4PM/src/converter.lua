@@ -441,7 +441,7 @@ function M.run(arg_table)
     out_handle:close()
 
     local png_file = "controls.png"
-    local inkscape_command = string.format("inkscape %q -o %q", output_file, png_file)
+    local inkscape_command = string.format("inkscape %q -o %q -w 1024 -h 768", output_file, png_file)
     local status = os.execute(inkscape_command)
     if status ~= 0 then
         print("Warning: inkscape command failed or returned non-zero status")

@@ -26,7 +26,9 @@ bind_directories ~/.parallelrealities/edgar $GAMEDIR/conf
 
 cd $GAMEDIR
 
-#controls/controls.${DEVICE_ARCH} controls/controls.png
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN controls/controls.love controls/controls.png 30 $DISPLAY_WIDTH $DISPLAY_HEIGHT
+
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH} -nojoystick
 pm_finish

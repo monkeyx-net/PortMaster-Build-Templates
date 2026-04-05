@@ -163,7 +163,7 @@ function love.load()
     end
 
     controlsImage = imageOrError
-    countdownFont = love.graphics.newFont(48)
+    countdownFont = love.graphics.newFont(36)
     fontHeight = countdownFont:getHeight()
     if targetW then
         scaleX = targetW / controlsImage:getWidth()
@@ -205,7 +205,7 @@ function love.draw()
 
         local secondsRemaining = math.max(0, math.ceil(displayDuration - elapsed))
         if secondsRemaining > 0 then
-            local countdownText = "Starting in " .. secondsRemaining .. " - Press any key or button to skip"
+            local countdownText = "Starting in " .. secondsRemaining .. " - Press any button to skip"
             local textWidth = countdownFont:getWidth(countdownText)
             love.graphics.setFont(countdownFont)
             love.graphics.setColor(1, 1, 1)
