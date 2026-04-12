@@ -3,11 +3,11 @@
   "name": "animalcrossing.zip",
   "port_json": "new_ports/animalcrossing/animalcrossing/animalcrossing/port.json",
   "source": {
-    "date_updated": "2026-04-10",
+    "date_updated": "2026-04-12",
     "port_exe": "AnimalCrossing",
     "port_build": "./build_make.sh --gles",
-    "port_checksum": "673fd9083578e8691ca4784f0e9628fe02bce3c2a03538209763cf42835fa09f",
+    "port_checksum": "ed3b27960b5de5ab29a5df3ad05ac052ee74636cda9b9c2bf46a406779cec0ca",
     "port_url": "https://github.com/Dia2809/ACGC-PC-Port/tree/arm64",
-    "port_version": "commit:3eaa0b9"
+    "port_version": "commit:29010b6"
   }
 }
