@@ -36,7 +36,8 @@ void BuildMerchantMessage(CustomMessage& msg, RandomizerCheck rc, bool mysteriou
         itemName = CustomMessage(RAND_GET_OVERRIDE(rc).GetTrickName());
         color = "%g";
     } else {
-        itemName = CustomMessage(Rando::StaticData::RetrieveItem(rgid).GetName());
+        const Rando::Item& item = Rando::StaticData::RetrieveItem(rgid);
+        itemName = item.GetHint().GetHintMessage().GetForCurrentLanguage();
     }
     msg.Replace("[[color]]", color);
     msg.InsertNames({ itemName, CustomMessage(std::to_string(price)) });
@@ -49,9 +50,9 @@ void BuildBeanGuyMessage(uint16_t* textId, bool* loadFromMessageTable) {
             "I never thought I'd say this, but I'm selling the last %rMagic Bean%w.^%y99 Rupees%w, no "
             "less.\x1B%gYes&No%w",
             "Ich hätte nie gedacht, daß ich das sage, aber ich verkaufe die letzte^%rWundererbse%w für %y99 "
-            "Rubine%w.\x1B&%gJa&Nein%w",
-            "Je te vends mon dernier %rHaricot&magique%g pour %y99 Rubis%w.\x1B&%gAcheterNe pas acheter%w");
-        msg.Format();
+            "Rubine%w.\x1B%gJa&Nein%w",
+            "Je te vends mon dernier %rHaricot&magique%w pour %y99 Rubis%w.\x1B%gAcheter&Ne pas acheter%w");
+        msg.AutoFormat();
     } else if (*textId == TEXT_BEAN_SALESMAN_BUY_FOR_10) {
         msg = CustomMessage("Want to buy [[color]][[1]]%w for %y[[2]] Rupees%w?\x1B%gYes&No%w",
                             "Möchten Sie [[color]][[1]]%w für %y[[2]] Rubin%w kaufen?\x1B%gJa&Nein%w",
