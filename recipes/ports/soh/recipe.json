@@ -3,11 +3,11 @@
   "name": "soh.zip",
   "port_json": "new_ports/soh/soh/soh/port.json",
   "source": {
-    "date_updated": "2026-04-14",
+    "date_updated": "2026-04-15",
     "port_exe": "soh",
     "port_build": "cmake",
-    "port_checksum": "dfe10e201328a48b8b68390f3adb66ef29e3a441481335cfd7291eaa93fe9684",
+    "port_checksum": "f7fbe26250c51abf96b5e280e8b99956084416cb3555381b6c5f19f6c4e9a8bb",
     "port_url": "HarbourMasters/Shipwright",
-    "port_version": "9.2.2"
+    "port_version": "9.2.3"
   }
 }
