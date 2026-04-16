@@ -16,12 +16,12 @@ _Last checked: 2026-04-16_
 | Manic Miner | manicminer | 🟢 OK | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | Shamogu | shamogu | 🟢 OK | v1.5.0 | 2026-04-16 | 2025-12-29 |
 | Space Invaders Part 2 | sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 | 2026-03-17 |
-| Ship of Harkinian | soh | 🔴 ERROR | 9.2.3 | 2026-04-16 | 2026-03-16 |
-| Ship of Harkinian 2 | soh2 | 🔴 ERROR | 4.0.2 | 2026-03-10 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🔴 ERROR | 1.0.0 | 2026-03-14 | 2025-09-08 |
-| Stunt Car Racer | stuntcarracer | 🔴 ERROR | continuous | 2026-02-25 | 2026-01-25 |
+| Ship of Harkinian | soh | 🟢 OK | 9.2.3 | 2026-04-16 | 2026-03-16 |
+| Ship of Harkinian 2 | soh2 | 🟢 OK | 4.0.2 | 2026-03-10 | 2026-03-16 |
+| SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
+| Stunt Car Racer | stuntcarracer | 🟢 OK | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 8 &nbsp; Updates: 0 &nbsp; Errors: 4 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
