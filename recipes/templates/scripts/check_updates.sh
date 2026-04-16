@@ -342,8 +342,15 @@ generate_report() {
         echo "|------|--------|---------|--------------|"
         for row in "${REPORT_ROWS[@]}"; do
             IFS='|' read -r r_name r_status r_version r_date r_url <<< "$row"
+            case "$r_status" in
+                OK)     r_badge="🟢 OK"     ;;
+                UPDATE) r_badge="🔵 UPDATE" ;;
+                SKIP)   r_badge="🟡 SKIP"   ;;
+                ERROR)  r_badge="🔴 ERROR"  ;;
+                *)      r_badge="$r_status" ;;
+            esac
             printf "| %s | %s | %s | %s |\n" \
-                "$r_name" "$r_status" "${r_version:---}" "${r_date:---}"
+                "$r_name" "$r_badge" "${r_version:---}" "${r_date:---}"
         done
         echo ""
         echo "_Checked: $TOTAL &nbsp; OK: $OK &nbsp; Updates: $UPDATES &nbsp; Errors: $ERRORS &nbsp; Skipped: ${SKIPPED}_"

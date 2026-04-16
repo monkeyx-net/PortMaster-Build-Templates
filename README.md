@@ -1,6 +1,29 @@
 # PortMaster-Build-Templates
 Holding repo for meta information and assets needed to build/update ports in PortMaster
 
+<!-- PORT-STATUS-START -->
+## Port Status
+
+_Last checked: 2026-04-16_
+
+| Port | Status | Version | Date Updated |
+|------|--------|---------|--------------|
+| animalcrossing | 🟢 OK | commit:24c9e43 | 2026-04-16 |
+| defendguin | 🟢 OK | commit:8143007 | 2026-01-29 |
+| edgar | 🟢 OK | 1.38 | 2026-03-27 |
+| epiphany | 🟢 OK | commit:c9ba7b4 | 2026-02-24 |
+| harmonist | 🟢 OK | v1.0.2 | 2026-02-27 |
+| manicminer | 🟢 OK | 1.1.1 | 2026-03-01 |
+| shamogu | 🟢 OK | v1.5.0 | 2026-04-16 |
+| sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 |
+| soh | 🔴 ERROR | 9.2.3 | 2026-04-16 |
+| soh2 | 🔴 ERROR | 4.0.2 | 2026-03-10 |
+| spaghettikart | 🔴 ERROR | 1.0.0 | 2026-03-14 |
+| stuntcarracer | 🔴 ERROR | continuous | 2026-02-25 |
+
+_Checked: 12 &nbsp; OK: 8 &nbsp; Updates: 0 &nbsp; Errors: 4 &nbsp; Skipped: 0_
+<!-- PORT-STATUS-END -->
+
 ## A slightly different approach
 
 Ports are built using Github Actions to produce binaries for aarch64/arm64 and x86_64.Using Github actions allows leveraging Github runners to compile and produce the ports. The github actions are being used to creat the binaries and meta data for PortMaster. 
@@ -114,31 +137,3 @@ Create a fork/copy of the project. A fork might better as you can then feedback 
 - [ ] Document how the development process works for aarch64 ports
 - [ ] Document how the development process works for x86_64 ports
 
-<!-- PORT-STATUS-START -->
-## Port Status
-
-_Last checked: 2026-04-16_
-
-| Port | Status | Version | Date Updated |
-|------|--------|---------|--------------|
-| animalcrossing | OK | commit:24c9e43 | 2026-04-16 |
-| defendguin | OK | commit:8143007 | 2026-01-29 |
-| edgar | OK | 1.38 | 2026-03-27 |
-| epiphany | OK | commit:c9ba7b4 | 2026-02-24 |
-| harmonist | OK | v1.0.2 | 2026-02-27 |
-| manicminer | OK | 1.1.1 | 2026-03-01 |
-| shamogu | OK | v1.5.0 | 2026-04-16 |
-| sip2 | OK | commit:0c589d9 | 2026-03-02 |
-| soh | OK | 9.2.3 | 2026-04-16 |
-| soh2 | OK | 4.0.2 | 2026-03-10 |
-| spaghettikart | OK | 1.0.0 | 2026-03-14 |
-| stuntcarracer | OK | continuous | 2026-02-25 |
-
-_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@   
-
-<!-- PORT-STATUS-END -->
