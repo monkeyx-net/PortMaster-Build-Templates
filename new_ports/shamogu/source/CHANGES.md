@@ -1,3 +1,187 @@
+# v1.5.0 2026-03-30
+
+This release features new and improved content, as well as various fixes.
+
+New content:
+
+* The Orb may now interfere with teleportation about half of the time, driving
+  the player away on the last level, making teleport-based strategies less
+  reliable as a means of progression toward the Orb, but still useful otherwise
+  (see issue #11).
+* New early guardian: **chaos megabat**. The chaos megabat appears in most
+  games as an early totem or portal guardian.  It has good hearing, like
+  hounds, and is immune to Lignification, like other flying monsters. Also,
+  when hearing noise at the player’s position, it starts hunting immediately
+  even when out-of-view. The megabat features a sneaky attack pattern, like
+  Vampiric Bat players. However, instead of a vampiric bite, it has a chaos
+  bite, which inflicts random effects. Those effects are not completely random
+  and tend to be fun but survivable and often helpful instead of harmful.  You
+  can for example get Lignification, Berserk, or Confusion+Imbalance, as well
+  as more rarely various effects that would usually be impossible, like
+  Gardening or Time Stop. While relatively harmless for a guardian in practice,
+  the chaos megabat is difficult to avoid and quite evasive.
+* New portal guardian: **dragging alligator**.  Alligators often appear as a
+  pair of mid game portal guardians in place of the blazing golems. They may
+  occasionally guard a random vault, too. Alligators make up for lower defense
+  than golems with their dragging attack pattern, a confusing bite and higher
+  attack. On the plus side, those can easily lead to the Imbalance+Confusion
+  “drunken fight” defensive effect for the player. However, the scales still
+  protect alligators somewhat from ranged attacks, and while they don’t have
+  any immunities, they’re special in being partially resistant to Fire and
+  Fear, like upgraded Salamander and Hound players. Unlike golems, alligators
+  feature normal footsteps and are hence not as easy to notice from far away.
+* New Stealth help topic that explains monster mindstate behavior and how it
+  changes.  The topic also includes the noise explanations that were previously
+  in the Combat topic.
+* The Combat help topic has a new “ON-HIT EFFECTS” section that explains how
+  statuses inflicted by hits work, including the particularities of the new cat
+  dazing chance and duration scalings, or which statuses may be refreshed or
+  not by further hits. Also, that section documents a new special “protection”
+  by the player spirit ancestors that reduces the likeliness of early status
+  refresh or re-application, in part motivated by making consecutive fire and
+  imbalance dances less likely, so that they remain fun and not repetitive.
+* The Tips help topic features extra text about monster examination and rats
+  hunting by smell (see #11).
+* On the project's website: new **game manual** in html form that includes
+  bonus sections with lists of comestibles, menhirs, runes, spirits and
+  monsters.  Most other content is simply from the in-game help, but replicated
+  there for convenience.
+
+Improvements in Corrupted Dungeon expansion (see issue #11):
+
+* Improved thematic levels, including a new poison themed level, and various
+  improvements in the lignification one.
+* Adjustments to guardian corruptions. Guardians are less likely to wander than
+  before, but when they do, replacements are more likely and more varied.
+  Rarely, more than one vault can be guarded.
+* The Orb or other special locations may be hidden by foliage or rubble more
+  often than before, in particular when unguarded.
+* Adjusted map corruption chances a bit. In particular, extreme wall
+  corruptions that result in maps that are too open happen a bit less often
+  now. And the radius of centered map corruptions can be a bit lower than
+  before.
+
+Reworked and improved content:
+
+* Healing Combat challenge mod: ambrosia berries have been restored but heal
+  only for 2 HP. The motivation was to simplify maintenance and compatibility
+  with other mods, like Corrupted Dungeon, that may want to generate ambrosia
+  berries (like in berserk themed levels), but the change also helps preserve
+  original comestible variety and avoid introducing comestible-frequency
+  changes.  Heal-on-kill formula has also been slightly adjusted to make it
+  smoother, while still guaranteeing heal at 3 HP or less.  The mod is no
+  longer considered experimental, because it's very playable despite the still
+  present comestible imbalance, which is a minor issue in practice, and
+  provides a different experience with choice considerations, so it has some
+  charm as an occasional challenge.
+* Remove safety rule for pushing into dangerous clouds (see #16), because it
+  wasn't as useful since the Boar pushing changes a few releases ago, and even
+  sometimes unwanted. Relatedly, Crocodile's dragging may now move the player
+  into a poison cloud, and even into a fire cloud if the player is already on
+  Fire or has Foggy-Skin, following the idea that movement into a dangerous
+  cloud is ok as long as it cannot result in immediate damage.  Bat now uses a
+  similar safety rule for visible fires.
+* Phoenixes now have only 2 attack but a somewhat higher chance of burning
+  on-hit to compensate for the accuracy loss (for a similar burning chance in
+  the end).  Also, due to their large wings, phoenixes now are particularly
+  vulnerable to imbalance, which results in reduced burning chances beyond the
+  usual reduced attack. The idea is to make fighting phoenixes in melee a bit
+  less dangerous, in particular with Foggy-Skin or Salamander (see #17), to
+  improve melee/ranged balance among dangerous late monsters.
+* Walking trees now ignore the lignification's defense bonus when hitting you,
+  but they still respect the damage cap. The idea is to make walking trees less
+  trivial to handle alone, so that they at least don't feel less dangerous than
+  a rat in such situations, due to missing many times in a row.
+* Shadow now preserves the damage debuff, but makes hunting monsters wander
+  again when you hit them (see #17). This way, the ability remains more
+  pacific-oriented and helps getting unnoticed through monsters even if they
+  already were hunting you.
+* Gawalt's hit weakening has been made less extreme (see #17). Now hits that
+  would do 2 damage have only a 2/3 chance of getting weakened. That means that
+  2 attack is enough to sometimes inflict 2 base damage. Hits for higher damage
+  are still always weakened by one, like before. This change makes the impact
+  of 3 attack with respect to 2 attack a bit less important, making defense
+  builds a bit more appealing. The new formula also preserves a bit better the
+  relative increased resilience of trees with respect to other same
+  high-defense monsters like dragons.
+* Zebra's Disorient status now lasts an extra turn, for better balance (see
+  #17).
+* Elephant's “stomp” ability now makes you berserk for 4 turns, instead of 5,
+  as the ability was a bit too strong considering its useful extra
+  wall-destroying effects (see #17).
+* Lion's roar now inflicts 4-5 turns of Fear, instead of 5, with 4 being more
+  likely on close targets (see #17). This change helps balance hydra+lion and
+  frog+lion+owl, as those are somewhat overpowered with respect to other
+  combinations. Thematically, we can think of it as monsters often getting over
+  their fear earlier when danger is close.
+* Cat's dazing effect on swapping happens now less often than before and
+  chances don't scale with damage anymore; instead, it's somewhat less likely
+  but with longer duration on average at long distances to make distant
+  swapping by monster cats more unlikely to be undone just afterwards (see
+  #17).
+* Dazing chance and duration after falling when doing various jumps while
+  imbalanced have been adjusted so that they are more significant (see #17).
+* Various inflict-on-hit statuses from monsters on the player now use a
+  somewhat biased RNG that makes repeated application just after expiration
+  less likely, making consecutive imbalance and fire dances less likely.
+* Slightly tweaked number of vaults in maps: there should now be one less vault
+  in the very early game, as vaults tend to be empty quite often, due to less
+  menhirs and comestibles.  Same base number of vaults in mid and late game,
+  but slightly higher chance of extra vault in late game with respect to mid
+  game (chances for extra vault were the same for both before).
+* When Owl is not flying (gardening or lignified), fuzzy visibility has been
+  improved (still affected by nocturnal range, but when close you can see
+  behind foliage now, like without the Owl, as it was a bit unintuitive that
+  nocturnality would make foliage the same as rubble, even though not absurd
+  either).
+
+UI, graphics, QoL:
+
+* We don't reset configuration anymore for each new release, but only if there
+  were incompatible config changes. In particular, any custom keybindings or
+  options from the previous release should be preserved. Note that saves are
+  still incompatible between releases, so an in-progress run will be lost after
+  updating Shamogu to a new release, and hence needs to be finished before.
+* The display of temporary HP bonuses in the form of `HP:base+bonus/max` now
+  takes into account status expiration order in the computation of `base` when
+  both Berserk and Lignification are active at the same time, producing hence a
+  more accurate prediction in such case.
+* Display `[Warning]` or `[Confirm]` in status bar for critical mode asking for
+  SPACE/ESC and confirmation mode asking for y/N, respectively. Also, clicking
+  on log message lines or status bar with the mouse will act as ESC and N in
+  such cases, for users that want to fully play with mouse (right click already
+  did the same but might've been less obvious). The confirmation case still
+  cannot be done with the mouse, but it's not required for anything in normal
+  play, and quitting a game without saving can be done quickly enough by
+  playing badly and dying.
+* In the (unlikely) case that status effects don't fit in the status bar, now
+  an arrow shows up at the end of the line, suggesting that scrolling is
+  possible (either with the mouse or using page up/down).
+
+Fixes:
+
+* Ensure lignified monsters cannot move while disoriented (see issue #15).
+* Make charges that end up on a warp rune trigger it without completing the
+  attack. Previous behavior could lead to strange things in that edge-case,
+  like moving beyond the runic trap when pushing but still triggering the trap
+  (see issue #16).
+* Fix an old regression from v1.2.0 with “pushing gale” in melee sometimes
+  producing the wrong log message and doing only 1 damage instead of 2 (see
+  issue #11).
+* Make confused wandering monsters ignore a hidden adjacent player. Not really
+  a bug, but was unintuitive enough and problematic with the new make-wander
+  shadowy hits when playing the Bat with the Gawalt.
+* Mention that Disorient only affects hunting monsters, not wandering ones
+  (a nuance of little impact, except when combined with gawalt's Shadow).
+* Make monsters on a skipped turn (due to out-of-view monster swapping) still
+  notice the player when in view during that skipped turn (see #17). Not really
+  a bug, but it could (very rarely) feel strange.
+* Fix a bug where disoriented monsters could sometimes move incorrectly.
+* Prevent rune trigger message for out-of-view traps (see #17), unless the
+  player has the Runic Chicken and the trap is within sensing range.
+* Fix animation issue with teleport that could sometimes briefly leak
+  out-of-view information during animations on that turn (see #17).
+
 # v1.4.1 2026-02-10
 
 Patch release with small improvements related to Lignification and a fix for an
@@ -354,7 +538,7 @@ New content:
   map corners on those maps (feature suggested by @mlochbaum in issue #1).
   Normal totems now become empty totems once you've picked their spirit.
 * New Clarity status effect, provided by “clarity leaves”. It protects against
-  Confusion, Daze, and unvoluntary Berserk. It can now be used as a way to exit
+  Confusion, Daze, and involuntary Berserk. It can now be used as a way to exit
   Berserk early with extra HP (healing applied after bonus is removed). Also,
   Clarity makes you sense monsters now for several turns, but in a shorter
   range (2 times view range, instead of 3).

@@ -99,13 +99,17 @@ func (g *Game) InflictDamageGeneric(i, j ID, ai, aj *Actor, dmg int, ap AttackKi
 	case i >= 0 && ai != nil:
 		g.logBumpDamage(i, j, ai, aj, dmg, ap)
 		if ai.Has(StatusVampirism) {
+			ohp := ai.HP
 			g.AdjustHP(i, ai, dmg)
+			if i == PlayerID && ai.HP > ohp {
+				g.StoryLogf("You drained vitality from %s (HP: %d/%d)", One(ej.Name), ai.HP, ai.GetMaxHP())
+			}
 		}
 		if ai.DoesAny(PatternSwap|PatternSwapDaze) || ai.Has(StatusShadow) || aj.Has(StatusShadow) || g.IntN(dmg) == 0 {
 			break
 		}
 		switch {
-		case ai.DoesAny(PatternCrocodile) && ap != AttackSlap:
+		case ai.DoesAny(PatternDragging) && ap != AttackSlap:
 			g.MakeNoise(ej.P, NoiseChomp)
 		default:
 			g.MakeNoise(ej.P, NoiseCombat)
@@ -233,8 +237,11 @@ func (g *Game) monsterDeath(i, j ID, aj *Actor) {
 		aj.KnownDead = true
 	}
 	if g.Mod(ModHealingCombat) && !g.HasVampirism() {
+		// When Healing Combat is enabled and the player is not a bat,
+		// we have a chance of healing when killing monsters.
+		// The chance is higher at low HP (guaranteed at 3 HP or less).
 		pa := g.PlayerActor()
-		if pa.HP < pa.GetMaxHP() && g.IntN(pa.HP) < 4 {
+		if pa.HP < pa.GetMaxHP() && g.IntN(pa.HP+2) < 5 {
 			aj.KnownDead = true // You feel the monster's death as you heal.
 			g.AdjustHP(PlayerID, g.PlayerActor(), 1)
 		}
@@ -337,7 +344,7 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 		// if the player is shadowed.
 		ai.Behavior.State = Hunting
 		if aj.DoesAny(Dazzling) && (ap == AttackCharge || ap == AttackPlain ||
-			ap == AttackRanged && !ai.DoesAny(PatternCatch)) {
+			ap == AttackDrag || ap == AttackRanged && !ai.DoesAny(PatternCatch)) {
 			if k, ak := g.dazzlingRedirect(i); k >= 0 {
 				j, aj = k, ak
 				redirected = true
@@ -357,14 +364,13 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 	afraid := aj.Has(StatusFear)
 	// Extra effects by attack pattern.
 	switch {
-	case ai.DoesAny(Pushing|PushingCharge) && ai.CanMove() && !aj.ResistsMove() &&
-		(ap == AttackCharge || !ai.Has(StatusPoison)) && !redirected:
+	case (ai.DoesAny(PushingCharge) || ai.Is(EarthDragon)) && !aj.ResistsMove() && !redirected:
 		if ai.Has(StatusDig) || ai.DoesAny(PushingCharge) && ap == AttackCharge && dist > 2 ||
-			ai.DoesAny(Pushing) && g.IntN(5-dmg) < 2 {
+			ai.Is(EarthDragon) && !g.ResistStatusRoll(j, StatusImbalance) && g.IntN(5-dmg) < 2 {
 			g.push(i, j, ai, aj, ap, dist, bonus)
 		}
 	case ai.DoesAny(PatternSwap|PatternSwapDaze) && ap != AttackCharge && !ai.Has(StatusLignification) && !aj.ResistsMove():
-		g.swapSpaceDistortion(i, j, ai, aj, dmg, dazed)
+		g.swapSpaceDistortion(i, j, ai, aj, dazed, dist)
 	case ai.DoesAny(PatternCatch) && ap == AttackRanged && !aj.ResistsMove():
 		g.catch(i, j, ai, aj, dist)
 	case ai.DoesAny(PatternRangedRecoil) && ap != AttackCharge && ai.CanMove():
@@ -372,32 +378,36 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 			ai.Has(StatusConfusion) && g.PutStatus1(i, ai, StatusImbalance, 1+dmg) && g.InFOV(ei.P) {
 			g.Logf("The confused %s lost balance due to recoil!", ei.Name)
 		}
-	case ai.DoesAny(PatternCrocodile) && ai.CanMove() && !aj.ResistsMove() && ap == AttackDrag && !ai.Has(StatusPoison) && aj.IsAlive():
+	case ai.DoesAny(PatternDragging) && ai.CanMove() && !aj.ResistsMove() && ap == AttackDrag && !ai.Has(StatusPoison) && aj.IsAlive():
 		g.drag(i, j, ai, aj)
-	case ai.DoesAny(PatternBat) && ap == AttackPlain && ai.CanMove() && !ai.Has(StatusPoison):
+	case ai.DoesAny(PatternSneaky) && ap == AttackPlain && ai.CanMove() && !ai.Has(StatusPoison):
 		g.retreat(i, j, ai)
-	case ai.DoesAny(PatternBat) && ap == AttackCharge:
+	case ai.DoesAny(PatternSneaky) && ap == AttackCharge && i == PlayerID:
 		g.PutStatus(j, aj, StatusConfusion, 2)
 	}
 	// Extra attack effects (shared by both player and monsters).
 	if ai.DoesAny(VenomousMelee) && (ap != AttackRanged || g.AdjacentEntities(i, j)) && g.IntN(6-dmg) < 2 {
-		if g.PutStatus(j, aj, StatusPoison, DurationPoisonBite) && i != PlayerID && ai.Has(StatusConfusion) && ai.IsAlive() {
+		if !g.ResistStatusRoll(j, StatusPoison) && g.PutStatus(j, aj, StatusPoison, DurationPoisonBite) &&
+			i != PlayerID && ai.Has(StatusConfusion) && ai.IsAlive() {
 			if g.InFOV(ei.P) {
 				g.LogfStyled("The confused %s bites itself too!", logHurtMons, ei.Name)
 			}
 			g.InflictDamage(i, ai, ConfusionDamage, AttackOther)
 		}
 	}
-	if ai.DoesAll(BurningHits) && g.IntN(6-dmg) < 2 {
-		if g.PutStatus(j, aj, StatusFire, DurationFire) {
+	if ai.DoesAll(BurningHits) && g.burningRoll(ai, dmg) {
+		if !g.ResistStatusRoll(j, StatusFire) && g.PutStatus(j, aj, StatusFire, DurationFire) {
 			if p := ej.P; g.Map.Burnable(p) {
 				g.FireCloudAt(p)
+			}
+			if i != PlayerID {
+				g.monsConfusionPenalty(i, ai)
 			}
 		}
 	}
 	// Monster-specific extra attack effects (at most one per monster).
 	switch {
-	case ai.DoesAll(MonsSpitFire) && ap == AttackRanged:
+	case ai.Is(FireLlama) && ap == AttackRanged:
 		if g.PutStatus(j, aj, StatusFire, DurationFire) {
 			if p := ej.P; g.Map.Burnable(p) {
 				g.FireCloudAt(p)
@@ -407,43 +417,48 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 			}
 		}
 	case ai.DoesAll(MonsFear) && g.IntN(5-dmg) < 2:
-		if g.PutStatus(j, aj, StatusFear, DurationFearUndead) {
+		if !g.ResistStatusRoll(j, StatusFear) && g.PutStatus(j, aj, StatusFear, DurationFearUndead) {
 			if ai.Has(StatusConfusion) && g.PutStatus1(i, ai, StatusFear, DurationFearUndead) && g.InFOV(ei.P) {
 				g.Logf("The confused %s frightened itself too!", ei.Name)
 			}
 		}
 	case ai.DoesAny(MonsConfusion) && g.IntN(6-dmg) < 2:
-		if g.PutStatus(j, aj, StatusConfusion, DurationConfusionHit) {
+		if !g.ResistStatusRoll(j, StatusConfusion) && g.PutStatus(j, aj, StatusConfusion, DurationConfusionHit) {
 			g.monsConfusionPenalty(i, ai)
 		}
-	case ai.DoesAny(MonsLignify) && g.IntN(6-dmg) < 2:
-		if g.PutStatus(j, aj, StatusLignification, DurationLignificationHit) {
+	case ai.Is(DraggingAlligator):
+		_ = !g.ResistStatusRoll(j, StatusConfusion) && g.PutStatus(j, aj, StatusConfusion, 2)
+	case ai.Is(ChaosMegabat) && g.IntN(6-dmg) < 2:
+		g.inflictChaos(j, aj, g.PutStatus)
+		if ai.Has(StatusConfusion) {
+			if g.InFOV(ei.P) {
+				g.LogfStyled("The confused %s bites itself too!", logHurtMons, ei.Name)
+			}
+			g.InflictDamage(i, ai, ConfusionDamage, AttackOther)
+			g.inflictChaos(i, ai, g.PutStatus1)
+		}
+	case ai.Is(WalkingTree) && g.IntN(6-dmg) < 2:
+		if !g.ResistStatusRoll(j, StatusLignification) && g.PutStatus(j, aj, StatusLignification, DurationLignificationHit) {
 			g.monsConfusionPenalty(i, ai)
 		}
 	case ai.DoesAny(MonsBerserking) && g.IntN(6-dmg) < 2:
-		if g.PutStatus(j, aj, StatusBerserk, DurationBerserkHit) {
+		if !g.ResistStatusRoll(j, StatusBerserk) && g.PutStatus(j, aj, StatusBerserk, DurationBerserkHit) {
 			g.monsConfusionPenalty(i, ai)
 		}
-	case ai.DoesAny(MonsBlink) && aj.IsAlive():
+	case ai.Is(BlinkButterfly) || ai.Is(ChaosMegabat) && g.IntN(16) == 0:
 		g.blinkOther(i, j, ai, aj)
-	case ai.DoesAny(MonsTeleport) && aj.IsAlive() && !aj.ResistsMove():
-		if j == PlayerID {
-			g.Logf("The %s teleports you away!", ei.Name)
-		} else {
-			g.Logf("The confused %s teleports the %s away!", ei.Name, ej.Name)
-		}
-		g.TeleportActor(j, aj, 0)
-		if ai.Has(StatusConfusion) && ai.IsAlive() {
-			g.TeleportActor(i, ai, 1)
-		}
+	case ai.Is(WarpingWraith) || ai.Is(ChaosMegabat) && g.IntN(32) == 0:
+		g.teleportOther(i, j, ai, aj)
 	}
 	// Extra defense effects.
 	switch {
 	case aj.DoesAny(DazingSpines) && (ap != AttackRanged || g.AdjacentEntities(i, j)) && g.IntN(5-dmg) == 0:
-		g.PutStatus1(i, ai, StatusDaze, DurationDazeSpines)
+		if !g.ResistStatusRoll(j, StatusDaze) {
+			g.PutStatus1(i, ai, StatusDaze, DurationDazeSpines)
+		}
 	}
 	if aj.Has(StatusLignification) && !aj.DoesAny(WoodyLegs) &&
-		(afraid && aj.Has(StatusFear) || aj.DoesAny(Elephanty) && ai.IsMonster(HungryRat)) {
+		(afraid && aj.Has(StatusFear) || aj.DoesAny(Elephanty) && ai.Is(HungryRat)) {
 		// When hurt, afraid lignified actors become berserk.
 		g.PutStatus(j, aj, StatusBerserk, DurationBerserkAfraid)
 		if j == PlayerID {
@@ -502,11 +517,14 @@ func (g *Game) AttackDamage(i, j ID, ai, aj *Actor, ap AttackKind, bonus int) in
 	if ap == AttackRanged && aj.DoesAny(MonsScales) {
 		defense++
 	}
+	if ai.Is(WalkingTree) && aj.Has(StatusLignification) {
+		defense -= LignificationDefenseBonus
+	}
 	if ai.DoesAny(MonsIgnoreDefense) {
 		defense = 0
 	}
 	n := 1 // default number of attacks
-	if ai.Has(StatusFocus) || ai.DoesAny(MonsFourHeaded) {
+	if ai.Has(StatusFocus) || ai.Is(FourHeadedHydra) {
 		n += 3 // extra attacks for each extra head
 	}
 	var dmg int
@@ -514,12 +532,12 @@ func (g *Game) AttackDamage(i, j ID, ai, aj *Actor, ap AttackKind, bonus int) in
 		// Damage per attack.
 		dmg += g.computeDamage(attack, defense)
 	}
-	if aj.Has(StatusLignification) || aj.DoesAny(MonsLignify) {
+	if aj.Has(StatusLignification) || aj.Is(WalkingTree) {
 		// Lignification caps attack damage at 1.
 		dmg = min(1, dmg)
 	}
-	if i == PlayerID && ai.DoesAny(Gawalt) && !ai.Has(StatusShadow) && dmg > 1 {
-		// Gawalt monkey reduces damage of non-weak hits.
+	if i == PlayerID && ai.DoesAny(Gawalt) && (dmg > 2 || dmg > 1 && g.IntN(3) > 0) {
+		// Gawalt monkey weakens hits.
 		dmg--
 	}
 	if ai.Has(StatusDig) && (ap == AttackCharge || dmg == 0) || ap == AttackSlap || dmg == 0 && ai.Has(StatusVampirism) {
@@ -576,10 +594,17 @@ func (g *Game) AttackDamage(i, j ID, ai, aj *Actor, ap AttackKind, bonus int) in
 		g.md.HitAnimation(pj)
 	}
 	dmg = g.InflictDamageGeneric(i, j, ai, aj, dmg, ap) // dmg actually remains the same
-	if aj.Behavior != nil && aj.Behavior.State != Hunting && ai.IsPlayer() {
-		// Surprise charging attacks make monsters hunt immediately.
-		aj.Behavior.State = Hunting
-		aj.Behavior.Target = g.PP()
+	if i == PlayerID && aj.Behavior != nil {
+		if ai.Has(StatusShadow) && !aj.Is(HungryRat) && aj.Behavior.State == Hunting {
+			// Shadowy attacks make hunting monsters lose track of
+			// you and wander again to a nearby location.
+			aj.Behavior.State = Wandering
+			aj.Behavior.Target = g.RandomPassableWithin(pj, MaxFOVRange)
+		} else if aj.Behavior.State != Hunting {
+			// Surprise charging attacks make monsters hunt immediately.
+			aj.Behavior.State = Hunting
+			aj.Behavior.Target = g.PP()
+		}
 	}
 	return dmg
 }
@@ -614,29 +639,63 @@ func (g *Game) monsConfusionPenalty(i ID, ai *Actor) {
 	}
 }
 
+// burningRoll reports whether burning should happen.
+func (g *Game) burningRoll(ai *Actor, dmg int) bool {
+	if !ai.Is(BurningPhoenix) {
+		return g.IntN(6-dmg) < 2
+	}
+	if ai.Has(StatusImbalance) {
+		// Lower burning chance specifically when imbalanced, so that
+		// phoenixes are more often easier to handle by boar, frog or
+		// crocodile when properly handled.
+		return g.IntN(100) < 15*(dmg+1)
+	}
+	// Otherwise, somewhat higher burning chance for phoenixes than for
+	// salamander or crazy druid. Still scaling with damage to somewhat
+	// make charge more dangerous and defense somewhat matter (which is
+	// useful with walking tree).
+	return g.IntN(100) < 15*(dmg+2)
+}
+
 // push handles extra penetrating and pushing effects for actors with
 // Pushing trait.  It should be called only on pairs of adjacent actors.
 func (g *Game) push(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonus int) {
 	ei, ej := g.Entity(i), g.Entity(j)
 	pi, pj := ei.P, ej.P
-	delta := pj.Sub(pi)
-	npj := pj.Add(delta)
+	npj := pj.Add(pj.Sub(pi)) // position behind pushed actor
+	move := ai.CanMove()      // whether to move pushing actor to pj (if appropriate)
+	pass := g.Map.Passable(npj)
+	k, ak := g.ActorAt(npj)
+	if pass && k < 0 {
+		// No wall nor monster behind.
+		if i == PlayerID && ap != AttackCharge && ai.Has(StatusPoison) {
+			// No pushing nor unbalancing effects if the pushing
+			// player is poisoned but would need to move just for
+			// the pushing (Dig in melee).
+			return
+		}
+		if !move {
+			// No pushing nor unbalancing effects if the pushing
+			// actor cannot move but would need to move. Note that
+			// pushing a monster against a wall still happens.
+			return
+		}
+	}
 	d := 2 + 2*(dist/5) // imbalance duration (2 for dist 2-4, 4 for dist 5-8)
 	if g.PutStatus(j, aj, StatusImbalance, d) && i != PlayerID &&
 		ai.Has(StatusConfusion) && g.PutStatus1(i, ai, StatusImbalance, d) && g.InFOV(ei.P) {
 		g.Logf("The confused %s lost balance while pushing too!", ei.Name)
 	}
-	k, ak := g.ActorAt(npj)
 	if ak != nil {
 		// There's another actor behind: extra piercing attack (without
 		// extra effects, but inheriting any charge attack bonuses).
 		g.AttackDamage(i, k, ai, ak, ap, bonus)
 	}
-	move := true // whether to move pushing actor to pj
 	switch {
-	case !g.Map.Passable(npj) || ak != nil && ak.IsAlive():
-		// No room for pushing, so move only if the foe is dead.
-		move = aj.IsDead()
+	case !pass || ak != nil && ak.IsAlive():
+		// No room for pushing, so move only if the foe is dead and we
+		// can move.
+		move = move && aj.IsDead()
 	case aj.IsAlive():
 		// Push.
 		if j != PlayerID && (i == PlayerID || g.InFOV(pj)) {
@@ -645,16 +704,14 @@ func (g *Game) push(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonus int) {
 			g.Log("You’re pushed away.")
 			g.StoryLogf("Pushed away by %s", ei.Name)
 		}
-		g.MoveActor(j, aj, npj)
-		g.md.MoveAnimation(pj, npj)
+		g.MoveActor(j, aj, npj, MovPlain)
 	}
-	if i == PlayerID {
-		switch g.Map.Clouds.At(pj).Kind {
-		case CloudFire, CloudPoison:
-			// Player is smarter than corrupted monsters: we don't
-			// move when foe is on a dangerous cloud.
-			move = false
-		}
+	if i == PlayerID && (ai.HP == 1 && g.AvoidsFireAt(i, ai, pj) || ap != AttackCharge && ai.Has(StatusPoison)) {
+		// Avoid dangerous movement that could (almost certainly) kill
+		// the player.
+		// Also no melee movement while poisoned even in case the
+		// monster died and made room for the player.
+		move = false
 	}
 	if !move || ai.IsDead() {
 		return
@@ -662,7 +719,7 @@ func (g *Game) push(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonus int) {
 	if ap == AttackCharge {
 		// Already bump-moved, so extra movement effects were processed
 		// already.
-		g.MoveActor(i, ai, pj)
+		g.MoveActor(i, ai, pj, MovSet)
 	} else {
 		g.BumpMoveActor(i, ai, pj)
 	}
@@ -673,9 +730,7 @@ func (g *Game) catch(i, j ID, ai, aj *Actor, dist int) {
 	ei, ej := g.Entity(i), g.Entity(j)
 	dir := toDir(ej.P.Sub(ei.P))
 	to := ei.P.Add(dir)
-	from := ej.P
-	g.MoveActor(j, aj, to)
-	g.md.MoveAnimation(from, to)
+	g.MoveActor(j, aj, to, MovPlain)
 	d := 2 + 2*(dist/5) // imbalance duration (2 for dist 2-4, 4 for dist 5-8)
 	if g.PutStatus(j, aj, StatusImbalance, d) && i != PlayerID &&
 		ai.Has(StatusConfusion) && g.PutStatus1(i, ai, StatusImbalance, d) {
@@ -685,13 +740,13 @@ func (g *Game) catch(i, j ID, ai, aj *Actor, dist int) {
 
 // swapSpaceDistortion handles extra swapping effects for actors with
 // PatternSwap trait, after inflicting damage on target.
-func (g *Game) swapSpaceDistortion(i, j ID, ai, aj *Actor, dmg int, dazed bool) {
+func (g *Game) swapSpaceDistortion(i, j ID, ai, aj *Actor, dazed bool, dist int) {
 	pj := g.Entity(j).P
 	g.SwapClouds(g.Entity(i).P, pj)
-	g.MoveActor(i, ai, pj) // swaps positions
-	if !dazed && ai.DoesAny(PatternSwapDaze) && g.IntN(6-dmg) < 2 {
-		duration := 2 + dmg/2
-		if g.PutStatus(j, aj, StatusDaze, duration) && i != PlayerID &&
+	g.MoveActor(i, ai, pj, MovSet) // swaps positions
+	if !dazed && ai.DoesAny(PatternSwapDaze) && g.IntN(100) < 45-dist*2 {
+		duration := 2 + dist/3
+		if !g.ResistStatusRoll(j, StatusDaze) && g.PutStatus(j, aj, StatusDaze, duration) && i != PlayerID &&
 			ai.Has(StatusConfusion) && g.PutStatus1(i, ai, StatusDaze, duration) && g.InFOV(pj) {
 			g.LogfStyled("The confused %s dazed itself too!",
 				logHurtMons, g.Entity(i).Name)
@@ -706,8 +761,7 @@ func (g *Game) swapSpaceDistortion(i, j ID, ai, aj *Actor, dmg int, dazed bool) 
 				} else {
 					g.Logf("The space distortion blinks the %s away.", ek.Name)
 				}
-				g.md.TeleportAnimation(ek.P, to, true)
-				g.MoveActor(k, ak, to)
+				g.MoveActor(k, ak, to, MovTeleport)
 			}
 		}
 	}
@@ -737,13 +791,11 @@ func (g *Game) recoil(i, j ID, ai *Actor, dist int) bool {
 			g.MakeNoise(ei.P, NoiseWind)
 		}
 	}
-	pi := ei.P
-	g.MoveActor(i, ai, npi)
-	g.md.MoveAnimation(pi, npi)
+	g.MoveActor(i, ai, npi, MovPlain)
 	return true
 }
 
-// drag attemps to drag a foe backwards.
+// drag attempts to drag a foe backwards.
 func (g *Game) drag(i, j ID, ai, aj *Actor) {
 	ei, ej := g.Entity(i), g.Entity(j)
 	pi, pj := ei.P, ej.P
@@ -752,22 +804,50 @@ func (g *Game) drag(i, j ID, ai, aj *Actor) {
 	if !g.IsFree(to) {
 		return
 	}
-	if i == PlayerID {
-		switch g.Map.Clouds.At(to).Kind {
-		case CloudFire, CloudPoison:
-			// Player is smarter than corrupted monsters: we don't
-			// move onto a dangerous cloud.
-			return
-		}
+	if g.AvoidsFireAt(i, ai, to) {
+		// We don't move onto a fire cloud that could
+		// burn the crocodile's tail (unless already
+		// burning).
+		return
 	}
 	g.PutStatus(j, aj, StatusImbalance, DurationImbalanceDragging)
 	// Move backwards.
 	g.BumpMoveActor(i, ai, to)
-	g.MoveActor(j, aj, pi)
-	g.md.MoveAnimation(pj, pi)
+	g.MoveActor(j, aj, pi, MovPlain)
 }
 
-// retreat attemps to a sneaky retreat backwards.
+// AvoidsFireAt reports whether the (player) actor would avoid moving into a
+// fire cloud at the given position (currently for dragging purposes only).
+func (g *Game) AvoidsFireAt(i ID, ai *Actor, at gruid.Point) bool {
+	if i != PlayerID {
+		// Monsters never avoid fire clouds.
+		return false
+	}
+	if g.Map.Clouds.At(at).Kind != CloudFire {
+		return false
+	}
+	if ai.Has(StatusFire) || ai.Statuses[StatusFoggySkin] > 1 {
+		// Do not avoid fire cloud if already on fire or resistant to
+		// it.
+		return false
+	}
+	if !ai.ResistsMove() {
+		if rt, ok := g.RunicTrapAt(at); ok && !rt.Used && rt.Rune == RuneWarp {
+			// If there is a working warping rune and we're not
+			// warp-resistant, then there is no danger of immediate
+			// damage.
+			return false
+		}
+	}
+	if g.Map.Clouds.At(g.Entity(i).P).Kind == CloudFire {
+		// Already a fire cloud on current position, so it doesn't make
+		// sense to avoid moving into another fire cloud.
+		return false
+	}
+	return true
+}
+
+// retreat attempts to a sneaky retreat backwards.
 func (g *Game) retreat(i, j ID, ai *Actor) {
 	ei, ej := g.Entity(i), g.Entity(j)
 	dir := toDir(ei.P.Sub(ej.P))
@@ -777,13 +857,16 @@ func (g *Game) retreat(i, j ID, ai *Actor) {
 		if !g.IsFree(p) {
 			break
 		}
+		if g.InFOV(p) && g.AvoidsFireAt(i, ai, p) {
+			// We don't move into a dangerous visible fire cloud.
+			continue
+		}
 		to = p
 	}
 	if from == to {
 		return
 	}
 	g.BumpMoveActor(i, ai, to)
-	g.md.MoveAnimation(from, to)
 }
 
 // AdjacentEntities reports whether two entities are adjacent.
@@ -828,27 +911,27 @@ func (g *Game) digAt(at gruid.Point) bool {
 	return true
 }
 
-// blinkOther implements the blinking bump effect.
+// blinkOther implements the butterfly's blinking hit effect.
 func (g *Game) blinkOther(i, j ID, ai, aj *Actor) {
 	if aj.IsDead() || aj.ResistsMove() {
 		return
 	}
 	ej := g.Entity(j)
-	if to, ok := g.BlinkPos(ej.P); ok {
-		g.md.TeleportAnimation(ej.P, to, true)
-		g.MoveActor(j, aj, to)
-		ei := g.Entity(i)
-		if j == PlayerID {
-			g.Logf("The %s’s attack made you blink away.", ei.Name)
-			g.StoryLogf("Blinked away by %s", ei.Name)
-		}
-		if ai.Has(StatusConfusion) && !ai.ResistsMove() {
-			if to, ok := g.BlinkPos(ei.P); ok {
-				g.md.TeleportAnimation(ei.P, to, g.InFOV(to))
-				g.MoveActor(i, ai, to)
-				g.LogfStyled("The confused %s hurt and blinked itself too!", logHurtMons, ei.Name)
-				g.InflictDamage(i, ai, ConfusionDamage, AttackOther)
-			}
+	to, ok := g.BlinkPos(ej.P)
+	if !ok {
+		return
+	}
+	g.MoveActor(j, aj, to, MovTeleport)
+	ei := g.Entity(i)
+	if j == PlayerID {
+		g.Logf("The %s’s attack made you blink away.", ei.Name)
+		g.StoryLogf("Blinked away by %s", ei.Name)
+	}
+	if ai.Has(StatusConfusion) && !ai.ResistsMove() {
+		if to, ok := g.BlinkPos(ei.P); ok {
+			g.MoveActor(i, ai, to, MovTeleport)
+			g.LogfStyled("The confused %s hurt and blinked itself too!", logHurtMons, ei.Name)
+			g.InflictDamage(i, ai, ConfusionDamage, AttackOther)
 		}
 	}
 }
@@ -880,6 +963,24 @@ func (g *Game) BlinkPos(from gruid.Point) (gruid.Point, bool) {
 	return ps[g.IntN(len(ps))], true
 }
 
+// teleportOther implements wraith's teleporting hit effect.
+func (g *Game) teleportOther(i, j ID, ai, aj *Actor) {
+	if aj.IsDead() || aj.ResistsMove() {
+		return
+	}
+	ei := g.Entity(i)
+	if j == PlayerID {
+		g.Logf("The %s teleports you away!", ei.Name)
+	} else {
+		ej := g.Entity(j)
+		g.Logf("The confused %s teleports the %s away!", ei.Name, ej.Name)
+	}
+	g.TeleportActor(j, aj, 0)
+	if ai.Has(StatusConfusion) && ai.IsAlive() {
+		g.TeleportActor(i, ai, 1)
+	}
+}
+
 // dazzlingRedirect may return a new target for the given monster, suitable for
 // cases where the the player has the Dazzling trait.
 func (g *Game) dazzlingRedirect(i ID) (ID, *Actor) {
@@ -887,4 +988,111 @@ func (g *Game) dazzlingRedirect(i ID) (ID, *Actor) {
 	pp := g.PP()
 	dir := toDir(pp.Sub(ei.P))
 	return g.ActorAt(pp.Add(dir))
+}
+
+// inflictChaos implements the chaos megabat bite effects.
+// Effects are designed to be survivable enough and showcase interesting
+// interactions.
+func (g *Game) inflictChaos(i ID, ai *Actor, f func(ID, *Actor, Status, int) bool) {
+	if ai.IsDead() {
+		return
+	}
+	n := 3
+	if i == PlayerID {
+		n += 2
+	}
+	switch g.IntN(n) {
+	case 0:
+		if g.ResistStatusRoll(i, StatusLignification) || !f(i, ai, StatusLignification, DurationLignificationHit) {
+			break
+		}
+		switch g.IntN(6) {
+		case 0, 1:
+			// Sometimes, give Lignification+Fear.
+			if !g.ResistStatusRoll(i, StatusFear) {
+				f(i, ai, StatusFear, DurationFearUndead)
+			}
+		case 2:
+			// Rarely, Lignification+Fire.
+			if !g.ResistStatusRoll(i, StatusFire) {
+				f(i, ai, StatusFire, DurationFire)
+			}
+		case 3:
+			if !g.ResistStatusRoll(i, StatusDaze) {
+				f(i, ai, StatusDaze, DurationDazeSpines)
+			}
+		}
+	case 1:
+		if !g.ResistStatusRoll(i, StatusImbalance) && f(i, ai, StatusImbalance, 3) {
+			f(i, ai, StatusConfusion, 3)
+			if i == PlayerID && g.IntN(3) == 0 {
+				// Sometimes garden while performing the
+				// drunken-fight style.
+				f(i, ai, StatusGardener, 3)
+			}
+		}
+	case 2:
+		n := 5
+		d := DurationBerserkHit
+		if i != PlayerID {
+			// Reduce berserk time for confusion-reflected berserk,
+			// as that's a bit too dangerous (though possibly fun
+			// occasionally). Also increase chances of negative
+			// effects.
+			d /= 2
+			n = 4
+		}
+		if g.ResistStatusRoll(i, StatusBerserk) || !f(i, ai, StatusBerserk, DurationBerserkHit) {
+			break
+		}
+		switch g.IntN(n) {
+		case 0, 1:
+			if !g.ResistStatusRoll(i, StatusPoison) {
+				f(i, ai, StatusPoison, DurationPoisonBite)
+			}
+		case 2:
+			if !g.ResistStatusRoll(i, StatusDaze) {
+				f(i, ai, StatusDaze, DurationDazeSpines)
+			}
+		}
+	default:
+		// Player-specific rare effects.
+		switch g.IntN(6) {
+		case 0:
+			d := (1 + DurationClarity) / 2
+			if f(i, ai, StatusClarity, d) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusFear) {
+				f(i, ai, StatusFear, d)
+			}
+		case 1:
+			d := (1 + DurationFoggySkin) / 2
+			if f(i, ai, StatusFoggySkin, d) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusConfusion) {
+				f(i, ai, StatusConfusion, d)
+			}
+		case 2:
+			d := (1 + DurationTimeStop) / 2
+			if f(i, ai, StatusTimeStop, d) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusImbalance) {
+				f(i, ai, StatusImbalance, d)
+			}
+		case 3:
+			d := (1 + DurationShadow) / 2
+			if f(i, ai, StatusShadow, d) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusImbalance) {
+				f(i, ai, StatusImbalance, d)
+			}
+		case 4:
+			d := (1 + DurationDisorient) / 2
+			if f(i, ai, StatusDisorient, d) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusFear) {
+				f(i, ai, StatusFear, d)
+			}
+		case 5:
+			if f(i, ai, StatusVampirism, DurationVampirism) &&
+				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusConfusion) {
+				f(i, ai, StatusConfusion, DurationConfusionHit)
+			}
+		}
+	}
 }

@@ -289,6 +289,7 @@ check_port() {
         elif [[ "$checksum_unset" == true ]]; then
             printf   "         checksum: %s  (unset -- populate recipe)\n" "$upstream_checksum"
         fi
+        echo "Removing previous source for ${port_name}:-"
         rm -rf "$DOWNLOADS_DIR/$port_name"/source.* "$DOWNLOADS_DIR/$port_name/source"
         mkdir -p "$DOWNLOADS_DIR/$port_name/source"
         mv "$tmpdir"/source.* "$DOWNLOADS_DIR/$port_name/" 2>/dev/null || true
@@ -304,7 +305,6 @@ check_port() {
            --arg d "$today" \
            '.source.port_version  = (if $v != "" then $v else .source.port_version  end) |
             .source.port_checksum = (if $c != "" then $c else .source.port_checksum end) |
-            .source.port_url      = (if $u != "" then $u else .source.port_url      end) |
             .source.date_updated  = $d' \
            "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
         echo "         recipe.json updated ($today)"

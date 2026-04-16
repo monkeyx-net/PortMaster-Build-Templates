@@ -49,6 +49,7 @@ const (
 	ThemeBerserk
 	ThemeFire
 	ThemeLignification
+	ThemePoison
 	ThemeWarp
 )
 
@@ -109,7 +110,7 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 	}
 
 	mg.genFoliage()
-	// Vault placement.
+	// Vault placement (6-8 vaults per map).
 	bigCenter := g.IntN(2) == 0
 	if bigCenter {
 		mg.genVaults(BigVaultTemplates, 1, PlacementCenter)
@@ -118,8 +119,19 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 		mg.genVaults(BigVaultTemplates, 1, PlacementEdge)
 		mg.genVaults(SmallVaultTemplates, 1, PlacementCenter)
 	}
+	nsv := 4 // number of small vaults
+	switch {
+	case g.Map.Level < 3:
+		// In the very early game, we generate one less small vault,
+		// because they are much more likely to be empty.
+		nsv--
+	case g.IntN(2+g.Map.Level/3) > 1:
+		// In the late game, make it more likely to generate an extra
+		// small vault, as there are more items and menhirs.
+		nsv++
+	}
 	mg.genVaults(BigVaultTemplates, 1, PlacementRandom)
-	mg.genVaults(SmallVaultTemplates, 4+mg.rand.IntN(2), PlacementRandom)
+	mg.genVaults(SmallVaultTemplates, nsv, PlacementRandom)
 	mg.connectAllVaults()
 	g.computeWaypoints(mg)
 	// Terrain effects: may introduce new unreachable passable terrain, but
@@ -147,15 +159,17 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 // choseTheme choses the theme for thematic levels.
 func (g *Game) choseTheme(mg *MapGen) {
 	if g.ProcInfo.ThemedLevel == g.Map.Level {
-		switch g.IntN(5) {
-		case 0:
+		switch g.IntN(11) {
+		case 0, 1:
 			mg.theme = ThemeBerserk
-		case 1:
+		case 2, 3:
 			mg.theme = ThemeFire
-		case 2:
+		case 4, 5:
 			mg.theme = ThemeLignification
+		case 6, 7:
+			mg.theme = ThemePoison
 		default:
-			// Double chance for the warp theme.
+			// Higher chance for the warp theme.
 			mg.theme = ThemeWarp
 		}
 	}
@@ -651,18 +665,18 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 
 	// getTerrain returns a random rectangular portion of the map.
 	getTerrain := func() rl.Grid {
-		switch g.IntN(4) {
-		case 0:
+		switch g.IntN(5) {
+		case 0, 1:
 			left := mg.terrain.Slice(mg.terrain.Range().Columns(0, 3+MapWidth/2))
 			right := mg.terrain.Slice(mg.terrain.Range().Columns(-3+MapWidth/2, MapWidth))
 			if mg.rand.IntN(2) == 0 {
 				return right
 			}
 			return left
-		case 1:
+		case 2:
 			center := mg.terrain.Slice(mg.terrain.Range().Columns(25, 55))
 			return center
-		case 2:
+		case 3:
 			top := mg.terrain.Slice(mg.terrain.Range().Lines(0, 1+MapHeight/2))
 			bottom := mg.terrain.Slice(mg.terrain.Range().Lines(-1+MapHeight/2, MapHeight))
 			if mg.rand.IntN(2) == 0 {
@@ -775,7 +789,7 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 		}
 	}
 
-	if g.IntN(sometimes) == 0 {
+	if g.IntN(occasionally) == 0 {
 		terrain := getTerrain()
 		// Replace most non-vault walls by foliage/floor/rubble.
 		var f func() rl.Cell
@@ -816,7 +830,8 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 			passable = func(p gruid.Point) bool { return true }
 		}
 		mp := &MappingPath{passable: passable}
-		maxRange := 2*MaxFOVRange + g.IntN(MaxFOVRange)
+		mr := MaxFOVRange + MaxFOVRange/2
+		maxRange := mr + g.IntN(mr)
 		nodes := g.PR.BreadthFirstMap(mp, []gruid.Point{p}, maxRange)
 		// Natural mix of rubble/foliage/floor in proportions 1/2-3/3-4.
 		mixfn := mix(1, 2+g.IntN(2), 3+g.IntN(2))
@@ -833,6 +848,16 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 				nt = Floor
 			}
 			st := ts[g.IntN(3)]
+			if st == nt {
+				// Make secondary terrain unlikely of being the
+				// same as primary terrain.
+				st = ts[g.IntN(3)]
+			}
+			if nt == Rubble && g.IntN(2) == 0 {
+				// Floor more likely as secondary terrain for
+				// rubble corruption.
+				st = Floor
+			}
 			switch {
 			case nt == Rubble || g.IntN(4) == 0:
 				// Walls may be destroyed.
@@ -844,7 +869,7 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 						}
 						return mixfn()
 					}
-					if g.IntN(5) == 0 {
+					if g.IntN(4) == 0 {
 						return st
 					}
 					return nt
@@ -855,7 +880,7 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 					if !Passable(t) {
 						return TranslucentWall
 					}
-					if g.IntN(10) == 0 {
+					if g.IntN(6) == 0 {
 						return st
 					}
 					return nt

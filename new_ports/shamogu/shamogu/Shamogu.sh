@@ -33,8 +33,6 @@ else
  WIDTH="1.00"
  HEIGHT="1.00"
 fi
-
-controls/controls.${DEVICE_ARCH} controls/controls.png
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH} -F -w $WIDTH -h $HEIGHT
 pm_finish

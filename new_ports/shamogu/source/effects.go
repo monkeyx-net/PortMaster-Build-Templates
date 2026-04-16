@@ -12,7 +12,7 @@ const (
 	DurationBerserk                = 8
 	DurationBerserkAfraid          = 4
 	DurationBerserkHit             = 4
-	DurationBerserkStomp           = 5
+	DurationBerserkStomp           = 4
 	DurationBerserkTotem           = 5
 	DurationBerserkTrap            = 5
 	DurationClarity                = 5
@@ -23,7 +23,7 @@ const (
 	DurationConfusionPepperBreath  = 2
 	DurationConfusionSkunk         = 5
 	DurationConfusionToxins        = 4
-	DurationDazeFall               = 1
+	DurationDazeFall               = 2
 	DurationDazeJump               = 4
 	DurationDazeLightning          = 4
 	DurationDazeSpines             = 2
@@ -32,7 +32,7 @@ const (
 	DurationFearBark               = 4
 	DurationFearDeathStare         = 4
 	DurationFearFakePortal         = 6
-	DurationFearRoar               = 5
+	DurationFearRoar               = 4
 	DurationFearUndead             = 3
 	DurationFire                   = 3
 	DurationFoggySkin              = 10
@@ -52,13 +52,14 @@ const (
 	DurationPoisonCloud            = 3
 
 	HealAmbrosia          = 8
+	HealAmbrosiaHC        = 2
 	HealClarityLeaves     = 4
 	HealFirebreathPepper  = 2
 	HealFoggySkinOnion    = 3
 	HealTeleportLignified = 2
 
 	DurationDig       = 5
-	DurationDisorient = 5
+	DurationDisorient = 6
 	DurationFocus     = 3
 	DurationShadow    = 8
 	DurationGarden    = 7
@@ -101,12 +102,16 @@ func (g *Game) eatMsg(name string, hpstr string) {
 	}
 }
 
-type EffectAmbrosiaBerries struct{}
+type EffectAmbrosiaBerries struct{ HealingCombat bool }
 
 func (eff EffectAmbrosiaBerries) Apply(g *Game) bool {
 	pa := g.PlayerActor()
-	g.eatMsg("ambrosia berries", newHPMsg(pa, HealAmbrosia))
-	g.AdjustHP(PlayerID, pa, HealAmbrosia)
+	heal := HealAmbrosia
+	if eff.HealingCombat {
+		heal = HealAmbrosiaHC
+	}
+	g.eatMsg("ambrosia berries", newHPMsg(pa, heal))
+	g.AdjustHP(PlayerID, pa, heal)
 	if g.IntN(2) == 0 {
 		g.PutStatus1(PlayerID, pa, StatusConfusion, DurationConfusionAmbrosia)
 	} else {
@@ -116,8 +121,12 @@ func (eff EffectAmbrosiaBerries) Apply(g *Game) bool {
 }
 
 func (eff EffectAmbrosiaBerries) Desc() string {
+	heal := HealAmbrosia
+	if eff.HealingCombat {
+		heal = HealAmbrosiaHC
+	}
 	return fmt.Sprintf("Restores %+d HP. Leaves you either @Oconfused@N or @Oafraid@N for %d or %d turns respectively.",
-		HealAmbrosia, DurationConfusionAmbrosia, DurationFearAmbrosia)
+		heal, DurationConfusionAmbrosia, DurationFearAmbrosia)
 }
 
 type EffectBerserkingFlower struct{}
@@ -178,12 +187,12 @@ func (eff EffectLignificationFruit) Desc() string {
 		DurationLignification, statusDesc[StatusLignification])
 }
 
-type EffectClarityLeaves struct{ NoHeal bool }
+type EffectClarityLeaves struct{ HealingCombat bool }
 
 func (eff EffectClarityLeaves) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	var hpstr string
-	if eff.NoHeal {
+	if eff.HealingCombat {
 		hpstr = ""
 	} else if pa.Has(StatusBerserk) {
 		hpstr = newHPWithoutBonus(pa, 1, HealClarityLeaves)
@@ -193,7 +202,7 @@ func (eff EffectClarityLeaves) Apply(g *Game) bool {
 	extraTurns := pa.Statuses[StatusClarity]
 	g.eatMsg("clarity leaves", hpstr)
 	g.PutStatus1(PlayerID, pa, StatusClarity, DurationClarity+extraTurns)
-	if !eff.NoHeal {
+	if !eff.HealingCombat {
 		g.AdjustHP(PlayerID, pa, HealClarityLeaves)
 	}
 	return true
@@ -212,15 +221,15 @@ func newHPWithoutBonus(a *Actor, m, hp int) string {
 
 func (eff EffectClarityLeaves) Desc() string {
 	return fmt.Sprintf("Gives @BClarity@N for %d turns. %s%s",
-		DurationClarity, statusDesc[StatusClarity], healMsgNH(HealClarityLeaves, eff.NoHeal))
+		DurationClarity, statusDesc[StatusClarity], healMsgNH(HealClarityLeaves, eff.HealingCombat))
 }
 
-type EffectFoggySkinOnion struct{ NoHeal bool }
+type EffectFoggySkinOnion struct{ HealingCombat bool }
 
 func (eff EffectFoggySkinOnion) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	var hpstr string
-	if eff.NoHeal {
+	if eff.HealingCombat {
 		hpstr = ""
 	} else if pa.Has(StatusLignification) {
 		hpstr = newHPWithoutBonus(pa, 3, HealFoggySkinOnion)
@@ -230,7 +239,7 @@ func (eff EffectFoggySkinOnion) Apply(g *Game) bool {
 	extraTurns := pa.Statuses[StatusFoggySkin]
 	g.eatMsg("foggy-skin onion", hpstr)
 	g.PutStatus1(PlayerID, pa, StatusFoggySkin, DurationFoggySkin+extraTurns)
-	if !eff.NoHeal {
+	if !eff.HealingCombat {
 		g.AdjustHP(PlayerID, pa, HealFoggySkinOnion)
 	}
 	return true
@@ -238,17 +247,17 @@ func (eff EffectFoggySkinOnion) Apply(g *Game) bool {
 
 func (eff EffectFoggySkinOnion) Desc() string {
 	return fmt.Sprintf("Gives @BFoggy-Skin@N for %d turns. %s%s",
-		DurationFoggySkin, statusDesc[StatusFoggySkin], healMsgNH(HealFoggySkinOnion, eff.NoHeal))
+		DurationFoggySkin, statusDesc[StatusFoggySkin], healMsgNH(HealFoggySkinOnion, eff.HealingCombat))
 }
 
-type EffectFirebreathPepper struct{ NoHeal bool }
+type EffectFirebreathPepper struct{ HealingCombat bool }
 
 func (eff EffectFirebreathPepper) Apply(g *Game) bool {
 	pp := g.PP()
 	pa := g.PlayerActor()
-	g.eatMsg("firebreath pepper", newHPMsgNH(pa, HealFirebreathPepper, eff.NoHeal))
+	g.eatMsg("firebreath pepper", newHPMsgNH(pa, HealFirebreathPepper, eff.HealingCombat))
 	g.MakeNoise(pp, NoiseRoar)
-	if !eff.NoHeal {
+	if !eff.HealingCombat {
 		g.AdjustHP(PlayerID, pa, HealFirebreathPepper)
 	}
 	g.md.FirebreathAnimation(pp.Add(g.Dir), g.Dir)
@@ -277,10 +286,10 @@ func (eff EffectFirebreathPepper) Apply(g *Game) bool {
 
 func (eff EffectFirebreathPepper) Desc() string {
 	return fmt.Sprintf("Makes you breathe a confusing fire beam in the current direction inflicting @OConfusion@N for %d turns and @OFire@N for %d turns. Burns foliage, producing fire clouds lasting 6-12 turns. Makes walls explode.%s",
-		DurationConfusionPepperBreath, DurationFire, healMsgNH(HealFirebreathPepper, eff.NoHeal))
+		DurationConfusionPepperBreath, DurationFire, healMsgNH(HealFirebreathPepper, eff.HealingCombat))
 }
 
-type EffectTeleportMushroom struct{ NoHeal bool }
+type EffectTeleportMushroom struct{ HealingCombat bool }
 
 func (eff EffectTeleportMushroom) Apply(g *Game) bool {
 	pa := g.PlayerActor()
@@ -288,7 +297,7 @@ func (eff EffectTeleportMushroom) Apply(g *Game) bool {
 	g.eatMsg("teleport mushroom", "")
 	if !g.TeleportActor(PlayerID, pa, 1) {
 		g.Log("You resist teleport while lignified.")
-		if !eff.NoHeal {
+		if !eff.HealingCombat {
 			g.AdjustHP(PlayerID, pa, HealTeleportLignified)
 		}
 	}
@@ -308,7 +317,7 @@ func (g *Game) teleportStatuses(i ID, ai *Actor, n int) {
 
 func (eff EffectTeleportMushroom) Desc() string {
 	var healMsg string
-	if !eff.NoHeal {
+	if !eff.HealingCombat {
 		healMsg = fmt.Sprintf(" Restores %+d HP when lignified instead.", HealTeleportLignified)
 	}
 	return fmt.Sprintf("Teleports you away and makes you sense any totemic spirit. Leaves you either @Odazed@N or @Oimbalanced@N for %d or %d turns respectively.%s",
@@ -397,8 +406,7 @@ func (eff EffectJump) Apply(g *Game) bool {
 		return false
 	}
 	g.Log("You jump.")
-	g.BumpMoveActor(PlayerID, pa, to)
-	g.md.MoveAnimation(from, to)
+	g.MoveActor(PlayerID, pa, to, MovJump)
 	for p := from.Add(dir); p != to; p = p.Add(dir) {
 		if i, ai := g.ActorAt(p); i >= 0 {
 			if !g.PlayerFears(i, ai) && !pa.Has(StatusDaze) {
@@ -411,10 +419,12 @@ func (eff EffectJump) Apply(g *Game) bool {
 			g.PutStatus(i, ai, StatusDaze, DurationDazeJump)
 		}
 	}
-	if pa.Has(StatusImbalance) && g.IntN(2) == 0 {
+	if pa.Has(StatusImbalance) && g.IntN(5) < 2 {
 		g.Log("You fall due to imbalance.")
-		g.PutStatus1(PlayerID, pa, StatusDaze, DurationDazeFall)
+		duration := DurationDazeFall + paths.DistanceManhattan(from, to)/3
+		g.PutStatus1(PlayerID, pa, StatusDaze, duration)
 	}
+	g.TriggerTrap(PlayerID, pa)
 	return true
 }
 
@@ -454,11 +464,11 @@ func (g *Game) pushingGale(from, dir gruid.Point) {
 			continue
 		}
 		ei := g.Entity(i)
-		dmg := AttackGale
+		dmg := 1
 		if paths.DistanceManhattan(ei.P, pp) == 1 && g.IntN(3) > 0 {
 			dmg++
 		}
-		g.InflictDamage(i, ai, 1, dmg)
+		g.InflictDamage(i, ai, dmg, AttackGale)
 		if ai.IsDead() {
 			continue
 		}
@@ -474,9 +484,7 @@ func (g *Game) pushingGale(from, dir gruid.Point) {
 			n++
 		}
 		if g.IsFree(to) {
-			from := ei.P
-			g.MoveActor(i, ai, to)
-			g.md.MoveAnimation(from, to)
+			g.MoveActor(i, ai, to, MovPlain)
 		} else {
 			g.md.HitAnimation(at)
 		}
@@ -675,7 +683,7 @@ func (eff EffectBark) Name() string {
 }
 
 func (eff EffectBark) Desc() string {
-	return fmt.Sprintf("Frighten all monsters in a %d-radius distance for %d turns.",
+	return fmt.Sprintf("Frighten all monsters within %d tiles of distance for %d turns.",
 		MaxFOVRange, DurationFearBark)
 }
 
@@ -709,7 +717,7 @@ func (eff EffectNoxiousSmell) Name() string {
 }
 
 func (eff EffectNoxiousSmell) Desc() string {
-	return fmt.Sprintf("Confuse monsters in a %d-radius distance for %d turns.",
+	return fmt.Sprintf("Confuse monsters within %d tiles of distance for %d turns.",
 		MaxFOVRange, DurationConfusionSkunk)
 }
 
@@ -722,7 +730,7 @@ func (eff EffectLignify) Apply(g *Game) bool {
 		if !g.InFOV(ei.P) {
 			continue
 		}
-		if ai.DoesAny(MonsImmunityLignification) || ai.Has(StatusLignification) {
+		if ai.DoesAny(ImmunityLignification) || ai.Has(StatusLignification) {
 			// Double-check before so that the "Growing roots"
 			// message appears first and only if the status will
 			// apply.
@@ -848,9 +856,11 @@ func (eff EffectFireRetreat) Apply(g *Game) bool {
 		return false
 	}
 	g.Log("You retreat.")
-	g.BumpMoveActor(PlayerID, pa, to)
-	g.md.MoveAnimation(from, to)
+	g.MoveActor(PlayerID, pa, to, MovJump)
 	g.FireCloudAt(from)
+	// We used MovJump for showing the fire cloud before triggering any
+	// traps.
+	g.TriggerTrap(PlayerID, pa)
 	return true
 }
 
@@ -904,8 +914,7 @@ func (eff EffectSnack) Apply(g *Game) bool {
 	g.SenseEntity(i, "sense")
 	g.Log("You teleport for a quick snack!")
 	to := g.Entity(i).P
-	g.MoveActor(PlayerID, pa, to)
-	g.md.TeleportAnimation(pp, to, true)
+	g.MoveActor(PlayerID, pa, to, MovTeleport)
 	g.UpdateFOV()
 	g.UpdateKnowledge()
 	if !eff.NoGluttonyStatus {
@@ -926,10 +935,6 @@ func (eff EffectSnack) Desc() string {
 		return desc
 	}
 	return desc + " It doesn’t trigger @BGluttony@N."
-}
-
-func (g *Game) menhirMsg(name string) {
-	g.Logf("You activate the %s.", name)
 }
 
 type EffectGarden struct{}
@@ -1004,7 +1009,7 @@ func (eff EffectStomp) Name() string {
 }
 
 func (eff EffectStomp) Desc() string {
-	return fmt.Sprintf("Destroys walls in a 2-tile radius. Makes you @BBerserk@N for %d turns.",
+	return fmt.Sprintf("Destroy walls in a 2-tile radius. Makes you @BBerserk@N for %d turns.",
 		DurationBerserkStomp)
 }
 
@@ -1044,7 +1049,7 @@ func (eff EffectDeathStare) Name() string {
 }
 
 func (eff EffectDeathStare) Desc() string {
-	return fmt.Sprintf("Kills first visible foe in front. Gives you @OFear@N for %d turns as backlash.",
+	return fmt.Sprintf("Kill first visible foe in front. Gives you @OFear@N for %d turns as backlash.",
 		DurationFearDeathStare)
 }
 
@@ -1091,6 +1096,10 @@ func (eff EffectDisorient) Name() string {
 
 func (eff EffectDisorient) Desc() string {
 	return fmt.Sprintf("@BDisorient@N for %d turns. %s @GInstant@N.", DurationDisorient, statusDesc[StatusDisorient])
+}
+
+func (g *Game) menhirMsg(name string) {
+	g.Logf("You activate the %s.", name)
 }
 
 type EffectEarthMenhir struct{}
@@ -1228,7 +1237,7 @@ func (eff EffectWarpingMenhir) Apply(g *Game) bool {
 }
 
 func (eff EffectWarpingMenhir) Desc() string {
-	return fmt.Sprintf("Teleports away monsters in a %d-radius distance. Reveals location of any portals. The dungeon might sense you and send a wraith to investigate: the deeper you are, the more likely.", MaxFOVRange)
+	return fmt.Sprintf("Teleports away monsters within %d tiles of distance. Reveals location of any portals. The dungeon might sense you and send a wraith to investigate: the deeper you are, the more likely.", MaxFOVRange)
 }
 
 type EffectPoisonMenhir struct{}
@@ -1260,7 +1269,7 @@ func (eff EffectPoisonMenhir) Apply(g *Game) bool {
 }
 
 func (eff EffectPoisonMenhir) Desc() string {
-	return fmt.Sprintf("Makes many poisonous clouds appear in a %d-radius distance. Reveals translucent walls.", MaxFOVRange)
+	return fmt.Sprintf("Makes many poisonous clouds appear within %d tiles of distance. Reveals translucent walls.", MaxFOVRange)
 }
 
 type EffectFireMenhir struct{}
@@ -1311,5 +1320,5 @@ func (g *Game) revealFoliage() {
 }
 
 func (eff EffectFireMenhir) Desc() string {
-	return fmt.Sprintf("Makes many fire clouds appear in a %d-radius distance, each one lasting 6-12 turns. Reveals foliage partially.", MaxFOVRange)
+	return fmt.Sprintf("Makes many fire clouds appear within %d tiles of distance, each one lasting 6-12 turns. Reveals foliage partially.", MaxFOVRange)
 }

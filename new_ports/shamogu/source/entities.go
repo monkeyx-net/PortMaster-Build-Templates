@@ -7,6 +7,7 @@ import (
 	"iter"
 
 	"codeberg.org/anaseto/gruid"
+	"codeberg.org/anaseto/gruid/paths"
 )
 
 // Entity represents various kinds of map or inventory entities. It gathers
@@ -31,7 +32,7 @@ func (e *Entity) String() string {
 func (e *Entity) Color() (fg gruid.Color) {
 	switch r := e.Role.(type) {
 	case *Actor:
-		if r.IsPlayer() {
+		if r.Is(Player) {
 			return ColorBlue
 		}
 		fg = ColorOrange
@@ -120,38 +121,56 @@ func (e *Entity) Text() string {
 	}
 }
 
-// MoveEntity moves an entity to the given position.
-func (g *Game) MoveEntity(i ID, to gruid.Point) {
-	ei := g.Entity(i)
-	if ai, ok := ei.Role.(*Actor); ok {
-		g.MoveActor(i, ai, to)
-	} else {
-		ei.P = to
-	}
-}
+// movementKind represents various kinds of movement.
+type movementKind int
+
+const (
+	MovSet movementKind = iota // set new position (trigger trap)
+
+	MovTeleport // teleport movement (teleport animation, trigger trap)
+	MovBump     // normal bump-movement (poison, move animation, trigger trap)
+	MovJump     // jump-like movement (poison, move animation, no trap trigger yet)
+	MovPlain    // plain movement (move animation, trigger trap)
+)
 
 // MoveActor moves an actor to the given position. It updates the actor
-// position cache as necessary. The movement isn't considered as first
-// bump-movement: it may be a teleport or an extra movement, so extra effects
-// aren't applied.
-func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point) {
-	g.moveActor(i, ai, to, false)
-}
-
-// moveActor moves an actor to the given position. It updates the actor
-// position cache as necessary. It may apply extra bump-movement effects if
-// bumpmove is true.
-func (g *Game) moveActor(i ID, ai *Actor, to gruid.Point, bumpmove bool) {
-	ei := g.Entity(i)
-	if ei.P == to {
-		return
+// position cache as necessary.
+// It reports whether the actor is successfully located at the given point
+// afterwards, which may not happen if the actor is dead already or if it
+// triggered a warp rune, for example.
+func (g *Game) MoveActor(i ID, ai *Actor, to gruid.Point, movk movementKind) bool {
+	if ai.IsDead() {
+		return false
 	}
-	g.Map.ActorCache.SetU(ei.P, 0)
+	ei := g.Entity(i)
+	from := ei.P
+	if from == to {
+		// Already at destination (usually shouldn't happen).
+		return true
+	}
+	if movk == MovTeleport && i != PlayerID {
+		// Ensure that footsteps don't leak destination after teleport.
+		ei.Noise = false
+	}
+	if movk == MovBump || movk == MovJump {
+		if ai.DoesAny(TrailingCloud) && g.Map.Terrain.At(from) == Floor {
+			g.NormalCloudAt(from, 2)
+		}
+		if ai.DoesAny(MonsDig) {
+			// Monsters that dig may attempt moving into walls, so they
+			// need to dig before moving.
+			if !g.Map.Passable(to) {
+				g.monsConfusionPenalty(i, ai)
+			}
+			g.digAt(to)
+		}
+	}
+	g.Map.ActorCache.SetU(from, 0)
 	if j, aj := g.ActorAt(to); j >= 0 {
 		// Swap actor positions.
 		ej := g.Entity(j)
-		ej.P = ei.P
-		g.Map.ActorCache.SetU(ei.P, j)
+		ej.P = from
+		g.Map.ActorCache.SetU(from, j)
 		if j == PlayerID {
 			ej.KnownP = ej.P
 		}
@@ -162,8 +181,8 @@ func (g *Game) moveActor(i ID, ai *Actor, to gruid.Point, bumpmove bool) {
 		ei.P = to
 		g.Map.ActorCache.SetU(to, i)
 	}
-	switch {
-	case ai.IsPlayer():
+	switch i {
+	case PlayerID:
 		ei.KnownP = ei.P
 		if i, it := g.ItemAt(to); i >= 0 {
 			ei := g.Entity(i)
@@ -179,34 +198,32 @@ func (g *Game) moveActor(i ID, ai *Actor, to gruid.Point, bumpmove bool) {
 			ai.Behavior.Path = ai.Behavior.Path[1:]
 		}
 	}
-	if i != PlayerID && g.InFOV(ei.P) {
-		g.SenseEntity(i, "see")
-	}
-	if bumpmove {
+	switch movk {
+	case MovTeleport:
+		g.md.TeleportAnimation(i, from, to)
+	case MovBump, MovJump:
 		g.ApplyBumpMoveEffects(i, ai)
+		if paths.DistanceManhattan(from, to) > 1 && (g.InFOV(from) || g.InFOV(to)) {
+			g.md.MoveAnimation(from, to)
+		}
+	case MovPlain:
+		if from != to {
+			g.md.MoveAnimation(from, to)
+		}
 	}
-	g.TriggerTrap(i, ai)
+	if i != PlayerID {
+		g.SeeEntity(i, ei)
+	}
+	if movk != MovJump {
+		g.TriggerTrap(i, ai)
+	}
+	return ei.P == to
 }
 
 // BumpMoveActor is like MoveActor but with extra effects specific to
-// bump-movement and some other non-teleport kind of movements.
-func (g *Game) BumpMoveActor(i ID, ai *Actor, to gruid.Point) {
-	if ai.IsDead() {
-		return
-	}
-	p := g.Entity(i).P
-	if ai.DoesAny(TrailingCloud) && g.Map.Terrain.At(p) == Floor {
-		g.NormalCloudAt(p, 2)
-	}
-	if ai.DoesAny(MonsDig) {
-		// Monsters that dig may attempt moving into walls, so they
-		// need to dig.
-		if !g.Map.Passable(to) {
-			g.monsConfusionPenalty(i, ai)
-		}
-		g.digAt(to)
-	}
-	g.moveActor(i, ai, to, true)
+// voluntary bump-movement.
+func (g *Game) BumpMoveActor(i ID, ai *Actor, to gruid.Point) bool {
+	return g.MoveActor(i, ai, to, MovBump)
 }
 
 // ApplyBumpMoveEffects applies effects that happen after moving to a new

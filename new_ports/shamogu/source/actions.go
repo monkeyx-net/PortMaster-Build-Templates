@@ -818,7 +818,7 @@ func (a ActionUseItem) Handle(md *model) (gruid.Effect, bool) {
 	return nil, md.g.useItem(a.ID)
 }
 
-// useItem attemps to use the entity with given ID if it's an item. It reports
+// useItem attempts to use the entity with given ID if it's an item. It reports
 // whether the attempt was a success.
 func (g *Game) useItem(id ID) bool {
 	e := g.Entity(id)
@@ -909,7 +909,7 @@ var menuActions = []Action{
 	ActionWizardNextLevel{},
 }
 
-var menuKeys = []rune{'e', 'i', 'm', '?', '#', 'C', 'S', 'Q', '>'}
+var menuKeys = []rune{'e', 'i', 'm', '?', '#', 'C', 'S', 'Q', '»'}
 
 func init() {
 	if len(menuActions) != len(menuKeys) {
@@ -1399,6 +1399,9 @@ type ActionWizardNextLevel struct{}
 
 func (a ActionWizardNextLevel) Handle(md *model) (gruid.Effect, bool) {
 	g := md.g
+	if !g.Wizard.Extra {
+		return nil, false
+	}
 	if g.Map.Level == MapLevels {
 		g.Log("You’re already at the last level.")
 		md.mode = modeNormal
@@ -1507,13 +1510,14 @@ type ActionHelp struct{}
 var helpActions = []Action{
 	ActionHelpDefaultKeys{},
 	ActionHelpCombat{},
+	ActionHelpStealth{},
 	ActionHelpItems{},
-	ActionHelpMods{},
 	ActionHelpStatuses{},
+	ActionHelpMods{},
 	ActionHelpTips{},
 }
 
-var helpKeys = []rune{'?', 'c', 'i', 'm', 's', 't'}
+var helpKeys = []rune{'?', 'c', 's', 'i', 'S', 'm', 't'}
 
 func init() {
 	if len(helpActions) != len(helpKeys) {
@@ -1645,7 +1649,7 @@ func (a ActionHelpCombat) String() string {
 }
 
 func (a ActionHelpCombat) Desc() string {
-	return "Explains how various combat-related features work, including attack patterns and noise."
+	return "Explains how various combat-related features work, including attack patterns and on-hit effects."
 }
 
 func combatHelpText() string {
@@ -1664,7 +1668,7 @@ Special effects like @BBerserk@N or @BDig@N may then increase effective total at
 
 @YCURRENT DIRECTION@N
 
-In the status bar, an arrow shows you the direction of your last movement or attack. That direction is used in various contexts by some effects and abilities, like when eating firebreath pepper, sprinting or jumping.
+In the status bar, an arrow shows you the direction of your last movement or attack. That direction is used in various contexts by some effects and abilities, like when eating firebreath pepper, sprinting or jumping. The current direction is a player-specific feature.
 
 @YATTACK PATTERNS@N
 
@@ -1676,7 +1680,7 @@ In Shamogu, both the player and the monsters may use one of several attack patte
 
 @CRampaging@N attacks allow to charge from as far as you can see. When charging, there is a bonus of 1 to attack, except against lignified foes that resist forced movement.
 
-@CPushing@N attacks push foes one tile away, unbalancing them. When there’s another foe just behind, you perform an extra attack on them instead. Rampaging boars, as well as Rampaging Boar spirit players, perform pushing when charging from beyond a 2-tile range, and distances beyond a 4-tile range result in double @OImbalance@N duration. Earth dragons and players with @BDig@N may push with melee attacks, too. @OPoison@N prevents pushing in melee.
+@CPushing@N attacks push foes one tile away, unbalancing them. When there’s another foe just behind, you perform an extra attack on them instead. Rampaging boars, as well as Rampaging Boar spirit players, perform pushing when charging from beyond a 2-tile range, and distances beyond a 4-tile range result in double @OImbalance@N duration. Earth dragons and players with @BDig@N may push with melee attacks, too.
 
 @CRanged@N attacks are performed without moving from as far as you can see.
 
@@ -1684,11 +1688,52 @@ In Shamogu, both the player and the monsters may use one of several attack patte
 
 @CRecoil@N is an extra attack effect for wind fox monsters, as well as Wind Fox spirit players. After an attack from within a 4-tile range, they may move backwards one tile when ranged, or two cells with extra wind noise when in melee.
 
-@CSpace-Distorting@N attacks are ranged attacks that @Mswap positions@N on successful hits, but result in normal movement on misses. Any foes adjacent to the landing hit position are blinked away. Note that such attacks reverse your current direction. They also swap any clouds, but not the terrain.
+@CSpace-distorting@N attacks are ranged attacks that @Mswap positions@N on successful hits, but result in normal movement on misses. Any foes adjacent to the landing hit position are blinked away. Note that such attacks reverse your current direction. They also swap any clouds, but not the terrain.
 
-@CDragging@N attacks are melee attacks that drag foes backwards, unbalancing them. They’re performed by Spinning Crocodile players.
+@CDragging@N attacks are melee attacks that drag foes backwards, unbalancing them. They’re performed by dragging alligators and Spinning Crocodile players.
 
-@CSneak@N attacks are a two-phased attack pattern. When ranged, it works as a confusing rampaging attack. In melee, a plain attack is followed by quick 2-tile retreat. Sneak attacks are performed by Vampiric Bat players.
+@CSneak@N attacks are a two-phased attack pattern. When ranged, it works as a rampaging attack. In melee, a plain attack is followed by quick 2-tile retreat. Sneak attacks are performed by sneaky megabats and Vampiric Bat players.
+
+@MNote:@N crocodile’s dragging and bat’s retreat don’t happen when @Opoisoned@N nor when they would move you onto dangerous visible fire, unless you’re already on @OFire@N or would be protected by @BFoggy-Skin@N. The boar’s pushing charge and wind fox’s recoil don’t have any safety rules, but because recoil is a form of involuntary movement, it is at least unaffected by poison. Melee pushing with @BDig@N is restricted by poison when it requires player movement, but unbalancing and piercing effects still happen when pushing a monster against a wall or another monster.
+
+@YON-HIT EFFECTS@N
+
+Various monsters have attacks that may inflict status effects after a successful hit on the player.
+
+In some cases, the effect is guaranteed on hit, like when a fire llama spits at the player from afar, or when a blinking butterfly makes you blink.
+
+When the description says “may”, it means there is only a chance of inflicting the status on hit. In most cases, the chance scales simply with damage, with higher damage corresponding to higher chances. As a special case, phoenixes’ burning chance is reduced by imbalance, too, due to the difficulty of rebalancing with their large wings. Also, the dazing effect of cat’s space-distorting attacks scales with distance instead: lower chance and longer duration at long distances.
+
+The duration of detrimental statuses can be refreshed by further hits, but not that of positive ones like @BBerserk@N or @BLignification@N. Besides, further on-hit applications on the player are only half as likely until after the expiration turn, thanks to the benevolent intervention of your spirit ancestors. That player-specific protection is extended for an extra turn for @ODaze@N, @OFire@N and @OImbalance@N.
+`)
+}
+
+// ActionHelpStealth opens the log message viewer.
+type ActionHelpStealth struct{}
+
+func (a ActionHelpStealth) Handle(md *model) (gruid.Effect, bool) {
+	md.helpTopic("Stealth (Help)", stealthHelpText())
+	return nil, false
+}
+
+func (a ActionHelpStealth) String() string {
+	return "Stealth"
+}
+
+func (a ActionHelpStealth) Desc() string {
+	return "Explains how various stealth-related features work, including monster mindstate and noise."
+}
+
+func stealthHelpText() string {
+	return strings.TrimSpace(`
+
+In Shamogu, stealth plays an important role. There are two main mechanisms that determine monster behavior changes: presence in the field of view and noise.
+
+@YMONSTER MINDSTATE@N
+
+Monsters can be @Owandering@N, @Oguarding@N or @Rhunting@N. Guarding monsters walk around some vault location, often protecting a totem or portal. Wandering monsters take longer trips, possibly to any place in the map but with some bias toward nearby interesting places. Hunting monsters usually travel to the last location they saw you at; when they lose track of you, they become wandering or guarding again and briefly search around the nearby area before going back to their usual behavior.
+
+When in view, wandering and guarding monsters normally spend a turn noticing the player and switching to hunting behavior. There are some exceptions to this rule. For example, Dazzling Zebra players are instantly noticeable. Also, when hungry rats smell you from afar or sneaky megabats hear you, they immediately start hunting you even if they’re still out of view. Moreover, any monster may perform by chance an ambushing charge from out-of-view, like behind some rubble, attacking and becoming hunting at once.
 
 @YNOISE@N
 
@@ -1720,7 +1765,7 @@ func itemHelpText() string {
 	return strings.TrimSpace(`
 @CComestibles@N are found in every level. When the player is over them, pressing the @MInteract Key@N(e) allows to pick them. When your inventory is full, you’ll have to select a comestible to leave on the ground. Opening the @MInventory@N(i) allows to eat an equipped comestible or any comestible on the ground.
 
-@CTotems@N are found once per level. By pressing the @MInteract Key@N(e), their spirit may either be chosen as a new secondary spirit or used to upgrade one of your existing spirits. Opening the @MInventory@N(i) allows then to use your chosen spirits. Beware that monsters that see you chosing a spirit will go berserk!
+@CTotems@N are found once per level. By pressing the @MInteract Key@N(e), their spirit may either be chosen as a new secondary spirit or used to upgrade one of your existing spirits. Opening the @MInventory@N(i) allows then to use your chosen spirits. Beware that monsters that see you choosing a spirit will go berserk!
 
 @CMenhirs@N are found in every level. Pressing the @MInteract Key@N(e) will activate them.
 
@@ -1752,7 +1797,20 @@ func (a ActionHelpMods) Handle(md *model) (gruid.Effect, bool) {
 		}
 		fmt.Fprintf(&sb, "\n\n@Y%s@N\n\n%s", m.String(), m.Desc())
 		if m == ModAdvancedSpirits {
-			sb.WriteString("\n\n@CExtra Info@N\n\nSome advanced secondary spirit traits are a bit tricky to use or understand.\n\nZebra’s “dazzling” trait means that any attack directed at you will be redirected to any monster just on your other side. It hence encourages weird positioning tactics. Also, with Zebra, monsters notice you instantly, without losing a turn, so beware of sudden ranged attacks during exploration.\n\nThe Lion’s roaring happens on first sight, but detecting a monster first beyond view with @BClarity@N will prevent the roaring.\n\nWhen the Elephant is in a dead-end or the Gawalt is on a menhir tile, wandering monsters don’t notice you, but hunting monsters still see you.\n\nThe Chicken not triggering traps is as simple as it sounds, but given how wandering monsters avoid traps, it has subtle stealth implications.")
+			sb.WriteString("\n\n")
+			sb.WriteString(`@CExtra Info@N
+
+Some advanced secondary spirit traits are a bit tricky to use or understand.
+
+The Gawalt’s weakens by 1 damage any hits doing more than 2 base damage and two thirds of the hits doing 2 base damage. Accuracy is preserved.
+
+Zebra’s “dazzling” trait means that any attack directed at you will be redirected to any monster just on your other side. It hence encourages weird positioning tactics. Also, with Zebra, monsters notice you instantly, without losing a turn, so beware of sudden ranged attacks during exploration.
+
+The Lion’s roaring happens on first sight, but detecting a monster first beyond view with @BClarity@N will prevent the roaring. Fear duration is 4-5, with 4 being more likely a short distances, because monsters get over their Fear more quickly when the danger is close.
+
+When the Elephant is in a dead-end or the Gawalt is on a menhir tile, wandering monsters don’t notice you, but hunting monsters still see you.
+
+The Chicken not triggering traps is as simple as it sounds, but given how wandering monsters avoid traps, it has subtle stealth implications.`)
 		}
 	}
 	md.helpTopic(title, sb.String())
@@ -1789,22 +1847,15 @@ func statusesHelpText(g *Game) string {
 
 In the status bar and descriptions, positive status effects are shown as @BBlue@N and negative ones are @OOrange@N. They last for a certain number of turns, shown between parens. Statuses end at the end of your turn, before monsters act, so you have to sometimes be careful before expiration. On the last turn, good statuses show as @CCyan@N if they are normally relevant during your turn and the monsters’, @VViolet@N if they have an effect on your turn only, and @SGrey@N if they don’t have an effect during your turn.
 
-On the map, monster color may change depending on active status effects.  By default, status-free wandering monsters are @OOrange@N and hunting monsters are @ORed@N. @MMagenta@N indicates a positive status. @YYellow@N indicates both positive and negative statuses. @GGreen@N indicates a negative status. @CCyan@N indicates two or more negative statuses.`)
+On the map, monster color may change depending on active status effects.  By default, status-free wandering monsters are @OOrange@N and hunting monsters are @RRed@N. @MMagenta@N indicates a positive status. @YYellow@N indicates both positive and negative statuses. @GGreen@N indicates a negative status. @CCyan@N indicates two or more negative statuses.`)
 	sb.WriteString("\n\n")
 	sb.WriteString(`@YSTATUSES@N`)
 	sb.WriteString("\n\n")
 	pa := g.PlayerActor()
 	for i, desc := range statusDesc {
 		st := Status(i)
-		switch st {
-		case StatusGluttony:
-			if !g.Mod(ModAdvancedSpirits) || g.Mod(ModGluttonyRework) {
-				continue
-			}
-		case StatusGardener, StatusShadow, StatusDisorient:
-			if !g.Mod(ModAdvancedSpirits) {
-				continue
-			}
+		if st == StatusGluttony && g.Mod(ModGluttonyRework) {
+			continue
 		}
 		color := statusColor(st, 42)
 		fmt.Fprintf(&sb, "@%c%s@N (@%c%s@N). ", color, st.Name(), color, g.StatusAbbr(pa, st))
@@ -1851,23 +1902,25 @@ Most items and abilities have several effects and can be used for several purpos
 
 Try to always get the @Mfirst hit@N against monsters. In particular, avoid moving yourself in front of ranged or rampaging monsters. Zigzag if necessary. Don’t forget that even plain melee monsters can charge frontally from one tile away!
 
-Try to learn the characteristics of each kind of monster.
+Try to learn the characteristics of each kind of monster. You can examine monsters to see their attack, defense and special traits.
+
+Remember that monsters with N attack can only hit for the minimum of N and 3 damage at most, except for burning phoenixes and ranged fire llamas that may burn you, and four-headed hydras that perform four damage-rolls per attack.
 
 Some ranged monsters, like fire llamas or lashing frogs, are more dangerous ranged than in melee. You may sometimes want to force melee even if you’re ranged too!
 
-Some monsters have special attacks, like acid mounds ignoring defense, or venomous vipers poisoning you.
+Various monsters have special attacks. For example, acid mounds ignore defense, and venomous vipers may poison you.
 
 @YSTEALTH TIPS@N
 
 Killing all the monsters does not provide any benefit. So, once you have enough food items and don’t need more totems or already found one, you can skip exploring the rest of the map and go through a portal to the next level. Also, missing a totem or two is acceptable.
 
-Monsters usually give up quickly their search once they don’t see you: use foliage and rubble to lose them.
+Monsters usually give up quickly their search once they don’t see you: use foliage and rubble to lose them. Beware of rats that hunt you by smell, though.
 
 Watch out for @Mfootstep noise@N: while going through dense foliage, it can be very helpful to avoid unwanted encounters.
 
 @YCONFIGURATION TIPS@N
 
-If you often get surprised by @OFire@N or @OPoison@N and get hurt by mistake, you may want to enable extra warnings in configuration options. Those warnings also stop you when @BBerserk@N or @BLignification@N is about to expire.
+If you often get surprised by @OFire@N or @OPoison@N and get hurt by mistake, you may want to enable extra warnings in the configuration options. Those warnings also stop you when @BBerserk@N or @BLignification@N is about to expire.
 
 @YWIZARD MODE@N
 

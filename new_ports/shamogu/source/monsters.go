@@ -8,19 +8,22 @@ import (
 // HandleMonsterTurn handles AI for a monster actor with given ID. The ID
 // should then correspond to a non-player actor.
 func (g *Game) HandleMonsterTurn(i ID, ai *Actor) {
+	ei := g.Entity(i)
 	beh := ai.Behavior
+	pl, pa := g.Player()
 	if beh.SkipTurn {
 		beh.SkipTurn = false
+		if g.InFOV(ei.P) && !ai.Has(StatusDaze) {
+			g.MonsterUpdateTarget(i, ai, pl.P, false)
+		}
 		return
 	}
 	if ai.Has(StatusDaze) {
 		return
 	}
-	ei := g.Entity(i)
 	if ai.Has(StatusConfusion) && g.monsterDiscord(i, ai) {
 		return
 	}
-	pl, pa := g.Player()
 	if g.InFOV(ei.P) && g.MonsterUpdateTarget(i, ai, pl.P, false) {
 		// A wandering monster spends one turn noticing the player,
 		// unless you have the Dazzling Zebra.
@@ -36,7 +39,7 @@ func (g *Game) HandleMonsterTurn(i ID, ai *Actor) {
 	if beh.Target == ei.P || beh.Target == InvalidPos {
 		// The monster's target has either been reached or is invalid:
 		// we spend a turn chosing a new target.
-		if ai.DoesAny(MonsHungry) && g.HungryHunt(ei.P) || g.Marked() && beh.Guard == InvalidPos {
+		if ai.Is(HungryRat) && g.HungryHunt(ei.P) || g.Marked() && beh.Guard == InvalidPos {
 			beh.Target = pl.P
 			beh.State = Hunting
 			return
@@ -80,6 +83,9 @@ func (g *Game) monsterDiscord(i ID, ai *Actor) bool {
 	var actors []*Actor
 	for p := range Neighbors(ei.P) {
 		if j, aj := g.ActorAt(p); j >= 0 {
+			if j == PlayerID && ai.Behavior.State == Wandering && g.PlayerIsHidden() {
+				continue
+			}
 			ids = append(ids, j)
 			actors = append(actors, aj)
 		}
@@ -111,8 +117,8 @@ func (g *Game) monsterBumpDisoriented(i ID, ai *Actor) bool {
 	pl := g.PlayerEntity()
 	to := ei.P.Add(g.Dir.Mul(-1)) // redirection target due to disorientation
 	if to == pl.P || paths.DistanceManhattan(pl.P, to) < paths.DistanceManhattan(pl.P, ei.P) &&
-		g.ActorInRange(to, pl.P) == PlayerID {
-		if ai.Has(StatusFear) || (ai.DoesAny(MonsMusic) && !ai.Has(StatusBerserk)) {
+		g.ActorInRange(ei.P, pl.P) == PlayerID {
+		if ai.Has(StatusFear) || (ai.Is(NoisyImp) && !ai.Has(StatusBerserk)) {
 			// The disoriented and afraid monster loses a turn when
 			// it wants to go toward the player.
 			return true
@@ -131,8 +137,10 @@ func (g *Game) monsterBumpDisoriented(i ID, ai *Actor) bool {
 		g.BumpAttackActor(i, j, ai, aj, AttackPlain, 1, 0)
 		return true
 	}
-	// We move to the free tile, without performing any charge.
-	g.BumpMoveActor(i, ai, to)
+	if ai.CanMove() {
+		// We move to the free tile, without performing any charge.
+		g.BumpMoveActor(i, ai, to)
+	}
 	return true
 }
 
@@ -152,11 +160,13 @@ func (g *Game) MonsterUpdateTarget(i ID, ai *Actor, at gruid.Point, noise bool) 
 		return false
 	}
 	unhidden := !g.PlayerIsHidden()
-	if g.InFOV(ei.P) && at == pp && unhidden {
-		g.Logf("The %s notices you.", ei.Name)
+	if at == pp && (unhidden && g.InFOV(ei.P) || noise && ai.Is(ChaosMegabat)) {
+		if g.InFOV(ei.P) {
+			g.Logf("The %s notices you.", ei.Name)
+		}
 		beh.State = Hunting
 		switch {
-		case ai.DoesAny(MonsBarking):
+		case ai.Is(BarkingHound):
 			g.Logf("The %s barks.", ei.Name)
 			g.md.BarkAnimation(ei.P)
 			g.MakeNoise(ei.P, NoiseBark)
@@ -165,7 +175,7 @@ func (g *Game) MonsterUpdateTarget(i ID, ai *Actor, at gruid.Point, noise bool) 
 				g.LogfStyled("The confused %s bit its tongue while barking!", logHurtMons, g.Entity(i).Name)
 				g.InflictDamage(i, ai, ConfusionDamage, AttackOther)
 			}
-		case ai.DoesAny(MonsSpores):
+		case ai.Is(WalkingMushroom):
 			pa := g.PlayerActor()
 			if !pa.Has(StatusLignification) {
 				g.releaseSpores(i)
@@ -182,7 +192,7 @@ func (g *Game) MonsterUpdateTarget(i ID, ai *Actor, at gruid.Point, noise bool) 
 // wandering monsters.
 func (g *Game) PlayerIsHidden() bool {
 	pl, pa := g.Player()
-	return pa.DoesAny(Gawalt) && (pa.Has(StatusShadow) || g.menhirAt(pl.P)) ||
+	return pa.Has(StatusShadow) || pa.DoesAny(Gawalt) && g.menhirAt(pl.P) ||
 		pa.DoesAny(Elephanty) && g.Map.AdjacentNonPassableCount(pl.P) >= 3
 }
 
@@ -244,7 +254,11 @@ func (g *Game) monsterBumpNext(i ID, ai *Actor) {
 	// Extra visibility considerations apply then in various cases.
 	unnoticeable := dist > MaxFOVRange || beh.State != Hunting && g.PlayerIsHidden()
 	if pl.P == to || dist == 1 && !unnoticeable {
-		g.BumpAttackActor(i, PlayerID, ai, pa, AttackPlain, dist, 0)
+		ap := AttackPlain
+		if ai.DoesAny(PatternDragging) && dist == 1 {
+			ap = AttackDrag
+		}
+		g.BumpAttackActor(i, PlayerID, ai, pa, ap, dist, 0)
 		return
 	}
 	if g.InFOV(ei.P) && !unnoticeable && g.ActorInRange(ei.P, pl.P) == PlayerID {
@@ -259,13 +273,12 @@ func (g *Game) monsterBumpNext(i ID, ai *Actor) {
 			g.md.RangedAttackAnimation(ai, pl.P, pl.P)
 			g.BumpAttackActor(i, PlayerID, ai, pa, AttackRanged, dist, 0)
 			return
-		case ai.DoesAny(PatternRampage) && ai.CanMove():
+		case ai.DoesAny(PatternRampage|PatternSneaky) && ai.CanMove():
 			dir := toDir(pl.P.Sub(ei.P))
 			to := pl.P.Sub(dir)
-			from := ei.P
-			g.BumpMoveActor(i, ai, to)
-			g.md.MoveAnimation(from, to)
-			g.BumpAttackActor(i, PlayerID, ai, pa, AttackCharge, dist, 0)
+			if g.BumpMoveActor(i, ai, to) {
+				g.BumpAttackActor(i, PlayerID, ai, pa, AttackCharge, dist, 0)
+			}
 			return
 		}
 	}
@@ -278,13 +291,15 @@ func (g *Game) monsterBumpNext(i ID, ai *Actor) {
 		// can happen and is allowed even while afraid.
 		delta := to.Sub(ei.P)
 		nto := to.Add(delta)
-		g.BumpMoveActor(i, ai, to)
+		if !g.BumpMoveActor(i, ai, to) {
+			return
+		}
 		if unnoticeable {
 			// Non-hunting monsters don't perform charge against
 			// hidden player.
 			return
 		}
-		if ai.DoesAny(PatternFourDirsMons) {
+		if ai.DoesAny(PatternFourDirs) {
 			g.FourDirectionalAttack(i, ai, AttackCharge, 2)
 		} else if j, aj := g.ActorAt(nto); j == PlayerID {
 			g.BumpAttackActor(i, j, ai, aj, AttackCharge, 2, 0)
@@ -314,14 +329,14 @@ func (g *Game) monsterBumpNext(i ID, ai *Actor) {
 // a straight direction from the player, they'll flee randomly in a direction
 // that avoids them (if any is free). Reports whether turn is finished.
 func (g *Game) monsterFlee(i ID, ai *Actor) bool {
-	if !ai.Has(StatusFear) && (!ai.DoesAny(MonsMusic) || ai.Has(StatusBerserk)) {
+	if !ai.Has(StatusFear) && (!ai.Is(NoisyImp) || ai.Has(StatusBerserk)) {
 		return false
 	}
 	ei, pl := g.Entity(i), g.PlayerEntity()
 	if !g.InFOV(ei.P) {
 		return false
 	}
-	if ai.DoesAny(MonsMusic) && g.IntN(3) > 0 {
+	if ai.Is(NoisyImp) && g.IntN(3) > 0 {
 		g.MakeNoise(ei.P, NoiseMusic)
 	}
 	if g.ActorInRange(ei.P, pl.P) != PlayerID {

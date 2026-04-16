@@ -125,7 +125,18 @@ func (md *model) Draw() gruid.Grid {
 	}
 	// We draw the status line last: it should always be visible and no
 	// other widgets should ever need that space.
-	md.gd.Slice(md.gd.Range().Line(UIHeight - 1)).Copy(md.status.menu.Draw())
+	md.gd.Slice(md.gd.Range().Line(UIHeight-1).Shift(1, 0, 0, 0)).Copy(md.status.menu.Draw())
+	if pages := md.status.menu.Pages(); pages.X > 0 {
+		// When the status bar cannot hold all the content, draw arrows
+		// at the start and/or end of the line.
+		page := md.status.menu.Page()
+		if page.X < pages.X {
+			md.gd.Set(gruid.Point{UIWidth - 1, UIHeight - 1}, gruid.Cell{Rune: '>'})
+		}
+		if page.X > 0 {
+			md.gd.Set(gruid.Point{0, UIHeight - 1}, gruid.Cell{Rune: '<'})
+		}
+	}
 	return md.gd
 }
 
@@ -350,7 +361,7 @@ func (g *Game) drawEntityAt(gd gruid.Grid, e *Entity, p gruid.Point) {
 	c := gd.At(p)
 	c.Rune = e.Rune
 	if !e.IsActor() || g.InFOV(p) ||
-		g.PlayerActor().Has(StatusClarity) && clarityRange(g.PP(), p) || g.Wizard.Mode.Reveal() {
+		g.PlayerActor().Has(StatusClarity) && SensingRange(g.PP(), p) || g.Wizard.Mode.Reveal() {
 		c.Style.Fg = e.Color()
 	} else {
 		c.Style.Fg = ColorForeground
@@ -497,7 +508,7 @@ func (md *model) drawTargInfo() {
 			case g.Wizard.Mode == WizardRevealTerrain:
 				continue
 			case info.sees ||
-				g.PlayerActor().Has(StatusClarity) && clarityRange(g.PP(), e.P) ||
+				g.PlayerActor().Has(StatusClarity) && SensingRange(g.PP(), e.P) ||
 				g.Wizard.Mode == WizardReveal:
 				fmt.Fprintf(&sb, "HP:%s A:%s D:%s",
 					r.fmtHP(),
@@ -517,7 +528,7 @@ func (md *model) drawTargInfo() {
 				fmt.Fprintf(&sb, "HP:?/%d A:%d D:%d", r.MaxHP, r.Attack, r.Defense)
 			}
 			sb.WriteByte('\n')
-			fmt.Fprintf(&sb, "@CTraits:@N %s.", r.Traits)
+			fmt.Fprintf(&sb, "@CTraits:@N %s.", TraitDesc(r.Kind, r.Traits))
 		case *Spirit:
 			sb.WriteString("@CTotemic spirit.@N\n" + r.Desc())
 		case *Menhir:
@@ -614,6 +625,9 @@ func drawGamePicture(gd gruid.Grid) {
 func (md *model) drawInventory() {
 	menugd := md.menu.main.Draw()
 	md.gd.Copy(menugd)
+	if md.desc.Content.Text() == "" {
+		return
+	}
 	descgd := md.desc.Draw(md.gd.Slice(md.gd.Range().Columns(UIWidth/2, UIWidth)))
 	if md.menu.mode != modeEquip || !md.drawGroundDesc {
 		return
