@@ -110,7 +110,7 @@ check_port() {
 
     [[ -f "$recipe" ]] || {
         echo "[ERROR]  $port_name -- recipe.json not found"
-        REPORT_ROWS+=("${port_name}|ERROR|recipe not found||")
+        REPORT_ROWS+=("${port_name}|ERROR|recipe not found|||")
         ERRORS=$((ERRORS+1)); return
     }
     TOTAL=$((TOTAL+1))
@@ -124,7 +124,7 @@ check_port() {
 
     if [[ -z "$port_url" ]]; then
         echo "[SKIP]   $port_name -- port_url is empty"
-        REPORT_ROWS+=("${port_name}|SKIP|${stored_version}|${date_updated}|")
+        REPORT_ROWS+=("${port_name}|SKIP|${stored_version}|${date_updated}||${port_zip}")
         SKIPPED=$((SKIPPED+1)); return
     fi
 
@@ -275,7 +275,7 @@ check_port() {
         echo "[ERROR]  $port_name"
         echo "         $port_url"
         echo "         download or API call failed"
-        REPORT_ROWS+=("${port_name}|ERROR|${stored_version}|${date_updated}|${port_url}")
+        REPORT_ROWS+=("${port_name}|ERROR|${stored_version}|${date_updated}|${port_url}|${port_zip}")
         ERRORS=$((ERRORS+1))
 
     elif [[ "$version_diff" == true || "$checksum_diff" == true || "$version_unset" == true || "$checksum_unset" == true ]]; then
@@ -313,12 +313,12 @@ check_port() {
             .source.date_updated  = $d' \
            "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
         echo "         recipe.json updated ($today)"
-        REPORT_ROWS+=("${port_name}|UPDATE|${upstream_version:-$stored_version}|${today}|${port_url}")
+        REPORT_ROWS+=("${port_name}|UPDATE|${upstream_version:-$stored_version}|${today}|${port_url}|${port_zip}")
     else
         local detail=""
         [[ -n "$upstream_version" ]] && detail="  $upstream_version"
         echo "[OK]     $port_name$detail"
-        REPORT_ROWS+=("${port_name}|OK|${upstream_version:-$stored_version}|${date_updated}|${port_url}")
+        REPORT_ROWS+=("${port_name}|OK|${upstream_version:-$stored_version}|${date_updated}|${port_url}|${port_zip}")
         OK=$((OK+1))
     fi
 }
@@ -329,19 +329,26 @@ generate_report() {
     local readme="$CURRENT_DIR/README.md"
     [[ -f "$readme" ]] || return
 
-    local today tmp_report
+    local today tmp_report releases_json
     today=$(date '+%Y-%m-%d')
     tmp_report="$WORK_DIR/report.md"
+    # Prefer the freshly-fetched PM ports.json (already downloaded at startup);
+    # fall back to the local releases/ports.json if it wasn't fetched.
+    if [[ -s "$PM_PORTS_JSON" ]]; then
+        releases_json="$PM_PORTS_JSON"
+    else
+        releases_json="$CURRENT_DIR/releases/ports.json"
+    fi
 
     {
         echo "## Port Status"
         echo ""
         echo "_Last checked: ${today}_"
         echo ""
-        echo "| Port | Status | Version | Date Updated |"
-        echo "|------|--------|---------|--------------|"
+        echo "| Port | Title | Status | Version | Date Updated | PM Date Updated |"
+        echo "|------|-------|--------|---------|--------------|-----------------|"
         for row in "${REPORT_ROWS[@]}"; do
-            IFS='|' read -r r_name r_status r_version r_date r_url <<< "$row"
+            IFS='|' read -r r_name r_status r_version r_date r_url r_zip <<< "$row"
             case "$r_status" in
                 OK)     r_badge="🟢 OK"     ;;
                 UPDATE) r_badge="🔵 UPDATE" ;;
@@ -349,8 +356,13 @@ generate_report() {
                 ERROR)  r_badge="🔴 ERROR"  ;;
                 *)      r_badge="$r_status" ;;
             esac
-            printf "| %s | %s | %s | %s |\n" \
-                "$r_name" "$r_badge" "${r_version:---}" "${r_date:---}"
+            local r_title="" r_pm_date=""
+            if [[ -f "$releases_json" && -n "$r_zip" ]]; then
+                r_title=$(jq -r --arg z "$r_zip" '.ports[$z].attr.title // empty' "$releases_json")
+                r_pm_date=$(jq -r --arg z "$r_zip" '.ports[$z].source.date_updated // empty' "$releases_json")
+            fi
+            printf "| %s | %s | %s | %s | %s | %s |\n" \
+                "$r_name" "${r_title:---}" "$r_badge" "${r_version:---}" "${r_date:---}" "${r_pm_date:---}"
         done
         echo ""
         echo "_Checked: $TOTAL &nbsp; OK: $OK &nbsp; Updates: $UPDATES &nbsp; Errors: $ERRORS &nbsp; Skipped: ${SKIPPED}_"
