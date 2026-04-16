@@ -37,6 +37,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git add recipes/ports/*/recipe.json
           git add new_ports/
+          git add README.md
           if git diff --staged --quiet; then
             echo "No recipe updates to commit"
           else

@@ -135,4 +135,10 @@ _Last checked: 2026-04-16_
 | stuntcarracer | OK | continuous | 2026-02-25 |
 
 _Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
+- text in red
++ text in green
+! text in orange
+# text in gray
+@@ text in purple (and bold)@@   
+
 <!-- PORT-STATUS-END -->
