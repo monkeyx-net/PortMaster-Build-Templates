@@ -16,12 +16,12 @@ _Last checked: 2026-04-16_
 | manicminer | 🟢 OK | 1.1.1 | 2026-03-01 |
 | shamogu | 🟢 OK | v1.5.0 | 2026-04-16 |
 | sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 |
-| soh | 🔴 ERROR | 9.2.3 | 2026-04-16 |
-| soh2 | 🔴 ERROR | 4.0.2 | 2026-03-10 |
-| spaghettikart | 🔴 ERROR | 1.0.0 | 2026-03-14 |
+| soh | 🟢 OK | 9.2.3 | 2026-04-16 |
+| soh2 | 🟢 OK | 4.0.2 | 2026-03-10 |
+| spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 |
 | stuntcarracer | 🔴 ERROR | continuous | 2026-02-25 |
 
-_Checked: 12 &nbsp; OK: 8 &nbsp; Updates: 0 &nbsp; Errors: 4 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 11 &nbsp; Updates: 0 &nbsp; Errors: 1 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
