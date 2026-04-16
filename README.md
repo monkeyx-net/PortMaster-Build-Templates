@@ -6,22 +6,22 @@ Holding repo for meta information and assets needed to build/update ports in Por
 
 _Last checked: 2026-04-16_
 
-| Port | Status | Version | Date Updated |
-|------|--------|---------|--------------|
-| animalcrossing | 🟢 OK | commit:24c9e43 | 2026-04-16 |
-| defendguin | 🟢 OK | commit:8143007 | 2026-01-29 |
-| edgar | 🟢 OK | 1.38 | 2026-03-27 |
-| epiphany | 🟢 OK | commit:c9ba7b4 | 2026-02-24 |
-| harmonist | 🟢 OK | v1.0.2 | 2026-02-27 |
-| manicminer | 🟢 OK | 1.1.1 | 2026-03-01 |
-| shamogu | 🟢 OK | v1.5.0 | 2026-04-16 |
-| sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 |
-| soh | 🟢 OK | 9.2.3 | 2026-04-16 |
-| soh2 | 🟢 OK | 4.0.2 | 2026-03-10 |
-| spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 |
-| stuntcarracer | 🔴 ERROR | continuous | 2026-02-25 |
+| Port | Title | Status | Version | Date Updated | PM Date Updated |
+|------|-------|--------|---------|--------------|-----------------|
+| animalcrossing | -- | 🟢 OK | commit:24c9e43 | 2026-04-16 | -- |
+| defendguin | Defendguin | 🔴 ERROR | commit:8143007 | 2026-01-29 | 2026-02-14 |
+| edgar | -- | 🔴 ERROR | 1.38 | 2026-03-27 | -- |
+| epiphany | -- | 🔴 ERROR | commit:c9ba7b4 | 2026-02-24 | -- |
+| harmonist | Harmonist | 🟢 OK | v1.0.2 | 2026-02-27 | 2026-01-07 |
+| manicminer | Manic Miner | 🔴 ERROR | 1.1.1 | 2026-03-01 | 2025-11-04 |
+| shamogu | Shamogu | 🟢 OK | v1.5.0 | 2026-04-16 | 2025-12-29 |
+| sip2 | Space Invaders Part 2 | 🔴 ERROR | commit:0c589d9 | 2026-03-02 | 2026-03-17 |
+| soh | Ship of Harkinian | 🔴 ERROR | 9.2.3 | 2026-04-16 | 2026-03-16 |
+| soh2 | Ship of Harkinian 2 | 🔴 ERROR | 4.0.2 | 2026-03-10 | 2026-03-16 |
+| spaghettikart | SpaghettiKart | 🔴 ERROR | 1.0.0 | 2026-03-14 | 2025-09-08 |
+| stuntcarracer | Stunt Car Racer | 🔴 ERROR | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 11 &nbsp; Updates: 0 &nbsp; Errors: 1 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 3 &nbsp; Updates: 0 &nbsp; Errors: 9 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
