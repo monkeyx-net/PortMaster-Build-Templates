@@ -32,6 +32,7 @@ PM_PORTS_JSON="$WORK_DIR/portmaster_ports.json"
 PM_PORTS_URL="https://raw.githubusercontent.com/PortsMaster/PortMaster-Info/main/ports.json"
 
 TOTAL=0; OK=0; UPDATES=0; ERRORS=0; SKIPPED=0
+REPORT_ROWS=()
 
 cleanup() { rm -rf "$WORK_DIR"; }
 trap cleanup EXIT
@@ -109,18 +110,21 @@ check_port() {
 
     [[ -f "$recipe" ]] || {
         echo "[ERROR]  $port_name -- recipe.json not found"
+        REPORT_ROWS+=("${port_name}|ERROR|recipe not found||")
         ERRORS=$((ERRORS+1)); return
     }
     TOTAL=$((TOTAL+1))
 
-    local port_zip port_url stored_version stored_checksum
+    local port_zip port_url stored_version stored_checksum date_updated
     port_zip=$(jq -r '.name // empty' "$recipe")
     port_url=$(jq -r '.source.port_url // empty' "$recipe")
     stored_version=$(jq -r '.source.port_version // empty' "$recipe")
     stored_checksum=$(jq -r '.source.port_checksum // empty' "$recipe")
+    date_updated=$(jq -r '.source.date_updated // empty' "$recipe")
 
     if [[ -z "$port_url" ]]; then
         echo "[SKIP]   $port_name -- port_url is empty"
+        REPORT_ROWS+=("${port_name}|SKIP|${stored_version}|${date_updated}|")
         SKIPPED=$((SKIPPED+1)); return
     fi
 
@@ -271,6 +275,7 @@ check_port() {
         echo "[ERROR]  $port_name"
         echo "         $port_url"
         echo "         download or API call failed"
+        REPORT_ROWS+=("${port_name}|ERROR|${stored_version}|${date_updated}|${port_url}")
         ERRORS=$((ERRORS+1))
 
     elif [[ "$version_diff" == true || "$checksum_diff" == true || "$version_unset" == true || "$checksum_unset" == true ]]; then
@@ -308,12 +313,53 @@ check_port() {
             .source.date_updated  = $d' \
            "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
         echo "         recipe.json updated ($today)"
+        REPORT_ROWS+=("${port_name}|UPDATE|${upstream_version:-$stored_version}|${today}|${port_url}")
     else
         local detail=""
         [[ -n "$upstream_version" ]] && detail="  $upstream_version"
         echo "[OK]     $port_name$detail"
+        REPORT_ROWS+=("${port_name}|OK|${upstream_version:-$stored_version}|${date_updated}|${port_url}")
         OK=$((OK+1))
     fi
+}
+
+# ─── Markdown report ──────────────────────────────────────────────────────────
+
+generate_report() {
+    local readme="$CURRENT_DIR/README.md"
+    [[ -f "$readme" ]] || return
+
+    local today tmp_report
+    today=$(date '+%Y-%m-%d')
+    tmp_report="$WORK_DIR/report.md"
+
+    {
+        echo "## Port Status"
+        echo ""
+        echo "_Last checked: ${today}_"
+        echo ""
+        echo "| Port | Status | Version | Date Updated |"
+        echo "|------|--------|---------|--------------|"
+        for row in "${REPORT_ROWS[@]}"; do
+            IFS='|' read -r r_name r_status r_version r_date r_url <<< "$row"
+            printf "| %s | %s | %s | %s |\n" \
+                "$r_name" "$r_status" "${r_version:---}" "${r_date:---}"
+        done
+        echo ""
+        echo "_Checked: $TOTAL &nbsp; OK: $OK &nbsp; Updates: $UPDATES &nbsp; Errors: $ERRORS &nbsp; Skipped: ${SKIPPED}_"
+    } > "$tmp_report"
+
+    awk -v reportfile="$tmp_report" '
+        /<!-- PORT-STATUS-START -->/ {
+            print
+            while ((getline line < reportfile) > 0) print line
+            skip=1; next
+        }
+        /<!-- PORT-STATUS-END -->/ { skip=0 }
+        !skip { print }
+    ' "$readme" > "$readme.tmp" && mv "$readme.tmp" "$readme"
+
+    echo "README.md updated with port status report ($today)"
 }
 
 # ─── main ─────────────────────────────────────────────────────────────────────
@@ -340,6 +386,8 @@ fi
 for port_name in "$@"; do
     check_port "$port_name"
 done
+
+generate_report
 
 echo "=================================================="
 echo "Checked: $TOTAL  OK: $OK  Updates: $UPDATES  Errors: $ERRORS  Skipped: $SKIPPED"

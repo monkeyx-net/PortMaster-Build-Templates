@@ -113,3 +113,26 @@ Create a fork/copy of the project. A fork might better as you can then feedback 
 - [ ] Use common apt-get statements between aarch64 and x86_64.
 - [ ] Document how the development process works for aarch64 ports
 - [ ] Document how the development process works for x86_64 ports
+
+<!-- PORT-STATUS-START -->
+## Port Status
+
+_Last checked: 2026-04-16_
+
+| Port | Status | Version | Date Updated |
+|------|--------|---------|--------------|
+| animalcrossing | OK | commit:24c9e43 | 2026-04-16 |
+| defendguin | OK | commit:8143007 | 2026-01-29 |
+| edgar | OK | 1.38 | 2026-03-27 |
+| epiphany | OK | commit:c9ba7b4 | 2026-02-24 |
+| harmonist | OK | v1.0.2 | 2026-02-27 |
+| manicminer | OK | 1.1.1 | 2026-03-01 |
+| shamogu | OK | v1.5.0 | 2026-04-16 |
+| sip2 | OK | commit:0c589d9 | 2026-03-02 |
+| soh | OK | 9.2.3 | 2026-04-16 |
+| soh2 | OK | 4.0.2 | 2026-03-10 |
+| spaghettikart | OK | 1.0.0 | 2026-03-14 |
+| stuntcarracer | OK | continuous | 2026-02-25 |
+
+_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
+<!-- PORT-STATUS-END -->
