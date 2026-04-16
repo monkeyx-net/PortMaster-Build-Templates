@@ -345,10 +345,10 @@ generate_report() {
         echo ""
         echo "_Last checked: ${today}_"
         echo ""
-        echo "| Port | Title | Status | Version | Date Updated | PM Date Updated |"
-        echo "|------|-------|--------|---------|--------------|-----------------|"
+        echo "| Title | Status | Version | Date Updated | PM Date Updated |"
+        echo "|-------|--------|---------|--------------|-----------------|"
         for row in "${REPORT_ROWS[@]}"; do
-            IFS='|' read -r r_name r_status r_version r_date r_url r_zip <<< "$row"
+            IFS='|' read -r r_status r_version r_date r_url r_zip <<< "$row"
             case "$r_status" in
                 OK)     r_badge="🟢 OK"     ;;
                 UPDATE) r_badge="🔵 UPDATE" ;;
