@@ -361,8 +361,8 @@ generate_report() {
                 r_title=$(jq -r --arg z "$r_zip" '.ports[$z].attr.title // empty' "$releases_json")
                 r_pm_date=$(jq -r --arg z "$r_zip" '.ports[$z].source.date_updated // empty' "$releases_json")
             fi
-            printf "| %s | %s | %s | %s | %s | %s |\n" \
-                "$r_name" "${r_title:---}" "$r_badge" "${r_version:---}" "${r_date:---}" "${r_pm_date:---}"
+            printf "| %s | %s | %s | %s | %s |\n" \
+                 "${r_title:---}" "$r_badge" "${r_version:---}" "${r_date:---}" "${r_pm_date:---}"
         done
         echo ""
         echo "_Checked: $TOTAL &nbsp; OK: $OK &nbsp; Updates: $UPDATES &nbsp; Errors: $ERRORS &nbsp; Skipped: ${SKIPPED}_"
