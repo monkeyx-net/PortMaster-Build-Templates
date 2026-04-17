@@ -6,6 +6,8 @@ LOGFILE="$GAMEDIR/assets/otrlog.txt"
 BASEROMS_DIR="$GAMEDIR/baseroms"
 ARGS=""
 i=1
+CONV="FALSE"
+
 
 exec > >(tee "$LOGFILE") 2>&1
 
@@ -62,7 +64,22 @@ process_roms() {
 unzip_assets || { echo "Patching process failed!"; exit 1; }
 process_roms || { echo "Patching process failed!"; exit 1; }
 
-# Run soh.elf with all ROM arguments
-eval "$GAMEDIR/soh.elf.${DEVICE_ARCH}" $ARGS > "$GAMEDIR/otrlog.txt" 2>&1
-
-echo "Patching process complete!"
+if [[ ! -f "oot.o2r" && $CONV == "FALSE" ]]; then
+        CONV="TRUE"
+        SLOVE=$(pgrep -f "love_*")
+        kill -STOP $SLOVE
+        eval "$GAMEDIR/soh.elf.${DEVICE_ARCH}" $ARGS > "$GAMEDIR/otrlog.txt" 2>&1 &
+        
+        while [[ $CONV == "TRUE" ]]; do
+          if [[ -f "$GAMEDIR/oot.o2r" ]]; then
+            CONV="FALSE"
+            echo "Patching process complete!"
+            sleep 1
+            STOOP=$(pgrep -f "soh.elf.*\.(z64|n64)")
+            if [ -n "$STOOP" ]; then
+                $ESUDO kill -9 $STOOP $SLOVE
+            fi
+            break
+          fi
+        done
+fi
