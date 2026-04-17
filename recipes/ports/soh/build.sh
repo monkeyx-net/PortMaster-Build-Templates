@@ -20,6 +20,7 @@ FILES=(
   "libzip.so.5"
   "libtinyxml2.so.10"
   "libfmt.so.9"
+  "libcrypto.so.1.1"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
