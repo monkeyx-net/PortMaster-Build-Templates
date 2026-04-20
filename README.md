@@ -4,11 +4,11 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-04-19_
+_Last checked: 2026-04-20_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
-| -- | animalcrossing | 🔵 UPDATE | commit:59f63de | 2026-04-19 | -- |
+| -- | animalcrossing | 🔵 UPDATE | commit:ce5fd36 | 2026-04-20 | -- |
 | Defendguin | defendguin | 🟢 OK | commit:8143007 | 2026-01-29 | 2026-02-14 |
 | -- | edgar | 🟢 OK | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 OK | commit:c9ba7b4 | 2026-02-24 | -- |
