@@ -4,11 +4,11 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-04-22_
+_Last checked: 2026-04-23_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
-| -- | animalcrossing | 🟢 OK | commit:ce5fd36 | 2026-04-20 | -- |
+| -- | animalcrossing | 🔵 UPDATE | commit:f7fc9a1 | 2026-04-23 | -- |
 | Defendguin | defendguin | 🟢 OK | commit:8143007 | 2026-01-29 | 2026-02-14 |
 | -- | edgar | 🟢 OK | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 OK | commit:c9ba7b4 | 2026-02-24 | -- |
@@ -21,7 +21,7 @@ _Last checked: 2026-04-22_
 | SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
 | Stunt Car Racer | stuntcarracer | 🟢 OK | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 11 &nbsp; Updates: 1 &nbsp; Errors: 0 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
