@@ -12,16 +12,16 @@ _Last checked: 2026-05-02_
 | Defendguin | defendguin | 🟢 OK | commit:8143007 | 2026-01-29 | 2026-02-14 |
 | -- | edgar | 🟢 OK | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 OK | commit:c9ba7b4 | 2026-02-24 | -- |
-| Harmonist | harmonist | 🔴 ERROR | v1.0.2 | 2026-02-27 | 2026-01-07 |
+| Harmonist | harmonist | 🟢 OK | v1.0.2 | 2026-02-27 | 2026-01-07 |
 | Manic Miner | manicminer | 🟢 OK | 1.1.1 | 2026-03-01 | 2025-11-04 |
-| Shamogu | shamogu | 🔴 ERROR | v1.5.0 | 2026-04-16 | 2025-12-29 |
+| Shamogu | shamogu | 🟢 OK | v1.5.0 | 2026-04-16 | 2025-12-29 |
 | Space Invaders Part 2 | sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 | 2026-03-17 |
 | Ship of Harkinian | soh | 🟢 OK | 9.2.3 | 2026-04-16 | 2026-03-16 |
 | Ship of Harkinian 2 | soh2 | 🟢 OK | 4.0.2 | 2026-03-10 | 2026-03-16 |
 | SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
 | Stunt Car Racer | stuntcarracer | 🟢 OK | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 10 &nbsp; Updates: 0 &nbsp; Errors: 2 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
