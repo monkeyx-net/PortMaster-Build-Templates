@@ -37,17 +37,16 @@ func (mg *MapGen) WallCell() gruid.Point {
 
 // MapGen is used for map generation.
 type MapGen struct {
-	m         *Map
-	tunnel    map[gruid.Point]bool
-	vault     map[gruid.Point]bool
-	vaults    []*vault
-	rndPos    []gruid.Point
-	spl       places
-	special   specialVault
-	layout    maplayout
-	PR        *paths.PathRange
-	rand      *rand.Rand
-	neighbors paths.Neighbors
+	m       *Map
+	tunnel  map[gruid.Point]bool
+	vault   map[gruid.Point]bool
+	vaults  []*vault
+	rndPos  []gruid.Point
+	spl     places
+	special specialVault
+	layout  maplayout
+	PR      *paths.PathRange
+	rand    *rand.Rand
 }
 
 // GenMapWithLayout generates the map using the given layout.

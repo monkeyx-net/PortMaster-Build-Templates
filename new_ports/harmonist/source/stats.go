@@ -178,9 +178,9 @@ func (ach Achievement) Get(g *Game) {
 	}
 }
 
-// AchivementTerrain reports whether reaching that terrain is notable for
+// AchievementTerrain reports whether reaching that terrain is notable for
 // achievement purposes.
-func AchivementTerrain(t rl.Cell) bool {
+func AchievementTerrain(t rl.Cell) bool {
 	switch t {
 	case TreeCell, TableCell, HoledWallCell, DoorCell, BarrelCell:
 		return true

@@ -37,7 +37,11 @@ const (
 var CustomKeys bool
 
 // GameConfig contains the current game config.
-var GameConfig Config
+var GameConfig = Config{
+	DarkColors:    true,
+	Tiles:         true,
+	VersionNumber: ConfigVersionNumber,
+}
 
 // mode represents the main model mode
 type mode int
@@ -208,9 +212,6 @@ func (md *model) initWidgets() {
 }
 
 func InitConfig() error {
-	GameConfig.DarkColors = true
-	GameConfig.Version = Version
-	GameConfig.Tiles = true
 	load, err := LoadConfig()
 	if err != nil {
 		err = fmt.Errorf("Error loading config: %v", err)

@@ -773,9 +773,10 @@ func (md *model) equipMagaraMenu() {
 	entries := []ui.MenuEntry{}
 	items := md.g.Player.Magaras
 	r := 'a'
+	stt := ui.StyledText{}.WithMarkups(Markups)
 	for _, it := range items {
 		entries = append(entries, ui.MenuEntry{
-			Text: ui.Textf("%c - %s ", r, it.ShortDesc()),
+			Text: stt.WithTextf("%c - %s ", r, it.ShortDesc()),
 			Keys: []gruid.Key{gruid.Key(r)},
 		})
 		r++
@@ -787,7 +788,7 @@ func (md *model) equipMagaraMenu() {
 	md.mode = modeMenu
 	md.menuMode = modeEquip
 	it := items[0]
-	md.description.Content = ui.Text(it.Desc(md.g)).Format(UIWidth/2 - 1 - 2)
+	md.description.Content = stt.WithText(it.Desc(md.g)).Format(UIWidth/2 - 1 - 2)
 	md.description.Box = &ui.Box{Title: ui.Textf("%s (equipped)", it.String())}
 }
 

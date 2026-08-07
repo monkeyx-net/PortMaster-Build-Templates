@@ -1,2 +1,10 @@
-You may use the tiles under the ISC license or CC-BY 4
-http://creativecommons.org/licenses/by/4.0/, as you wish.
+You may use the map-* tiles under the ISC license or CC-BY 4
+http://creativecommons.org/licenses/by/4.0/, as you wish. They've all been
+drawn using the ../scripts/drawtile script.
+
+The letter-* tiles are generated with ../scripts/make-fonts.pl using the Source
+Code Pro open font (you need to install it separately and adjust the path if
+necessary).
+
+All tiles are then embedded in ../images.go using the
+../scripts/gen-images.goal script.

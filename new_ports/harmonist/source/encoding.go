@@ -34,13 +34,18 @@ func (g *Game) GameSave() ([]byte, error) {
 
 // Config describes available configuration options.
 type Config struct {
-	NormalModeKeys map[gruid.Key]Action
-	TargetModeKeys map[gruid.Key]Action
-	DarkColors     bool
-	Tiles          bool
-	Version        string
-	ShowNumbers    bool
+	NormalModeKeys map[gruid.Key]Action // custom normal mode keys
+	TargetModeKeys map[gruid.Key]Action // custom examine mode keys
+	DarkColors     bool                 // whether to use a dark color theme
+	Tiles          bool                 // whether to use Tiles or Unicode
+	VersionNumber  int                  // config-compatibility version number
+	ShowNumbers    bool                 // whether to show numbers or hearts
 }
+
+// ConfigVersionNumber is the current config version number (for compatibility
+// considerations). This number should go up each time an incompatible config
+// change requiring a config reset is made.
+const ConfigVersionNumber = 0
 
 // ConfigSave returns encoded config data for saving.
 func (c *Config) ConfigSave() ([]byte, error) {

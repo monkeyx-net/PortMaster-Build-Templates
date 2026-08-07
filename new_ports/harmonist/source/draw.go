@@ -258,13 +258,15 @@ func (md *model) positionDrawing(p gruid.Point) (r rune, fgColor, bgColor gruid.
 			fgColor = ColorBlue
 		} else if _, ok := g.Map.MagicalBarriers[p]; ok {
 			fgColor = ColorCyan
-		} else if fgTerrain != ColorForeground {
-			fgColor = fgTerrain
 		} else if g.Player.Sees(p) || g.Wizard == WizardSeeAll {
 			mons := g.MonsterAt(p)
 			if mons.Exists() {
 				fgColor = mons.color(g)
+			} else if fgTerrain != ColorForeground {
+				fgColor = fgTerrain
 			}
+		} else if fgTerrain != ColorForeground {
+			fgColor = fgTerrain
 		}
 	case p == g.Player.P:
 		r = '@'

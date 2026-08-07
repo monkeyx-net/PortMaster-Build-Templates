@@ -1,3 +1,16 @@
+# v1.0.3 2026-08-06
+
+Patch release with minor fixes and improvements:
+
+* Ensure holed walls take monster color when a monster is crawling there.
+* Fix color markup in equip menu for magara description (for descriptions that
+  make use of color).
+* We don't reset configuration anymore for each new release, but only if there
+  were incompatible config changes. In particular, any custom keybindings or
+  options from the previous release should be preserved. Note that saves are
+  still incompatible between releases, so an in-progress run will be lost after
+  updating Harmonist to a new release, and hence needs to be finished before.
+
 # v1.0.2 2026-02-10
 
 Patch release with minor fixes and improvements:

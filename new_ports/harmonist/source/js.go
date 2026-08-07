@@ -317,9 +317,13 @@ func LoadConfig() (bool, error) {
 	}
 	c, err := DecodeConfigSave(s)
 	if err != nil {
-		return false, err
+		log.Printf("ignoring incompatible old config: %v", err)
+		RemoveItem(harmonistconfig)
+		return false, nil
 	}
-	if c.Version != GameConfig.Version {
+	if c.VersionNumber != GameConfig.VersionNumber {
+		log.Print("ignoring incompatible old config")
+		RemoveItem(harmonistconfig)
 		return false, nil
 	}
 	GameConfig = *c

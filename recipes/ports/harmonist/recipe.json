@@ -3,11 +3,11 @@
   "name": "harmonist.zip",
   "port_json": "new_ports/harmonist/harmonist/harmonist/port.json",
   "source": {
-    "date_updated": "2026-07-21",
+    "date_updated": "2026-08-07",
     "port_exe": "harmonist",
     "port_build": "go build --tags sdl",
-    "port_checksum": "055386c54a766ee07d629dc9df738f4d96f30a45f1529cc80c597d13253de3ec",
+    "port_checksum": "ba59405e942868b5d085ec9da36dba375c520bb2514eb87e1bc661b0d88bdc98",
     "port_url": "https://codeberg.org/anaseto/harmonist/archive/master.zip",
-    "port_version": "v1.0.2"
+    "port_version": "v1.0.3"
   }
 }
