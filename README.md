@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-08-26_
+_Last checked: 2026-08-27_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -17,11 +17,11 @@ _Last checked: 2026-08-26_
 | Shamogu | shamogu | 🟢 OK | v1.5.0 | 2026-07-21 | 2026-08-21 |
 | Space Invaders Part 2 | sip2 | 🟢 OK | commit:0c589d9 | 2026-03-02 | 2026-03-17 |
 | Ship of Harkinian | soh | 🟢 OK | 9.2.3 | 2026-04-16 | 2026-03-16 |
-| Ship of Harkinian 2 | soh2 | 🔵 UPDATE | 5.0.1 | 2026-08-26 | 2026-03-16 |
+| Ship of Harkinian 2 | soh2 | 🟢 OK | 5.0.1 | 2026-08-26 | 2026-03-16 |
 | SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
 | Stunt Car Racer | stuntcarracer | 🟢 OK | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 11 &nbsp; Updates: 1 &nbsp; Errors: 0 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 12 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
