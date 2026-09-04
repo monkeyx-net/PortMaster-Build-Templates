@@ -137,3 +137,6 @@ Create a fork/copy of the project. A fork might better as you can then feedback 
 - [ ] Document how the development process works for aarch64 ports
 - [ ] Document how the development process works for x86_64 ports
 
+
+
+<!-- Security scan triggered at 2026-09-04 13:10:21 -->
