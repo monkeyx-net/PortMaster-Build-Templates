@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"maps"
 	"math/rand/v2"
 	"runtime"
 	"slices"
@@ -20,9 +21,8 @@ const (
 )
 
 var (
-	DisableAnimations bool = false       // whether to disable animations
-	LogGame                = false       // write game logs to file
-	ColorMode              = ColorMode16 // default 16-color palette
+	LogGame   = false       // write game logs to file
+	ColorMode = ColorMode16 // default 16-color palette
 )
 
 // colorMode represents various color compatibility modes.
@@ -34,9 +34,6 @@ const (
 	ColorMode256             // use solarized 256-color approximation
 	ColorMode24bit           // use true color selenized palette
 )
-
-// CustomKeys tracks whether we're using custom key bindings.
-var CustomKeys bool
 
 // GameConfig contains the current game config.
 var GameConfig = Config{
@@ -50,9 +47,8 @@ type mode int
 
 const (
 	modeLoadGame           mode = iota // game load screen (load game)
-	modeNewGame                        // primary spirit selection (new game)
-	modeNewGameAdvanced                // primary spirit selection (advanced settings)
-	modeNewGameMods                    // mod selection (advanced settings)
+	modeNewGame                        // primary spirit selection
+	modeNewGameMods                    // mod selection
 	modeNormal                         // map game mode
 	modeCritical                       // hp critical warning pause
 	modePager                          // pager (logs, help, lore)
@@ -61,6 +57,7 @@ const (
 	modeEnd                            // game end: win or death
 	modeQuitConfirmation               // waiting for no-save quit confirmation
 	modeQuitting                       // wait until end message
+	modeUseConfirmation                // menhir or comestible pickup warning
 )
 
 // model describes the gruid.Model of the game.
@@ -69,7 +66,7 @@ type model struct {
 	anims          Animations // animations
 	auto           *auto      // auto-travel mode info
 	desc           *ui.Label  // description label (for monsters, terrain)
-	equipLabel     *ui.Label  // description label for equipping item
+	equipPager     *ui.Pager  // description pager for equipping item
 	gameEnded      bool       // whether the game ended
 	drawGroundDesc bool       // whether to draw extra equipping desc
 	g              *Game      // game state
@@ -99,18 +96,13 @@ func (md *model) init() gruid.Effect {
 	if !load {
 		// Start a new game: go to spirit selection menu.
 		// Initialize mods before starting the game, because we need
-		// that information during the advanced new game settings.
-		if GameConfig.AdvancedNewGame {
-			if len(GameConfig.Mods) == NMods {
-				g.Mods = slices.Clone(GameConfig.Mods)
-			} else {
-				g.Mods = make([]bool, NMods)
-			}
-			md.openSpiritSelectionMenu(modeNewGameAdvanced)
+		// that information during the new game settings.
+		if len(GameConfig.Mods) == NMods && !ResetMods {
+			g.Mods = slices.Clone(GameConfig.Mods)
 		} else {
 			g.Mods = make([]bool, NMods)
-			md.openSpiritSelectionMenu(modeNewGame)
 		}
+		md.openSpiritSelectionMenu(modeNewGame)
 	}
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -136,8 +128,10 @@ func (md *model) initWidgets() {
 	md.log = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.desc = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
 	md.desc.AdjustWidth = false
-	md.equipLabel = ui.NewLabel(ui.StyledText{}.WithMarkups(Markups))
-	md.equipLabel.AdjustWidth = false
+	md.equipPager = ui.NewPager(ui.PagerConfig{
+		Grid: gruid.NewGrid(UIWidth/2, UIHeight-1),
+		Box:  &ui.Box{},
+	})
 	md.pager = &pager{}
 	md.pager.pg = ui.NewPager(ui.PagerConfig{
 		Grid: gruid.NewGrid(UIWidth, UIHeight-1),
@@ -169,68 +163,74 @@ func (md *model) initWidgets() {
 	})
 }
 
+// DefaultKeysNormal represents the default keybindings in normal mode (map).
+var DefaultKeysNormal = map[gruid.Key]Action{
+	gruid.KeyEscape:     ActionNone{},
+	gruid.KeyArrowLeft:  ActionBump{Delta: gruid.Point{-1, 0}},
+	gruid.KeyArrowDown:  ActionBump{Delta: gruid.Point{0, 1}},
+	gruid.KeyArrowUp:    ActionBump{Delta: gruid.Point{0, -1}},
+	gruid.KeyArrowRight: ActionBump{Delta: gruid.Point{1, 0}},
+	"h":                 ActionBump{Delta: gruid.Point{-1, 0}},
+	"j":                 ActionBump{Delta: gruid.Point{0, 1}},
+	"k":                 ActionBump{Delta: gruid.Point{0, -1}},
+	"l":                 ActionBump{Delta: gruid.Point{1, 0}},
+	"H":                 ActionRun{Delta: gruid.Point{-1, 0}},
+	"J":                 ActionRun{Delta: gruid.Point{0, 1}},
+	"K":                 ActionRun{Delta: gruid.Point{0, -1}},
+	"L":                 ActionRun{Delta: gruid.Point{1, 0}},
+	".":                 ActionWait{},
+	gruid.KeyEnter:      ActionWait{},
+	"o":                 ActionAutoExplore{},
+	"+":                 ActionNextMonster{},
+	"-":                 ActionPreviousMonster{},
+	"%":                 ActionNextItem{itemComestible},
+	"!":                 ActionNextItem{itemTotem},
+	"&":                 ActionNextItem{itemMenhir},
+	">":                 ActionNextItem{itemPortal},
+	"=":                 ActionNextItem{itemRune},
+	"x":                 ActionExamineModeToggle{},
+	"e":                 ActionInteract{},
+	"i":                 ActionInventory{},
+	gruid.KeySpace:      ActionMenu{},
+	"?":                 ActionHelp{},
+	"#":                 ActionDump{},
+	"S":                 ActionSaveQuit{},
+	"C":                 ActionConfig{},
+	gruid.KeyTab:        ActionConfig{},
+	":":                 ActionSetKeys{},
+	"m":                 ActionViewMessages{},
+	"Q":                 ActionQuit{},
+	"W":                 ActionWizard{},
+	gruid.KeyPageDown:   ActionScroll{Delta: gruid.Point{0, -1}},
+	"d":                 ActionScroll{Delta: gruid.Point{0, -1}},
+	gruid.KeyPageUp:     ActionScroll{Delta: gruid.Point{0, 1}},
+	"u":                 ActionScroll{Delta: gruid.Point{0, 1}},
+	"»":                 ActionWizardNextLevel{},
+}
+
+// DefaultKeysNormal represents the default keybindings changes in
+// targeting/examine mode with respect to normal mode.
+var DefaultKeysTarget = map[gruid.Key]Action{
+	gruid.KeyArrowLeft:  ActionCursorBump{Delta: gruid.Point{-1, 0}},
+	gruid.KeyArrowDown:  ActionCursorBump{Delta: gruid.Point{0, 1}},
+	gruid.KeyArrowUp:    ActionCursorBump{Delta: gruid.Point{0, -1}},
+	gruid.KeyArrowRight: ActionCursorBump{Delta: gruid.Point{1, 0}},
+	"h":                 ActionCursorBump{Delta: gruid.Point{-1, 0}},
+	"j":                 ActionCursorBump{Delta: gruid.Point{0, 1}},
+	"k":                 ActionCursorBump{Delta: gruid.Point{0, -1}},
+	"l":                 ActionCursorBump{Delta: gruid.Point{1, 0}},
+	"H":                 ActionCursorRun{Delta: gruid.Point{-1, 0}},
+	"J":                 ActionCursorRun{Delta: gruid.Point{0, 1}},
+	"K":                 ActionCursorRun{Delta: gruid.Point{0, -1}},
+	"L":                 ActionCursorRun{Delta: gruid.Point{1, 0}},
+	gruid.KeyEnter:      ActionTravel{},
+	".":                 ActionTravel{},
+	gruid.KeyEscape:     ActionExamineModeToggle{},
+}
+
 func (md *model) initKeys() {
-	md.keysNormal = map[gruid.Key]Action{
-		gruid.KeyEscape:     ActionNone{},
-		gruid.KeyArrowLeft:  ActionBump{Delta: gruid.Point{-1, 0}},
-		gruid.KeyArrowDown:  ActionBump{Delta: gruid.Point{0, 1}},
-		gruid.KeyArrowUp:    ActionBump{Delta: gruid.Point{0, -1}},
-		gruid.KeyArrowRight: ActionBump{Delta: gruid.Point{1, 0}},
-		"h":                 ActionBump{Delta: gruid.Point{-1, 0}},
-		"j":                 ActionBump{Delta: gruid.Point{0, 1}},
-		"k":                 ActionBump{Delta: gruid.Point{0, -1}},
-		"l":                 ActionBump{Delta: gruid.Point{1, 0}},
-		"H":                 ActionRun{Delta: gruid.Point{-1, 0}},
-		"J":                 ActionRun{Delta: gruid.Point{0, 1}},
-		"K":                 ActionRun{Delta: gruid.Point{0, -1}},
-		"L":                 ActionRun{Delta: gruid.Point{1, 0}},
-		".":                 ActionWait{},
-		gruid.KeyEnter:      ActionWait{},
-		"o":                 ActionAutoExplore{},
-		"+":                 ActionNextMonster{},
-		"-":                 ActionPreviousMonster{},
-		"%":                 ActionNextItem{itemComestible},
-		"!":                 ActionNextItem{itemTotem},
-		"&":                 ActionNextItem{itemMenhir},
-		">":                 ActionNextItem{itemPortal},
-		"=":                 ActionNextItem{itemRune},
-		"x":                 ActionExamineModeToggle{},
-		"e":                 ActionInteract{},
-		"i":                 ActionInventory{},
-		gruid.KeySpace:      ActionMenu{},
-		"?":                 ActionHelp{},
-		"#":                 ActionDump{},
-		"S":                 ActionSaveQuit{},
-		"C":                 ActionConfig{},
-		gruid.KeyTab:        ActionConfig{},
-		":":                 ActionSetKeys{},
-		"m":                 ActionViewMessages{},
-		"Q":                 ActionQuit{},
-		"W":                 ActionWizard{},
-		gruid.KeyPageDown:   ActionScroll{Delta: gruid.Point{0, -1}},
-		"d":                 ActionScroll{Delta: gruid.Point{0, -1}},
-		gruid.KeyPageUp:     ActionScroll{Delta: gruid.Point{0, 1}},
-		"u":                 ActionScroll{Delta: gruid.Point{0, 1}},
-		"»":                 ActionWizardNextLevel{},
-	}
-	md.keysTarget = map[gruid.Key]Action{
-		gruid.KeyArrowLeft:  ActionCursorBump{Delta: gruid.Point{-1, 0}},
-		gruid.KeyArrowDown:  ActionCursorBump{Delta: gruid.Point{0, 1}},
-		gruid.KeyArrowUp:    ActionCursorBump{Delta: gruid.Point{0, -1}},
-		gruid.KeyArrowRight: ActionCursorBump{Delta: gruid.Point{1, 0}},
-		"h":                 ActionCursorBump{Delta: gruid.Point{-1, 0}},
-		"j":                 ActionCursorBump{Delta: gruid.Point{0, 1}},
-		"k":                 ActionCursorBump{Delta: gruid.Point{0, -1}},
-		"l":                 ActionCursorBump{Delta: gruid.Point{1, 0}},
-		"H":                 ActionCursorRun{Delta: gruid.Point{-1, 0}},
-		"J":                 ActionCursorRun{Delta: gruid.Point{0, 1}},
-		"K":                 ActionCursorRun{Delta: gruid.Point{0, -1}},
-		"L":                 ActionCursorRun{Delta: gruid.Point{1, 0}},
-		gruid.KeyEnter:      ActionTravel{},
-		".":                 ActionTravel{},
-		gruid.KeyEscape:     ActionExamineModeToggle{},
-	}
-	CustomKeys = false
+	md.keysNormal = maps.Clone(DefaultKeysNormal)
+	md.keysTarget = maps.Clone(DefaultKeysTarget)
 }
 
 func (md *model) applyKeyConfig() {
@@ -254,7 +254,7 @@ func (md *model) applyKeyConfig() {
 
 // InitConfig loads saved config, if any, and initializes GameConfig.
 func InitConfig() error {
-	load, err := LoadConfig()
+	_, err := LoadConfig()
 	if err != nil {
 		err = fmt.Errorf("error loading config: %v", err)
 		saverr := SaveConfig()
@@ -263,26 +263,17 @@ func InitConfig() error {
 		}
 		return err
 	}
-	if load {
-		CustomKeys = true
-	}
-	return err
+	return nil
 }
 
-var spiritKeys = []rune{'H', 'B', 'F', 'f', 'c'}
-var spiritKeysAdvanced = []rune{'C', 'b'}
+var spiritKeys = []rune{'H', 'B', 'F', 'f', 'c', 'C', 'b'}
 
 func (md *model) openSpiritSelectionMenu(m mode) {
 	hstyle := gruid.Style{Fg: ColorCyan}
 	entries := []ui.MenuEntry{}
-	spirits := getPrimarySpirits(m)
 	title := "New Game"
-	if m == modeNewGameAdvanced {
-		title = "New Game (advanced)"
-	}
-	keys := getPrimarySpiritKeys(m)
-	for i, si := range spirits {
-		r := keys[i]
+	for i, si := range primarySpirits {
+		r := spiritKeys[i]
 		switch r {
 		case 'H':
 			entries = append(entries, ui.MenuEntry{
@@ -290,8 +281,16 @@ func (md *model) openSpiritSelectionMenu(m mode) {
 				Disabled: true,
 			})
 		}
+		advanced := ""
+		if i >= 5 {
+			advanced = " @S(advanced)@N"
+		}
+		name := si.Name
+		if md.g.Mod(ModHealingCombat) && !VampiricHC && name == "Vampiric Bat" {
+			name = "@RVampiric@N Bat"
+		}
 		entries = append(entries, ui.MenuEntry{
-			Text: ui.Textf("%c - %s", r, si.Name),
+			Text: ui.Textf("%c - %s%s", r, name, advanced).WithMarkups(Markups),
 			Keys: []gruid.Key{gruid.Key(r)},
 		})
 	}
@@ -299,25 +298,7 @@ func (md *model) openSpiritSelectionMenu(m mode) {
 	md.menu.main.SetBox(&ui.Box{Title: ui.Text(title).WithStyle(gruid.Style{Fg: ColorYellow})})
 	md.menu.main.SetEntries(entries)
 	md.menu.main.SetActiveInvokable(0)
-	md.updateItemDesc(spiritEntity(md.g.Mods, spirits[0]))
+	md.updateItemDesc(spiritEntity(md.g.Mods, primarySpirits[0]))
 	md.mode = m
 	md.menu.mode = modeSelection // not really needed
-}
-
-// getPrimarySpirits returns the spirit info for primary spirits in the new
-// game menu.
-func getPrimarySpirits(m mode) []spiritInfo {
-	if m == modeNewGameAdvanced {
-		return append(slices.Clone(primarySpirits), primarySpiritsAdvanced...)
-	}
-	return primarySpirits
-}
-
-// getPrimarySpiritKeys returns the spirit info for primary spirits in the new
-// game menu.
-func getPrimarySpiritKeys(m mode) []rune {
-	if m == modeNewGameAdvanced {
-		return append(slices.Clone(spiritKeys), spiritKeysAdvanced...)
-	}
-	return spiritKeys
 }

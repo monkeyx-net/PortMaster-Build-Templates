@@ -111,14 +111,42 @@ func (e *Entity) Item() Item {
 	return e.Role.(Item)
 }
 
-// Text returns short text for the entity, for one-line display purposes.
-func (e *Entity) Text() string {
+// TextWarn returns short text for the entity, for one-line display purposes.
+// If g is non-nil, comestible inventory name highlighting will be performed.
+func (e *Entity) TextWarn(g *Game, id ID) string {
 	switch r := e.Role.(type) {
 	case *Spirit:
-		return fmt.Sprintf("%s (%s %d/%d)", e.Name, r.Ability[r.Level].Name(), r.Charges, r.MaxCharges[r.Level])
+		f := "%s (%s %d/%d)"
+		if r.Condition != nil {
+			f = "@R%s@N (%s %d/%d)"
+			if !r.Condition.CanInvoke() {
+				f = "@R%s@N @S(%s %d/%d)@N"
+			}
+		}
+		return fmt.Sprintf(f, e.Name, r.GetAbility().Name(), r.Charges, r.GetMaxCharges())
+	case *Comestible:
+		if g == nil {
+			return e.Name
+		}
+		if g.Mod(ModTotemConditions) {
+			co, cond := r.Effect.(ConditionalComestible)
+			if cond && !g.PlayerActor().DoesAny(Gluttony) && !co.CanApply(g, id) {
+				return fmt.Sprintf("@S%s@N", e.Name)
+			}
+			if g.WarnComestible(r) {
+				// Comestible will cause a spirit to leave
+				return fmt.Sprintf("@M%s@N", e.Name)
+			}
+		}
+		return e.Name
 	default:
 		return e.Name
 	}
+}
+
+// Text returns short text for the entity, for one-line display purposes.
+func (e *Entity) Text() string {
+	return e.TextWarn(nil, -1)
 }
 
 // movementKind represents various kinds of movement.

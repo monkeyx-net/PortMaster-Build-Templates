@@ -132,6 +132,7 @@ func (g *Game) InflictDamageGeneric(i, j ID, ai, aj *Actor, dmg int, ap AttackKi
 		if j == PlayerID {
 			g.LogfStyled("The fire burns you (%d dmg).", logHurtPlayer, FireDamage)
 			g.StoryLogf("Burnt by fire (HP: %d/%d)", aj.HP, aj.GetMaxHP())
+			TotemEvents(g, &EventWithStatus{EvType: EventDamage, EvStatus: StatusFire, EvEntity: ej})
 			break
 		}
 		if aj.IsDead() {
@@ -141,6 +142,7 @@ func (g *Game) InflictDamageGeneric(i, j ID, ai, aj *Actor, dmg int, ap AttackKi
 		if j == PlayerID {
 			g.LogfStyled("Catching fire burns you (%d dmg).", logHurtPlayer, FireDamage)
 			g.StoryLogf("Caught fire (HP: %d/%d)", aj.HP, aj.GetMaxHP())
+			TotemEvents(g, &EventWithStatus{EvType: EventDamage, EvStatus: StatusFire, EvEntity: ej})
 			break
 		}
 		if aj.IsDead() {
@@ -150,6 +152,7 @@ func (g *Game) InflictDamageGeneric(i, j ID, ai, aj *Actor, dmg int, ap AttackKi
 		if j == PlayerID {
 			g.LogfStyled("Moving while poisoned hurts you (%d dmg).", logHurtPlayer, dmg)
 			g.StoryLogf("Moved while poisoned (HP: %d/%d)", aj.HP, aj.GetMaxHP())
+			TotemEvents(g, &EventWithStatus{EvType: EventDamage, EvStatus: StatusPoison, EvEntity: ej})
 			break
 		}
 		if aj.IsDead() {
@@ -171,9 +174,6 @@ func (g *Game) InflictDamageGeneric(i, j ID, ai, aj *Actor, dmg int, ap AttackKi
 			g.WarningPrompt()
 			g.StoryLog("Resurrected by the Wizard!")
 			g.Wizard.Resurrections++
-		}
-		if aj.HP+dmg > HPCritical && aj.HP <= HPCritical {
-			g.WarningPrompt()
 		}
 		g.md.StopAuto()
 	case aj.IsDead():
@@ -236,7 +236,8 @@ func (g *Game) monsterDeath(i, j ID, aj *Actor) {
 		// might not see it later otherwise.
 		aj.KnownDead = true
 	}
-	if g.Mod(ModHealingCombat) && !g.HasVampirism() {
+	TotemEvents(g, &EventWithEntity{EvType: EventMonsDeath, EvEntity: ej})
+	if g.Mod(ModHealingCombat) && !g.Entity(0).HasVampirism() {
 		// When Healing Combat is enabled and the player is not a bat,
 		// we have a chance of healing when killing monsters.
 		// The chance is higher at low HP (guaranteed at 3 HP or less).
@@ -246,13 +247,18 @@ func (g *Game) monsterDeath(i, j ID, aj *Actor) {
 			g.AdjustHP(PlayerID, g.PlayerActor(), 1)
 		}
 	}
-	if !aj.DoesAny(MonsExplodingDeath) {
-		return
+	switch {
+	case aj.Is(ChaosMegabat):
+		if g.InFOV(ej.P) {
+			g.Logf("The %s cries upon death.", ej.Name)
+		}
+		g.MakeNoise(ej.P, NoiseCry)
+	case aj.DoesAny(MonsExplodingDeath):
+		if g.InFOV(ej.P) {
+			g.Logf("The %s explodes.", ej.Name)
+		}
+		g.ExplosionAt(i, ej.P)
 	}
-	if g.InFOV(ej.P) {
-		g.Logf("The %s explodes.", ej.Name)
-	}
-	g.ExplosionAt(i, ej.P)
 }
 
 // ExplosionAt makes a fire explosion at the given position. The optional id
@@ -361,6 +367,7 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 		}
 		return
 	}
+	TotemEvents(g, &EventAffects{EvType: EventHits, EvActor: ai, EvTarget: aj})
 	afraid := aj.Has(StatusFear)
 	// Extra effects by attack pattern.
 	switch {
@@ -428,7 +435,7 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 		}
 	case ai.Is(DraggingAlligator):
 		_ = !g.ResistStatusRoll(j, StatusConfusion) && g.PutStatus(j, aj, StatusConfusion, 2)
-	case ai.Is(ChaosMegabat) && g.IntN(6-dmg) < 2:
+	case ai.DoesChaosAttack() && g.IntN(6-dmg) < 2:
 		g.inflictChaos(j, aj, g.PutStatus)
 		if ai.Has(StatusConfusion) {
 			if g.InFOV(ei.P) {
@@ -445,9 +452,9 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 		if !g.ResistStatusRoll(j, StatusBerserk) && g.PutStatus(j, aj, StatusBerserk, DurationBerserkHit) {
 			g.monsConfusionPenalty(i, ai)
 		}
-	case ai.Is(BlinkButterfly) || ai.Is(ChaosMegabat) && g.IntN(16) == 0:
+	case ai.Is(BlinkButterfly) || ai.DoesChaosAttack() && g.IntN(16) == 0:
 		g.blinkOther(i, j, ai, aj)
-	case ai.Is(WarpingWraith) || ai.Is(ChaosMegabat) && g.IntN(32) == 0:
+	case ai.Is(WarpingWraith) || ai.DoesChaosAttack() && g.IntN(32) == 0:
 		g.teleportOther(i, j, ai, aj)
 	}
 	// Extra defense effects.
@@ -468,12 +475,16 @@ func (g *Game) BumpAttackActor(i, j ID, ai, aj *Actor, ap AttackKind, dist, bonu
 }
 
 // Percentage chances for damage and absorption rolls based on attack
-// and defense. Currently, maximum attack is 10 (surrounded berserk
-// hydra with offensive spirits) and maximum defense is 7 (lignified
-// frog with the most defensive spirits), but we add some extra values
-// in case those limits go up.
-var probA = [12]int{0, 35, 44, 52, 59, 66, 72, 78, 84, 90, 95, 100}
-var probD = [10]int{0, 29, 42, 53, 62, 70, 76, 81, 86, 90}
+// and defense. Attacks beyond values some maximum values don't provide extra
+// benefit. Currently, maximum attack is 13 (surrounded berserk hydra with
+// offensive spirits and vampirism) and maximum defense is 7 (lignified frog
+// with the most defensive spirits). The latter is within bounds, but the
+// former goes beyond the limit.
+var probA = [maxA + 1]int{0, 35, 44, 52, 59, 66, 72, 78, 84, 90, 95, 100}
+var probD = [maxD + 1]int{0, 29, 42, 53, 62, 70, 76, 81, 86, 90}
+
+const maxA = 11 // maximum Attack in combat formula
+const maxD = 9  // maximum Defense in combat formula
 
 // computeDamage computes a damage roll with given attack and defense values.
 func (g *Game) computeDamage(a, d int) int {
@@ -481,6 +492,8 @@ func (g *Game) computeDamage(a, d int) int {
 		// Ensure at least 5% miss chance.
 		return 0
 	}
+	a = min(a, maxA)
+	d = min(d, maxD)
 	var dmg int
 	// Attack-based damage dealing rolls.
 	for range 3 {
@@ -894,8 +907,7 @@ func (g *Game) digAt(at gruid.Point) bool {
 	if Passable(t) {
 		return false
 	}
-	g.Stats.Digs++
-	g.Map.Terrain.Set(at, Rubble)
+	g.BreakWall(at)
 	if t == TranslucentWall {
 		g.PoisonCloudAt(at)
 	}
@@ -947,20 +959,28 @@ func (g *Game) BlinkPos(from gruid.Point) (gruid.Point, bool) {
 		// when in FOV.
 		return InvalidPos, false
 	}
-	pp := g.PP()
-	ps := []gruid.Point{}
-	for _, p := range g.Map.FOVPts {
-		if paths.DistanceManhattan(p, pp) > MaxFOVRange || p == from {
-			continue
-		}
-		if cost, ok := g.Map.FOV.At(p); ok && cost <= MaxFOVRange && g.IsFree(p) {
-			ps = append(ps, p)
-		}
-	}
+	ps := g.BlinkPosSlice(from)
 	if len(ps) == 0 {
 		return InvalidPos, false
 	}
 	return ps[g.IntN(len(ps))], true
+}
+
+// BlinkPosSlice returns a slice of positions suitable for blinking in FOV from
+// the given position.
+func (g *Game) BlinkPosSlice(from gruid.Point) []gruid.Point {
+	maxdist := g.MaxFOVRange()
+	pp := g.PP()
+	ps := []gruid.Point{}
+	for _, p := range g.Map.FOVPts {
+		if paths.DistanceManhattan(p, pp) > maxdist || p == from {
+			continue
+		}
+		if cost, ok := g.Map.FOV.At(p); ok && cost <= maxdist && g.IsFree(p) {
+			ps = append(ps, p)
+		}
+	}
+	return ps
 }
 
 // teleportOther implements wraith's teleporting hit effect.
@@ -968,11 +988,10 @@ func (g *Game) teleportOther(i, j ID, ai, aj *Actor) {
 	if aj.IsDead() || aj.ResistsMove() {
 		return
 	}
-	ei := g.Entity(i)
+	ei, ej := g.Entity(i), g.Entity(j)
 	if j == PlayerID {
 		g.Logf("The %s teleports you away!", ei.Name)
-	} else {
-		ej := g.Entity(j)
+	} else if g.InFOV(ei.P) && g.InFOV(ej.P) {
 		g.Logf("The confused %s teleports the %s away!", ei.Name, ej.Name)
 	}
 	g.TeleportActor(j, aj, 0)
@@ -997,6 +1016,12 @@ func (g *Game) inflictChaos(i ID, ai *Actor, f func(ID, *Actor, Status, int) boo
 	if ai.IsDead() {
 		return
 	}
+	var xd int
+	if g.IntN(10) == 0 {
+		// Rarely, extra duration for some special player-specific
+		// positive status effects.
+		xd = 5 + g.IntN(4)
+	}
 	n := 3
 	if i == PlayerID {
 		n += 2
@@ -1006,53 +1031,40 @@ func (g *Game) inflictChaos(i ID, ai *Actor, f func(ID, *Actor, Status, int) boo
 		if g.ResistStatusRoll(i, StatusLignification) || !f(i, ai, StatusLignification, DurationLignificationHit) {
 			break
 		}
-		switch g.IntN(6) {
-		case 0, 1:
-			// Sometimes, give Lignification+Fear.
-			if !g.ResistStatusRoll(i, StatusFear) {
-				f(i, ai, StatusFear, DurationFearUndead)
-			}
-		case 2:
-			// Rarely, Lignification+Fire.
-			if !g.ResistStatusRoll(i, StatusFire) {
-				f(i, ai, StatusFire, DurationFire)
-			}
-		case 3:
-			if !g.ResistStatusRoll(i, StatusDaze) {
-				f(i, ai, StatusDaze, DurationDazeSpines)
-			}
+		// Sometimes, Lignification+Fear.
+		if g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusFear) {
+			f(i, ai, StatusFear, DurationFearUndead)
 		}
 	case 1:
-		if !g.ResistStatusRoll(i, StatusImbalance) && f(i, ai, StatusImbalance, 3) {
-			f(i, ai, StatusConfusion, 3)
-			if i == PlayerID && g.IntN(3) == 0 {
-				// Sometimes garden while performing the
+		if !g.ResistStatusRoll(i, StatusConfusion) && f(i, ai, StatusConfusion, 4) && g.IntN(3) == 0 {
+			// Sometimes, Confusion+Imbalance.
+			f(i, ai, StatusImbalance, 2)
+			if i == PlayerID {
+				// Garden while performing the
 				// drunken-fight style.
-				f(i, ai, StatusGardener, 3)
+				f(i, ai, StatusGardener, 3+2*xd)
 			}
 		}
 	case 2:
-		n := 5
 		d := DurationBerserkHit
 		if i != PlayerID {
 			// Reduce berserk time for confusion-reflected berserk,
 			// as that's a bit too dangerous (though possibly fun
-			// occasionally). Also increase chances of negative
-			// effects.
+			// occasionally).
 			d /= 2
-			n = 4
 		}
-		if g.ResistStatusRoll(i, StatusBerserk) || !f(i, ai, StatusBerserk, DurationBerserkHit) {
+		if g.ResistStatusRoll(i, StatusBerserk) || !f(i, ai, StatusBerserk, d) {
 			break
 		}
-		switch g.IntN(n) {
-		case 0, 1:
-			if !g.ResistStatusRoll(i, StatusPoison) {
-				f(i, ai, StatusPoison, DurationPoisonBite)
+		// Sometimes, either extra Confusion or early Poison.
+		switch g.IntN(6) {
+		case 0:
+			if !g.ResistStatusRoll(i, StatusConfusion) {
+				f(i, ai, StatusConfusion, DurationConfusionHit/2)
 			}
-		case 2:
-			if !g.ResistStatusRoll(i, StatusDaze) {
-				f(i, ai, StatusDaze, DurationDazeSpines)
+		case 1:
+			if !g.ResistStatusRoll(i, StatusPoison) {
+				f(i, ai, StatusPoison, DurationPoisonBite/2)
 			}
 		}
 	default:
@@ -1060,38 +1072,37 @@ func (g *Game) inflictChaos(i ID, ai *Actor, f func(ID, *Actor, Status, int) boo
 		switch g.IntN(6) {
 		case 0:
 			d := (1 + DurationClarity) / 2
-			if f(i, ai, StatusClarity, d) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusFear) {
+			if f(i, ai, StatusClarity, d+xd) &&
+				g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusFear) {
 				f(i, ai, StatusFear, d)
 			}
 		case 1:
 			d := (1 + DurationFoggySkin) / 2
-			if f(i, ai, StatusFoggySkin, d) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusConfusion) {
-				f(i, ai, StatusConfusion, d)
+			if f(i, ai, StatusFoggySkin, d+xd) && g.IntN(3) == 0 {
+				f(i, ai, StatusSprint, d)
 			}
 		case 2:
 			d := (1 + DurationTimeStop) / 2
-			if f(i, ai, StatusTimeStop, d) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusImbalance) {
-				f(i, ai, StatusImbalance, d)
+			if f(i, ai, StatusTimeStop, d+xd/2) &&
+				g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusFire) && ai.HP > 1 {
+				f(i, ai, StatusFire, d)
 			}
 		case 3:
 			d := (1 + DurationShadow) / 2
-			if f(i, ai, StatusShadow, d) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusImbalance) {
+			if f(i, ai, StatusShadow, d+3*xd/2) &&
+				g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusImbalance) {
 				f(i, ai, StatusImbalance, d)
 			}
 		case 4:
 			d := (1 + DurationDisorient) / 2
-			if f(i, ai, StatusDisorient, d) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusFear) {
+			if f(i, ai, StatusDisorient, d+xd) &&
+				g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusFear) {
 				f(i, ai, StatusFear, d)
 			}
 		case 5:
-			if f(i, ai, StatusVampirism, DurationVampirism) &&
-				g.IntN(2) == 0 && !g.ResistStatusRoll(i, StatusConfusion) {
-				f(i, ai, StatusConfusion, DurationConfusionHit)
+			if f(i, ai, StatusVampirism, DurationVampirism+(2*xd)/3) &&
+				g.IntN(3) == 0 && !g.ResistStatusRoll(i, StatusPoison) {
+				f(i, ai, StatusConfusion, DurationVampirism)
 			}
 		}
 	}

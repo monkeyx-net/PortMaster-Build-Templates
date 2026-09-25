@@ -164,7 +164,7 @@ func (md *model) startAnimSeq() {
 
 // AnimationFrame updates the map and waits briefly.
 func (md *model) AnimationFrame() {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -173,7 +173,7 @@ func (md *model) AnimationFrame() {
 
 // AnimationFrameFast updates the map and waits very briefly.
 func (md *model) AnimationFrameFast() {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -182,7 +182,7 @@ func (md *model) AnimationFrameFast() {
 
 // HitAnimation animates a player's non-killing hit at a given position.
 func (md *model) HitAnimation(p gruid.Point) {
-	if DisableAnimations || !md.g.InFOV(p) {
+	if NoAnim || !md.g.InFOV(p) {
 		return
 	}
 	md.startAnimSeq()
@@ -192,7 +192,7 @@ func (md *model) HitAnimation(p gruid.Point) {
 
 // DeathAnimation animates a monster's death at a given position.
 func (md *model) DeathAnimation(p gruid.Point) {
-	if DisableAnimations || !md.g.InFOV(p) {
+	if NoAnim || !md.g.InFOV(p) {
 		return
 	}
 	md.startAnimSeq()
@@ -203,7 +203,7 @@ func (md *model) DeathAnimation(p gruid.Point) {
 // MoveAnimation animates an actor's straight movement between two positions
 // (possibly adjacent).
 func (md *model) MoveAnimation(from, to gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	if from == to {
@@ -229,7 +229,7 @@ func (md *model) MoveAnimation(from, to gruid.Point) {
 
 // RangedAttackAnimation animates a bump-ranged attack.
 func (md *model) RangedAttackAnimation(a *Actor, from, to gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	fg := ColorForeground
@@ -246,7 +246,7 @@ func (md *model) RangedAttackAnimation(a *Actor, from, to gruid.Point) {
 
 // RangedBeamAnimation animates a beam between two positions.
 func (md *model) RangedBeamAnimation(from, to gruid.Point, fg gruid.Color) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	if from == to {
@@ -272,7 +272,7 @@ func (md *model) RangedBeamAnimation(from, to gruid.Point, fg gruid.Color) {
 
 // PlayerAnimation momentarily changes the player's color.
 func (md *model) PlayerAnimation(c gruid.Color, d time.Duration) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -295,9 +295,22 @@ func (md *model) BadStatusAnimation() {
 	md.PlayerAnimation(ColorMagenta, AnimDurShortMedium)
 }
 
+// PolymorphAnimation animates monster-shapeshifting.
+func (md *model) PolymorphAnimation(mids []ID, p []int) {
+	if NoAnim {
+		return
+	}
+	md.startAnimSeq()
+	for _, pi := range p {
+		ei := md.g.Entity(mids[pi])
+		md.anims.DrawColor(ei.P, ColorViolet)
+	}
+	md.anims.Frame(AnimDurShortMedium)
+}
+
 // BarkAnimation animates noise (like barking) at the given point.
 func (md *model) BarkAnimation(p gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -307,7 +320,7 @@ func (md *model) BarkAnimation(p gruid.Point) {
 
 // RoarAnimation animates noise (like barking) at the given point.
 func (md *model) RoarAnimation(p gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -317,7 +330,7 @@ func (md *model) RoarAnimation(p gruid.Point) {
 
 // FloodAnimation alerts the player they got lignified.
 func (md *model) FloodAnimation(ps []paths.Node, c gruid.Color) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -340,7 +353,7 @@ func (md *model) FloodAnimation(ps []paths.Node, c gruid.Color) {
 
 // TeleportAnimation animates an actor teleport between two positions.
 func (md *model) TeleportAnimation(i ID, from, to gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	g := md.g
@@ -360,10 +373,35 @@ func (md *model) TeleportAnimation(i ID, from, to gruid.Point) {
 	md.anims.Frame(AnimDurMediumLong)
 }
 
+// BeamAnimation animates a tunneling beam from a given point and direction.
+func (md *model) BeamAnimation(from, to gruid.Point) {
+	if NoAnim {
+		return
+	}
+	md.startAnimSeq()
+	g := md.g
+	dir := toDir(to.Sub(from))
+	for range 4 {
+		p := from
+		for inMap(p) && p != to {
+			r := '*'
+			switch g.IntN(3) {
+			case 0:
+				r = '×'
+			case 1:
+				r = '+'
+			}
+			md.anims.DrawReverse(p, r, ColorForegroundEmph)
+			p = p.Add(dir)
+		}
+		md.anims.Frame(AnimDurShortMedium)
+	}
+}
+
 // FirebreathAnimation animates a firebreath attack from a given point and
 // direction.
 func (md *model) FirebreathAnimation(from, dir gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -394,7 +432,7 @@ func (md *model) FirebreathAnimation(from, dir gruid.Point) {
 
 // LightningAnimation animates lighting affecting the given nodes.
 func (md *model) LightningAnimation(ps []paths.Node) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -420,7 +458,7 @@ func (md *model) LightningAnimation(ps []paths.Node) {
 
 // ExplosionAnimations animates an explosion affecting the given points.
 func (md *model) ExplosionAnimation(ps []gruid.Point) {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()
@@ -472,7 +510,7 @@ func (md *model) ExplosionAnimation(ps []gruid.Point) {
 
 // OrbDestructionAnimation animates the destruction of the orb.
 func (md *model) OrbDestructionAnimation() {
-	if DisableAnimations {
+	if NoAnim {
 		return
 	}
 	md.startAnimSeq()

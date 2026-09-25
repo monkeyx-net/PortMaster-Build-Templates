@@ -2,7 +2,7 @@
 import!"fmt math"
 attack:1+!5; defense:!6; n:2e5
 ad:"A""D"!+,/attack,`´defense
-/ Maximum attack values in the game are:
+/ Maximum attack values in the game are: [+3 with vampirism]
 /   for hydra: 2+2(spirits)+4(surrounded bonus)+2(berserk)=10
 /   for boar: 3+1(charge)+2(spirits)+2(berserk)=8
 /   for frog: 2+1(catch)+2(spirits)+2(berserk)=7

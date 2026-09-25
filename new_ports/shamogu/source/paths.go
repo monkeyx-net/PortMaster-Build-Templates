@@ -60,10 +60,15 @@ func (g *Game) PlayerPath(from, to gruid.Point) []gruid.Point {
 }
 
 // PlayerPassableNoTrapsFunc returns a passability function suited for
-// computing a player path. It considers tiles containing traps.
+// computing a player path. It considers tiles containing traps for non-chicken
+// players.
 func (g *Game) PlayerPassableNoTrapsFunc() func(gruid.Point) bool {
+	pa := g.PlayerActor()
+	if pa.DoesAny(RunicChicken) {
+		return g.PlayerPassableFunc()
+	}
 	knownAt := g.Map.KnownTerrain.At
-	if g.PlayerActor().Statuses.Has(StatusDig) {
+	if pa.Statuses.Has(StatusDig) {
 		return func(p gruid.Point) bool {
 			return inMap(p) && IsKnown(knownAt(p)) && g.NoTrapAt(p)
 		}
@@ -89,7 +94,8 @@ func (g *Game) PlayerPassableFunc() func(gruid.Point) bool {
 	}
 }
 
-// PlayerPassableNoTraps reports whether a given position is passable for the player.
+// PlayerPassableNoTraps reports whether a given position is passable for the
+// player while avoiding traps (except for chicken).
 func (g *Game) PlayerPassableNoTraps(p gruid.Point) bool {
 	return g.PlayerPassableNoTrapsFunc()(p)
 }

@@ -17,6 +17,8 @@ func init() {
 	gob.Register(EffectFoggySkinOnion{})
 	gob.Register(EffectFirebreathPepper{})
 	gob.Register(EffectTeleportMushroom{})
+	gob.Register(EffectMoonlightLotus{})
+	gob.Register(EffectPolymorphFungus{})
 
 	// Primary Spirit Effects.
 	gob.Register(EffectFocus{})
@@ -50,6 +52,32 @@ func init() {
 	gob.Register(EffectWarpingMenhir{})
 	gob.Register(EffectPoisonMenhir{})
 	gob.Register(EffectFireMenhir{})
+
+	// Spirit Conditions.
+	gob.Register(CondDisabled{})
+	gob.Register(CondPunish{})
+	gob.Register(MatchEither{})
+	gob.Register(MonsterByKind{})
+	gob.Register(WatchEvent{})
+	gob.Register(WatchMonsEvent{})
+	gob.Register(WatchMonsStatus{})
+	gob.Register(WatchPlayerStatus{})
+	gob.Register(WatchHits{})
+	gob.Register(WatchEither{})
+	gob.Register(WatchTwoStatus{})
+	gob.Register(WatchPlayerDamage{})
+	gob.Register(&WatchMoveFar{})
+	gob.Register(WatchReachLevel{})
+	gob.Register(&WatchCompleteLevel{})
+
+	// Conditional comestible effects.
+	gob.Register(EffectFortressOyster{})
+	gob.Register(EffectRunethornRose{})
+	gob.Register(EffectVanishingSnail{})
+	gob.Register(EffectTunnelingAcorn{})
+	gob.Register(EffectWarpingBean{})
+	gob.Register(EffectSeeingPotato{})
+	gob.Register(EffectTrickyChestnut{})
 
 	// Actions in key-config.
 	gob.Register(ActionAutoExplore{})
@@ -108,10 +136,9 @@ func (g *Game) GameSave() ([]byte, error) {
 
 // Config describes available configuration options.
 type Config struct {
-	AdvancedNewGame bool                 // whether to go to advanced new game menu directly
 	DarkColors      bool                 // whether to use a dark color theme
 	ExamineModeKeys map[gruid.Key]Action // custom examine mode keys
-	Mods            []bool               // selected mods (in previous advanced game)
+	Mods            []bool               // selected mods (in previous game)
 	NormalModeKeys  map[gruid.Key]Action // custom normal mode keys
 	Tiles           bool                 // whether to use Tiles or Unicode
 	VersionNumber   int                  // config-compatibility version number

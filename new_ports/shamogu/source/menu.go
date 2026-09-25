@@ -12,7 +12,7 @@ import (
 type menu struct {
 	keys  *ui.Menu // key settings menu
 	main  *ui.Menu // typical main menu (game, settings, inventory)
-	bound ID       // pre-selected option for ModGluttonyRework
+	bound ID       // pre-selected option for GluttonyRework
 	mode  menuMode
 }
 
@@ -43,6 +43,24 @@ func (md *model) updateMenu(msg gruid.Msg) {
 }
 
 func (md *model) updateMainMenu(msg gruid.Msg) {
+	if md.menu.mode == modeEquip {
+		// When equipping, send scrolling messages to the pager instead
+		// of the menu.
+		switch msg := msg.(type) {
+		case gruid.MsgKeyDown:
+			if msg.Key == gruid.KeyPageDown || msg.Key == gruid.KeyPageUp {
+				md.equipPager.Update(msg)
+				return
+			}
+		case gruid.MsgMouse:
+			if msg.Action == gruid.MouseWheelDown || msg.Action == gruid.MouseWheelUp {
+				msg.P.X = 0
+				msg.P.Y = 0
+				md.equipPager.Update(msg)
+				return
+			}
+		}
+	}
 	md.menu.main.Update(msg)
 	switch act := md.menu.main.Action(); act {
 	case ui.MenuQuit:
@@ -69,7 +87,7 @@ func (md *model) updateMainMenu(msg gruid.Msg) {
 				break
 			}
 			md.action = ActionUseItem{ID: id}
-			if !g.Mod(ModGluttonyRework) || !g.PlayerActor().DoesAny(Gluttony) {
+			if !GluttonyRework || !g.PlayerActor().DoesAny(Gluttony) {
 				break
 			}
 			if _, ok := e.Role.(*Comestible); ok {
@@ -82,7 +100,7 @@ func (md *model) updateMainMenu(msg gruid.Msg) {
 				}
 			}
 		case modeInventoryBound:
-			// Choosing second comestible (for mod ModGluttonyRework).
+			// Choosing second comestible (for GluttonyRework).
 			g := md.g
 			idx := md.menu.main.Active()
 			id := md.inventoryComestibleID(idx)
@@ -201,7 +219,7 @@ func (md *model) updateKeysMenu(msg gruid.Msg) {
 		if !ok {
 			return
 		}
-		if msg.Key == "R" {
+		if msg.Key == "R" || msg.Key == "r" {
 			md.resetKeys()
 			md.action = ActionSetKeys{}
 		}
@@ -241,6 +259,7 @@ func (md *model) updateKeysChange(msg gruid.Msg) {
 		if err != nil {
 			log.Printf("error saving config: %v", err)
 		}
+		md.setKeyBindingsTitle()
 		md.action = ActionSetKeys{}
 	}
 }
@@ -251,9 +270,6 @@ func (md *model) updateSpiritSelectionMenu(msg gruid.Msg) gruid.Effect {
 		msg = msgmouse
 	}
 	if msgkey, ok := msg.(gruid.MsgKeyDown); ok && (msgkey.Key == gruid.KeyTab || msgkey.Key == gruid.KeySpace) {
-		if md.mode == modeNewGame && len(GameConfig.Mods) == NMods {
-			md.g.Mods = slices.Clone(GameConfig.Mods)
-		}
 		md.modSelectionMenu()
 		return nil
 	}
@@ -271,8 +287,7 @@ func (md *model) updateSpiritSelectionMenu(msg gruid.Msg) gruid.Effect {
 		if idx < 0 {
 			break
 		}
-		spirits := getPrimarySpirits(md.mode)
-		spe := spiritEntity(md.g.Mods, spirits[idx])
+		spe := spiritEntity(md.g.Mods, primarySpirits[idx])
 		md.updateItemDesc(spe)
 		if act != ui.MenuInvoke {
 			break
@@ -283,18 +298,23 @@ func (md *model) updateSpiritSelectionMenu(msg gruid.Msg) gruid.Effect {
 }
 
 func (md *model) startNewGame(spe *Entity) {
-	md.g.Init(spe)
-	md.g.ComputePlayerStats()
-	md.g.InitLevel()
+	g := md.g
+	if VampiricHC && spe.HasVampirism() {
+		// Implicitly set Healing Combat for Vampiric Bat players.
+		g.Mods[ModHealingCombat] = true
+	}
+	g.Init(spe)
+	g.ComputePlayerStats()
+	g.InitLevel()
 	md.updateStatus()
-	md.g.LogStyled("Press SPACE for menu and ? for help. Good luck!", logSpecial)
+	g.LogStyled("Press SPACE for menu and ? for help. Good luck!", logSpecial)
 	md.mode = modeNormal
 }
 
 func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 	md.menu.main.Update(msg)
 	resetChanges := func() {
-		if len(GameConfig.Mods) == NMods {
+		if len(GameConfig.Mods) == NMods && !ResetMods {
 			md.g.Mods = slices.Clone(GameConfig.Mods)
 		} else {
 			clear(md.g.Mods)
@@ -312,13 +332,8 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 			// outside the mod menu.
 			return nil
 		}
-		if GameConfig.AdvancedNewGame {
-			resetChanges()
-			md.openSpiritSelectionMenu(modeNewGameAdvanced)
-		} else {
-			md.openSpiritSelectionMenu(modeNewGame)
-			clear(md.g.Mods)
-		}
+		resetChanges()
+		md.openSpiritSelectionMenu(modeNewGame)
 		return nil
 	case ui.MenuMove, ui.MenuInvoke:
 		idx := md.menu.main.ActiveInvokable()
@@ -328,14 +343,23 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 		g := md.g
 		switch {
 		case idx == len(g.Mods):
-			var msg string
-			if GameConfig.AdvancedNewGame {
-				msg = "Save mod selection and return to advanced primary spirit selection menu."
-			} else {
-				msg = "Save mod selection and continue to advanced primary spirit selection menu."
+			updateDesc := func() {
+				msg := "Disable all mods. You still need to save afterwards."
+				md.desc.Box = &ui.Box{Title: ui.Text("Reset selection")}
+				md.desc.Content = ui.Text(msg).Format(UIWidth/2 - 1 - 2).WithMarkups(Markups)
 			}
+			if act != ui.MenuInvoke {
+				updateDesc()
+				break
+			}
+			clear(g.Mods)
+			md.modSelectionMenu()
+			md.menu.main.SetActiveInvokable(idx)
+			updateDesc()
+		case idx == len(g.Mods)+1:
+			msg := "Save mod selection and return to primary spirit selection menu."
 			md.desc.Box = &ui.Box{Title: ui.Text("Save and continue")}
-			md.desc.Content = ui.Text(msg).Format(UIWidth/2 - 1 - 2)
+			md.desc.Content = ui.Text(msg).Format(UIWidth/2 - 1 - 2).WithMarkups(Markups)
 			if act != ui.MenuInvoke {
 				break
 			}
@@ -345,30 +369,19 @@ func (md *model) updateModSelectionMenu(msg gruid.Msg) gruid.Effect {
 					log.Printf("error saving config: %v", err)
 				}
 			}
-			md.openSpiritSelectionMenu(modeNewGameAdvanced)
-		case idx > len(g.Mods):
-			var title, content string
-			if GameConfig.AdvancedNewGame {
-				title = "Quit menu without saving"
-				content = "Revert any mod changes and return to advanced primary spirit selection menu."
-			} else {
-				title = "Quit menu and disable mods"
-				content = "Disable all mods and return to classic primary spirit selection menu."
-			}
+			md.openSpiritSelectionMenu(modeNewGame)
+		case idx > len(g.Mods)+1:
+			title := "Quit menu without saving"
+			content := "Revert any mod changes and return to primary spirit selection menu."
 			md.desc.Box = &ui.Box{Title: ui.Text(title)}
 			md.desc.Content = ui.Text(content).Format(UIWidth/2 - 1 - 2)
 			if act != ui.MenuInvoke {
 				break
 			}
-			if GameConfig.AdvancedNewGame {
-				resetChanges()
-				md.openSpiritSelectionMenu(modeNewGameAdvanced)
-			} else {
-				md.openSpiritSelectionMenu(modeNewGame)
-				clear(md.g.Mods)
-			}
+			resetChanges()
+			md.openSpiritSelectionMenu(modeNewGame)
 		default:
-			m := gameMods[idx]
+			m := GameMods[idx]
 			if act != ui.MenuInvoke {
 				md.updateModDesc(m)
 				break
@@ -388,7 +401,9 @@ func (md *model) updateModDesc(m Mod) {
 	stt := ui.StyledText{}.WithMarkups(Markups)
 	enabled := ""
 	if md.g.Mods[m] {
-		enabled = "@CEnabled.@N\n"
+		enabled = "@GEnabled.@N\n"
+	} else {
+		enabled = "@SDisabled.@N\n"
 	}
 	l.Box = &ui.Box{Title: ui.Text(m.String())}
 	l.Content = stt.WithText(enabled + m.Desc()).Format(UIWidth/2 - 2)
@@ -397,33 +412,28 @@ func (md *model) updateModDesc(m Mod) {
 func (md *model) modSelectionMenu() {
 	hstyle := gruid.Style{Fg: ColorCyan}
 	entries := []ui.MenuEntry{}
-	mods := gameMods
+	mods := GameMods
 	title := "Mod Selection"
 	r := 'a'
 	for i, m := range mods {
-		switch i {
-		case 0:
+		switch Mod(i) {
+		case FirstExpansion:
 			entries = append(entries, ui.MenuEntry{
 				Text:     ui.Text("Expansions").WithStyle(hstyle),
 				Disabled: true,
 			})
-		case 2:
-			entries = append(entries, ui.MenuEntry{
-				Text:     ui.Text("Small Mods").WithStyle(hstyle),
-				Disabled: true,
-			})
-		case NExpansions:
+		case FirstChallenge:
 			entries = append(entries, ui.MenuEntry{
 				Text:     ui.Text("Challenges").WithStyle(hstyle),
 				Disabled: true,
 			})
 		}
-		s := "[ ]"
+		s := "@S[ ]@N"
 		if md.g.Mods[Mod(i)] {
-			s = "[*]"
+			s = "@G[*]@N"
 		}
 		entries = append(entries, ui.MenuEntry{
-			Text: ui.Textf("%c - %-30s %s", r, m.String(), s),
+			Text: ui.Textf("%c - %-30s %s", r, m.String(), s).WithMarkups(Markups),
 			Keys: []gruid.Key{gruid.Key(r)},
 		})
 		r++
@@ -441,13 +451,14 @@ func (md *model) modSelectionMenu() {
 		Disabled: true,
 	})
 	entries = append(entries, ui.MenuEntry{
+		Text: ui.Text("r - Reset selection"),
+		Keys: []gruid.Key{gruid.Key('r'), gruid.Key('R')},
+	})
+	entries = append(entries, ui.MenuEntry{
 		Text: ui.Text("s - Save and continue"),
 		Keys: []gruid.Key{gruid.Key('s'), gruid.Key('S')},
 	})
-	qtext := "q - Quit menu and disable mods"
-	if GameConfig.AdvancedNewGame {
-		qtext = "q - Quit menu without saving"
-	}
+	qtext := "q - Quit menu without saving"
 	entries = append(entries, ui.MenuEntry{
 		Text: ui.Text(qtext),
 		Keys: []gruid.Key{gruid.Key('q'), gruid.Key('Q')},

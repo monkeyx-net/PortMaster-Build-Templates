@@ -92,7 +92,6 @@ func NewMap() *Map {
 		Clouds:       NewCloudGrid(),
 		FOV:          rl.NewFOV(gruid.NewRange(-MaxFOVRange, -MaxFOVRange, MaxFOVRange+1, MaxFOVRange+1)),
 		Noise:        map[gruid.Point]NoiseType{},
-		Orb:          InvalidPos,
 	}
 	return m
 }

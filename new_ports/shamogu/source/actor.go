@@ -36,7 +36,7 @@ func NewActor(attack, defense, hp int, ak ActorKind, t Traits) *Actor {
 	return a
 }
 
-// DoesAny reports whether the player has all traits in t.
+// DoesAny reports whether the player has any trait in t.
 func (a *Actor) DoesAny(t Traits) bool {
 	return a.Traits.Any(t)
 }
@@ -67,6 +67,11 @@ func (a *Actor) CanMove() bool {
 // walking trees.
 func (a *Actor) ResistsMove() bool {
 	return a.Has(StatusLignification) || a.Is(WalkingTree)
+}
+
+// DoesChaosAttack reports whether the actor has a multi-effect chaotic attack.
+func (a *Actor) DoesChaosAttack() bool {
+	return !NoChaos && a.Is(ChaosMegabat)
 }
 
 // IsAlive reports whether the actor is still alive.
@@ -207,7 +212,7 @@ const (
 // TraitDesc returns a suitable trait description for the given actor kind and
 // extra traits. For monsters, it includes the description of some
 // monster-specific traits.
-func TraitDesc(ak ActorKind, t Traits) string {
+func (g *Game) TraitDesc(ak ActorKind, t Traits) string {
 	desc := []string{}
 
 	// Attack patterns.
@@ -234,7 +239,10 @@ func TraitDesc(ak ActorKind, t Traits) string {
 	case DraggingAlligator:
 		desc = append(desc, "confusing bite")
 	case ChaosMegabat:
-		desc = append(desc, "chaos bite (random effect)")
+		if !NoChaos {
+			desc = append(desc, "chaos bite (random effect)")
+		}
+		desc = append(desc, "cries upon death")
 	}
 
 	// Extra traits.
@@ -243,7 +251,11 @@ func TraitDesc(ak ActorKind, t Traits) string {
 	desc = traitDesc(desc, t, Dazzling, "dazzling (redirect attacks just behind you, easily noticed)")
 	desc = traitDesc(desc, t, Elephanty, "rat phobia, difficult rotation when facing a wall, unnoticed in dead-ends, immune to berserk after-effects")
 	desc = traitDesc(desc, t, Gawalt, "wall-jumping movement and attack, weakened hits, menhir sensing and hiding")
-	desc = traitDesc(desc, t, Gluttony, "gluttony (needs to eat in pairs)")
+	if g.Mod(ModTotemConditions) {
+		desc = traitDesc(desc, t, Gluttony, "gluttony (needs to eat in pairs, but ignores other requirements)")
+	} else {
+		desc = traitDesc(desc, t, Gluttony, "gluttony (needs to eat in pairs)")
+	}
 	desc = traitDesc(desc, t, GoodSmell, "smells food from afar")
 	desc = traitDesc(desc, t, NocturnalFlying, "nocturnal (reduced view range), flies over foliage")
 	desc = traitDesc(desc, t, PushingCharge, "charging pushes and @Ounbalances@N foes")
@@ -268,9 +280,8 @@ func TraitDesc(ak ActorKind, t Traits) string {
 	case BurningPhoenix:
 		desc = append(desc, "imbalance vulnerability (decreased burning chance)")
 	case ChaosMegabat:
-		// Megabat hunts by sound (when out-of-view for noises
-		// originating on the player's tile).
-		desc = append(desc, "hunts by sound")
+		// Megabat hunts toward sound when out of view.
+		desc = append(desc, "hunts toward sound")
 	case EarthDragon:
 		desc = append(desc, "hits may push and @Ounbalance@N foes")
 	case FireLlama:
@@ -280,7 +291,7 @@ func TraitDesc(ak ActorKind, t Traits) string {
 	case HungryRat:
 		desc = append(desc, "hunts you by smell, becomes berserk if you eat in view")
 	case NoisyImp:
-		desc = append(desc, "plays guitar for you, avoids fights")
+		desc = append(desc, "plays guitar for you, afraid of you")
 	case WalkingMushroom:
 		desc = append(desc, "releases @Blignifying@N spores on sight")
 	case WalkingTree:
@@ -474,7 +485,7 @@ var statusDesc = []string{
 	StatusShadow:   "Harmonic shadows make non-hunting monsters not notice you unless you attack them. You can move instantly through translucent walls. It makes combat silent and hits make hunting monsters lose track of you.",
 	StatusSprint:   "You can move to a visible destination three times as fast on the current direction and twice as fast laterally. You can jump over foes, unbalancing them. Canceled by waiting.",
 	StatusTimeStop: "Time is frozen for everyone but you until expiration. Status effects affecting you will still progress.",
-	StatusVampirism: fmt.Sprintf("Guarantees successful melee bite that restores HP for the amount of damage you deal. Gives %+d Attack.",
+	StatusVampirism: fmt.Sprintf("Guarantees successful attack that restores HP for the amount of damage you deal. Gives %+d Attack.",
 		VampirismAttackBonus),
 }
 
@@ -498,7 +509,7 @@ func (st Status) Details() string {
 	case StatusConfusion:
 		details = "Confused monsters will attack other monsters too when adjacent. Some monsters may even hurt or affect themselves when performing special actions like digging, spitting fire, barking, or pushing."
 	case StatusDisorient:
-		details = "Player-only effect obtainable with the Dazzling Zebra spirit."
+		details = "Player-only effect obtainable with the Dazzling Zebra spirit or by eating a moonlight lotus."
 	case StatusFear:
 		details = "Monsters will flee when facing you. Ambushing charges against unseen foes can still happen. At the end of a turn, a cornered and afraid actor with no possible escape will become berserk. When lignified and afraid, getting hit makes you berserk, too."
 	case StatusFire:
@@ -508,7 +519,7 @@ func (st Status) Details() string {
 	case StatusFoggySkin:
 		details = "Player-only effect obtainable by eating a foggy-skin onion. May be removed by eating a lignification fruit for half the @BLignification@N duration."
 	case StatusGardener:
-		details = "Player-only effect obtainable with the Gardening Lion spirit."
+		details = "Player-only effect obtainable with the Gardening Lion spirit or by eating a moonlight lotus."
 	case StatusGluttony:
 		details = "Player-only effect obtainable with the Gluttonous Bear spirit."
 	case StatusImbalance:
@@ -518,13 +529,13 @@ func (st Status) Details() string {
 	case StatusPoison:
 		details = "Watch out for confusion if any monsters survive poisoning!"
 	case StatusShadow:
-		details = "Note that hitting a wandering monster will make it hunt you as usual. Player-only effect obtainable with the Gawalt Monkey spirit."
+		details = "Note that hitting a wandering monster will make it hunt you as usual. Player-only effect obtainable with the Gawalt Monkey spirit or by eating a vanishing snail."
 	case StatusSprint:
 		details = "Disables normal attack. Player-only effect obtainable with the Sprinting Gazelle spirit."
 	case StatusTimeStop:
 		details = "Player-only effect obtainable with the Temporal Cat spirit."
 	case StatusVampirism:
-		details = "Player-only effect obtainable with the Vampiric Bat spirit."
+		details = "Player-only effect obtainable with the Vampiric Bat spirit or by eating a polymorph fungus."
 	}
 	return details
 }
@@ -585,10 +596,11 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 		}
 		g.InflictDamage(i, ai, FireDamage, AttackFireCatch)
 		if ai.IsDead() {
+			TotemEvents(g, &EventWithStatus{EvType: EventStatus, EvEntity: g.Entity(i), EvStatus: st})
 			return false
 		}
 	case StatusFear:
-		if ai.Has(StatusBerserk) || ai.DoesAny(ImmunityFear) {
+		if ai.Has(StatusBerserk) || ai.DoesAny(ImmunityFear) || ai.Is(NoisyImp) {
 			return false
 		}
 		if ai.DoesAny(ResistanceFear) {
@@ -678,6 +690,7 @@ func (g *Game) PutStatusN(i ID, ai *Actor, st Status, turns int, n int) bool {
 	} else if ei := g.Entity(i); g.InFOV(ei.P) {
 		g.Logf("The %s is %s (%s).", ei.Name, st, fmtTurns(turns, n))
 	}
+	TotemEvents(g, &EventWithStatus{EvType: EventStatus, EvEntity: g.Entity(i), EvStatus: st})
 	switch st {
 	case StatusBerserk:
 		g.AdjustHP(i, ai, ai.HPBonus())
@@ -844,7 +857,7 @@ func (g *Game) ProgressStatus(i ID, ai *Actor, st Status) {
 // Behavior holds simple Behavior data for a monster.
 type Behavior struct {
 	Path     []gruid.Point // path to destination
-	Guard    gruid.Point   // position to guard (InvalidPos if not)
+	Guard    []gruid.Point // position(s) to guard (empty if not)
 	Target   gruid.Point   // Current goal (if not static)
 	State    Mindstate     // Wandering, Hunting, ...
 	SkipTurn bool          // skip turn (like after swapped positions with another monster)
@@ -872,7 +885,7 @@ func (g *Game) MindStateString(a *Actor) string {
 		if g.Mod(ModCorruptedDungeon) {
 			return ""
 		}
-		if beh.Guard != InvalidPos {
+		if len(beh.Guard) > 0 {
 			return "guarding"
 		}
 		return "wandering"
@@ -931,7 +944,7 @@ func (g *Game) HandleActorTurn(i ID, ai *Actor) {
 
 // handleGluttony handles progression of the Gluttony status.
 func (g *Game) handleGluttony() {
-	if g.Mod(ModGluttonyRework) {
+	if GluttonyRework {
 		return
 	}
 	pa := g.PlayerActor()
@@ -942,6 +955,11 @@ func (g *Game) handleGluttony() {
 		// itself anymore and eats a random comestible, or becomes
 		// confused if it cannot find one.
 		if id, co := g.randomComestible(); id >= 0 {
+			switch co.Effect.(type) {
+			case EffectTeleportMushroom, EffectWarpingBean:
+				g.UpdateFOV()
+				g.UpdateKnowledge()
+			}
 			g.LogStyled("You cannot hold your appetite any longer!", logStatusEnd)
 			co.Use(g, id)
 		} else {
@@ -1101,9 +1119,7 @@ func (g *Game) TeleportActor(i ID, ai *Actor, n int) bool {
 	if i == PlayerID && g.Map.Orb != InvalidPos && g.IntN(2) == 0 {
 		// On last level, give the orb a chance to drive the player
 		// away from it, to make teleport-based strategies less
-		// reliable (but still viable enough!). Greater chance with
-		// ModCorruptedDungeon, because even more unpredictability
-		// sounds thematic there.
+		// reliable (but still viable enough!).
 		//
 		// Result: teleport to furthest point from the orb among 3
 		// random possible teleport points.
@@ -1116,6 +1132,9 @@ func (g *Game) TeleportActor(i ID, ai *Actor, n int) bool {
 	}
 	g.MoveActor(i, ai, to, MovTeleport)
 	g.teleportStatuses(i, ai, n)
+	if i == PlayerID {
+		TotemEvents(g, &EventHappened{EvType: EventTeleport})
+	}
 	return true
 }
 

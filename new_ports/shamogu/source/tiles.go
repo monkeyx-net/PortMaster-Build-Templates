@@ -32,7 +32,7 @@ func (a ActionToggleTiles) Handle(md *model) (gruid.Effect, bool) {
 	}
 	clearCache()
 	eff := gruid.Cmd(func() gruid.Msg { return gruid.MsgScreen{} })
-	md.mode = modeNormal
+	md.openConfig(false)
 	return eff, false
 }
 
@@ -41,6 +41,13 @@ func (a ActionToggleTiles) String() string {
 		return "Switch to ASCII graphics"
 	}
 	return "Switch to Tiles graphics"
+}
+
+func (a ActionToggleTiles) Desc(_ *model) string {
+	if GameConfig.Tiles {
+		return "Toggling this option switches to ASCII graphics.\n\n@SCurrent setting: tiles.@N"
+	}
+	return "Toggling this option switches to Tiles graphics.\n\n@SCurrent setting: ASCII.@N"
 }
 
 // ColorToRGBA  maps to colors from selenized palette:

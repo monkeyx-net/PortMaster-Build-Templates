@@ -9,7 +9,7 @@ import (
 )
 
 // Version is the game's version string of the last release.
-const Version = "v1.5.0"
+const Version = "v1.6.0"
 
 // InvalidPos is a special variable containing an invalid position.
 var InvalidPos = gruid.Point{-1, -1}
@@ -45,6 +45,8 @@ type Game struct {
 	Turn           int            // current game's turn
 	StatusTurn     [NStatuses]int // last turn with specific status
 	CorruptionTurn int            // next corruption event (corrupted dungeon mod)
+	EventFilter    EventType      // events spirits are watching (condition mod)
+	WarnTypes      WarnType       // reasons to color comestibles in menu (condition mod)
 
 	Logs     *Logs     // game log
 	Mods     []bool    // active game mods
@@ -54,8 +56,10 @@ type Game struct {
 	Wizard   Wizard    // wizard mode (default: no)
 
 	instant bool       // whether the last action was instant-effect
-	snack   bool       // whether you're eating a snack (without ModGluttonyRework)
+	snack   bool       // whether you're eating a snack
 	win     bool       // whether we just won the game
+	confirm bool       // whether action was confirmed after warning
+	npturn  bool       // non-player turn (after player's turn and before next one)
 	rand    *rand.Rand // random number generator
 	md      *model     // reference to the UI model
 }
@@ -78,7 +82,6 @@ func (g *Game) Init(spe *Entity) {
 	g.PR = paths.NewPathRange(gruid.NewRange(0, 0, MapWidth, MapHeight))
 	g.PRnoise = paths.NewPathRange(gruid.NewRange(0, 0, MapWidth, MapHeight))
 	g.Dir = gruid.Point{1, 0}
-	g.CorruptionTurn = 50 + g.IntN(250)
 	g.InitPlayer(spe)
 }
 
@@ -89,11 +92,16 @@ func (g *Game) InitLevel() {
 	g.ResetKnowledge()
 	g.UpdateFOV()
 	g.UpdateKnowledge()
+	if g.Mod(ModCorruptedDungeon) {
+		g.CorruptionTurn = g.Turn + 25 + g.IntN(250)
+	}
 }
 
 // EndTurn processes everything that happens between the end of last player's
 // turn and the beginning of the next turn.
 func (g *Game) EndTurn() {
+	g.npturn = true
+	defer func() { g.npturn = false }()
 	clear(g.Map.Noise)
 	if g.endTurnEarly() {
 		return
@@ -150,10 +158,10 @@ func (g *Game) EndTurn() {
 // HandleTurnCount() increments the turn count and handles watching.
 func (g *Game) HandleTurnCount() {
 	g.IncrTurn()
-	if g.Mod(ModCorruptedDungeon) && g.Turn >= g.CorruptionTurn {
-		g.handleCorruptionEvent()
-	}
 	nmt := g.Stats.MapTurns[g.Map.Level-1]
+	if g.Mod(ModCorruptedDungeon) && g.Turn >= g.CorruptionTurn {
+		g.handleCorruptionEvent(nmt)
+	}
 	switch nmt {
 	case 950:
 		g.LogStyled("You feel a presence searching for intruders.", logSpecial)
@@ -164,7 +172,7 @@ func (g *Game) HandleTurnCount() {
 		}
 		g.WarningPrompt()
 	case 1000:
-		g.LogStyled("You've been found by the dungeon core!", logSpecial)
+		g.LogStyled("You’ve been found by the dungeon core!", logSpecial)
 		g.StoryLog("Found by the dungeon core!")
 		g.WarningPrompt()
 		g.genMonster(BlazingGolem)
@@ -175,10 +183,15 @@ func (g *Game) HandleTurnCount() {
 
 // handleCorruptionEvent handles a corruption event for the corrupted dungeon
 // mod.
-func (g *Game) handleCorruptionEvent() {
-	g.CorruptionTurn = g.Turn + 25 + g.IntN(300)
-	switch g.IntN(10) {
-	case 0:
+func (g *Game) handleCorruptionEvent(nmt int) {
+	log := false
+	// Set next turn for next corruption event. Less likely as time passes
+	// in the same map level.
+	g.CorruptionTurn = g.Turn + 25 + g.IntN(250+nmt/3)
+	switch {
+	case g.IntN(max(100, nmt/2)) < 10:
+		// Fog level. Chance decreases with number of map turns.
+		log = true
 		g.Map.Terrain.Map(func(p gruid.Point, t rl.Cell) rl.Cell {
 			if g.InFOV(p) {
 				return t
@@ -201,11 +214,13 @@ func (g *Game) handleCorruptionEvent() {
 			return t
 		})
 	default:
+		// Minor map corruptions.
 		g.Map.Terrain.Map(func(p gruid.Point, t rl.Cell) rl.Cell {
 			inFOV := g.InFOV(p)
-			if g.IntN(100) > 0 && (!inFOV || g.IntN(40) > 0) {
+			if g.IntN(160) > 0 && (!inFOV || g.IntN(40) > 0) {
 				return t
 			}
+			log = log || inFOV
 			switch t {
 			case Foliage:
 				return Floor
@@ -228,15 +243,17 @@ func (g *Game) handleCorruptionEvent() {
 			return t
 		})
 	}
-	switch g.IntN(4) {
-	case 0:
-		g.Log("Uh.")
-	case 1:
-		g.Log("Um.")
-	case 2:
-		g.Log("Oh.")
-	default:
-		g.Log("Eh.")
+	if log {
+		switch g.IntN(4) {
+		case 0:
+			g.Log("Uh.")
+		case 1:
+			g.Log("Um.")
+		case 2:
+			g.Log("Oh.")
+		default:
+			g.Log("Eh.")
+		}
 	}
 	g.UpdateFOV()
 	g.UpdateKnowledge()
@@ -409,7 +426,7 @@ func noiseColor(e *Entity) gruid.Color {
 func (g *Game) MakeNoise(at gruid.Point, nt NoiseType) {
 	noise := nt.Noise()
 	dij := &MapPath{passable: g.Map.Passable}
-	maxdist := (3 * noise) / 2
+	maxdist := 3 * (1 + noise) / 2
 	g.PRnoise.BreadthFirstMap(dij, []gruid.Point{at}, maxdist)
 	pp := g.PP()
 	pa := g.PlayerActor()
@@ -425,7 +442,8 @@ func (g *Game) MakeNoise(at gruid.Point, nt NoiseType) {
 		g.LogStyled(nt.Msg(), logNotable)
 	}
 	for i, ai := range g.Monsters() {
-		d := g.PRnoise.BreadthFirstMapAt(g.Entity(i).P)
+		pi := g.Entity(i).P
+		d := g.PRnoise.BreadthFirstMapAt(pi)
 		if d > maxdist || d > noise && !ai.DoesAny(GoodHearing) {
 			continue
 		}
@@ -441,6 +459,7 @@ const (
 	NoiseCombat
 	NoiseChomp
 	NoiseCackle
+	NoiseCry
 	NoiseDig
 	NoiseExplosion
 	NoiseEarthMenhir
@@ -451,9 +470,6 @@ const (
 	NoiseStomp
 	NoiseTrumpet
 	NoiseWind
-
-	NoiseHeavySteps
-	NoiseGrowl
 )
 
 // Noise returns the amount of noise associated with the given type of noise.
@@ -461,8 +477,6 @@ func (nt NoiseType) Noise() int {
 	switch nt {
 	case NoiseCombat, NoiseChomp:
 		return 4
-	case NoiseGrowl, NoiseHeavySteps:
-		return 6
 	case NoiseExplosion, NoiseFakePortal:
 		return MaxFOVRange + 4
 	case NoiseMusic, NoiseEarthMenhir:
@@ -484,14 +498,14 @@ func (nt NoiseType) Msg() string {
 		return "Chomp!"
 	case NoiseCackle:
 		return "KO-KO-KO!"
+	case NoiseCry:
+		return "SCREECH!"
 	case NoiseDig:
 		return "CRACK!"
 	case NoiseExplosion:
 		return "POP-BOOM!"
 	case NoiseFakePortal:
 		return "THRUM!"
-	case NoiseGrowl:
-		return "Growl!"
 	case NoiseLightning:
 		return "PANG!"
 	case NoiseEarthMenhir:
@@ -506,9 +520,6 @@ func (nt NoiseType) Msg() string {
 		return "TARARA!"
 	case NoiseWind:
 		return "WHIZ!"
-	case NoiseHeavySteps:
-		// Don't log heavy steps from mod.
-		return ""
 	default:
 		// should not happen.
 		return "NOISE!"

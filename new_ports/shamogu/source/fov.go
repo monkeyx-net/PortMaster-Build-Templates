@@ -174,6 +174,7 @@ func (g *Game) SenseEntity(i ID, verb string) {
 	switch r := ei.Role.(type) {
 	case *Actor:
 		r.KnownDead = r.IsDead()
+		TotemEvents(g, &EventWithEntity{EvType: EventMonsSeen, EvEntity: ei})
 	case *RunicTrap:
 		if r.Used {
 			r.KnownUsed = true

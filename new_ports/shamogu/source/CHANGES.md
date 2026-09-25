@@ -1,3 +1,108 @@
+# v1.6.0 2026-09-24
+
+This release is a significant one, with a new challenge expansion, new rare
+comestibles, and various improvements to existing content.
+
+New content:
+
+* New expansion mod: **Totem Conditions** (contributed by @mlochbaum, see
+  discussion in issue #19 and PRs #20 and #21). In-game description is as
+  follows: “Read the fine print: each spirit will curse you to play by its
+  rules or lose its benefits. You may also find a few comestibles that aren’t
+  so easy to eat! Think ahead when choosing spirits; the run will have one
+  fewer empty totem to expand your options”.  The expansion provides lots of
+  different challenging spirit curses, found on totems and imposing varied
+  conditions on the player until fulfilled, as well as new rare
+  comestibles that can only be eaten when the right conditions are met:
+  tunneling acorn, warping bean, polymorph fungus, runethorn rose, vanishing
+  snail, tricky chestnut, fortress oyster, seeing potato. Like with all mods,
+  the new expansion is compatible with any mod combination, and in particular
+  with the other expansions. Be sure to give it a try!
+* While playing the base game, you may now find one or two **rare comestibles**
+  during a run! (See design discussion in issue #24). Some of those are easier
+  non-conditional variants of Totem Condition ones (acorn, bean, fungus, rose,
+  snail). The new rare moonlight lotus and the polymorph fungus have alternate
+  effects depending on circumstances, and appear more frequently with Corrupted
+  Dungeon and Healing Combat enabled, respectively.
+
+Reworked and improved content:
+
+* Reworked chaos megabat (see discussion in issue #18). The megabats are now
+  weaker (2 HP instead of 4 HP) but appear usually in groups of three and
+  patrol between a couple of locations in a chaotic manner. They also cry upon
+  death.  There were some minor chaos bite effect tweaks, too, with occasional
+  extra duration for positive effects as a surprise, and less secondary
+  negative effects overall.
+* Slightly improved “good hearing” for non-footstep noises by an average of 1.5
+  tiles to make it a bit more significant for small noises.
+* Slightly tweaked down occurrence chance for alligators with respect to golems
+  (see #18).
+* Now the noisy imp behaves as if afraid of you even when confused. Also,
+  afraid and confused monsters now can hit nearby monsters despite the fear, as
+  they are only afraid from the player.
+
+Corrupted dungeon improvements (see discussion in #11):
+
+* Monster nests now scale with map level and happen less often early on, to
+  make (very) rare cases that could feel a bit too unfair even rarer (see #18).
+* Only 3/4 chance of relief comestible in warp, berserk and lignification
+  thematic levels.
+* Rarely spawn lone golem or wasp guardian.
+* New rare spooky level with empty totem, runes and menhirs.
+* New rare footstep-themed level.
+* New kind of map corruption that performs wall-thickening.
+* New kind of rare map corruption that reduces size of the natural cave
+  (excluding vaults) to about half, but adds extra tunnels to vaults.
+* New rare variations of alternative guardians.
+* New variant of rare imp levels with patrolling trios with 2 imps and another
+  frail mid-level monster, so that imp levels feel less the same.
+* New rare comestible corruptions: sometimes, more of them will appear than in
+  the base game.
+* Lower a bit frequency for various corruptions, in part to compensate for new
+  ones.
+
+UI, graphics, QoL:
+
+* The classic New Game menu has been merged with the advanced one. Now the menu
+  simply shows all primary spirits and signals Crocodile and Bat are “advanced”
+  in the menu itself. The previous system was subtle and needed an extra
+  easy-to-miss config setting, so it could sometimes be more confusing for
+  players in the end.
+* The Mod Selection menu has now improved highlighting, so that it's harder to
+  miss which mods are selected. The mod count in the New Game menu uses color
+  now, too, so that it's easier to check. There is also now a new “Reset
+  selection” action to quickly clear the mod selection.
+* Improvements in configuration menu: now current setting is shown greyed in
+  the description, and toggling a setting does not immediately quit the menu
+  anymore.
+* Configuration preferences affecting new games by providing changes to the
+  default experience and which weren't convenient as mods, like Gluttony
+  Rework, are now exposed through compile-time variables in `vars.go`. Some of
+  them can also be modified from command-line options (in native versions of
+  the game). Disabling animations is now done in that way through a NoAnim
+  option, too. And the new NoChaos option disables megabat's chaos bite and
+  rare comestibles for any players who'd prefer a more minimalistic and
+  deterministic experience.
+* The “game summary” action (shortcut `#`) now opens the pager with a
+  simplified summary for in-game viewing, in addition to writing full
+  statistics to a file (or “below” for the browser version).
+* A few minor improvements in descriptions (for example `Gives +1 Attack` shows
+  now as `Stats: +1 Attack` in spirit descriptions). Also, when a description
+  doesn't fit in equip menu, as can now rarely happen with some curse
+  descriptions, it's now possible to scroll with page down/up and wheel.
+* Extra information in help about Corrupted Dungeon, and a few other
+  improvements in mod descriptions.
+* Make Runic Chicken players not avoid traps in auto-explore and travel.
+
+Fixes:
+
+* Fix wrong out-of-view rune-trigger log message with chicken (see #19).
+* Fix rare case of wrong guardian placement on level 9 with corrupted dungeon.
+* Fix off-by-one renewal duration for Lignification and Berserk when eating a
+  lignification fruit or berserking flower.
+* Make confused wraith teleporting an out-of-view monster not leak information
+  in log messages.
+
 # v1.5.0 2026-03-30
 
 This release features new and improved content, as well as various fixes.

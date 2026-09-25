@@ -132,7 +132,7 @@ func (md *model) updateStatus() {
 			entries = append(entries, ui.MenuEntry{
 				Text:     stt.WithText("@O[Warning]@N "),
 				Disabled: true})
-		case md.mode == modeQuitConfirmation || md.mode == modeWizardConfirmation:
+		case md.mode == modeQuitConfirmation || md.mode == modeWizardConfirmation || md.mode == modeUseConfirmation:
 			entries = append(entries, ui.MenuEntry{
 				Text:     stt.WithText("@C[Confirm]@N "),
 				Disabled: true})

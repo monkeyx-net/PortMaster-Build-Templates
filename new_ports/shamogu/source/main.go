@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"strings"
 	"syscall"
 
 	"codeberg.org/anaseto/gruid"
@@ -21,10 +22,10 @@ import (
 )
 
 func main() {
-	optNoAnim := flag.Bool("n", false, "no animations")
 	optReplay := flag.String("r", "", "path to replay file (_ means default location)")
 	optGameLogs := flag.Bool("l", false, "write game logs to log file")
 	optVersion := flag.Bool("version", false, "print build info")
+	optOptions := flag.String("O", "", "options (see 'vars.go' file for instructions)")
 	opt16colors, opt256colors, optTrueColor := new(bool), new(bool), new(bool)
 	optFullscreen := new(bool)
 	optWidthScale, optHeightScale := new(float64), new(float64)
@@ -46,9 +47,7 @@ func main() {
 		}
 		os.Exit(0)
 	}
-	if *optNoAnim {
-		DisableAnimations = true
-	}
+	processOptions(*optOptions)
 	if runtime.GOOS == "windows" {
 		ColorMode = ColorMode8
 	}
@@ -208,5 +207,27 @@ func subSig(ctx context.Context, msgs chan<- gruid.Msg) {
 	case <-ctx.Done():
 	case <-sig:
 		msgs <- gruid.MsgQuit{}
+	}
+}
+
+func processOptions(s string) {
+	for opt := range strings.SplitSeq(s, ",") {
+		if len(opt) == 0 {
+			continue
+		}
+		negate := false
+		if opt[0] == '!' {
+			opt = opt[1:]
+			negate = true
+		}
+		switch opt {
+		case "NoChaos":
+			NoChaos = !negate
+			MonsData[ChaosMegabat].Name = GetMegabatName()
+		case "NoAnim":
+			NoAnim = !negate
+		default:
+			fmt.Fprintf(os.Stderr, "shamogu: unknown option: %v\n", opt)
+		}
 	}
 }

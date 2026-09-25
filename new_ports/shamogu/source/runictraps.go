@@ -69,7 +69,7 @@ func (rt *RunicTrap) Color() gruid.Color {
 }
 
 // Desc returns the description of the runic trap.
-func (rt *RunicTrap) Desc() string {
+func (rt *RunicTrap) Desc(_ *Game) string {
 	if rt.KnownUsed {
 		return "The rune has already been triggered."
 	}
@@ -121,22 +121,26 @@ func (g *Game) TriggerTrap(i ID, ai *Actor) {
 	case rt.Rune == RuneBerserk && ai.Has(StatusBerserk):
 		// Do not trigger berserk traps while berserk.
 		return
+	case rt.Rune == RuneWarp && i == PlayerID:
+		// Update FOV before teleporting.
+		g.UpdateFOV()
+		g.UpdateKnowledge()
 	}
 	switch {
 	case i == PlayerID:
 		g.LogfStyled("You trigger the %s.", logSpecial, rt.Rune.String())
 		g.StoryLogf("Triggered %s", One(rt.Rune.String()))
-		g.Stats.PlayerTrapTriggers++
+		g.Stats.PlayerTriggers++
 		rt.KnownUsed = true
 	case g.InFOV(pi):
 		g.LogfStyled("The %s triggers the %s.", logSpecial, ei.Name, rt.Rune.String())
 		rt.KnownUsed = true
 	case SensingRange(pi, g.PP()) && g.PlayerActor().DoesAny(RunicChicken):
-		g.LogfStyled("The %s triggers.", logSpecial, ei.Name)
+		g.LogfStyled("The %s triggers.", logSpecial, rt.Rune.String())
 		rt.KnownUsed = true
 	}
 	if i != PlayerID {
-		g.Stats.MonsterTrapTriggers++
+		g.Stats.MonsterTriggers++
 	}
 	g.Stats.MapTriggeredTraps[g.Map.Level-1]++
 	rt.Used = true

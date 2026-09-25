@@ -22,6 +22,7 @@ type ProcInfo struct {
 	GuardianTotem2   int              // level with early totem guardian (crazy druid)
 	GuardianPortal1  int              // level with early-mid portal guardian (golems)
 	GuardianPortal2  int              // level with mid-late portal guardian (octopode)
+	SingleGuardKind  ActorKind        // replace (most) guards by the same kind (disabled if Player)
 	WanderingUnique1 int              // level with walking mushroom
 	WanderingUnique2 int              // level with noisy imp
 	MonsEarly        int              // special early level (1-3)
@@ -31,12 +32,20 @@ type ProcInfo struct {
 	MonsLateSwarm    int              // special “swarm” late level (8-9)
 	ThemedLevel      int              // special theme for rare late corrupted level (4-8)
 	TrapLevel        int              // special level with lots of traps (5-9)
+	ImpLevel         bool             // whether an imp level occured already (Corrupted Dungeon)
 	Spirits          []spiritProcInfo // spirit index for each dungeon level (-1 if no spirit)
+	Conditions       []*SpiritCond    // spirit condition for each dungeon level
 	Menhirs          []int            // menhir-generation data
 	MenhirIdx        int              // current index in Menhirs
 	Comestibles      []int            // comestible-generation data
 	ComestibleIdx    int              // current index in Comestibles
+	RareComestible1  int              // mid level with rare comestible
+	RareComestible2  int              // late level with rare comestible
+	ExtraLotus       int              // extra lotus (Corrupted Dungeon)
+	WaitFungus       int              // how much we wait for first fungus (Healing Combat)
 	NComestibles     []int            // number of comestibles per level
+	NComestiblesRare []int            // number of extra rare comestibles
+	SingleRareCom    comestibleKind   // single extra rare comestible kind (Corrupted Dungeon)
 	NMenhirs         []int            // number of menhirs per level
 	Runes            []int            // rune-generation data
 	RuneIdx          int              // current index in Runes
@@ -125,6 +134,10 @@ func (g *Game) flavoursProcGen() {
 		if g.IntN(MapLevels) == 0 {
 			wanderingUnique2Level = 2
 		}
+		if g.IntN(16) == 0 {
+			gpi.SingleGuardKind = g.randMonsKind([]ActorKind{
+				CrazyDruid, DraggingAlligator, BlazingGolem, WalkingMushroom, WarpingWraith})
+		}
 	}
 	randTotemLevel := func(n, m int) int {
 		for {
@@ -135,21 +148,26 @@ func (g *Game) flavoursProcGen() {
 			}
 		}
 	}
-	gpi.GuardianEarly = 2 // 40-50% chance
+	gpi.GuardianEarly = 3 // 60% chance
 	switch n := g.IntN(10); {
-	case n < 3:
-		// 30% chance of being in level 3.
-		gpi.GuardianEarly = 3
-	case g.Mod(ModCorruptedDungeon) && n == 3:
-		// Low 10% chance of being in level 1 when corrupted dungeon is
-		// enabled.
-		gpi.GuardianEarly = 1
-	case n >= 8:
-		// 20% chance of no chaos megabat.
-		gpi.GuardianEarly = 0
+	case n == 0 || NoChaos && n == 1:
+		gpi.GuardianEarly = 2 // 10% chance
+	case n >= 7:
+		// 30% chance of late chaos megabats.
+		gpi.GuardianEarly = 4 + g.IntN(3)
 	}
 	gpi.GuardianTotem2 = randTotemLevel(guardianTotem2Level, 4)
-	for gpi.GuardianTotem1 == 0 || gpi.GuardianTotem1 == gpi.GuardianTotem2 {
+	if gpi.GuardianTotem2 == gpi.GuardianEarly {
+		// Avoid putting bats with crazy druid, with bats appearing
+		// usually earlier.
+		if g.IntN(3) > 0 && gpi.GuardianEarly > 1 {
+			gpi.GuardianEarly--
+		} else {
+			gpi.GuardianEarly++
+		}
+	}
+	for gpi.GuardianTotem1 == 0 || gpi.GuardianTotem1 == gpi.GuardianTotem2 || gpi.GuardianTotem1 == gpi.GuardianEarly {
+		// Place wasps in level without druid nor bats.
 		// Wasps do not care about the totem being empty or not.
 		gpi.GuardianTotem1 = guardianTotem1Level + g.IntN(4)
 		if gpi.GuardianTotem1 > gpi.GuardianTotem2 && g.IntN(2) == 0 {
@@ -157,10 +175,11 @@ func (g *Game) flavoursProcGen() {
 			gpi.GuardianTotem1 = guardianTotem1Level + g.IntN(4)
 		}
 	}
-	if gpi.GuardianTotem2 == gpi.GuardianEarly && gpi.GuardianEarly > 1 {
-		gpi.GuardianEarly--
-	}
 	gpi.GuardianPortal2 = guardianPortal2Level + g.IntN(3)
+	if gpi.GuardianTotem2 == gpi.GuardianEarly {
+		// Octopode always later than bats.
+		gpi.GuardianTotem2++
+	}
 	for gpi.GuardianPortal1 == 0 || gpi.GuardianPortal1 == gpi.GuardianPortal2 || gpi.GuardianPortal1 == gpi.GuardianEarly {
 		gpi.GuardianPortal1 = guardianPortal1Level + g.IntN(4)
 	}
@@ -196,44 +215,57 @@ func (g *Game) flavoursProcGen() {
 	// Disable very occasionally some events/flavours, for some
 	// extra unpredictability.
 	switch g.IntN(10) {
-	case 1:
+	case 0:
 		gpi.WanderingUnique1 = 0
-	case 2:
+	case 1:
 		gpi.WanderingUnique2 = 0
-	case 3:
+	}
+	switch g.IntN(10) {
+	case 0:
 		gpi.Earthquake = 0
-	case 4:
+	case 1:
 		gpi.TrapLevel = 0
 	}
 }
 
 func (g *Game) spiritProcGen() {
+	if g.Mod(ModTotemConditions) {
+		// Simpler case: only one empty slot and no special handling
+		// for advanced totems.
+		ts := make([]spiritProcInfo, 7)
+		n := len(secondarySpirits)
+		if !g.Mod(ModAdvancedSpirits) {
+			for i, j := range g.rand.Perm(n) {
+				ts[i].Idx = j
+			}
+		} else {
+			p := g.rand.Perm(n + len(challengeSpirits))
+			for i, j := range p[0:n] {
+				if j < n {
+					ts[i].Idx = j
+				} else {
+					ts[i].Idx = j - n
+					ts[i].Advanced = true
+				}
+			}
+		}
+		// Empty totem on a random level, and the last one.
+		ts = slices.Insert(ts, 1+g.IntN(len(ts)), spiritProcInfo{Idx: -1})
+		ts = append(ts, spiritProcInfo{Idx: -1})
+		g.ProcInfo.Spirits = ts
+		// Generate totem conditions.
+		g.ProcInfo.Conditions = g.GenConditions()
+		return
+	}
 	// spirits represents a permutation of indices corresponding to
 	// secondary spirits.
-	spirits := make([]int, len(secondarySpirits))
-	for i := range spirits {
-		spirits[i] = i
-	}
-	g.rand.Shuffle(len(spirits), func(i, j int) {
-		spirits[i], spirits[j] = spirits[j], spirits[i]
-	})
-	// extras represents a permutation of indices corresponding to
-	// extra spirits.
-	var extras []int
-	if g.Mod(ModAdvancedSpirits) {
-		extras = make([]int, len(challengeSpirits))
-		for i := range extras {
-			extras[i] = i
-		}
-		g.rand.Shuffle(len(extras), func(i, j int) {
-			extras[i], extras[j] = extras[j], extras[i]
-		})
-	}
+	spirits := g.rand.Perm(len(secondarySpirits))
 	// ts contains information about generated totemic spirits.
 	// There are 6 generated non-empty totems per game.
 	ts := make([]spiritProcInfo, 6)
-	if len(extras) > 0 {
+	if g.Mod(ModAdvancedSpirits) {
 		// Extra totems: generate 3 of each kind.
+		extras := g.rand.Perm(len(challengeSpirits))
 		for i := range 3 {
 			ts[i].Idx = extras[i]
 			ts[i].Advanced = true
@@ -351,13 +383,13 @@ func (g *Game) NextMenhirKind() menhirKind {
 	return menhirKind(i)
 }
 
-// comestibleProcGen creates a random sequence of comestibles kinds that still
-// ensures that all comestibles appear at least once in a while.
+// comestibleProcGen creates a random sequence of common comestibles kinds that
+// still ensures that all comestibles appear at least once in a while.
 func (g *Game) comestibleProcGen() {
-	g.ProcInfo.Comestibles = g.genRandomIndices(len(g.GetComestibleData()))
+	g.ProcInfo.Comestibles = g.genRandomIndices(len(CommonComestibles))
 }
 
-// NextComestibleKind returns the next comestible kind (index of
+// NextComestibleKind returns the next common comestible kind (index of
 // comestibleData) to be generated.
 func (g *Game) NextComestibleKind() comestibleKind {
 	gpi := g.ProcInfo
@@ -372,6 +404,7 @@ func (g *Game) NextComestibleKind() comestibleKind {
 }
 
 func (g *Game) comestiblesProcGen() {
+	// Common comestibles.
 	g.ProcInfo.NComestibles = []int{
 		2, 2, 3, 3, 4,
 		4, 5, 5, 6,
@@ -382,6 +415,96 @@ func (g *Game) comestiblesProcGen() {
 	g.ProcInfo.NComestibles[7+g.IntN(2)]++
 	g.ProcInfo.NComestibles[1+g.IntN(8)]++
 	g.ProcInfo.NComestibles[1+g.IntN(8)]--
+
+	// Rare comestibles.
+	g.rareComsProcGen()
+	g.extraRareComsProcGen()
+
+	if len(g.ProcInfo.NComestiblesRare) > 0 {
+		// When extra rare comestibles are enabled, we skip the usual
+		// rare ones from late game, as there are already quite a few
+		// rare ones later on, but sometimes keep the midgame one with
+		// Totem Conditions (for a rare non-conditional one).
+		g.ProcInfo.RareComestible2 = -1
+		if !g.Mod(ModTotemConditions) || g.IntN(3) > 0 {
+			g.ProcInfo.RareComestible1 = -1
+		}
+	}
+}
+
+func (g *Game) rareComsProcGen() {
+	if NoChaos {
+		g.ProcInfo.RareComestible1 = -1
+		g.ProcInfo.RareComestible2 = -1
+		return
+	}
+	g.ProcInfo.RareComestible1 = 4 + g.IntN(3) // levels 4-6
+	g.ProcInfo.RareComestible2 = 7 + g.IntN(3) // levels 7-9
+	if g.Mod(ModCorruptedDungeon) && g.IntN(4) > 0 {
+		// Often, an extra lotus with Corrupted Dungeon.
+		g.ProcInfo.ExtraLotus = 2 + g.IntN(8)
+	}
+	if g.Mod(ModHealingCombat) {
+		g.ProcInfo.WaitFungus = 1 + g.IntN(4)
+	}
+	// Occasional minor variations for some unpredictability.
+	switch g.IntN(10) {
+	case 0:
+		g.ProcInfo.RareComestible1 = -1
+	case 1:
+		g.ProcInfo.RareComestible2 = -1
+	case 2:
+		if g.IntN(2) == 0 {
+			g.ProcInfo.RareComestible1 = 3
+		} else {
+			g.ProcInfo.RareComestible1 = 7
+		}
+	case 3:
+		if g.IntN(2) == 0 {
+			g.ProcInfo.RareComestible2 = 6
+		} else {
+			// Occasional bias toward 9 to compensate.
+			g.ProcInfo.RareComestible2 = min(g.ProcInfo.RareComestible2+1, MapLevels)
+		}
+	}
+}
+
+func (g *Game) extraRareComsProcGen() {
+	corrupted := !NoChaos && g.Mod(ModCorruptedDungeon) && g.IntN(5) == 0
+	if !g.Mod(ModTotemConditions) && !corrupted {
+		return
+	}
+	g.ProcInfo.NComestiblesRare = make([]int, MapLevels)
+	if corrupted && g.IntN(3) == 0 {
+		// Rarely, make all extra rare comestibles be of the same kind.
+		coms := g.GetExtraRareComestibles(MapLevels)
+		if g.Mod(ModTotemConditions) {
+			// Potato would be disappointing as single rare
+			// conditional comestible.
+			coms = coms[:len(coms)-1]
+		}
+		g.ProcInfo.SingleRareCom = coms[g.IntN(len(coms))]
+	}
+	tot := 0
+	for i, n := range g.ProcInfo.NComestibles {
+		// Per-comestible probability is 1/14 to 1/6.
+		// Generate in groups of size k to reduce variability.
+		f := 14 - i
+		k := 3
+		for n > 0 {
+			k = min(n, k)
+			if g.IntN(f) < k {
+				g.ProcInfo.NComestiblesRare[i]++
+				tot++
+			}
+			n -= k
+		}
+	}
+	if tot < 3 {
+		for range 2 {
+			g.ProcInfo.NComestiblesRare[g.rand.IntN(MapLevels)]++
+		}
+	}
 }
 
 func (g *Game) menhirsProcGen() {

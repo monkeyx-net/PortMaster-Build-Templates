@@ -10,8 +10,6 @@ import (
 	"codeberg.org/anaseto/gruid/rl"
 )
 
-const rounds = 100
-
 const maxIterations = 10000
 
 func passablePoint(mt rl.Grid, r *rand.Rand) gruid.Point {
@@ -61,12 +59,48 @@ func map2String(mt rl.Grid) string {
 }
 
 func TestGame(t *testing.T) {
-	for range rounds {
-		testGame(t)
+	mods := make([]bool, NMods)
+	// No mods enabled.
+	for range 20 {
+		testGame(t, mods)
+	}
+	// Enable mods progressively.
+	mods[ModCorruptedDungeon] = true
+	for range 20 {
+		testGame(t, mods)
+	}
+	mods[ModAdvancedSpirits] = true
+	for range 20 {
+		testGame(t, mods)
+	}
+	mods[ModTotemConditions] = true
+	for range 20 {
+		testGame(t, mods)
+	}
+	mods[ModHealingCombat] = true
+	for range 5 {
+		testGame(t, mods)
+	}
+	// Clear mods and test some other combinations.
+	clear(mods)
+	mods[ModTotemConditions] = true
+	for range 5 {
+		testGame(t, mods)
+	}
+	mods[ModAdvancedSpirits] = true
+	for range 5 {
+		testGame(t, mods)
+	}
+	// All mods enabled.
+	for i := range mods {
+		mods[i] = true
+	}
+	for range 20 {
+		testGame(t, mods)
 	}
 }
 
-func testGame(t *testing.T) {
+func testGame(t *testing.T, mods []bool) {
 	gd := gruid.NewGrid(UIWidth, UIHeight)
 	md := &model{gd: gd, g: &Game{}, targ: &targeting{}}
 	md.initStructures()
@@ -75,10 +109,7 @@ func testGame(t *testing.T) {
 	g := md.g
 	g.md = md
 	g.rand = rand.New(rand.NewPCG(rand.Uint64(), rand.Uint64()))
-	g.Mods = make([]bool, NMods)
-	g.Mods[ModCorruptedDungeon] = true
-	g.Mods[ModAdvancedSpirits] = true
-	// g.Mods[ModHealingCombat] = true
+	g.Mods = mods
 	g.Init(spiritEntity(g.Mods, primarySpirits[g.rand.IntN(len(primarySpirits))]))
 	g.ComputePlayerStats()
 	g.InitLevel()
@@ -114,6 +145,9 @@ func testGame(t *testing.T) {
 			p := g.Entity(i).P
 			if b[p] {
 				t.Errorf("Two actors in same place: %v", p)
+			}
+			if !g.Map.Passable(p) {
+				t.Errorf("Placed %s at non-passable tile: %v (level %d)", g.Entity(i).Name, p, g.Map.Level)
 			}
 			b[p] = true
 		}

@@ -17,14 +17,13 @@ type pager struct {
 type pagerMode int
 
 const (
-	modeLogs pagerMode = iota
-	modeDump
-	modeHelp
+	modePagerNormal pagerMode = iota // logs & in-game dump viewing
+	modePagerEnd                     // end of game summary
 )
 
 func (md *model) updatePager(msg gruid.Msg) gruid.Effect {
 	switch md.pager.mode {
-	case modeDump:
+	case modePagerEnd:
 		md.pager.pg.Update(msg)
 		if md.pager.pg.Action() == ui.PagerQuit {
 			md.mode = modeQuitting

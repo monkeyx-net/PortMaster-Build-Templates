@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"runtime/debug"
+
+	"codeberg.org/anaseto/gruid/ui"
 )
 
 // Stats gathers various game statistics from a run.
@@ -14,19 +16,26 @@ type Stats struct {
 	ActivatedMenhirs    int            // number of activated menhirs
 	Comestibles         map[string]int // number of eaten comestibles (per type)
 	Cornered            int            // number of times you felt cornered
+	CurseHistory        []string       // record of curse history
 	Damage              int            // total damage you got
 	Deaths              map[string]int // monster deaths by name
+	DeathsPast          map[string]int // monster deaths by name (past levels)
 	Digs                int            // number of digs (destroyed walls)
+	DigsPast            int            // number of digs (past levels)
 	EatenComestibles    int            // number of eaten comestibles
 	FireClouds          int            // number of spawn fire clouds
+	FireCloudsPast      int            // number of spawn fire clouds (past levels)
 	Hits                int            // number of times you hit with a bump-attack
 	Hurt                int            // number of times you got hurt
 	Lucky               int            // number of times you were lucky (could die to bad roll but got lucky roll)
 	Misses              int            // number of times you missed a bump-attack
-	MonsterTrapTriggers int            // number of triggered traps by the monsters
+	MonsterTriggers     int            // number of triggered traps by the monsters
+	MonsterTriggersPast int            // number of triggered traps by the monsters (past levels)
 	NDeaths             int            // number of monster deaths
-	PlayerTrapTriggers  int            // number of triggered traps by the player
+	NDeathsPast         int            // number of monster deaths (past levels)
+	PlayerTriggers      int            // number of triggered traps by the player
 	PoisonClouds        int            // number of spawn poison clouds
+	PoisonCloudsPast    int            // number of spawn poison clouds (past levels)
 	SpiritUses          int            // number of ability uses
 	Statuses            []int          // times you got each status
 	Waits               int            // number of times you waited
@@ -47,6 +56,7 @@ type Stats struct {
 func newStats() *Stats {
 	return &Stats{
 		Deaths:      map[string]int{},
+		DeathsPast:  map[string]int{},
 		Comestibles: map[string]int{},
 		Statuses:    make([]int, NStatuses),
 	}
@@ -90,12 +100,68 @@ func (g *Game) LevelStats() {
 	} else {
 		gs.MapDeathPerc[g.Map.Level-1] = int(100 * float64(n) / float64(total))
 	}
-
+	// Save information that we show only up to last level for in-progress
+	// non-debug runs.
+	gs.DeathsPast = maps.Clone(gs.Deaths)
+	gs.DigsPast = gs.Digs
+	gs.FireCloudsPast = gs.FireClouds
+	gs.MonsterTriggersPast = gs.MonsterTriggers
+	gs.NDeathsPast = gs.NDeaths
+	gs.PoisonCloudsPast = gs.PoisonClouds
 }
 
-// DumpSummary produces the game statistics short summary displayed at the end
-// of the game.
-func (g *Game) DumpSummary() string {
+func (g *Game) getStatDeaths() map[string]int {
+	if g.showAllStats() {
+		return g.Stats.Deaths
+	}
+	return g.Stats.DeathsPast
+}
+
+func (g *Game) getStatFireClouds() int {
+	if g.showAllStats() {
+		return g.Stats.FireClouds
+	}
+	return g.Stats.FireCloudsPast
+}
+
+func (g *Game) getStatMonsterTriggers() int {
+	if g.showAllStats() {
+		return g.Stats.MonsterTriggers
+	}
+	return g.Stats.MonsterTriggersPast
+}
+
+func (g *Game) getStatNDeaths() int {
+	if g.showAllStats() {
+		return g.Stats.NDeaths
+	}
+	return g.Stats.NDeathsPast
+}
+
+func (g *Game) getStatPoisonClouds() int {
+	if g.showAllStats() {
+		return g.Stats.PoisonClouds
+	}
+	return g.Stats.PoisonCloudsPast
+}
+
+func (g *Game) getStatExcludeStr(markup bool) string {
+	if g.showAllStats() {
+		return ""
+	}
+	if markup {
+		return " @S(excluding current level)@N"
+	}
+	return " (excluding current level)"
+}
+
+// showAllStats reports whether game statistics should show everything, including
+// informations of current level that could be unknown yet to the player.
+func (g *Game) showAllStats() bool { return g.Wizard.Extra || g.win || g.PlayerActor().IsDead() }
+
+// DumpEndSummary produces the game statistics short summary displayed at the end
+// of the game. When markup is enabled, in-game viewing is assumed.
+func (g *Game) DumpEndSummary(markup bool) string {
 	var sb strings.Builder
 	var version string
 	info, ok := debug.ReadBuildInfo()
@@ -113,21 +179,20 @@ func (g *Game) DumpSummary() string {
 		}
 		sb.WriteString(").\n")
 	}
-	pa := g.PlayerActor()
-	if g.win {
-		fmt.Fprintf(&sb, "You destroyed the Orb of Corruption!\n")
-	} else if pa.IsDead() {
-		fmt.Fprintf(&sb, "You died while exploring level %d of the dungeon.\n", g.Map.Level)
-	} else {
-		fmt.Fprintf(&sb, "You are exploring level %d of the dungeon.\n", g.Map.Level)
+	if !markup {
+		pa := g.PlayerActor()
+		if g.win {
+			fmt.Fprintf(&sb, "You destroyed the Orb of Corruption!\n")
+		} else if pa.IsDead() {
+			fmt.Fprintf(&sb, "You died while exploring level %d of the dungeon.\n", g.Map.Level)
+		} else {
+			fmt.Fprintf(&sb, "You are exploring level %d of the dungeon.\n", g.Map.Level)
+		}
+		fmt.Fprintf(&sb, "You spent %d turns in the dungeon.\n", g.Turn)
 	}
-	fmt.Fprintf(&sb, "You spent %d turns in the dungeon.\n", g.Turn)
-	fmt.Fprintf(&sb, "Your adventure resulted in %s.\n", CountNoun("monster death", g.Stats.NDeaths))
-	if g.modCount() > 0 {
-		sb.WriteString("\nMods:\n")
-		g.dumpMods(&sb)
-	}
-	g.dumpPlayer(&sb)
+	fmt.Fprintf(&sb, "Your adventure resulted in %s%s.\n", CountNoun("monster death", g.getStatNDeaths()), g.getStatExcludeStr(markup))
+	g.dumpMods(&sb, markup)
+	g.dumpPlayer(&sb, markup)
 	return sb.String()
 }
 
@@ -144,38 +209,36 @@ func (g *Game) modCount() int {
 // Dump produces the game statistics full summary.
 func (g *Game) Dump() string {
 	var sb strings.Builder
-	summary := g.DumpSummary()
-	sb.WriteString(summary)
-	sb.WriteString("\nComestibles:\n")
-	for i := range g.PlayerComestibles() {
-		ei := g.Entity(i)
-		fmt.Fprintf(&sb, "- %s\n", ei.Name)
-	}
-	sb.WriteString("\nLast messages:\n")
-	for _, e := range g.Logs.Entries[max(0, len(g.Logs.Entries)-20):] {
-		fmt.Fprintf(&sb, "%s\n", e.dumpString())
-	}
-	sb.WriteString("\nMap:\n")
-	g.dumpDungeon(&sb)
-	if g.Stats.NDeaths > 0 {
-		sb.WriteString("\nMonster deaths:\n")
-		g.dumpKilledMonsters(&sb)
-	}
-	if g.Stats.EatenComestibles > 0 {
-		sb.WriteString("\nEaten comestibles:\n")
-		g.dumpEatenComestibles(&sb)
-	}
-	sb.WriteString("\nStatistics:\n")
-	g.dumpStatistics(&sb)
-	sb.WriteString("\nTimeline:\n")
-	for _, s := range g.Logs.Story {
-		sb.WriteString(s)
-		sb.WriteByte('\n')
-	}
+	sb.WriteString(g.DumpEndSummary(false))
+	g.dumpComestibles(&sb, false)
+	g.dumpLastMessages(&sb, false)
+	g.dumpMap(&sb, false)
+	g.dumpMonsterDeaths(&sb, false)
+	g.dumpEatenComestibles(&sb, false)
+	g.dumpStatistics(&sb, false)
+	g.dumpCurseHistory(&sb, false)
+	g.dumpTimeline(&sb, false)
 	return sb.String()
 }
 
-func (g *Game) dumpMods(sb *strings.Builder) {
+// DumpInGame produces the statistics summary for in-game pager viewing (with
+// markup enabled).
+func (g *Game) DumpInGame() string {
+	var sb strings.Builder
+	sb.WriteString(g.DumpEndSummary(true))
+	g.dumpMonsterDeaths(&sb, true)
+	g.dumpEatenComestibles(&sb, true)
+	g.dumpStatistics(&sb, true)
+	g.dumpCurseHistory(&sb, true)
+	g.dumpTimeline(&sb, true)
+	return sb.String()
+}
+
+func (g *Game) dumpMods(sb *strings.Builder, markup bool) {
+	if g.modCount() == 0 {
+		return
+	}
+	sb.WriteString(section("Mods", markup))
 	for i, b := range g.Mods {
 		if !b {
 			continue
@@ -184,30 +247,48 @@ func (g *Game) dumpMods(sb *strings.Builder) {
 	}
 }
 
-func (g *Game) dumpPlayer(sb *strings.Builder) {
+func (g *Game) dumpPlayer(sb *strings.Builder, markup bool) {
 	pa := g.PlayerActor()
-	fmt.Fprintf(sb, "\nHP:%d/%d A:%d D:%d",
-		pa.HP, pa.GetMaxHP(), pa.GetAttack(), pa.GetDefense())
-	for i, turns := range pa.Statuses {
-		if turns <= 0 {
-			continue
+	if !markup {
+		fmt.Fprintf(sb, "\nHP:%d/%d A:%d D:%d",
+			pa.HP, pa.GetMaxHP(), pa.GetAttack(), pa.GetDefense())
+		for i, turns := range pa.Statuses {
+			if turns <= 0 {
+				continue
+			}
+			sb.WriteByte(' ')
+			st := Status(i)
+			fmt.Fprintf(sb, "%s(%d)", g.StatusAbbr(pa, st), turns)
 		}
-		sb.WriteByte(' ')
-		st := Status(i)
-		fmt.Fprintf(sb, "%s(%d)", g.StatusAbbr(pa, st), turns)
+		sb.WriteByte('\n')
 	}
-	sb.WriteByte('\n')
-	sb.WriteString("\nSpirits:\n")
+	sb.WriteString(section("Spirits", markup))
 	for i, sp := range g.PlayerSpirits() {
 		ei := g.Entity(i)
 		fmt.Fprintf(sb, "- %s (%s %d/%d, used %s)\n",
-			ei.Name, sp.Ability[sp.Level].Name(),
-			sp.Charges, sp.MaxCharges[sp.Level],
+			ei.Name, sp.GetAbility().Name(),
+			sp.Charges, sp.GetMaxCharges(),
 			times(sp.Uses))
 	}
 }
 
-func (g *Game) dumpDungeon(sb *strings.Builder) {
+func (g *Game) dumpComestibles(sb *strings.Builder, markup bool) {
+	sb.WriteString(section("Comestibles", markup))
+	for i := range g.PlayerComestibles() {
+		ei := g.Entity(i)
+		fmt.Fprintf(sb, "- %s\n", ei.Name)
+	}
+}
+
+func (g *Game) dumpLastMessages(sb *strings.Builder, markup bool) {
+	sb.WriteString(section("Last messages", markup))
+	for _, e := range g.Logs.Entries[max(0, len(g.Logs.Entries)-20):] {
+		fmt.Fprintf(sb, "%s\n", e.dumpString())
+	}
+}
+
+func (g *Game) dumpMap(sb *strings.Builder, markup bool) {
+	sb.WriteString(section("Map", markup))
 	// Entities.
 	var ids CacheGrid[ID]
 	ids = ids.New()
@@ -262,21 +343,37 @@ func (g *Game) dumpDungeon(sb *strings.Builder) {
 	sb.WriteString("|\n")
 }
 
-func (g *Game) dumpKilledMonsters(sb *strings.Builder) {
-	monsters := slices.Sorted(maps.Keys(g.Stats.Deaths))
+func (g *Game) dumpMonsterDeaths(sb *strings.Builder, markup bool) {
+	if g.getStatNDeaths() == 0 {
+		return
+	}
+	var t string
+	if markup {
+		t = section(fmt.Sprintf("Monster deaths%s@C", g.getStatExcludeStr(markup)), markup)
+	} else {
+		t = section(fmt.Sprintf("Monster deaths%s", g.getStatExcludeStr(markup)), markup)
+	}
+	sb.WriteString(t)
+	deaths := g.getStatDeaths()
+	monsters := slices.Sorted(maps.Keys(deaths))
 	for _, mons := range monsters {
-		fmt.Fprintf(sb, "- %s: %d\n", mons, g.Stats.Deaths[mons])
+		fmt.Fprintf(sb, "- %s: %d\n", mons, deaths[mons])
 	}
 }
 
-func (g *Game) dumpEatenComestibles(sb *strings.Builder) {
+func (g *Game) dumpEatenComestibles(sb *strings.Builder, markup bool) {
+	if g.Stats.EatenComestibles == 0 {
+		return
+	}
+	sb.WriteString(section("Eaten comestibles", markup))
 	comestibles := slices.Sorted(maps.Keys(g.Stats.Comestibles))
 	for _, co := range comestibles {
 		fmt.Fprintf(sb, "- %s: %d\n", co, g.Stats.Comestibles[co])
 	}
 }
 
-func (g *Game) dumpStatistics(sb *strings.Builder) {
+func (g *Game) dumpStatistics(sb *strings.Builder, markup bool) {
+	sb.WriteString(section("Statistics", markup))
 	// NOTE: if the player dumps game statistics while playing, there are
 	// some minor information leaks (like number of destroyed walls or trap
 	// triggers including out of view ones you might not still be aware
@@ -289,7 +386,7 @@ func (g *Game) dumpStatistics(sb *strings.Builder) {
 		times(g.Stats.SpiritUses),
 		CountNoun("comestible", g.Stats.EatenComestibles),
 		CountNoun("menhir", g.Stats.ActivatedMenhirs))
-	fmt.Fprintf(sb, "You triggered %s.\n", CountNoun("trap", g.Stats.PlayerTrapTriggers))
+	fmt.Fprintf(sb, "You triggered %s.\n", CountNoun("trap", g.Stats.PlayerTriggers))
 	fmt.Fprintf(sb, "You hit foes %s.\n", timesPer100(g.Stats.Hits))
 	fmt.Fprintf(sb, "You missed foes %s.\n", timesPer100(g.Stats.Misses))
 	fmt.Fprintf(sb, "You waited %s.\n", timesPer100(g.Stats.Waits))
@@ -310,11 +407,13 @@ func (g *Game) dumpStatistics(sb *strings.Builder) {
 			fmt.Fprintf(sb, "You were %s %s.\n", st, times(n))
 		}
 	}
-	fmt.Fprintf(sb, "There were %s and %s.\n",
-		CountNoun("fire cloud", g.Stats.FireClouds),
-		CountNoun("poison cloud", g.Stats.PoisonClouds))
-	fmt.Fprintf(sb, "%s.\n", there("destroyed wall", g.Stats.Digs))
-	fmt.Fprintf(sb, "%s triggered by monsters.\n", there("trap", g.Stats.MonsterTrapTriggers))
+	ses := g.getStatExcludeStr(markup)
+	fmt.Fprintf(sb, "There were %s and %s%s.\n",
+		CountNoun("fire cloud", g.getStatFireClouds()),
+		CountNoun("poison cloud", g.getStatPoisonClouds()),
+		ses)
+	fmt.Fprintf(sb, "%s%s.\n", there("destroyed wall", g.Stats.Digs), ses)
+	fmt.Fprintf(sb, "%s triggered by monsters%s.\n", there("trap", g.getStatMonsterTriggers()), ses)
 	// Statistics per map level.
 	levels := g.Map.Level - 1
 	if g.win || g.PlayerActor().IsDead() {
@@ -345,6 +444,40 @@ func (g *Game) dumpStatistics(sb *strings.Builder) {
 	perLevel("Spirit uses", g.Stats.MapSpiritUses[:levels])
 	perLevel("Activated menhirs", g.Stats.MapActivatedMenhirs[:levels])
 	perLevel("Triggered traps", g.Stats.MapTriggeredTraps[:levels])
+}
+
+func (g *Game) dumpCurseHistory(sb *strings.Builder, markup bool) {
+	if !g.Mod(ModTotemConditions) {
+		return
+	}
+	sb.WriteString(section("Curses", markup))
+	for _, s := range g.Stats.CurseHistory {
+		stt := ui.Text(s).Format(76)
+		sb.WriteString(strings.ReplaceAll(stt.Text(), "\n", "\n  "))
+		sb.WriteByte('\n')
+	}
+}
+
+func (g *Game) recordCurse(spname string, c *SpiritCond) {
+	s := fmt.Sprintf("- Curse on %s at level %d: %s.\nUntil: %s.",
+		spname, g.Map.Level, UpperFirst(c.Effect.Desc()), UpperFirst(c.Until.Desc()))
+	g.Stats.CurseHistory = append(g.Stats.CurseHistory, s)
+}
+
+func (g *Game) dumpTimeline(sb *strings.Builder, markup bool) {
+	sb.WriteString(section("Timeline", markup))
+	for _, s := range g.Logs.Story {
+		sb.WriteString(s)
+		sb.WriteByte('\n')
+	}
+}
+
+func section(s string, markup bool) string {
+	if markup {
+		return "\n@C" + s + ":@N\n"
+	}
+	return "\n" + s + ":\n"
+
 }
 
 func there(s string, n int) string {

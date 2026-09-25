@@ -173,15 +173,16 @@ func RemoveDataFile(file string) error {
 	return nil
 }
 
-// WriteDump writes full game statistics and returns a success log message or
-// an error.
+// WriteDump writes full game statistics and returns the dump string, and a
+// success log message or an error.
 func (g *Game) WriteDump() (string, error) {
+	dump := g.Dump()
 	dataDir, err := DataDir()
 	if err != nil {
 		return "", err
 	}
 	path := filepath.Join(dataDir, "dump.txt")
-	err = os.WriteFile(path, []byte(g.Dump()), 0644)
+	err = os.WriteFile(path, []byte(dump), 0644)
 	if err != nil {
 		return "", err
 	}

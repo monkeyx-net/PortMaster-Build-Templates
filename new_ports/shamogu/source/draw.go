@@ -66,11 +66,11 @@ func (md *model) Draw() gruid.Grid {
 	case modeQuitting:
 		return md.gd.Slice(gruid.Range{})
 	case modePager:
-		if md.pager.mode == modeDump {
+		if md.pager.mode == modePagerEnd {
 			md.gd.Copy(md.pager.pg.Draw())
 			return md.gd
 		}
-	case modeNewGame, modeNewGameAdvanced:
+	case modeNewGame:
 		md.drawSpiritSelection()
 		return md.gd
 	case modeNewGameMods:
@@ -384,7 +384,8 @@ func (md *model) drawStatusDesc() {
 	md.status.desc.Draw(md.gd.Slice(md.gd.Range().Lines(UIHeight-3-h, UIHeight-1).Shift(x, 0, 0, 0)))
 }
 
-// Markups contains the styling markup-characters we use for StyledText.
+// Markups contains the styling markup-characters we use for StyledText with
+// default background. Lowercase variants use map tiles.
 var Markups = map[rune]gruid.Style{
 	'S': {Fg: ColorForegroundSecondary},
 	'B': {Fg: ColorBlue},
@@ -393,16 +394,27 @@ var Markups = map[rune]gruid.Style{
 	'M': {Fg: ColorMagenta},
 	'O': {Fg: ColorOrange},
 	'R': {Fg: ColorRed},
-	'V': {Fg: ColorViolet}, // unused
+	'V': {Fg: ColorViolet},
 	'Y': {Fg: ColorYellow},
+	's': {Fg: ColorForegroundSecondary, Attrs: AttrInMap},
 	'b': {Fg: ColorBlue, Attrs: AttrInMap},
 	'c': {Fg: ColorCyan, Attrs: AttrInMap},
 	'g': {Fg: ColorGreen, Attrs: AttrInMap},
 	'm': {Fg: ColorMagenta, Attrs: AttrInMap},
 	'o': {Fg: ColorOrange, Attrs: AttrInMap},
 	'r': {Fg: ColorRed, Attrs: AttrInMap},
-	'v': {Fg: ColorViolet, Attrs: AttrInMap}, // unused
+	'v': {Fg: ColorViolet, Attrs: AttrInMap},
 	'y': {Fg: ColorYellow, Attrs: AttrInMap},
+}
+
+// MarkupsAltBg is similar to Markups but it uses secondary background.
+var MarkupsAltBg = maps.Clone(Markups)
+
+func init() {
+	for r, v := range MarkupsAltBg {
+		v.Bg = ColorBackgroundSecondary
+		MarkupsAltBg[r] = v
+	}
 }
 
 func (md *model) drawTargInfo() {
@@ -487,6 +499,12 @@ func (md *model) drawTargInfo() {
 	}
 	formatBox(t, desc, fg)
 	for _, id := range info.entities {
+		if int(id) >= len(md.g.Entities) {
+			// Should not happen, but we keep this check in case
+			// examination info doesn't get updated correctly
+			// between levels.
+			continue
+		}
 		e := g.Entity(id)
 		if !info.sees && e.Noise && e.P == md.targ.p && !g.Wizard.Mode.Reveal() {
 			noise := "footsteps"
@@ -528,21 +546,23 @@ func (md *model) drawTargInfo() {
 				fmt.Fprintf(&sb, "HP:?/%d A:%d D:%d", r.MaxHP, r.Attack, r.Defense)
 			}
 			sb.WriteByte('\n')
-			fmt.Fprintf(&sb, "@CTraits:@N %s.", TraitDesc(r.Kind, r.Traits))
+			fmt.Fprintf(&sb, "@CTraits:@N %s.", g.TraitDesc(r.Kind, r.Traits))
 		case *Spirit:
-			sb.WriteString("@CTotemic spirit.@N\n" + r.Desc())
+			sb.WriteString(r.ExamineDesc(g))
 		case *Menhir:
-			sb.WriteString(r.Desc())
+			sb.WriteString(r.Desc(g))
 			if r.Used {
 				name += " (inert)"
 			}
 		case *RunicTrap:
-			sb.WriteString(r.Desc())
+			sb.WriteString(r.Desc(g))
 			if r.KnownUsed || r.Used && g.Wizard.Mode.Reveal() {
 				name += " (inert)"
 			}
+		case *Comestible:
+			sb.WriteString(r.ExamineDesc(g))
 		case Item:
-			sb.WriteString(r.Desc())
+			sb.WriteString(r.Desc(g))
 		}
 		formatBox(name, sb.String(), cl)
 	}
@@ -557,18 +577,17 @@ func (md *model) drawSpiritSelection() {
 	md.desc.Draw(gdslice.Slice(gdslice.Range().Columns(UIWidth/2, UIWidth)))
 	ui.Textf("Shamanic Mountain Guardian - Shamogu %s", Version).WithStyle(gruid.Style{}.WithFg(ColorMagenta)).
 		Draw(md.gd.Slice(gruid.NewRange(-25+UIWidth/2, 3, UIWidth, UIHeight)))
-	y := 13
-	tabtext := `(TAB for advanced new game settings)`
-	if md.mode == modeNewGameAdvanced {
-		y += len(primarySpiritsAdvanced)
-		tabtext = fmt.Sprintf(`(TAB for mod selection - %d enabled)`, md.g.modCount())
+	y := 8 + len(primarySpirits)
+	n := md.g.modCount()
+	var tabtext string
+	if n > 0 {
+		tabtext = fmt.Sprintf(`@G(TAB for mod selection - @V%d@G enabled)@N`, n)
+	} else {
+		tabtext = `@G(TAB for mod selection)@N`
 	}
-	ui.Text(tabtext).WithStyle(gruid.Style{Fg: ColorGreen}).
+	ui.Text(tabtext).WithMarkups(Markups).
 		Draw(md.gd.Slice(gruid.NewRange(0, y, UIWidth/2, y+1)))
-	y = 16
-	if md.mode == modeNewGameAdvanced {
-		y += len(primarySpiritsAdvanced) - 1
-	}
+	y = 10 + len(primarySpirits)
 	ui.Text(`All life in your mountain is being corrupted. Beasts are losing their minds and ` +
 		`becoming aggressive. These disturbing events started to happen after a dungeon portal suddenly ` +
 		`appeared at the top of the mountain. As the guardian, you decide to explore ` +
@@ -625,16 +644,17 @@ func drawGamePicture(gd gruid.Grid) {
 func (md *model) drawInventory() {
 	menugd := md.menu.main.Draw()
 	md.gd.Copy(menugd)
-	if md.desc.Content.Text() == "" {
-		return
+	var y int
+	if md.desc.Content.Text() != "" && (md.menu.mode != modeEquip || md.drawGroundDesc) {
+		descgd := md.desc.Draw(md.gd.Slice(md.gd.Range().Columns(UIWidth/2, UIWidth)))
+		y = descgd.Size().Y
 	}
-	descgd := md.desc.Draw(md.gd.Slice(md.gd.Range().Columns(UIWidth/2, UIWidth)))
-	if md.menu.mode != modeEquip || !md.drawGroundDesc {
+	if md.menu.mode != modeEquip {
 		return
 	}
 	// We draw the description of the item on the ground below the other
-	// one, unless we use it to upgrade (then description doesn't matter).
-	md.equipLabel.Draw(md.gd.Slice(gruid.NewRange(UIWidth/2, descgd.Size().Y, UIWidth, UIHeight-1)))
+	// one (if any).
+	md.gd.Slice(gruid.NewRange(UIWidth/2, y, UIWidth, UIHeight-1)).Copy(md.equipPager.Draw())
 }
 
 func (md *model) drawKeySettings() {

@@ -1,3 +1,6 @@
+// This file implements effects for comestibles (except conditional ones),
+// abilities, and menhirs.
+
 package main
 
 import (
@@ -56,10 +59,13 @@ const (
 	HealClarityLeaves     = 4
 	HealFirebreathPepper  = 2
 	HealFoggySkinOnion    = 3
+	HealMoonlightLotus    = 2
 	HealTeleportLignified = 2
+	HealWarpingBean       = 2
 
 	DurationDig       = 5
 	DurationDisorient = 6
+	DurationGarDis    = 8
 	DurationFocus     = 3
 	DurationShadow    = 8
 	DurationGarden    = 7
@@ -67,6 +73,7 @@ const (
 	DurationSprint    = 6
 	DurationTimeStop  = 5
 	DurationVampirism = 2
+	DurationVampFung  = 3
 )
 
 // newHPMsg returns a message with new HP after healing an actor for the given
@@ -75,18 +82,10 @@ func newHPMsg(a *Actor, hp int) string {
 	return fmt.Sprintf("%d/%d", max(0, min(a.GetMaxHP(), a.HP+hp)), a.GetMaxHP())
 }
 
-// newHPMsgNH is like newHPMsg but returns an empty string if noheal is true.
-func newHPMsgNH(a *Actor, hp int, noheal bool) string {
-	if noheal {
-		return ""
-	}
-	return newHPMsg(a, hp)
-}
-
-// healMsgNH returns an HP restoring description for the given amount if
-// healing is not disabled.
-func healMsgNH(amount int, noheal bool) string {
-	if noheal {
+// healMsg returns an HP restoring description for the given amount if Healing
+// Combat is not enabled.
+func (g *Game) healMsg(amount int) string {
+	if g.Mod(ModHealingCombat) {
 		return ""
 	}
 	return fmt.Sprintf(" Restores %+d HP.", amount)
@@ -102,16 +101,34 @@ func (g *Game) eatMsg(name string, hpstr string) {
 	}
 }
 
-type EffectAmbrosiaBerries struct{ HealingCombat bool }
+// ComestibleCount returns the number of comestibles in the inventory.
+func (g *Game) ComestibleCount() int {
+	var n int
+	for range g.PlayerComestibles() {
+		n++
+	}
+	return n
+}
+
+// healPlayer restores HP and emits a healing event for spirit conditions
+func (g *Game) healPlayer(ai *Actor, amount int) {
+	hp := ai.HP
+	g.AdjustHP(PlayerID, ai, amount)
+	if ai.HP > hp {
+		TotemEvents(g, &EventHappened{EvType: EventHeal})
+	}
+}
+
+type EffectAmbrosiaBerries struct{}
 
 func (eff EffectAmbrosiaBerries) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	heal := HealAmbrosia
-	if eff.HealingCombat {
+	if g.Mod(ModHealingCombat) {
 		heal = HealAmbrosiaHC
 	}
-	g.eatMsg("ambrosia berries", newHPMsg(pa, heal))
-	g.AdjustHP(PlayerID, pa, heal)
+	g.eatMsg(AmbrosiaBerries.Name(), newHPMsg(pa, heal))
+	g.healPlayer(pa, heal)
 	if g.IntN(2) == 0 {
 		g.PutStatus1(PlayerID, pa, StatusConfusion, DurationConfusionAmbrosia)
 	} else {
@@ -120,9 +137,9 @@ func (eff EffectAmbrosiaBerries) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectAmbrosiaBerries) Desc() string {
+func (eff EffectAmbrosiaBerries) Desc(g *Game) string {
 	heal := HealAmbrosia
-	if eff.HealingCombat {
+	if g.Mod(ModHealingCombat) {
 		heal = HealAmbrosiaHC
 	}
 	return fmt.Sprintf("Restores %+d HP. Leaves you either @Oconfused@N or @Oafraid@N for %d or %d turns respectively.",
@@ -134,7 +151,7 @@ type EffectBerserkingFlower struct{}
 func (eff EffectBerserkingFlower) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	d := DurationBerserk
-	g.eatMsg("berserking flower", "")
+	g.eatMsg(BerserkingFlower.Name(), "")
 	if pa.Has(StatusClarity) {
 		// Eating a berserking flower while clear-minded works but
 		// reduces the duration by half (rounding up).
@@ -144,7 +161,7 @@ func (eff EffectBerserkingFlower) Apply(g *Game) bool {
 	if pa.Has(StatusBerserk) {
 		// The berserking flower can be used to renew berserk duration
 		// and temporary HP bonus.
-		pa.Statuses[StatusBerserk] = d
+		pa.Statuses[StatusBerserk] = max(pa.Statuses[StatusBerserk], d+1)
 		bonusHP := pa.HP - max(1, pa.HP-pa.HPBonus())
 		g.AdjustHP(PlayerID, pa, pa.HPBonus()-bonusHP)
 		return true
@@ -153,7 +170,7 @@ func (eff EffectBerserkingFlower) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectBerserkingFlower) Desc() string {
+func (eff EffectBerserkingFlower) Desc(_ *Game) string {
 	return fmt.Sprintf("Makes you @BBerserk@N for %d turns. %s",
 		DurationBerserk, statusDesc[StatusBerserk])
 }
@@ -163,7 +180,7 @@ type EffectLignificationFruit struct{}
 func (eff EffectLignificationFruit) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	d := DurationLignification
-	g.eatMsg("lignification fruit", "")
+	g.eatMsg(LignificationFruit.Name(), "")
 	if pa.Has(StatusFoggySkin) {
 		// Eating a lignification fruit while foggy works but reduces
 		// the duration by half (rounding up).
@@ -171,9 +188,9 @@ func (eff EffectLignificationFruit) Apply(g *Game) bool {
 		d = (d + 1) / 2
 	}
 	if pa.Has(StatusLignification) {
-		// The lignification ruit can be used to renew lignification
+		// The lignification fruit can be used to renew lignification
 		// duration and temporary HP bonus.
-		pa.Statuses[StatusLignification] = d
+		pa.Statuses[StatusLignification] = max(pa.Statuses[StatusLignification], d+1)
 		bonusHP := pa.HP - max(min(3, pa.HP), pa.HP-pa.HPBonus())
 		g.AdjustHP(PlayerID, pa, pa.HPBonus()-bonusHP)
 		return true
@@ -182,28 +199,28 @@ func (eff EffectLignificationFruit) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectLignificationFruit) Desc() string {
-	return fmt.Sprintf("@BLignifies@N you for %d turns. %s",
+func (eff EffectLignificationFruit) Desc(_ *Game) string {
+	return fmt.Sprintf("@BLignification@N for %d turns. %s",
 		DurationLignification, statusDesc[StatusLignification])
 }
 
-type EffectClarityLeaves struct{ HealingCombat bool }
+type EffectClarityLeaves struct{}
 
 func (eff EffectClarityLeaves) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	var hpstr string
-	if eff.HealingCombat {
-		hpstr = ""
-	} else if pa.Has(StatusBerserk) {
+	switch {
+	case g.Mod(ModHealingCombat):
+	case pa.Has(StatusBerserk):
 		hpstr = newHPWithoutBonus(pa, 1, HealClarityLeaves)
-	} else {
+	default:
 		hpstr = newHPMsg(pa, HealClarityLeaves)
 	}
 	extraTurns := pa.Statuses[StatusClarity]
-	g.eatMsg("clarity leaves", hpstr)
+	g.eatMsg(ClarityLeaves.Name(), hpstr)
 	g.PutStatus1(PlayerID, pa, StatusClarity, DurationClarity+extraTurns)
-	if !eff.HealingCombat {
-		g.AdjustHP(PlayerID, pa, HealClarityLeaves)
+	if !g.Mod(ModHealingCombat) {
+		g.healPlayer(pa, HealClarityLeaves)
 	}
 	return true
 }
@@ -219,46 +236,50 @@ func newHPWithoutBonus(a *Actor, m, hp int) string {
 	return fmt.Sprintf("%d/%d", nhp+hp, a.GetMaxHP()-hpbonus)
 }
 
-func (eff EffectClarityLeaves) Desc() string {
+func (eff EffectClarityLeaves) Desc(g *Game) string {
 	return fmt.Sprintf("Gives @BClarity@N for %d turns. %s%s",
-		DurationClarity, statusDesc[StatusClarity], healMsgNH(HealClarityLeaves, eff.HealingCombat))
+		DurationClarity, statusDesc[StatusClarity], g.healMsg(HealClarityLeaves))
 }
 
-type EffectFoggySkinOnion struct{ HealingCombat bool }
+type EffectFoggySkinOnion struct{}
 
 func (eff EffectFoggySkinOnion) Apply(g *Game) bool {
 	pa := g.PlayerActor()
 	var hpstr string
-	if eff.HealingCombat {
-		hpstr = ""
-	} else if pa.Has(StatusLignification) {
+	switch {
+	case g.Mod(ModHealingCombat):
+	case pa.Has(StatusLignification):
 		hpstr = newHPWithoutBonus(pa, 3, HealFoggySkinOnion)
-	} else {
+	default:
 		hpstr = newHPMsg(pa, HealFoggySkinOnion)
 	}
 	extraTurns := pa.Statuses[StatusFoggySkin]
-	g.eatMsg("foggy-skin onion", hpstr)
+	g.eatMsg(FoggySkinOnion.Name(), hpstr)
 	g.PutStatus1(PlayerID, pa, StatusFoggySkin, DurationFoggySkin+extraTurns)
-	if !eff.HealingCombat {
-		g.AdjustHP(PlayerID, pa, HealFoggySkinOnion)
+	if !g.Mod(ModHealingCombat) {
+		g.healPlayer(pa, HealFoggySkinOnion)
 	}
 	return true
 }
 
-func (eff EffectFoggySkinOnion) Desc() string {
+func (eff EffectFoggySkinOnion) Desc(g *Game) string {
 	return fmt.Sprintf("Gives @BFoggy-Skin@N for %d turns. %s%s",
-		DurationFoggySkin, statusDesc[StatusFoggySkin], healMsgNH(HealFoggySkinOnion, eff.HealingCombat))
+		DurationFoggySkin, statusDesc[StatusFoggySkin], g.healMsg(HealFoggySkinOnion))
 }
 
-type EffectFirebreathPepper struct{ HealingCombat bool }
+type EffectFirebreathPepper struct{}
 
 func (eff EffectFirebreathPepper) Apply(g *Game) bool {
 	pp := g.PP()
 	pa := g.PlayerActor()
-	g.eatMsg("firebreath pepper", newHPMsgNH(pa, HealFirebreathPepper, eff.HealingCombat))
+	var hpstr string
+	if !g.Mod(ModHealingCombat) {
+		hpstr = newHPMsg(pa, HealFirebreathPepper)
+	}
+	g.eatMsg(FirebreathPepper.Name(), hpstr)
 	g.MakeNoise(pp, NoiseRoar)
-	if !eff.HealingCombat {
-		g.AdjustHP(PlayerID, pa, HealFirebreathPepper)
+	if !g.Mod(ModHealingCombat) {
+		g.healPlayer(pa, HealFirebreathPepper)
 	}
 	g.md.FirebreathAnimation(pp.Add(g.Dir), g.Dir)
 	p := pp
@@ -284,21 +305,26 @@ func (eff EffectFirebreathPepper) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectFirebreathPepper) Desc() string {
+func (eff EffectFirebreathPepper) Desc(g *Game) string {
 	return fmt.Sprintf("Makes you breathe a confusing fire beam in the current direction inflicting @OConfusion@N for %d turns and @OFire@N for %d turns. Burns foliage, producing fire clouds lasting 6-12 turns. Makes walls explode.%s",
-		DurationConfusionPepperBreath, DurationFire, healMsgNH(HealFirebreathPepper, eff.HealingCombat))
+		DurationConfusionPepperBreath, DurationFire, g.healMsg(HealFirebreathPepper))
 }
 
-type EffectTeleportMushroom struct{ HealingCombat bool }
+type EffectTeleportMushroom struct{}
 
 func (eff EffectTeleportMushroom) Apply(g *Game) bool {
+	if GluttonyRework {
+		// In case the bear teleported or warped first.
+		g.UpdateFOV()
+		g.UpdateKnowledge()
+	}
 	pa := g.PlayerActor()
 	j := g.TotemID()
-	g.eatMsg("teleport mushroom", "")
+	g.eatMsg(TeleportMushroom.Name(), "")
 	if !g.TeleportActor(PlayerID, pa, 1) {
 		g.Log("You resist teleport while lignified.")
-		if !eff.HealingCombat {
-			g.AdjustHP(PlayerID, pa, HealTeleportLignified)
+		if !g.Mod(ModHealingCombat) {
+			g.healPlayer(pa, HealTeleportLignified)
 		}
 	}
 	if j >= 0 {
@@ -315,13 +341,81 @@ func (g *Game) teleportStatuses(i ID, ai *Actor, n int) {
 	}
 }
 
-func (eff EffectTeleportMushroom) Desc() string {
+func (eff EffectTeleportMushroom) Desc(g *Game) string {
 	var healMsg string
-	if !eff.HealingCombat {
+	if !g.Mod(ModHealingCombat) {
 		healMsg = fmt.Sprintf(" Restores %+d HP when lignified instead.", HealTeleportLignified)
 	}
 	return fmt.Sprintf("Teleports you away and makes you sense any totemic spirit. Leaves you either @Odazed@N or @Oimbalanced@N for %d or %d turns respectively.%s",
 		DurationDazeTeleport, DurationImbalanceTeleport, healMsg)
+}
+
+type EffectMoonlightLotus struct{}
+
+func (eff EffectMoonlightLotus) Apply(g *Game) bool {
+	pa := g.PlayerActor()
+	pp := g.PP()
+	var hpstr string
+	if !g.Mod(ModHealingCombat) {
+		hpstr = newHPMsg(pa, HealMoonlightLotus)
+	}
+	g.eatMsg(MoonlightLotus.Name(), hpstr)
+	mp := &MappingPath{passable: g.Map.Passable}
+	nodes := g.PR.BreadthFirstMap(mp, []gruid.Point{pp}, MaxFOVRange)
+	draw, cost := false, 1
+	if g.Map.Terrain.At(pp) == Foliage {
+		g.PutStatus1(PlayerID, pa, StatusDisorient, DurationGarDis)
+		for _, n := range nodes {
+			if n.Cost > cost && draw {
+				g.md.AnimationFrameFast()
+				draw, cost = false, n.Cost
+			}
+			switch g.Map.Terrain.At(n.P) {
+			case Foliage:
+				draw = true
+				g.Map.Terrain.Set(n.P, Floor)
+				if g.Map.KnownTerrain.At(n.P) == Foliage {
+					g.Map.KnownTerrain.Set(n.P, Floor)
+				}
+			case Wall:
+				draw = true
+				g.Map.Terrain.Set(n.P, TranslucentWall)
+				if g.Map.KnownTerrain.At(n.P) == Wall {
+					g.Map.KnownTerrain.Set(n.P, TranslucentWall)
+				}
+			}
+		}
+		// Update FOV and player knowledge.
+		g.UpdateFOV()
+		g.UpdateKnowledge()
+	} else {
+		g.PutStatus1(PlayerID, pa, StatusGardener, DurationGarDis)
+		for _, n := range nodes {
+			if n.Cost > cost && draw {
+				g.md.AnimationFrameFast()
+				draw, cost = false, n.Cost
+			}
+			switch g.Map.Terrain.At(n.P) {
+			case TranslucentWall:
+				draw = true
+				g.Map.Terrain.Set(n.P, Wall)
+				if g.Map.KnownTerrain.At(n.P) == TranslucentWall {
+					g.Map.KnownTerrain.Set(n.P, Wall)
+				}
+			}
+		}
+		// Updating just FOV is enough, because it becomes smaller.
+		g.UpdateFOV()
+	}
+	return true
+}
+
+func (eff EffectMoonlightLotus) Desc(g *Game) string {
+	var healmsg string
+	if !g.Mod(ModHealingCombat) {
+		healmsg = fmt.Sprintf("\nIn any case, restores %+d HP.", HealMoonlightLotus)
+	}
+	return fmt.Sprintf("If you are standing on foliage, gives @BDisorient@N for %d turns and increases visibility around, changing plain walls into translucent ones and foliage into floor.\nOtherwise, gives @BGardener@N for %d turns and changes instead translucent walls into plain ones.%s", DurationGarDis, DurationGarDis, healmsg)
 }
 
 type EffectFocus struct{}
@@ -349,7 +443,7 @@ func (eff EffectFocus) Name() string {
 	return "focus"
 }
 
-func (eff EffectFocus) Desc() string {
+func (eff EffectFocus) Desc(_ *Game) string {
 	return fmt.Sprintf("@BFocus@N for %d turns. %s @GInstant@N.", DurationFocus, statusDesc[StatusFocus])
 }
 
@@ -374,7 +468,7 @@ func (eff EffectDig) Name() string {
 	return "dig"
 }
 
-func (eff EffectDig) Desc() string {
+func (eff EffectDig) Desc(_ *Game) string {
 	return fmt.Sprintf("@BDig@N for %d turns. %s @GInstant@N.",
 		DurationDig, statusDesc[StatusDig])
 }
@@ -432,7 +526,7 @@ func (eff EffectJump) Name() string {
 	return "dazing jump"
 }
 
-func (eff EffectJump) Desc() string {
+func (eff EffectJump) Desc(_ *Game) string {
 	return fmt.Sprintf("Jump in the current direction to the furthest free position in view. You will attack any monsters on the path with +1 attack and @Odaze@N them for %d turns.",
 		DurationDazeJump)
 }
@@ -508,7 +602,7 @@ func (eff EffectPushingGale) Name() string {
 	return "pushing gale"
 }
 
-func (eff EffectPushingGale) Desc() string {
+func (eff EffectPushingGale) Desc(_ *Game) string {
 	return fmt.Sprintf("Hurt foes in the four cardinal directions for 1 damage when ranged and 1-2 in melee. Pushes foes away and @Ounbalances@N them for %d turns. Dissipates clouds except foliage fires that propagate instead.",
 		DurationImbalanceGale)
 }
@@ -530,7 +624,7 @@ func (eff EffectTimeStop) Name() string {
 	return "stop time"
 }
 
-func (eff EffectTimeStop) Desc() string {
+func (eff EffectTimeStop) Desc(_ *Game) string {
 	return fmt.Sprintf("@BStop Time@N for %d turns. %s @GInstant@N.",
 		DurationTimeStop, statusDesc[StatusTimeStop])
 }
@@ -566,7 +660,7 @@ func (eff EffectTailSlap) Name() string {
 	return "tail slap"
 }
 
-func (eff EffectTailSlap) Desc() string {
+func (eff EffectTailSlap) Desc(_ *Game) string {
 	return fmt.Sprintf("Perform a tail-slap attack with +1 effective damage on any adjacent foes while turning around, @Ounbalancing@N them for %d turns.",
 		DurationImbalanceTailSlap)
 }
@@ -596,7 +690,7 @@ func (eff EffectVampirism) Name() string {
 	return "vampirism"
 }
 
-func (eff EffectVampirism) Desc() string {
+func (eff EffectVampirism) Desc(_ *Game) string {
 	return fmt.Sprintf("@BVampirism@N for %d turns. %s @GInstant@N.", eff.Duration, statusDesc[StatusVampirism])
 }
 
@@ -654,7 +748,7 @@ func (eff EffectLightning) Name() string {
 	return "lightning"
 }
 
-func (eff EffectLightning) Desc() string {
+func (eff EffectLightning) Desc(_ *Game) string {
 	return fmt.Sprintf("Inflict 1-3 damage on any chain of monsters adjacent to you. Damage decreases with distance. Affected monsters are @Odazed@N for %d turns. Hurts you too for 1 HP.",
 		DurationDazeLightning)
 }
@@ -682,7 +776,7 @@ func (eff EffectBark) Name() string {
 	return "bark"
 }
 
-func (eff EffectBark) Desc() string {
+func (eff EffectBark) Desc(_ *Game) string {
 	return fmt.Sprintf("Frighten all monsters within %d tiles of distance for %d turns.",
 		MaxFOVRange, DurationFearBark)
 }
@@ -716,7 +810,7 @@ func (eff EffectNoxiousSmell) Name() string {
 	return "noxious smell"
 }
 
-func (eff EffectNoxiousSmell) Desc() string {
+func (eff EffectNoxiousSmell) Desc(_ *Game) string {
 	return fmt.Sprintf("Confuse monsters within %d tiles of distance for %d turns.",
 		MaxFOVRange, DurationConfusionSkunk)
 }
@@ -756,7 +850,7 @@ func (eff EffectLignify) Name() string {
 	return "lignify"
 }
 
-func (eff EffectLignify) Desc() string {
+func (eff EffectLignify) Desc(_ *Game) string {
 	return fmt.Sprintf("Lignify monsters in view for %d turns.",
 		DurationLignificationRoots)
 }
@@ -790,7 +884,7 @@ func (eff EffectPoisonCloud) Name() string {
 	return "poison cloud"
 }
 
-func (eff EffectPoisonCloud) Desc() string {
+func (eff EffectPoisonCloud) Desc(_ *Game) string {
 	return "Spit poisonous clouds on the sides and in front of you up to two free tiles away, lasting 7-11 turns."
 }
 
@@ -819,7 +913,7 @@ func (eff EffectSprint) Name() string {
 	return "sprint"
 }
 
-func (eff EffectSprint) Desc() string {
+func (eff EffectSprint) Desc(_ *Game) string {
 	return fmt.Sprintf("@BSprint@N for %d turns. %s @GInstant@N.",
 		DurationSprint, statusDesc[StatusSprint])
 }
@@ -868,7 +962,7 @@ func (eff EffectFireRetreat) Name() string {
 	return "fire retreat"
 }
 
-func (eff EffectFireRetreat) Desc() string {
+func (eff EffectFireRetreat) Desc(_ *Game) string {
 	return "Walk backwards up to two tiles while leaving a fire cloud lasting 6-12 turns."
 }
 
@@ -885,12 +979,12 @@ func (eff EffectShadows) Name() string {
 	return "shadows"
 }
 
-func (eff EffectShadows) Desc() string {
+func (eff EffectShadows) Desc(_ *Game) string {
 	return fmt.Sprintf("@BShadow@N for %d more turns. %s @GInstant@N.",
 		DurationShadow, statusDesc[StatusShadow])
 }
 
-type EffectSnack struct{ NoGluttonyStatus bool }
+type EffectSnack struct{}
 
 func (eff EffectSnack) Apply(g *Game) bool {
 	pa := g.PlayerActor()
@@ -917,11 +1011,8 @@ func (eff EffectSnack) Apply(g *Game) bool {
 	g.MoveActor(PlayerID, pa, to, MovTeleport)
 	g.UpdateFOV()
 	g.UpdateKnowledge()
-	if !eff.NoGluttonyStatus {
-		// Eating a snack doesn't trigger gluttony.
-		g.snack = true
-		defer func() { g.snack = false }()
-	}
+	g.snack = true
+	defer func() { g.snack = false }()
 	return ci.Use(g, i)
 }
 
@@ -929,9 +1020,9 @@ func (eff EffectSnack) Name() string {
 	return "snack"
 }
 
-func (eff EffectSnack) Desc() string {
+func (eff EffectSnack) Desc(g *Game) string {
 	desc := "You teleport to the nearest comestible, if any, and eat it."
-	if eff.NoGluttonyStatus {
+	if GluttonyRework {
 		return desc
 	}
 	return desc + " It doesn’t trigger @BGluttony@N."
@@ -954,7 +1045,7 @@ func (eff EffectGarden) Name() string {
 	return "garden"
 }
 
-func (eff EffectGarden) Desc() string {
+func (eff EffectGarden) Desc(_ *Game) string {
 	return fmt.Sprintf("@BGardener@N for %d turns. %s @GInstant@N.",
 		DurationGarden, statusDesc[StatusGardener])
 }
@@ -980,7 +1071,7 @@ func (eff EffectStomp) Apply(g *Game) bool {
 	}
 	if pa.Has(StatusBerserk) {
 		// Stomp renews berserk duration (if lower) and temporary HP bonus.
-		pa.Statuses[StatusBerserk] = max(pa.Statuses[StatusBerserk], d)
+		pa.Statuses[StatusBerserk] = max(pa.Statuses[StatusBerserk], d+1)
 		bonusHP := pa.HP - max(1, pa.HP-pa.HPBonus())
 		g.AdjustHP(PlayerID, pa, pa.HPBonus()-bonusHP)
 	} else {
@@ -996,8 +1087,7 @@ func (g *Game) stompDigAt(at gruid.Point) {
 	if Passable(t) {
 		return
 	}
-	g.Stats.Digs++
-	g.Map.Terrain.Set(at, Rubble)
+	g.BreakWall(at)
 	if t == TranslucentWall {
 		g.PoisonCloudAt(at)
 	}
@@ -1008,7 +1098,7 @@ func (eff EffectStomp) Name() string {
 	return "stomp"
 }
 
-func (eff EffectStomp) Desc() string {
+func (eff EffectStomp) Desc(_ *Game) string {
 	return fmt.Sprintf("Destroy walls in a 2-tile radius. Makes you @BBerserk@N for %d turns.",
 		DurationBerserkStomp)
 }
@@ -1048,7 +1138,7 @@ func (eff EffectDeathStare) Name() string {
 	return "death stare"
 }
 
-func (eff EffectDeathStare) Desc() string {
+func (eff EffectDeathStare) Desc(_ *Game) string {
 	return fmt.Sprintf("Kill first visible foe in front. Gives you @OFear@N for %d turns as backlash.",
 		DurationFearDeathStare)
 }
@@ -1077,7 +1167,7 @@ func (eff EffectLayRune) Name() string {
 	return "lay rune"
 }
 
-func (eff EffectLayRune) Desc() string {
+func (eff EffectLayRune) Desc(_ *Game) string {
 	return "Lay a random runic trap on current floor tile."
 }
 
@@ -1094,7 +1184,7 @@ func (eff EffectDisorient) Name() string {
 	return "disorient"
 }
 
-func (eff EffectDisorient) Desc() string {
+func (eff EffectDisorient) Desc(_ *Game) string {
 	return fmt.Sprintf("@BDisorient@N for %d turns. %s @GInstant@N.", DurationDisorient, statusDesc[StatusDisorient])
 }
 
@@ -1176,11 +1266,16 @@ func (m *Map) interiorWallAt(p gruid.Point) bool {
 	return true
 }
 
+func (g *Game) BreakWall(at gruid.Point) {
+	g.Stats.Digs++
+	TotemEvents(g, &EventHappened{EvType: EventWallBreak})
+	g.Map.Terrain.Set(at, Rubble)
+}
+
 // earthMenhirDig is similar to dig but without the noise and extra behaviors
 // (because we want a single noise source at the "earthquake" centre).
 func (g *Game) earthMenhirDig(at gruid.Point) {
-	g.Stats.Digs++
-	g.Map.Terrain.Set(at, Rubble)
+	g.BreakWall(at)
 	for q := range Neighbors(at) {
 		switch g.Map.Terrain.At(q) {
 		case Floor, Foliage:
@@ -1194,7 +1289,7 @@ func (g *Game) earthMenhirDig(at gruid.Point) {
 	}
 }
 
-func (eff EffectEarthMenhir) Desc() string {
+func (eff EffectEarthMenhir) Desc(_ *Game) string {
 	return "Emits a noisy echoing sound that disintegrates nearby walls and reveals the frontier formed by map walls adjacent to interior ones."
 }
 
@@ -1236,7 +1331,7 @@ func (eff EffectWarpingMenhir) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectWarpingMenhir) Desc() string {
+func (eff EffectWarpingMenhir) Desc(_ *Game) string {
 	return fmt.Sprintf("Teleports away monsters within %d tiles of distance. Reveals location of any portals. The dungeon might sense you and send a wraith to investigate: the deeper you are, the more likely.", MaxFOVRange)
 }
 
@@ -1268,7 +1363,7 @@ func (eff EffectPoisonMenhir) Apply(g *Game) bool {
 	return true
 }
 
-func (eff EffectPoisonMenhir) Desc() string {
+func (eff EffectPoisonMenhir) Desc(_ *Game) string {
 	return fmt.Sprintf("Makes many poisonous clouds appear within %d tiles of distance. Reveals translucent walls.", MaxFOVRange)
 }
 
@@ -1319,6 +1414,6 @@ func (g *Game) revealFoliage() {
 	}
 }
 
-func (eff EffectFireMenhir) Desc() string {
+func (eff EffectFireMenhir) Desc(_ *Game) string {
 	return fmt.Sprintf("Makes many fire clouds appear within %d tiles of distance, each one lasting 6-12 turns. Reveals foliage partially.", MaxFOVRange)
 }

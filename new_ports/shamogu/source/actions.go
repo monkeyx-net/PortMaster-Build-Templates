@@ -6,6 +6,7 @@ import (
 	"cmp"
 	"fmt"
 	"log"
+	"maps"
 	"runtime"
 	"slices"
 	"strings"
@@ -29,7 +30,7 @@ type Action interface {
 type ActionDesc interface {
 	Action
 	String() string
-	Desc() string
+	Desc(*model) string
 }
 
 // updateActionDesc updates the description label for the given described action.
@@ -37,7 +38,7 @@ func (md *model) updateActionDesc(a ActionDesc) {
 	l := md.desc
 	stt := ui.StyledText{}.WithMarkups(Markups)
 	l.Box = &ui.Box{Title: ui.Text(a.String())}
-	l.Content = stt.WithText(a.Desc()).Format(UIWidth/2 - 2)
+	l.Content = stt.WithText(a.Desc(md)).Format(UIWidth/2 - 2)
 }
 
 // ActionNone does nothing.
@@ -607,6 +608,10 @@ func equipItem(md *model, i ID) bool {
 		spirit = true
 		from, to = ID(0), ID(NSpirits)
 	case *Comestible:
+		if g.WarnLeave(EventPickup) {
+			g.md.mode = modeUseConfirmation
+			return false
+		}
 		for i, e := range g.Entities[NSpirits:g.InventoryEnd()] {
 			if !e.IsItem() {
 				// Equip on first empty slot.
@@ -632,7 +637,7 @@ func equipItem(md *model, i ID) bool {
 			}
 		}
 		if entry.Disabled {
-			entry.Text = ui.Textf("  - %s", ej.Name)
+			entry.Text = ui.Textf("  - %s", ej.Name).WithStyle(gruid.Style{Fg: ColorForegroundSecondary})
 		} else {
 			entry.Text = ui.Textf("%c - %s", r, ej.Text())
 			entry.Keys = []gruid.Key{gruid.Key(r)}
@@ -668,7 +673,7 @@ func (a ActionInventory) Handle(md *model) (gruid.Effect, bool) {
 }
 
 // openInventory opens the inventory. The entry corresponding to the given ID
-// is marked as already selected and disabled (used by ModGluttonyRework).
+// is marked as already selected and disabled (used by GluttonyRework).
 func (md *model) openInventory(bound ID) (gruid.Effect, bool) {
 	entries := []ui.MenuEntry{}
 	r := 'a'
@@ -679,10 +684,10 @@ func (md *model) openInventory(bound ID) (gruid.Effect, bool) {
 			entry.Text = ui.Textf("* - %s", ei.Name)
 			entry.Disabled = true
 		} else if ei.IsItem() && (bound == -1 || IsComestible(ei.Item())) {
-			entry.Text = ui.Textf("%c - %s", r, ei.Text())
+			entry.Text = ui.Textf("%c - %s", r, ei.TextWarn(md.g, -1)) // ID only matters if on the ground
 			entry.Keys = []gruid.Key{gruid.Key(r)}
 		} else {
-			entry.Text = ui.Textf("  - %s", ei.Name)
+			entry.Text = ui.Textf("  - %s", ei.Name).WithStyle(gruid.Style{Fg: ColorForegroundSecondary})
 			entry.Disabled = true
 		}
 		entries = append(entries, entry)
@@ -698,7 +703,7 @@ func (md *model) openInventory(bound ID) (gruid.Effect, bool) {
 			entries = appendMenuHeader(entries, InventorySize)
 			var entry ui.MenuEntry
 			if id != bound {
-				entry.Text = ui.Textf("%c - %s", r, md.g.Entity(id).Name)
+				entry.Text = ui.Textf("%c - %s", r, md.g.Entity(id).TextWarn(md.g, id))
 				entry.Keys = []gruid.Key{gruid.Key(r)}
 			} else {
 				entry.Text = ui.Textf("* - %s", md.g.Entity(id).Name)
@@ -771,12 +776,15 @@ func appendMenuHeader(entries []ui.MenuEntry, i ID) []ui.MenuEntry {
 }
 
 // altBgEntries updates entries to use alternate background color for entries
-// of odd index.
+// of odd index. It uses appropriate markups for each entry.
 func altBgEntries(entries []ui.MenuEntry) {
 	for i := range entries {
 		if i%2 == 1 {
-			st := entries[i].Text.Style()
-			entries[i].Text = entries[i].Text.WithStyle(st.WithBg(ColorBackgroundSecondary))
+			t := entries[i].Text
+			st := t.Style().WithBg(ColorBackgroundSecondary)
+			entries[i].Text = t.WithStyle(st).WithMarkups(MarkupsAltBg)
+		} else {
+			entries[i].Text = entries[i].Text.WithMarkups(Markups)
 		}
 	}
 }
@@ -791,9 +799,9 @@ func (md *model) updateItemDesc(e *Entity) {
 		if it.Level == 1 {
 			l.Box.Title = ui.Textf("%s (upgraded)", e.Name)
 		}
-		l.Content = stt.WithText(it.Desc()).Format(UIWidth/2 - 1 - 2)
+		l.Content = stt.WithText(it.Desc(md.g)).Format(UIWidth/2 - 1 - 2)
 	case Item:
-		l.Content = stt.WithText(it.Desc()).Format(UIWidth/2 - 1 - 2)
+		l.Content = stt.WithText(it.Desc(md.g)).Format(UIWidth/2 - 1 - 2)
 	default:
 		// Should not happen.
 		l.Content = stt.WithText(e.Name).Format(UIWidth/2 - 1 - 2)
@@ -804,7 +812,7 @@ func (a ActionInventory) String() string {
 	return "Open inventory"
 }
 
-func (a ActionInventory) Desc() string {
+func (a ActionInventory) Desc(_ *model) string {
 	return "Shows your spirits and comestibles. Selecting a spirit will use a charge, while selecting a comestible makes you eat it."
 }
 
@@ -829,7 +837,7 @@ func (g *Game) useItem(id ID) bool {
 	return it.Use(g, id)
 }
 
-// ActionBindItem chooses the first comestible for ModGluttonyRework.
+// ActionBindItem chooses the first comestible for GluttonyRework.
 type ActionBindItem struct {
 	ID ID
 }
@@ -838,7 +846,7 @@ func (a ActionBindItem) Handle(md *model) (gruid.Effect, bool) {
 	return md.openInventory(a.ID)
 }
 
-// ActionUseTwoItems uses two comestibles for ModGluttonyRework.
+// ActionUseTwoItems uses two comestibles for GluttonyRework.
 type ActionUseTwoItems struct {
 	ID0 ID
 	ID1 ID
@@ -855,26 +863,28 @@ func (a ActionUseTwoItems) Handle(md *model) (gruid.Effect, bool) {
 
 // updateEquipItemDesc updates the label for equipping ei on ej.
 func (md *model) updateEquipItemDesc(ei, ej *Entity) {
-	l := md.desc
+	g := md.g
 	stt := ui.StyledText{}.WithMarkups(Markups)
-	l.Box = &ui.Box{Title: ui.Text(ej.Name)}
 	switch rj := ej.Role.(type) {
 	case *Spirit:
-		l.Box.Title = ui.Textf("%s (upgrade)", ej.Name)
-		l.Content = stt.WithText(rj.UpgradeDesc()).Format(UIWidth/2 - 1 - 2)
+		md.desc.Content = stt // empty (not drawn)
+		md.equipPager.SetBox(&ui.Box{Title: stt.WithTextf("%s (upgrade)", ej.Name)})
+		md.equipPager.SetLines(stt.WithText(rj.UpgradeDesc(g, ei)).Format(UIWidth/2 - 1 - 2).Lines())
 	case *Comestible:
-		l.Box.Title = ui.Textf("%s (replace)", ej.Name)
-		l.Content = stt.WithText(rj.Desc()).Format(UIWidth/2 - 1 - 2)
+		md.desc.Box = &ui.Box{Title: stt.WithTextf("%s (replace)", ej.Name)}
+		md.desc.Content = stt.WithText(rj.Desc(g)).Format(UIWidth/2 - 1 - 2)
 		if ri, ok := ei.Role.(*Comestible); ok {
-			md.equipLabel.Box = &ui.Box{Title: ui.Textf("%s (ground)", ei.Name)}
-			md.equipLabel.Content = stt.WithText(ri.Desc()).Format(UIWidth/2 - 1 - 2)
+			md.equipPager.SetBox(&ui.Box{Title: stt.WithTextf("%s (ground)", ei.Name)})
+			md.equipPager.SetLines(stt.WithText(ri.Desc(g)).Format(UIWidth/2 - 1 - 2).Lines())
 		}
 	default:
 		// Empty slot: should only happen with a spirit.
 		if ri, ok := ei.Role.(*Spirit); ok {
-			l.Content = stt.WithText("@MThe spirit on the ground can be equipped on this empty slot.@N").Format(UIWidth/2 - 1 - 2)
-			md.equipLabel.Box = &ui.Box{Title: ui.Textf("%s (ground)", ei.Name)}
-			md.equipLabel.Content = stt.WithText(ri.Desc()).Format(UIWidth/2 - 1 - 2)
+			md.desc.Box = &ui.Box{Title: stt.WithText(ej.Name)}
+			s := "@MThe spirit on the ground can be equipped on this empty slot.@N"
+			md.desc.Content = stt.WithText(s).Format(UIWidth/2 - 1 - 2)
+			md.equipPager.SetBox(&ui.Box{Title: stt.WithTextf("%s (ground)", ei.Name)})
+			md.equipPager.SetLines(stt.WithText(ri.Desc(g)).Format(UIWidth/2 - 1 - 2).Lines())
 		}
 	}
 }
@@ -985,12 +995,16 @@ var configActions = []Action{
 	ActionSetKeys{},
 	ActionToggleDarkLight{},
 	ActionToggleExtraWarnings{},
-	ActionToggleAdvancedNewGame{},
 }
 
-var configKeys = []rune{':', 'c', 'w', 'n', 't'}
+var configKeys = []rune{':', 'c', 'w', 't'}
 
 func (a ActionConfig) Handle(md *model) (gruid.Effect, bool) {
+	md.openConfig(true)
+	return nil, false
+}
+
+func (md *model) openConfig(reset bool) {
 	md.menuActions = configActions
 	entries := []ui.MenuEntry{}
 	for i, it := range md.menuActions {
@@ -1003,18 +1017,22 @@ func (a ActionConfig) Handle(md *model) (gruid.Effect, bool) {
 	altBgEntries(entries)
 	md.menu.main.SetBox(&ui.Box{Title: ui.Text("Config").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
 	md.menu.main.SetEntries(entries)
-	md.menu.main.SetActiveInvokable(0)
-	md.updateMenuActionDesc(0)
+	if reset {
+		// Reset active entry.
+		md.menu.main.SetActiveInvokable(0)
+	}
+	if idx := md.menu.main.ActiveInvokable(); idx >= 0 {
+		md.updateMenuActionDesc(idx)
+	}
 	md.mode = modeMenu
 	md.menu.mode = modeConfigMenu
-	return nil, false
 }
 
 func (a ActionConfig) String() string {
 	return "Configure settings"
 }
 
-func (a ActionConfig) Desc() string {
+func (a ActionConfig) Desc(_ *model) string {
 	return "Opens a configuration menu with various options."
 }
 
@@ -1029,7 +1047,7 @@ func (a ActionToggleDarkLight) Handle(md *model) (gruid.Effect, bool) {
 	}
 	clearCache()
 	eff := gruid.Cmd(func() gruid.Msg { return gruid.MsgScreen{} })
-	md.mode = modeNormal
+	md.openConfig(false)
 	return eff, false
 }
 
@@ -1038,6 +1056,13 @@ func (a ActionToggleDarkLight) String() string {
 		return "Switch to light color theme"
 	}
 	return "Switch to dark color theme"
+}
+
+func (a ActionToggleDarkLight) Desc(_ *model) string {
+	if GameConfig.DarkColors {
+		return "Toggling this option switches to a light color theme.\n\n@SCurrent setting: dark color theme.@N"
+	}
+	return "Toggling this option switches to a dark color theme.\n\n@SCurrent setting: light color theme.@N"
 }
 
 // ActionToggleExtraWarnings enables/disables extra warnings.
@@ -1051,7 +1076,7 @@ func (a ActionToggleExtraWarnings) Handle(md *model) (gruid.Effect, bool) {
 	}
 	clearCache()
 	eff := gruid.Cmd(func() gruid.Msg { return gruid.MsgScreen{} })
-	md.mode = modeNormal
+	md.openConfig(false)
 	return eff, false
 }
 
@@ -1062,42 +1087,14 @@ func (a ActionToggleExtraWarnings) String() string {
 	return "Enable extra warnings"
 }
 
-func (a ActionToggleExtraWarnings) Desc() string {
-	verb := "enables"
+func (a ActionToggleExtraWarnings) Desc(_ *model) string {
+	var verb, current string
 	if GameConfig.WarningsExtra {
-		verb = "disables"
+		verb, current = "disables", "enabled"
+	} else {
+		verb, current = "enables", "disabled"
 	}
-	return fmt.Sprintf("This option %s extra confirmation prompt warnings.\n\nThose are triggered when getting @OFire@N or @OPoison@N, but also when some specific statuses like @BBerserk@N or @BLignification@N only have one turn remaining.", verb)
-}
-
-// ActionToggleAdvancedNewGame enables/disables advanced new game menu (by
-// default).
-type ActionToggleAdvancedNewGame struct{}
-
-func (a ActionToggleAdvancedNewGame) Handle(md *model) (gruid.Effect, bool) {
-	GameConfig.AdvancedNewGame = !GameConfig.AdvancedNewGame
-	err := SaveConfig()
-	if err != nil {
-		log.Printf("error saving config: %v", err)
-	}
-	clearCache()
-	eff := gruid.Cmd(func() gruid.Msg { return gruid.MsgScreen{} })
-	md.mode = modeNormal
-	return eff, false
-}
-
-func (a ActionToggleAdvancedNewGame) String() string {
-	if GameConfig.AdvancedNewGame {
-		return "Default to classic new game menu"
-	}
-	return "Default to advanced new game menu"
-}
-
-func (a ActionToggleAdvancedNewGame) Desc() string {
-	if GameConfig.AdvancedNewGame {
-		return "This option makes the “classic” new game menu the default on game startup. It only has an effect when starting a new game.\n\nThe classic new game menu only gives access to the core primary spirits and disables all mods.\n\nYou can still access “advanced” new game settings by pressing TAB or SPACE there."
-	}
-	return "This option makes the “advanced” new game menu the default on game startup. It only has an effect when starting a new game.\n\nThe advanced new game menu gives access to extra advanced primary spirits (Spinning Crocodile, Vampiric Bat) and makes use of any enabled mods."
+	return fmt.Sprintf("Toggling this option %s extra confirmation prompt warnings.\n\nThose are triggered when getting @OFire@N or @OPoison@N, but also when some specific statuses like @BBerserk@N or @BLignification@N only have one turn remaining.\n\n@SCurrent setting: %s.@N", verb, current)
 }
 
 // ActionSetKeys opens the keymap settings.
@@ -1161,12 +1158,20 @@ func (a ActionSetKeys) Handle(md *model) (gruid.Effect, bool) {
 		r = nextRuneKey(r)
 	}
 	altBgEntries(entries)
-	md.menu.keys.SetBox(&ui.Box{Title: ui.Text("Key Bindings").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
+	md.setKeyBindingsTitle()
 	md.menu.keys.SetEntries(entries)
 	md.menu.main.SetActiveInvokable(0)
 	md.mode = modeMenu
 	md.menu.mode = modeKeysView
 	return nil, false
+}
+
+func (md *model) setKeyBindingsTitle() {
+	if md.UsesDefaultKeybindings() {
+		md.menu.keys.SetBox(&ui.Box{Title: ui.Text("Key Bindings (default)").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
+	} else {
+		md.menu.keys.SetBox(&ui.Box{Title: ui.Text("Key Bindings (custom)").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
+	}
 }
 
 func (md *model) keysForAction(a Action) string {
@@ -1199,6 +1204,23 @@ func (a ActionSetKeys) String() string {
 	return "View/Customize keybindings"
 }
 
+func (a ActionSetKeys) Desc(md *model) string {
+	var s string
+	if md.UsesDefaultKeybindings() {
+		s = "\n\n@SCurrently: default keybindings.@N"
+	} else {
+		s = "\n\n@SCurrently: custom keybindings.@N"
+	}
+	return fmt.Sprintf("Opens a menu that allows to view and customize keybindings.%s", s)
+}
+
+// UsesDefaultKeybindings reports whether default keybindings are currently in
+// use.
+func (md *model) UsesDefaultKeybindings() bool {
+	return maps.Equal(md.keysNormal, DefaultKeysNormal) &&
+		maps.Equal(md.keysTarget, DefaultKeysTarget)
+}
+
 // ActionViewMessages opens the log message viewer.
 type ActionViewMessages struct{}
 
@@ -1213,7 +1235,7 @@ func (a ActionViewMessages) Handle(md *model) (gruid.Effect, bool) {
 	md.pager.pg.SetCursor(gruid.Point{0, len(md.pager.lines)})
 	md.pager.pg.SetBox(&ui.Box{Title: ui.Text("Messages").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
 	md.mode = modePager
-	md.pager.mode = modeLogs
+	md.pager.mode = modePagerNormal
 	return nil, false
 }
 
@@ -1221,7 +1243,7 @@ func (a ActionViewMessages) String() string {
 	return "View messages"
 }
 
-func (a ActionViewMessages) Desc() string {
+func (a ActionViewMessages) Desc(_ *model) string {
 	return "Opens a pager with previous message logs. The pager supports page up/down, mouse scrolling, and other basic less-like keybindings."
 }
 
@@ -1229,24 +1251,32 @@ func (a ActionViewMessages) Desc() string {
 type ActionDump struct{}
 
 func (a ActionDump) Handle(md *model) (gruid.Effect, bool) {
-	if msg, err := md.g.WriteDump(); err != nil {
+	msg, err := md.g.WriteDump()
+	if err != nil {
 		log.Printf("error writing dump: %v", err)
 		md.g.LogStyled("Error writing statistics.", logError)
 	} else {
 		md.g.Log(msg)
 	}
+	md.mode = modePager
+	md.pager.mode = modePagerNormal
+	dump := md.g.DumpInGame()
+	stts := ui.Text(strings.TrimRight(dump, "\n")).WithMarkups(Markups).Lines()
+	md.pager.pg.SetLines(stts)
+	md.pager.pg.SetCursor(gruid.Point{0, 0})
+	md.pager.pg.SetBox(&ui.Box{Title: ui.Text("Game Summary").WithStyle(gruid.Style{}.WithFg(ColorYellow))})
 	return nil, false
 }
 
 func (a ActionDump) String() string {
-	return "Dump game statistics"
+	return "Game summary"
 }
 
-func (a ActionDump) Desc() string {
+func (a ActionDump) Desc(_ *model) string {
 	if runtime.GOOS == "js" {
-		return "Writes game statistics below."
+		return "Writes game statistics below. Also opens in-game pager with the summary."
 	}
-	return "Writes game statistics to a dump.txt file in the game’s data directory."
+	return "Writes game statistics to a dump.txt file in the game’s data directory. Also opens in-game pager with the summary."
 }
 
 // ActionSaveQuit asks for quitting the game after saving.
@@ -1265,7 +1295,7 @@ func (a ActionSaveQuit) String() string {
 	return "Save and Quit"
 }
 
-func (a ActionSaveQuit) Desc() string {
+func (a ActionSaveQuit) Desc(_ *model) string {
 	return "Saves current progress and quits the game. The next time you start the game, it will directly resume from here."
 }
 
@@ -1282,7 +1312,7 @@ func (a ActionQuit) String() string {
 	return "Quit (without saving)"
 }
 
-func (a ActionQuit) Desc() string {
+func (a ActionQuit) Desc(_ *model) string {
 	return "Deletes any saved progress for current playthrough and quits the game."
 }
 
@@ -1403,8 +1433,11 @@ func (a ActionWizardNextLevel) Handle(md *model) (gruid.Effect, bool) {
 		return nil, false
 	}
 	if g.Map.Level == MapLevels {
-		g.Log("You’re already at the last level.")
-		md.mode = modeNormal
+		g.Log("You’re already at the last level. Starting again!")
+		*g = Game{rand: g.rand, Mods: g.Mods, md: md, Wizard: g.Wizard}
+		spe := spiritEntity(g.Mods, primarySpirits[g.IntN(len(primarySpirits))])
+		md.targ.CancelExamine()
+		md.startNewGame(spe)
 		return nil, false
 	}
 	md.g.StoryLog("Wizard Mode: used “go to next level” cheat")
@@ -1549,7 +1582,7 @@ func (a ActionHelp) String() string {
 	return "Help"
 }
 
-func (a ActionHelp) Desc() string {
+func (a ActionHelp) Desc(_ *model) string {
 	return "Opens a menu leading to various help topics."
 }
 
@@ -1565,18 +1598,14 @@ func (a ActionHelpDefaultKeys) String() string {
 	return "Keybindings (default values)"
 }
 
-func (a ActionHelpDefaultKeys) Desc() string {
+func (a ActionHelpDefaultKeys) Desc(_ *model) string {
 	return "Shows a short one-page summary with most default keybindings."
 }
 
 func (md *model) updateKeysDescription(title string, actions []string) {
-	md.pager.mode = modeHelp
+	md.pager.mode = modePagerNormal
 	md.mode = modePager
-	if CustomKeys {
-		title = fmt.Sprintf(" Default %s ", title)
-	} else {
-		title = fmt.Sprintf(" %s ", title)
-	}
+	title = fmt.Sprintf(" %s ", title)
 	md.pager.pg.SetBox(&ui.Box{Title: ui.Text(title).WithStyle(gruid.Style{}.WithFg(ColorYellow))})
 	lines := []ui.StyledText{}
 	for i := 0; i < len(actions)-1; i += 2 {
@@ -1632,7 +1661,7 @@ func (md *model) helpTopic(title, content string) {
 	md.pager.pg.SetLines(stts)
 	md.pager.pg.SetCursor(gruid.Point{0, 0})
 	md.mode = modePager
-	md.pager.mode = modeHelp
+	md.pager.mode = modePagerNormal
 	md.pager.pg.SetBox(&ui.Box{Title: ui.Text(title).WithStyle(gruid.Style{}.WithFg(ColorYellow))})
 }
 
@@ -1648,7 +1677,7 @@ func (a ActionHelpCombat) String() string {
 	return "Combat"
 }
 
-func (a ActionHelpCombat) Desc() string {
+func (a ActionHelpCombat) Desc(_ *model) string {
 	return "Explains how various combat-related features work, including attack patterns and on-hit effects."
 }
 
@@ -1665,6 +1694,8 @@ Combat damage is affected by attack (A) and defense (D). Maximum damage is the m
 Players under the @BFocus@N status effect and four-headed hydras perform four damage-rolls per attack, doing four times as much damage.
 
 Special effects like @BBerserk@N or @BDig@N may then increase effective total attack damage by one, bypassing defense and any maximum damage caps.
+
+Combat damage is applied to an actor’s HP. Zero HP means death. There is no passive HP regeneration, so monsters never recover lost HP. The player can recover HP by eating some comestibles or by going through a portal.
 
 @YCURRENT DIRECTION@N
 
@@ -1692,7 +1723,7 @@ In Shamogu, both the player and the monsters may use one of several attack patte
 
 @CDragging@N attacks are melee attacks that drag foes backwards, unbalancing them. They’re performed by dragging alligators and Spinning Crocodile players.
 
-@CSneak@N attacks are a two-phased attack pattern. When ranged, it works as a rampaging attack. In melee, a plain attack is followed by quick 2-tile retreat. Sneak attacks are performed by sneaky megabats and Vampiric Bat players.
+@CSneak@N attacks are a two-phased attack pattern. When ranged, it works as a rampaging attack. In melee, a plain attack is followed by quick 2-tile retreat. Sneak attacks are performed by megabats and Vampiric Bat players.
 
 @MNote:@N crocodile’s dragging and bat’s retreat don’t happen when @Opoisoned@N nor when they would move you onto dangerous visible fire, unless you’re already on @OFire@N or would be protected by @BFoggy-Skin@N. The boar’s pushing charge and wind fox’s recoil don’t have any safety rules, but because recoil is a form of involuntary movement, it is at least unaffected by poison. Melee pushing with @BDig@N is restricted by poison when it requires player movement, but unbalancing and piercing effects still happen when pushing a monster against a wall or another monster.
 
@@ -1720,7 +1751,7 @@ func (a ActionHelpStealth) String() string {
 	return "Stealth"
 }
 
-func (a ActionHelpStealth) Desc() string {
+func (a ActionHelpStealth) Desc(_ *model) string {
 	return "Explains how various stealth-related features work, including monster mindstate and noise."
 }
 
@@ -1733,7 +1764,7 @@ In Shamogu, stealth plays an important role. There are two main mechanisms that 
 
 Monsters can be @Owandering@N, @Oguarding@N or @Rhunting@N. Guarding monsters walk around some vault location, often protecting a totem or portal. Wandering monsters take longer trips, possibly to any place in the map but with some bias toward nearby interesting places. Hunting monsters usually travel to the last location they saw you at; when they lose track of you, they become wandering or guarding again and briefly search around the nearby area before going back to their usual behavior.
 
-When in view, wandering and guarding monsters normally spend a turn noticing the player and switching to hunting behavior. There are some exceptions to this rule. For example, Dazzling Zebra players are instantly noticeable. Also, when hungry rats smell you from afar or sneaky megabats hear you, they immediately start hunting you even if they’re still out of view. Moreover, any monster may perform by chance an ambushing charge from out-of-view, like behind some rubble, attacking and becoming hunting at once.
+When in view, wandering and guarding monsters normally spend a turn noticing the player and switching to hunting behavior. There are some exceptions to this rule. For example, Dazzling Zebra players are instantly noticeable. Also, when hungry rats smell you from afar or megabats hear you, they immediately start hunting you even if they’re still out of view. Moreover, any monster may perform by chance an ambushing charge from out-of-view, like behind some rubble, attacking and becoming hunting at once.
 
 @YNOISE@N
 
@@ -1742,6 +1773,10 @@ Combat and some other actions produce noise, as shown with onomatopoeias in the 
 Shamogu also shows visually the sound made by monsters out of view: @Rfootsteps@N, @Olight footsteps@N, @Gcreep noise@N, @Cflapping of wings@N, and @Mheavy footsteps@N. Note that monsters cannot hear your footsteps or, at the very least, they don’t care about such small noises!
 
 Players and monsters with the “good hearing” trait may hear sounds farther than usual. Players with “bad hearing” cannot hear @Gcreep noises@N nor @Cflapping of wings@N well, but they hear others sounds normally.
+
+@YCLOCK@N
+
+When you spend more than a thousand turns on a given map, the dungeon core will detect your location and will make monsters hunt you on their next trip. A new pair of hunting blazing golems will be sent, too. Beware of playing too slowly!
 `)
 }
 
@@ -1757,7 +1792,7 @@ func (a ActionHelpItems) String() string {
 	return "Items"
 }
 
-func (a ActionHelpItems) Desc() string {
+func (a ActionHelpItems) Desc(_ *model) string {
 	return "Gives an overview about the various kinds of items found in the game."
 }
 
@@ -1782,7 +1817,7 @@ func (a ActionHelpMods) Handle(md *model) (gruid.Effect, bool) {
 	title := "Mods (Help)"
 	n := md.g.modCount()
 	if n == 0 {
-		md.helpTopic(title, "You haven’t enabled any expansion or challenge mods. You’re playing the vanilla game.\n\nMods are enabled through the advanced new game settings. You can access those from the new game menu by pressing TAB or SPACE.")
+		md.helpTopic(title, "You haven’t enabled any expansion or challenge mods. You’re playing the base game.\n\nMods are enabled through the Mod Selection menu. You can access it from the New Game menu by pressing TAB or SPACE.")
 		return nil, false
 	}
 	var sb strings.Builder
@@ -1791,37 +1826,64 @@ func (a ActionHelpMods) Handle(md *model) (gruid.Effect, bool) {
 	} else {
 		fmt.Fprintf(&sb, "You have enabled the %d mods below.", n)
 	}
-	for _, m := range gameMods {
+	for _, m := range GameMods {
 		if !md.g.Mod(m) {
 			continue
 		}
 		fmt.Fprintf(&sb, "\n\n@Y%s@N\n\n%s", m.String(), m.Desc())
-		if m == ModAdvancedSpirits {
-			sb.WriteString("\n\n")
-			sb.WriteString(`@CExtra Info@N
-
-Some advanced secondary spirit traits are a bit tricky to use or understand.
-
-The Gawalt’s weakens by 1 damage any hits doing more than 2 base damage and two thirds of the hits doing 2 base damage. Accuracy is preserved.
-
-Zebra’s “dazzling” trait means that any attack directed at you will be redirected to any monster just on your other side. It hence encourages weird positioning tactics. Also, with Zebra, monsters notice you instantly, without losing a turn, so beware of sudden ranged attacks during exploration.
-
-The Lion’s roaring happens on first sight, but detecting a monster first beyond view with @BClarity@N will prevent the roaring. Fear duration is 4-5, with 4 being more likely a short distances, because monsters get over their Fear more quickly when the danger is close.
-
-When the Elephant is in a dead-end or the Gawalt is on a menhir tile, wandering monsters don’t notice you, but hunting monsters still see you.
-
-The Chicken not triggering traps is as simple as it sounds, but given how wandering monsters avoid traps, it has subtle stealth implications.`)
+		if s := modExtraInfo(m); s != "" {
+			sb.WriteString("\n\n@CExtra Info@N\n\n")
+			sb.WriteString(s)
 		}
 	}
 	md.helpTopic(title, sb.String())
 	return nil, false
 }
 
+func modExtraInfo(m Mod) string {
+	switch m {
+	case ModCorruptedDungeon:
+		return `The wandering or guarding behavior of monsters is hidden with Corrupted Dungeon. While most of the time the roles remain the same as in the base game, you’ll occasionally have to guess based on actual behavior.
+
+Various thematic levels of diverse rarity may appear. They can be quite surprising!
+
+Sometimes, map corruption events happen. In particular, lots of long-lasting fog may spawn at once in the whole level. Beware however that this event is accompanied by a reduction in foliage and rubble around the map, so the temporarily reduced visibility progressively switches to an increased visibility.`
+	case ModAdvancedSpirits:
+		return `Some advanced secondary spirit traits are a bit tricky to use or understand.
+
+Zebra’s “dazzling” trait means that any attack directed at you will be redirected to any monster just on your other side. It hence encourages weird positioning tactics. Also, with Zebra, monsters notice you instantly, without losing a turn, so beware of sudden ranged attacks during exploration.
+
+The Lion’s roaring happens on first sight, but detecting a monster first beyond view with @BClarity@N will prevent the roaring. Fear duration is 4-5, with 4 being more likely a short distances, because monsters get over their Fear more quickly when the danger is close.
+
+The Gawalt weakens by 1 damage any hits doing more than 2 base damage and two thirds of the hits doing 2 base damage. Accuracy is preserved.
+
+The Bear ignores any special requirements for eating rare comestibles.
+
+When the Elephant is in a dead-end or the Gawalt is on a menhir tile, wandering monsters don’t notice you, but hunting monsters still see you.
+
+The Chicken not triggering traps is as simple as it sounds, but given how wandering monsters avoid traps, it has subtle stealth implications.
+
+@MNote.@N Unless combined with Totem Conditions, this mod makes regular spirits rarer early on than advanced ones, to make it harder to skip those.`
+	case ModTotemConditions:
+		return `Be careful while choosing spirits: some totem curses may replace existing curses on upgrade or even apply a curse on any upgrade (including for primary spirit!). Watch closely the nature of punishment: often, difficult restrictions have softer punishments when you fail.
+
+Don’t be too afraid of losing a spirit or two: each run generates an extra non-empty totem, so there are now two extra more than necessary to complete your build. Also, when a spirit leaves, time freezes for a few turns, giving you some respite to adjust.
+
+Curses that ask to “complete a full level” exclude the level in which you got the curse. The curse that says “you move by more than one tile in a turn” only cares about your final position after a full turn, so beware of frogs catching you from afar or butterflies blinking you away!
+
+@CConditional comestibles@N are special comestibles that can only be eaten under specific circumstances. Some are specific to this mod (oyster, potato, chestnut) and some others have non-conditional variants in base game (acorn, bean, fungus, rose, snail). Conditional comestibles are more frequent than rare comestibles in base game, particularly later on.
+
+@MNote.@N When this mod is combined with Advanced Spirits, those aren’t more frequent than regular ones early on anymore. Instead, they sometimes get softer curses to help make them more appealing. Also, when No Recharges is on, some curses are disabled or adjusted for balance.`
+	default:
+		return ""
+	}
+}
+
 func (a ActionHelpMods) String() string {
 	return "Mods"
 }
 
-func (a ActionHelpMods) Desc() string {
+func (a ActionHelpMods) Desc(_ *model) string {
 	return "Lists enabled mods along with their descriptions."
 }
 
@@ -1837,7 +1899,7 @@ func (a ActionHelpStatuses) String() string {
 	return "Statuses"
 }
 
-func (a ActionHelpStatuses) Desc() string {
+func (a ActionHelpStatuses) Desc(_ *model) string {
 	return "Explains in detail how the various status effects work, as well as the color conventions."
 }
 
@@ -1854,7 +1916,7 @@ On the map, monster color may change depending on active status effects.  By def
 	pa := g.PlayerActor()
 	for i, desc := range statusDesc {
 		st := Status(i)
-		if st == StatusGluttony && g.Mod(ModGluttonyRework) {
+		if st == StatusGluttony && GluttonyRework {
 			continue
 		}
 		color := statusColor(st, 42)
@@ -1882,7 +1944,7 @@ func (a ActionHelpTips) String() string {
 	return "Tips"
 }
 
-func (a ActionHelpTips) Desc() string {
+func (a ActionHelpTips) Desc(_ *model) string {
 	return "Provides various tips for new players."
 }
 
@@ -1928,6 +1990,6 @@ While the recommended way to discover the game is to progressively improve your 
 
 @YCHALLENGE TIPS@N
 
-If, on the contrary, you find Shamogu too easy, you’re encouraged to try the various expansion and challenge mods accessible after pressing TAB or SPACE in the classic new game menu!
+If, on the contrary, you find Shamogu too easy, you’re encouraged to try the various expansion and challenge mods accessible after pressing TAB or SPACE in the new game menu!
 `)
 }

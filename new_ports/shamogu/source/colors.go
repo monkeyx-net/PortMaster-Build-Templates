@@ -29,4 +29,6 @@ const (
 	AttrInMap gruid.AttrMask = 1 << iota
 	AttrReverse
 	AttrBold
+
+	AttrNone = 0
 )

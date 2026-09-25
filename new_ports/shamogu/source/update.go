@@ -81,7 +81,7 @@ func (md *model) update(msg gruid.Msg) gruid.Effect {
 				md.mode = modeNormal
 			}
 		}
-	case modeNewGame, modeNewGameAdvanced:
+	case modeNewGame:
 		return md.updateSpiritSelectionMenu(msg)
 	case modeNewGameMods:
 		return md.updateModSelectionMenu(msg)
@@ -99,6 +99,16 @@ func (md *model) update(msg gruid.Msg) gruid.Effect {
 	case modeWizardConfirmation:
 		st := md.updateConfirmation(msg)
 		md.action = ActionWizardConfirm{State: st}
+	case modeUseConfirmation:
+		st := md.updateConfirmation(msg)
+		switch st {
+		case confirmTrue:
+			md.g.confirm = true
+			md.action = ActionInteract{}
+		case confirmFalse:
+			md.g.Log("Don’t touch it, then.")
+			md.mode = modeNormal
+		}
 	case modeQuitConfirmation:
 		st := md.updateConfirmation(msg)
 		md.action = ActionQuitConfirm{State: st}
@@ -109,18 +119,34 @@ func (md *model) update(msg gruid.Msg) gruid.Effect {
 		if md.more(msg) {
 			md.gameEnded = true
 			md.mode = modePager
-			md.pager.mode = modeDump
+			md.pager.mode = modePagerEnd
 			md.dump(md.g.WriteDump())
 		}
 	}
-	md.g.UpdateFirePos(PlayerID, md.g.PlayerActor())
+	pa := md.g.PlayerActor()
+	md.g.UpdateFirePos(PlayerID, pa)
+	TotemEvents(md.g, &EventHappened{EvType: EventPlayerTurn})
+	xhp := pa.expectedHP()
 	eff, done := md.action.Handle(md)
 	if done {
-		md.endTurn()
+		md.endTurn(xhp)
 		md.RefreshExamineInfo()
 	}
 	md.updateStatus()
 	return eff
+}
+
+// expectedHP returns the expected HP at the end of the turn, assuming no
+// external interference or any healing actions.
+func (a *Actor) expectedHP() int {
+	hp := a.HP
+	if a.Statuses[StatusBerserk] == 1 {
+		hp = max(1, hp-a.HPBonus())
+	}
+	if a.Statuses[StatusLignification] == 1 {
+		hp = max(min(3, hp), hp-a.HPBonus())
+	}
+	return hp
 }
 
 func (md *model) more(msg gruid.Msg) bool {
@@ -373,9 +399,11 @@ func (md *model) updateStatusMouse(msg gruid.MsgMouse) {
 }
 
 // endTurn finalizes player's turn and runs other events until next player
-// turn.
-func (md *model) endTurn() {
-	md.mode = modeNormal
+// turn. The given argument contains the expected HP at the end of the turn.
+func (md *model) endTurn(xhp int) {
+	if md.mode != modeCritical {
+		md.mode = modeNormal
+	}
 	g := md.g
 	g.EndTurn()
 	pa := g.PlayerActor()
@@ -388,16 +416,18 @@ func (md *model) endTurn() {
 	if pa.DoesAny(Gawalt) {
 		g.SenseItems(itemMenhir)
 	}
-	//g.TurnStats()
 	hp := pa.HP
 	if hp <= 0 {
 		md.death()
 		return
 	}
+	if hp <= HPCritical && xhp > HPCritical {
+		// Warn only if HP went below critical point when it was
+		// expected to remain higher.
+		g.WarningPrompt()
+		g.LogStyled("*** CRITICAL HP WARNING ***", logConfirm)
+	}
 	if md.mode == modeCritical {
-		if hp <= HPCritical {
-			g.LogStyled("*** CRITICAL HP WARNING ***", logConfirm)
-		}
 		md.logConfirmContinue()
 	}
 	g.Logs.NextTick = g.Logs.Index
@@ -418,7 +448,7 @@ func (md *model) logConfirmContinue() {
 }
 
 func (md *model) dump(msg string, err error) {
-	s := md.g.DumpSummary()
+	s := md.g.DumpEndSummary(false)
 	lines := strings.Split(s, "\n")
 	stts := []ui.StyledText{}
 	for _, l := range lines {

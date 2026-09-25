@@ -21,10 +21,10 @@
 .Nm
 .Op Fl F
 .Op Fl l
-.Op Fl n
 .Op Fl s
 .Op Fl t
 .Op Fl x
+.Op Fl O Ar options
 .Op Fl h Ar scale
 .Op Fl w Ar scale
 .Op Fl r Ar file
@@ -46,10 +46,29 @@ The options are as follows:
 .Bl -tag -width Ds
 .It Fl F
 Launch game in fullscreen (SDL2 version only).
+.It Fl O Ar options
+A comma-separated list of compile-time variable options present in the
+.Pa vars.go
+file.
+An exclamation mark
+.Cm \&!
+negates the option.
+Setting an option temporarily ignores the default for a game session.
+.Pp
+.Bl
+.It
+Option
+.Cm NoAnim
+disables animations.
+.It
+Option
+.Cm NoChaos
+changes chaos megabat to a screeching megabat with no chaos bite, and removes
+rare comestibles from the game, except conditional comestibles when Totem
+Conditions is enabled.
+.El
 .It Fl l
 Write game logs to logs file.
-.It Fl n
-No animations.
 .It Fl r Ar file
 Watch replay file
 .Ar file

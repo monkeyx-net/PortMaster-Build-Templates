@@ -277,10 +277,18 @@ func (g *Game) ComputePlayerStats() {
 	p.MaxHP = 9
 	p.Traits = NoTraits
 	for _, sp := range g.PlayerSpirits() {
-		p.Attack += sp.BonusAttack[sp.Level]
-		p.Defense += sp.BonusDefense[sp.Level]
-		p.MaxHP += sp.BonusHP[sp.Level]
-		p.Traits |= sp.BonusTraits[sp.Level]
+		d := sp.Condition.Enabled()
+		if d.Any(HasStats) {
+			p.Attack += sp.BonusAttack[sp.Level]
+			p.Defense += sp.BonusDefense[sp.Level]
+			p.MaxHP += sp.BonusHP[sp.Level]
+		}
+		if d.Any(HasTraits) {
+			p.Traits |= sp.BonusTraits[sp.Level]
+		}
 	}
 	p.HP = min(p.HP, p.GetMaxHP())
+	if g.Mod(ModTotemConditions) {
+		g.UpdateEventFilter()
+	}
 }

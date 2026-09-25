@@ -16,7 +16,7 @@ const (
 
 // Effect represents any kind of applicable effect.
 type Effect interface {
-	Desc() string
+	Desc(*Game) string
 	Apply(*Game) bool
 }
 
@@ -29,7 +29,7 @@ type Ability interface {
 // Item holds an item that can be used and equipped.
 type Item interface {
 	// Desc returns a description of the item.
-	Desc() string
+	Desc(*Game) string
 	// Use takes a game state and the item's id and reports whether a
 	// turn-taking action was performed.
 	Use(*Game, ID) bool
@@ -53,10 +53,33 @@ type Spirit struct {
 	BonusHP      [2]int     // bonus hp per level (may be zero)
 	Uses         int        // number of times it was used (for statistics)
 	Advanced     bool       // advanced secondary spirit
+	Condition    *SpiritCond
 }
 
-func (sp *Spirit) Desc() string {
+func (sp *Spirit) ExamineDesc(g *Game) string {
+	return sp.eitherDesc(g, true)
+}
+
+func (sp *Spirit) Desc(g *Game) string {
+	return sp.eitherDesc(g, false)
+}
+
+func (sp *Spirit) eitherDesc(g *Game, descUpgrade bool) string {
 	var sb strings.Builder
+	if descUpgrade {
+		sb.WriteString("@CTotemic spirit.@N\n")
+	}
+	if cond := sp.Condition; cond != nil {
+		if descUpgrade {
+			udesc := cond.Upgrade.Desc()
+			if udesc != "" {
+				sb.WriteString(udesc)
+				sb.WriteByte('\n')
+			}
+		}
+		sb.WriteString(cond.Desc())
+		sb.WriteByte('\n')
+	}
 	bonuses := []string{}
 	if attack := sp.BonusAttack[sp.Level]; attack > 0 {
 		bonuses = append(bonuses, fmt.Sprintf("%+d Attack", attack))
@@ -68,28 +91,37 @@ func (sp *Spirit) Desc() string {
 		bonuses = append(bonuses, fmt.Sprintf("%+d HP", hp))
 	}
 	if len(bonuses) > 0 {
-		sb.WriteString("Gives")
+		sb.WriteString("@CStats:@N")
 		for i, bonus := range bonuses {
 			sb.WriteByte(' ')
 			sb.WriteString(bonus)
 			if i < len(bonuses)-1 {
-				sb.WriteByte(',')
+				sb.WriteString(", ")
 			} else {
 				sb.WriteByte('.')
 			}
 		}
 		sb.WriteByte('\n')
 	}
-	fmt.Fprintf(&sb, "@CAbility:@N %s (%d/%d charges). %s",
-		sp.Ability[sp.Level].Name(), sp.Charges, sp.MaxCharges[sp.Level], sp.Ability[sp.Level].Desc())
+	fmt.Fprintf(&sb, "@CAbility @S(%s %d/%d charges)@C:@N %s",
+		sp.GetAbility().Name(), sp.Charges, sp.GetMaxCharges(), sp.GetAbility().Desc(g))
 	sb.WriteByte('\n')
-	fmt.Fprintf(&sb, "@CTraits:@N %s.", TraitDesc(Player, sp.BonusTraits[sp.Level]))
+	fmt.Fprintf(&sb, "@CTraits:@N %s.", g.TraitDesc(Player, sp.BonusTraits[sp.Level]))
 	return sb.String()
 }
 
-func (sp *Spirit) UpgradeDesc() string {
-	desc := sp.Desc()
+func (sp *Spirit) UpgradeDesc(g *Game, enew *Entity) string {
+	desc := sp.Desc(g)
 	var sb strings.Builder
+	sb.WriteString("@MThe spirit essence can be used to upgrade this spirit.@N\n")
+	hasCond := sp.Condition != nil
+	if cond := enew.Role.(*Spirit).Condition; cond != nil && cond.Upgrade.Applies(hasCond) {
+		if hasCond {
+			sb.WriteString("@RReplacing@N ")
+		}
+		sb.WriteString(cond.Desc())
+		sb.WriteByte('\n')
+	}
 	bonuses := []string{}
 	if attack := sp.BonusAttack[1] - sp.BonusAttack[0]; attack > 0 {
 		bonuses = append(bonuses, fmt.Sprintf("%+d Attack", attack))
@@ -100,10 +132,10 @@ func (sp *Spirit) UpgradeDesc() string {
 	if hp := sp.BonusHP[1] - sp.BonusHP[0]; hp > 0 {
 		bonuses = append(bonuses, fmt.Sprintf("%+d HP", hp))
 	}
-	sb.WriteString("@MThe spirit essence can be used to upgrade this spirit.@N\n")
 	if len(bonuses) > 0 {
-		sb.WriteString("Gives ")
+		sb.WriteString("@BStats:@N")
 		for i, bonus := range bonuses {
+			sb.WriteByte(' ')
 			sb.WriteString(bonus)
 			if i < len(bonuses)-1 {
 				sb.WriteString(", ")
@@ -116,12 +148,16 @@ func (sp *Spirit) UpgradeDesc() string {
 	fmt.Fprintf(&sb, "@BCharges:@N %+d", sp.MaxCharges[1]-sp.MaxCharges[0])
 	if sp.BonusTraits[1] != sp.BonusTraits[0] {
 		sb.WriteByte('\n')
-		fmt.Fprintf(&sb, "@BNew traits:@N %s.", TraitDesc(Player, sp.BonusTraits[1]&^sp.BonusTraits[0]))
+		fmt.Fprintf(&sb, "@BNew traits:@N %s.", g.TraitDesc(Player, sp.BonusTraits[1]&^sp.BonusTraits[0]))
 	}
 	return desc + "\n\n" + sb.String()
 }
 
 func (sp *Spirit) Use(g *Game, i ID) bool {
+	if !sp.Condition.CanInvoke() {
+		g.Log("This spirit cannot yet be invoked!")
+		return false
+	}
 	if sp.Charges == 0 {
 		g.Log("No charges remaining.")
 		return false
@@ -137,26 +173,38 @@ func (sp *Spirit) Use(g *Game, i ID) bool {
 		return false
 	}
 	ohp := pa.HP
-	done := sp.Ability[sp.Level].Apply(g)
+	done := sp.GetAbility().Apply(g)
 	if !done {
 		return false
 	}
-	sp.Charges--
+	sp.Charges = max(0, sp.Charges-1)
 	sp.Uses++
 	g.Stats.SpiritUses++
 	g.Stats.MapSpiritUses[g.Map.Level-1]++
-	name := sp.Ability[sp.Level].Name()
+	name := sp.GetAbility().Name()
 	if confused {
 		g.LogfStyled("Invoking the spirit while confused hurts you (%d dmg).", logHurtPlayer, ConfusionDamage)
 		g.InflictDamage(PlayerID, pa, ConfusionDamage, AttackOther)
-		g.StoryLogf("Used the “%s” ability while confused (HP: %d/%d)",
-			name, pa.HP, pa.GetMaxHP())
+		g.StoryLogf("Used the “%s” ability while confused (HP: %d/%d, charges: %d/%d)",
+			name, pa.HP, pa.GetMaxHP(), sp.Charges, sp.GetMaxCharges())
 	} else if hp := pa.HP; hp == ohp {
-		g.StoryLogf("Used the “%s” ability", name)
+		g.StoryLogf("Used the “%s” ability (charges: %d/%d)", name, sp.Charges, sp.GetMaxCharges())
 	} else {
-		g.StoryLogf("Used the “%s” ability (HP: %d/%d)", name, hp, pa.GetMaxHP())
+		g.StoryLogf("Used the “%s” ability (HP: %d/%d, charges: %d/%d)", name, hp, pa.GetMaxHP(), sp.Charges, sp.GetMaxCharges())
 	}
 	return true
+}
+
+// GetMaxCharges returns the maximum number of charges given the current spirit
+// upgrade level.
+func (sp *Spirit) GetMaxCharges() int {
+	return sp.MaxCharges[sp.Level]
+}
+
+// GetAbility returns the maximum number of charges given the current spirit
+// upgrade level.
+func (sp *Spirit) GetAbility() Ability {
+	return sp.Ability[sp.Level]
 }
 
 const ConfusionDamage = 1
@@ -164,7 +212,7 @@ const ConfusionDamage = 1
 // EmptyTotem represents a totem without spirit.
 type EmptyTotem struct{}
 
-func (sp *EmptyTotem) Desc() string {
+func (sp *EmptyTotem) Desc(_ *Game) string {
 	return "The totem does not have a spirit or it already left."
 }
 
@@ -178,13 +226,30 @@ type Comestible struct {
 	Effect Effect // effect on use
 }
 
-func (c *Comestible) Desc() string {
-	return fmt.Sprintf("@CComestible.@N\n%s", c.Effect.Desc())
+func (c *Comestible) Desc(g *Game) string {
+	return c.Effect.Desc(g)
+}
+
+func (c *Comestible) ExamineDesc(g *Game) string {
+	return fmt.Sprintf("@CComestible.@N\n%s", c.Effect.Desc(g))
 }
 
 func (c *Comestible) Use(g *Game, i ID) bool {
+	ef := c.Effect
+	if g.Mod(ModTotemConditions) {
+		co, cond := ef.(ConditionalComestible)
+		if cond && !g.snack && !g.PlayerActor().DoesAny(Gluttony) && !co.CanApply(g, i) {
+			// Unless the player is the Bear, forbid eating unless
+			// condition is met.
+			// NOTE: We have to check both snack and Gluttony above
+			// because some curses may disable the latter, but we
+			// want snack to still ignore requirements even then.
+			g.Log(CantEatMsg(ef))
+			return false
+		}
+	}
 	pp := g.PP()
-	done := c.Effect.Apply(g)
+	done := ef.Apply(g)
 	if !done {
 		// Should never happen with comestibles.
 		log.Printf("BUG: did not eat the %s.", g.Entity(i).Name)
@@ -208,7 +273,7 @@ func (c *Comestible) Use(g *Game, i ID) bool {
 }
 
 func (g *Game) handleGluttonyOnEating() {
-	if g.Mod(ModGluttonyRework) {
+	if GluttonyRework {
 		return
 	}
 	switch pa := g.PlayerActor(); {
@@ -230,21 +295,29 @@ func (g *Game) EquipItemAt(i ID) bool {
 		return false
 	}
 	ej := g.Entity(j)
-	switch it.(type) {
+	switch it := it.(type) {
 	case *Spirit:
 		pa := g.PlayerActor()
 		ohpmax := pa.MaxHP
-		if ev, ok := ei.Role.(*Spirit); ok {
-			if ev.Level >= 1 {
+		itc := it.Condition // nil if ModTotemConditions is not enabled
+		if spi, ok := ei.Role.(*Spirit); ok {
+			if spi.Level >= 1 {
 				// Should not happen.
 				g.Log("Spirit cannot be upgraded anymore.")
 				return false
 			}
-			ev.Level++
-			ev.Charges += ev.MaxCharges[1] - ev.MaxCharges[0]
+			spi.Level++
+			spi.Charges += spi.MaxCharges[1] - spi.MaxCharges[0]
+			if itc != nil && itc.Upgrade.Applies(spi.Condition != nil) {
+				g.recordCurse(ei.Name, itc)
+				spi.Condition = itc
+			}
 			g.Logf("You upgrade your %s spirit.", ei.Name)
 			g.StoryLogf("Upgraded your %s spirit", ei.Name)
 		} else {
+			if itc != nil {
+				g.recordCurse(ej.Name, itc)
+			}
 			g.Entities[i], g.Entities[j] = g.Entities[j], g.Entities[i]
 			g.Logf("You choose the %s spirit.", ej.Name)
 			g.StoryLogf("Chose the %s spirit", ej.Name)
@@ -265,10 +338,11 @@ func (g *Game) EquipItemAt(i ID) bool {
 			ei.P = ej.P
 		} else {
 			g.Logf("You pick the %s.", ej.Name)
-			g.StoryLogf("Picked %s", One(ej.Name))
+			g.StoryLogf("Picked %s (comestibles: %d)", One(ej.Name), g.ComestibleCount()+1)
 		}
 		ej.P = InvalidPos
 		g.Entities[i], g.Entities[j] = g.Entities[j], g.Entities[i]
+		TotemEvents(g, &EventHappened{EvType: EventPickup})
 		return true
 	default:
 		panic("unexpected item type")
@@ -299,16 +373,20 @@ type Menhir struct {
 	Effect Effect // effect on use
 }
 
-func (m *Menhir) Desc() string {
+func (m *Menhir) Desc(g *Game) string {
 	if !m.Used {
-		return fmt.Sprintf("@CActivable@N.\n%s", m.Effect.Desc())
+		return fmt.Sprintf("@CActivable@N.\n%s", m.Effect.Desc(g))
 	}
-	return m.Effect.Desc()
+	return m.Effect.Desc(g)
 }
 
 func (m *Menhir) Use(g *Game, i ID) bool {
 	if m.Used {
 		g.Log("The menhir is already inert.")
+		return false
+	}
+	if g.WarnLeave(EventMenhir) {
+		g.md.mode = modeUseConfirmation
 		return false
 	}
 	done := m.Effect.Apply(g)
@@ -317,6 +395,7 @@ func (m *Menhir) Use(g *Game, i ID) bool {
 	}
 	g.StoryLogf("Activated %s", One(g.Entity(i).Name))
 	m.Used = true
+	TotemEvents(g, &EventHappened{EvType: EventMenhir})
 	g.Stats.ActivatedMenhirs++
 	g.Stats.MapActivatedMenhirs[g.Map.Level-1]++
 	return true
@@ -328,7 +407,7 @@ type Portal struct {
 	Used bool // whether fake but already activated
 }
 
-func (p *Portal) Desc() string {
+func (p *Portal) Desc(_ *Game) string {
 	if p.Used {
 		return "Malfunctioning magical portal that doesn’t lead anywhere, despite looking normal."
 	}
@@ -362,6 +441,7 @@ func (g *Game) useFakePortal() {
 	g.PR.BreadthFirstMap(mp, []gruid.Point{g.PP()}, maxdist)
 	g.MakeNoise(g.PP(), NoiseFakePortal)
 	g.LogStyled("An eerie sound came out, but nothing happened!", logSpecial)
+	TotemEvents(g, &EventHappened{EvType: EventFakePortal})
 	for i, ai := range g.Monsters() {
 		ei := g.Entity(i)
 		if g.PR.BreadthFirstMapAt(ei.P) <= maxdist {
@@ -372,6 +452,7 @@ func (g *Game) useFakePortal() {
 
 // NextLevel proceeds to the next level (assuming we're not at the last one).
 func (g *Game) NextLevel() {
+	TotemEvents(g, &EventHappened{EvType: EventPortal})
 	// We return false because after generating a new level we don't want
 	// to end the turn. However, we still upgrade the turn counter, as it
 	// wouldn't be intuitive otherwise.
@@ -381,6 +462,7 @@ func (g *Game) NextLevel() {
 	g.InitLevel()
 	g.Logs.NextTick = g.Logs.Index
 	g.md.targ.CancelExamine()
+	TotemEvents(g, &EventHappened{EvType: EventNewLevel})
 }
 
 // CorruptionOrb represents the orb of corruption.
@@ -388,7 +470,7 @@ type CorruptionOrb struct {
 	Broken bool // whether you broke the orb of corruption or not
 }
 
-func (o *CorruptionOrb) Desc() string {
+func (o *CorruptionOrb) Desc(_ *Game) string {
 	if o.Broken {
 		// Should not happen in practice for now, unless we add extra
 		// content after destroying the orb.

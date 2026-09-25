@@ -1,3 +1,5 @@
+// This file implements entity generation during map initialization.
+
 package main
 
 import (
@@ -28,10 +30,10 @@ func (g *Game) debugBuild() {
 	// g.Entities[2] = spiritEntity(g.Mods, secondarySpirits[3])
 	// g.Entities[1] = spiritEntity(g.Mods, challengeSpirits[4])
 	// g.Entities[2] = spiritEntity(g.Mods, challengeSpirits[2])
-	// g.Entities[4] = comestibleEntity(ComestibleData[BerserkingFlower])
-	// g.Entities[5] = comestibleEntity(ComestibleData[ClarityLeaves])
-	// g.Entities[6] = comestibleEntity(ComestibleData[FirebreathPepper])
-	// g.Entities[7] = comestibleEntity(ComestibleData[FoggySkinOnion])
+	// g.Entities[4] = comestibleEntity(BerserkingFlower)
+	// g.Entities[5] = comestibleEntity(ClarityLeaves)
+	// g.Entities[6] = comestibleEntity(FirebreathPepper)
+	// g.Entities[7] = comestibleEntity(FoggySkinOnion)
 }
 
 func emptySlot() *Entity {
@@ -40,6 +42,9 @@ func emptySlot() *Entity {
 
 // GenEntities generates the entities for a new level, placing them on the map.
 func (g *Game) GenEntities(mg *MapGen) {
+	g.Map.Orb = InvalidPos
+	g.Map.Portal = InvalidPos
+	g.Map.Totem = InvalidPos
 	// Reset non-player actors.
 	clear(g.Entities[FirstMapID+1:])
 	g.Entities = g.Entities[:FirstMapID+1]
@@ -69,7 +74,7 @@ func (g *Game) genPlayerOnNewLevel(mg *MapGen) {
 	g.Map.ActorCache.SetU(p.P, PlayerID)
 	if g.Mod(ModHealingCombat) && g.Map.Level == 5 {
 		sp := g.Entity(0).Role.(*Spirit)
-		if _, ok := sp.Ability[sp.Level].(EffectVampirism); ok {
+		if _, ok := sp.GetAbility().(EffectVampirism); ok {
 			n := 1
 			if g.Mod(ModNoRecharges) {
 				n *= 2
@@ -81,7 +86,7 @@ func (g *Game) genPlayerOnNewLevel(mg *MapGen) {
 	}
 	if !g.Mod(ModNoRecharges) {
 		for _, sp := range g.PlayerSpirits() {
-			sp.Charges = sp.MaxCharges[sp.Level]
+			sp.Charges = sp.GetMaxCharges()
 		}
 	}
 	pa := g.PlayerActor()
@@ -132,11 +137,6 @@ var primarySpirits = []spiritInfo{
 		MaxCharges:  [2]int{1, 2},
 		Ability:     [2]Ability{EffectTimeStop{}, EffectTimeStop{}},
 		BonusTraits: [2]Traits{PatternSwapDaze, PatternSwapDaze}},
-}
-
-// primarySpiritsAdvanced represents the various kinds of advanced primary
-// spirits.
-var primarySpiritsAdvanced = []spiritInfo{
 	{
 		Name:         "Spinning Crocodile",
 		MaxCharges:   [2]int{3, 4},
@@ -254,11 +254,7 @@ var challengeSpirits = []spiritInfo{
 
 // spiritEntity generates a new spirit entity using the given data.
 func spiritEntity(mods []bool, si spiritInfo) *Entity {
-	if HasMod(mods, ModGluttonyRework) && si.BonusTraits[0].Any(Gluttony) {
-		snack := EffectSnack{NoGluttonyStatus: true}
-		si.Ability[0], si.Ability[1] = snack, snack
-	}
-	if HasMod(mods, ModHealingCombat) {
+	if HasMod(mods, ModHealingCombat) || VampiricHC {
 		if _, ok := si.Ability[0].(EffectVampirism); ok {
 			si.MaxCharges[0]++
 			si.MaxCharges[1]++
@@ -304,10 +300,32 @@ const (
 	FoggySkinOnion
 	LignificationFruit
 	TeleportMushroom
+
+	// Rare comestibles (with conditional variant).
+	PolymorphFungus
+	RunethornRose
+	TunnelingAcorn
+	VanishingSnail
+	WarpingBean
+
+	// Rare conditional comestibles (exclusive to Totem Conditions).
+	FortressOyster
+	SeeingPotato
+	TrickyChestnut
+
+	// Miscellaneous rare comestibles.
+	MoonlightLotus
 )
+
+// Name returns the name of the comestible.
+func (ck comestibleKind) Name() string { return ComestibleData[ck].Name }
+
+// Info returns the item information for the comestible.
+func (ck comestibleKind) Info() itemInfo { return ComestibleData[ck] }
 
 // ComestibleData provides information about the various kinds of comestibles.
 var ComestibleData = []itemInfo{
+	// Common comestibles.
 	AmbrosiaBerries:    {"ambrosia berries", EffectAmbrosiaBerries{}},
 	BerserkingFlower:   {"berserking flower", EffectBerserkingFlower{}},
 	ClarityLeaves:      {"clarity leaves", EffectClarityLeaves{}},
@@ -315,32 +333,64 @@ var ComestibleData = []itemInfo{
 	FoggySkinOnion:     {"foggy-skin onion", EffectFoggySkinOnion{}},
 	LignificationFruit: {"lignification fruit", EffectLignificationFruit{}},
 	TeleportMushroom:   {"teleport mushroom", EffectTeleportMushroom{}},
+
+	// Rare comestibles with conditional variant.
+	PolymorphFungus: {"polymorph fungus", EffectPolymorphFungus{}},
+	RunethornRose:   {"runethorn rose", EffectRunethornRose{}},
+	TunnelingAcorn:  {"tunneling acorn", EffectTunnelingAcorn{}},
+	VanishingSnail:  {"vanishing snail", EffectVanishingSnail{}},
+	WarpingBean:     {"warping bean", EffectWarpingBean{}},
+
+	// Rare conditional comestibles (exclusive to Totem Conditions).
+	FortressOyster: {"fortress oyster", EffectFortressOyster{}},
+	SeeingPotato:   {"seeing potato", EffectSeeingPotato{}},
+	TrickyChestnut: {"tricky chestnut", EffectTrickyChestnut{}},
+
+	// Miscellaneous rare comestibles without conditional variant.
+	MoonlightLotus: {"moonlight lotus", EffectMoonlightLotus{}},
 }
 
-// HealingCombatComestibleData provides information about the various kinds of
-// comestibles (for ModHealingCombat).
-var HealingCombatComestibleData = []itemInfo{
-	AmbrosiaBerries:    {"ambrosia berries", EffectAmbrosiaBerries{HealingCombat: true}},
-	BerserkingFlower:   {"berserking flower", EffectBerserkingFlower{}},
-	ClarityLeaves:      {"clarity leaves", EffectClarityLeaves{HealingCombat: true}},
-	FirebreathPepper:   {"firebreath pepper", EffectFirebreathPepper{HealingCombat: true}},
-	FoggySkinOnion:     {"foggy-skin onion", EffectFoggySkinOnion{HealingCombat: true}},
-	LignificationFruit: {"lignification fruit", EffectLignificationFruit{}},
-	TeleportMushroom:   {"teleport mushroom", EffectTeleportMushroom{HealingCombat: true}},
+// CommonComestibles represents the most common comestibles.
+var CommonComestibles = []comestibleKind{
+	AmbrosiaBerries, BerserkingFlower, ClarityLeaves,
+	FirebreathPepper, FoggySkinOnion, LignificationFruit,
+	TeleportMushroom}
+
+// RareComestibles contains the list of rare comestibles available in the base
+// game.
+var RareComestibles = []comestibleKind{
+	MoonlightLotus,
+	PolymorphFungus, RunethornRose, TunnelingAcorn, VanishingSnail, WarpingBean}
+
+// RareNCComestibles contains the list of rare comestibles that do not have a
+// non-conditional variant.
+var RareNCComestibles = []comestibleKind{MoonlightLotus}
+
+// CondComestibles provides information about the various conditional
+// comestibles available in Totem Conditions.
+var CondComestibles = []comestibleKind{
+	PolymorphFungus, RunethornRose, TunnelingAcorn, VanishingSnail, WarpingBean,
+	FortressOyster, SeeingPotato,
+	TrickyChestnut, // last
 }
 
-// GetComestibleData returns the appropriate comestible data for current mod
-// selection.
-func (g *Game) GetComestibleData() []itemInfo {
-	if g.Mod(ModHealingCombat) {
-		return HealingCombatComestibleData
+// GetExtraRareComestibles returns info for the random extra rare comestibles
+// suitable for the given map level.
+func (g *Game) GetExtraRareComestibles(level int) []comestibleKind {
+	if !g.Mod(ModTotemConditions) {
+		return RareComestibles
 	}
-	return ComestibleData
+	n := len(CondComestibles)
+	if level == 9 {
+		n-- // chestnuts are useless on the last level
+	}
+	return CondComestibles[:n]
 }
 
 // comestibleEntity generates a new comestible Entity entity using the given
 // data.
-func comestibleEntity(ci itemInfo) *Entity {
+func comestibleEntity(ck comestibleKind) *Entity {
+	ci := ck.Info()
 	return &Entity{
 		Name:   ci.Name,
 		Rune:   '%',
@@ -398,7 +448,7 @@ func (g *Game) genItems(mg *MapGen) {
 		if g.ProcInfo.FakePortal[g.Map.Level-1] {
 			extraStatic++
 			addPortal(true)
-			if g.Mod(ModCorruptedDungeon) && g.IntN(2) == 0 {
+			if g.Mod(ModCorruptedDungeon) && g.IntN(3) == 0 {
 				extraStatic++
 				addPortal(true)
 				if g.IntN(2) == 0 {
@@ -429,6 +479,7 @@ func (g *Game) genItems(mg *MapGen) {
 		_, p := g.RandomVaultsPlace(mg, npvaults, PlaceItem)
 		return p
 	}
+	var usedLevel bool // spooky corrupted level with used runes/menhirs
 	if spi := g.ProcInfo.Spirits[g.Map.Level-1]; spi.Idx >= 0 {
 		var sp *Entity
 		if spi.Advanced {
@@ -437,12 +488,21 @@ func (g *Game) genItems(mg *MapGen) {
 			sp = spiritEntity(g.Mods, secondarySpirits[spi.Idx])
 		}
 		spr := sp.Role.(*Spirit)
-		spr.Charges = spr.MaxCharges[spr.Level]
+		spr.Charges = spr.GetMaxCharges()
+		if g.Mod(ModTotemConditions) {
+			spr.Condition = g.ProcInfo.Conditions[g.Map.Level-1]
+		}
 		sp.Rune = '!'
 		sp.P = totemPoint()
 		g.Map.Totem = sp.P
 		g.AddEntity(sp)
 	} else if g.Map.Level < MapLevels {
+		if g.Mod(ModCorruptedDungeon) {
+			// In Corrupted Dungeon games with an empty totem,
+			// empty all runes and menhirs 1/15 times on average
+			// per game (2 empty totem levels).
+			usedLevel = g.IntN(30) == 0
+		}
 		addEmptyTotem := func() {
 			p := totemPoint()
 			g.Map.Totem = p
@@ -509,8 +569,13 @@ func (g *Game) genItems(mg *MapGen) {
 	}
 	// Comestibles.
 	nitems := g.ProcInfo.NComestibles[g.Map.Level-1]
-	addComestible := func(i int, cod itemInfo) {
-		co := comestibleEntity(cod)
+	addComestible := func(i int, ck comestibleKind) {
+		// NOTE: first comestibles are always placed in vaults, which
+		// currently means that we typically place rare comestibles in
+		// vaults. Kinda distinctive in a way, to make them stand out a
+		// little more, but it might be nice to sometimes have them
+		// outside of vaults, too.
+		co := comestibleEntity(ck)
 		if i <= max(4, (nitems+1)/2) {
 			co.P = g.RandomPlace(mg, PlaceItem)
 		} else {
@@ -524,7 +589,7 @@ func (g *Game) genItems(mg *MapGen) {
 		n := 0
 		comestibleIdx = func() comestibleKind {
 			n++
-			if n <= 1 {
+			if n <= 1 && g.IntN(4) > 0 {
 				// A single ambrosia berries on berserk levels,
 				// for recovering health when at 1 HP.
 				return AmbrosiaBerries
@@ -537,7 +602,7 @@ func (g *Game) genItems(mg *MapGen) {
 		n := 0
 		comestibleIdx = func() comestibleKind {
 			n++
-			if n <= 1 {
+			if n <= 1 && g.IntN(4) > 0 {
 				// A single foggy-skin onion on lignification
 				// levels to recover movement early.
 				return FoggySkinOnion
@@ -548,7 +613,7 @@ func (g *Game) genItems(mg *MapGen) {
 		n := 0
 		comestibleIdx = func() comestibleKind {
 			n++
-			if n <= 1 {
+			if n <= 1 && g.IntN(4) > 0 {
 				// A single clarity leaves on warp levels to
 				// cure daze once after teleport.
 				return ClarityLeaves
@@ -556,12 +621,20 @@ func (g *Game) genItems(mg *MapGen) {
 			return TeleportMushroom
 		}
 	}
-	if g.Mod(ModCorruptedDungeon) && mg.theme == ThemeNone && g.IntN(3*MapLevels) == 0 {
+	if g.Mod(ModCorruptedDungeon) && mg.theme == ThemeNone && g.IntN(4*MapLevels) == 0 {
 		if g.IntN(2) == 0 {
 			// Field of comestibles of same kind.
-			cod := (g.GetComestibleData())[comestibleIdx()]
+			ck := CommonComestibles[g.IntN(len(CommonComestibles))]
+			if !NoChaos && g.IntN(len(CommonComestibles)) == 0 {
+				ck = MoonlightLotus // Corrupted Dungeon's signature rare comestible
+				if g.IntN(3) == 0 {
+					// Rarely, put a random rare comestible
+					// instead.
+					ck = RareComestibles[g.IntN(len(RareComestibles))]
+				}
+			}
 			for i := range nitems + 7 {
-				addComestible(i, cod)
+				addComestible(i, ck)
 			}
 		} else if g.IntN(3) > 0 {
 			// Extra traps (of same kind) to compensate for lack of
@@ -577,7 +650,7 @@ func (g *Game) genItems(mg *MapGen) {
 	case ThemeNone:
 	case ThemeWarp:
 		nitems += 6
-	case ThemePoison:
+	case ThemePoison, ThemeFootsteps:
 		// Only one extra comestible, because it can be more difficult
 		// than a normal level, in particular early on, but it still
 		// has varied comestibles.
@@ -585,8 +658,68 @@ func (g *Game) genItems(mg *MapGen) {
 	default:
 		nitems += 4
 	}
+	var xrcMap []bool // where extra rare comestibles go
+	if len(g.ProcInfo.NComestiblesRare) > 0 {
+		k := g.ProcInfo.NComestiblesRare[g.Map.Level-1]
+		xrcMap = make([]bool, nitems)
+		for i := range nitems {
+			xrcMap[i] = i < k
+		}
+		g.rand.Shuffle(nitems, func(i, j int) {
+			xrcMap[i], xrcMap[j] = xrcMap[j], xrcMap[i]
+		})
+	}
 	for i := range nitems {
-		addComestible(i, (g.GetComestibleData())[comestibleIdx()])
+		switch {
+		case len(xrcMap) > 0 && xrcMap[i]:
+			if g.ProcInfo.SingleRareCom > 0 {
+				addComestible(i, g.ProcInfo.SingleRareCom)
+			} else {
+				coms := g.GetExtraRareComestibles(g.Map.Level)
+				addComestible(i, coms[g.IntN(len(coms))])
+			}
+		case g.Map.Level == g.ProcInfo.RareComestible1:
+			// Mid-game rare comestible.
+			if g.Mod(ModTotemConditions) {
+				// With Totem Conditions, generate a rare
+				// midgame non-conditional comestible, as
+				// conditional ones are generated
+				// independently as extra rare ones.
+				addComestible(i, RareNCComestibles[g.IntN(len(RareNCComestibles))])
+				g.ProcInfo.RareComestible1 = -1
+				break
+			}
+			addComestible(i, RareComestibles[g.IntN(len(RareComestibles))])
+			g.ProcInfo.RareComestible1 = -1
+		case g.Map.Level == g.ProcInfo.RareComestible2:
+			// Late-game rare comestible.
+			addComestible(i, RareComestibles[g.IntN(len(RareComestibles))])
+			g.ProcInfo.RareComestible2 = -1
+		case g.Map.Level == g.ProcInfo.ExtraLotus && i == nitems-1:
+			// Rare extra lotus in Corrupted Dungeon (outside of
+			// vault, for a change).
+			addComestible(i, MoonlightLotus)
+			g.ProcInfo.ExtraLotus = -1
+		default:
+			ck := comestibleIdx()
+			if ck == AmbrosiaBerries && g.Mod(ModHealingCombat) && !NoChaos {
+				// Replace a few ambrosia berries with
+				// polymorph fungus when Healing Combat is
+				// enabled (1-2 per game).
+				g.ProcInfo.WaitFungus--
+				switch {
+				case g.ProcInfo.WaitFungus == 0:
+					// First one.
+					ck = PolymorphFungus
+				case g.ProcInfo.WaitFungus < 0 && g.IntN(4) == 0:
+					// Sometimes, extra replacement, but
+					// never more than 2.
+					ck = PolymorphFungus
+					g.ProcInfo.WaitFungus = MapLevels
+				}
+			}
+			addComestible(i, ck)
+		}
 	}
 	// Runic traps.
 	rto, rtt := 1, 1 // runes in open areas and in tunnels
@@ -632,6 +765,24 @@ func (g *Game) genItems(mg *MapGen) {
 	}
 	for range rtt {
 		g.genRunicTrapInTunnel(mg, trapRune())
+	}
+	if usedLevel {
+		// Rare spooky level with only used runes and menhirs.
+		for _, e := range g.NPMapEntities() {
+			switch it := e.Role.(type) {
+			case *RunicTrap:
+				it.Used = true
+			case *Menhir:
+				it.Used = true
+			case *Portal:
+				if it.Fake {
+					// Mark even fake portals as already
+					// used if they ever happen on such a
+					// spooky level.
+					it.Used = true
+				}
+			}
+		}
 	}
 }
 
@@ -871,6 +1022,14 @@ const (
 	WindFox
 )
 
+// GetMegabatName returns the name of a megabat with current options.
+func GetMegabatName() string {
+	if NoChaos {
+		return "screeching megabat"
+	}
+	return "chaos megabat"
+}
+
 // MonsData provides information about the various kinds of monsters.
 var MonsData = []monsterInfo{
 	// 		  {name, rune, attack, defense, hp, traits}
@@ -880,7 +1039,7 @@ var MonsData = []monsterInfo{
 	BlazingGolem:      {"blazing golem", 'G', 2, 3, 4, MonsExplodingDeath | ImmunityFire | ImmunityPoison | ImmunityFear | ImmunityConfusion | MonsHeavyFootsteps | MonsNotable},
 	BlinkButterfly:    {"blinking butterfly", 'b', 2, 3, 2, ImmunityImbalance | ImmunityLignification | MonsWingFlap},
 	BurningPhoenix:    {"burning phoenix", 'P', 2, 1, 5, PatternRampage | BurningHits | ImmunityFire | ImmunityLignification | MonsWingFlap | MonsNotable},
-	ChaosMegabat:      {"chaos megabat", 'm', 2, 2, 4, PatternSneaky | GoodHearing | ImmunityLignification | MonsWingFlap | MonsNotable},
+	ChaosMegabat:      {GetMegabatName(), 'm', 2, 2, 2, PatternSneaky | GoodHearing | ImmunityLignification | MonsWingFlap | MonsNotable},
 	ConfusingEye:      {"confusing eye", 'e', 2, 0, 2, PatternRanged | MonsConfusion | ImmunityConfusion | MonsLightFootsteps},
 	CrazyDruid:        {"crazy druid", 'C', 3, 1, 4, PatternSwap | BurningHits | MonsBerserking | MonsNotable},
 	DraggingAlligator: {"dragging alligator", 'A', 3, 1, 4, PatternDragging | MonsScales | ResistanceFire | ResistanceFear | MonsNotable},
@@ -1036,29 +1195,7 @@ func (g *Game) genMonsters(mg *MapGen) {
 			nM--
 			nL++
 		}
-		if g.Map.Level >= 4 && g.Map.Level < MapLevels && g.IntN(5*4) == 0 {
-			switch g.IntN(4) {
-			case 0:
-				// Rare level with many imps.
-				for range nE*2 + nM*2 + nL*3 {
-					g.genMonster(NoisyImp)
-				}
-			case 1:
-				// Rare spooky level with no remaining
-				// wandering monsters with no drawback!
-			default:
-				// Rare level where all remaining monsters
-				// become guardians scattered around.
-				for range nE {
-					g.genMonsterGuardian(g.randMonsKind(monsEarly), g.RandomWaypoint())
-				}
-				for range nM {
-					g.genMonsterGuardian(g.randMonsKind(monsMid), g.RandomWaypoint())
-				}
-				for range nL {
-					g.genMonsterGuardian(g.randMonsKind(monsLate), g.RandomWaypoint())
-				}
-			}
+		if g.genCorruptedLevel(nE, nM, nL) {
 			nE, nM, nL = 0, 0, 0
 		} else {
 			// Occasionally spawn extra uniques or guardians
@@ -1124,6 +1261,19 @@ func (g *Game) genThemedMonsters(mg *MapGen, nE, nM, nL int) {
 		}
 		for range nL + 2 {
 			g.genMonster(WalkingTree)
+		}
+	case ThemeFootsteps:
+		mids := []ActorKind{BarkingHound, ExplodingNadre, FireLlama, LashingFrog, RampagingBoar}
+		midlates := []ActorKind{CrazyDruid, CrazyDruid, DraggingAlligator, DraggingAlligator, WalkingMushroom}
+		lates := []ActorKind{UndeadKnight, FearsomeLich}
+		for range nE + 2*nM/3 {
+			g.genMonster(g.randMonsKind(mids))
+		}
+		for range (1 + nM) / 3 {
+			g.genMonster(g.randMonsKind(midlates))
+		}
+		for range max(1, nL-1) {
+			g.genMonster(g.randMonsKind(lates))
 		}
 	case ThemeLignification:
 		switch g.IntN(4) {
@@ -1245,19 +1395,103 @@ func (g *Game) genThemedMonsters(mg *MapGen, nE, nM, nL int) {
 	}
 }
 
+func (g *Game) genCorruptedLevel(nE, nM, nL int) bool {
+	if g.Map.Level < 4 || g.Map.Level >= MapLevels || g.IntN(5*4) != 0 {
+		return false
+	}
+	// Special corrupted non-thematic levels can appear in map levels 4-8.
+	// Unlike thematic levels, they can combine with previous features.
+	// Chance is about 1/4 per game, and each corruption has 1/16 chance.
+	switch g.IntN(4) {
+	case 0:
+		if g.ProcInfo.ImpLevel {
+			// Never two imp levels in a single run, as it's a very
+			// noticeable event.
+			return false
+		}
+		g.ProcInfo.ImpLevel = true
+		impPatrol := func(mk ActorKind) {
+			p := g.RandomWaypoint()
+			ps := append(g.patrolPointCandidates(p), p)
+			ps = ps[:min(len(ps), 2+g.IntN(2))]
+			g.genMonsterPatroller(mk, ps)
+			g.genMonsterPatroller(NoisyImp, ps)
+			g.genMonsterPatroller(NoisyImp, ps)
+		}
+		// Rare level with many imps and different possible behaviors.
+		if g.IntN(2) == 0 {
+			// Patrolling imp+imp+(bat|butterfly|nadre|hound) trio.
+			mk := g.randMonsKind([]ActorKind{ChaosMegabat, ChaosMegabat,
+				BlinkButterfly, ExplodingNadre, BarkingHound})
+			for range (1 + nE + nM + nL) / 2 {
+				impPatrol(mk)
+			}
+		} else {
+			// Wandering imps in great numbers.
+			for range nE*2 + nM*2 + nL*3 {
+				g.genMonster(NoisyImp)
+			}
+		}
+	case 1:
+		// Rare spooky level with no remaining wandering monsters with
+		// no drawback!
+	case 2:
+		// Rare level where all remaining monsters become patrolling
+		// pairs between random waypoints.
+		for range (1 + nE) / 2 {
+			g.placeRandomPatrollers(g.randMonsKind(monsEarly), g.RandomWaypoint(), 2)
+		}
+		for range nM / 2 {
+			g.placeRandomPatrollers(g.randMonsKind(monsMid), g.RandomWaypoint(), 2)
+		}
+		for range (1 + nL) / 2 {
+			g.placeRandomPatrollers(g.randMonsKind(monsLate), g.RandomWaypoint(), 2)
+		}
+	default:
+		// Rare level where all remaining monsters become guardians
+		// scattered around.
+		for range nE {
+			g.genMonsterGuardian(g.randMonsKind(monsEarly), g.RandomWaypoint())
+		}
+		for range nM {
+			g.genMonsterGuardian(g.randMonsKind(monsMid), g.RandomWaypoint())
+		}
+		for range nL {
+			g.genMonsterGuardian(g.randMonsKind(monsLate), g.RandomWaypoint())
+		}
+	}
+	return true
+}
+
 // RandomWaypoint returns a random non-player waypoint, or a random free
 // position if there is no such place. It doesn't reserve the place for
 // exclusive use.
 func (g *Game) RandomWaypoint() gruid.Point {
 	if len(g.Map.Waypoints) > 0 {
+		pp := g.PP()
 		p := g.Map.Waypoints[g.IntN(len(g.Map.Waypoints))]
-		if p == g.PP() {
-			//
-			return g.RandomPassableWithoutTrap()
+		if paths.DistanceManhattan(pp, p) <= MaxFOVRange {
+			// Try again once if we got too close to the player.
+			p = g.Map.Waypoints[g.IntN(len(g.Map.Waypoints))]
+			if p == pp {
+				// Non-vault waypoint if we got the player's
+				// waypoint.
+				return g.randomNonVaultWaypoint()
+			}
 		}
 		return g.RandomPassableWithin(p, 5)
 	}
-	return g.RandomPassableWithoutTrap()
+	return g.randomNonVaultWaypoint()
+}
+
+func (g *Game) randomNonVaultWaypoint() gruid.Point {
+	pp := g.PP()
+	p := g.RandomPassableWithoutTrap()
+	if paths.DistanceManhattan(pp, p) <= MaxFOVRange {
+		// Try again once if we got too close to the player.
+		p = g.RandomPassableWithoutTrap()
+	}
+	return p
 }
 
 // randMonsKind returns a random monster kind among the given ones.
@@ -1292,9 +1526,11 @@ func (g *Game) genGuardians(nE, nM, nL int) (int, int, int) {
 	}
 	if g.ProcInfo.GuardianEarly == g.Map.Level {
 		nM--
-		nE++
+		if g.ProcInfo.GuardianEarly <= 2 {
+			nE-- // compensation for early bats
+		}
 		p := g.earlyGuardianPoint()
-		g.genMonsterGuardian(ChaosMegabat, p)
+		g.placeRandomPatrollers(ChaosMegabat, p, g.numberOfBats())
 	}
 	if g.ProcInfo.GuardianPortal1 == g.Map.Level {
 		nM--
@@ -1309,13 +1545,54 @@ func (g *Game) genGuardians(nE, nM, nL int) (int, int, int) {
 			}
 		}
 		mk := BlazingGolem
-		if g.IntN(5) < 2 {
+		if g.IntN(3) == 0 {
 			mk = DraggingAlligator
 		}
 		g.genMonsterGuardian(mk, p)
 		g.genMonsterGuardian(mk, p)
 	}
 	return max(0, nE), max(0, nM), max(0, nL)
+}
+
+// placeRandomPatrollers places n monsters with (various) patrolling behaviors
+// chosen at random. NOTE: with chaos megabat in mind only for now (and
+// some special corruptions).
+func (g *Game) placeRandomPatrollers(mk ActorKind, p gruid.Point, n int) {
+	ps := g.patrolPointCandidates(p)
+	k := g.IntN(4)
+	switch {
+	case len(ps) == 0:
+		// Should usually not happen.
+		for range n {
+			g.genMonsterGuardian(mk, p)
+		}
+	case k == 0:
+		// Random patrol point for each monster.
+		for range n {
+			g.genMonsterPatroller(mk, []gruid.Point{p, ps[g.IntN(len(ps))]})
+		}
+	case k == 1 && len(ps) > 1:
+		// Sometimes, extra patrol point.
+		ij := g.rand.Perm(len(ps))[:2]
+		qs := []gruid.Point{ps[ij[0]], ps[ij[1]]}
+		for range n {
+			g.genMonsterPatroller(mk, append([]gruid.Point{p}, qs...))
+		}
+	default:
+		// Same patrol point for all monsters.
+		q := ps[g.IntN(len(ps))]
+		for range n {
+			g.genMonsterPatroller(mk, []gruid.Point{p, q})
+		}
+	}
+}
+
+func (g *Game) numberOfBats() int {
+	if g.ProcInfo.GuardianEarly <= 4 || g.IntN(3) == 0 {
+		return 3
+	}
+	// Usually extra bat when they appear late.
+	return 4
 }
 
 func (g *Game) earlyGuardianPoint() gruid.Point {
@@ -1370,15 +1647,27 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 				g.genMonster(UndeadKnight)
 			}
 		default:
-			g.genMonsterGuardian(FearsomeLich, p)
-			g.genMonsterGuardian(UndeadKnight, p)
+			if g.ProcInfo.SingleGuardKind == Player {
+				g.genMonsterGuardian(FearsomeLich, p)
+				g.genMonsterGuardian(UndeadKnight, p)
+				break
+			}
+			for range 3 {
+				g.genMonsterGuardian(g.ProcInfo.SingleGuardKind, p)
+			}
 		}
 		if q := g.Map.Orb; p != q && g.IntN(2) == 0 {
 			switch g.IntN(9) {
 			case 0, 1:
-				g.genMonsterGuardian(FearsomeLich, q)
-				g.genMonsterGuardian(UndeadKnight, q)
 				nL -= 2
+				if g.ProcInfo.SingleGuardKind == Player {
+					g.genMonsterGuardian(FearsomeLich, q)
+					g.genMonsterGuardian(UndeadKnight, q)
+					break
+				}
+				for range 3 {
+					g.genMonsterGuardian(g.ProcInfo.SingleGuardKind, p)
+				}
 			case 2, 3, 4:
 				nE, nM, nL = g.genOrbComplementaryGuardiansAt(q, nE, nM, nL)
 				if g.IntN(4) == 0 {
@@ -1401,10 +1690,20 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 	}
 	if g.ProcInfo.GuardianPortal2 == g.Map.Level {
 		p := g.corruptedPortalGuardianPoint()
+		k, gmk := 1, MadOctopode
+		if g.ProcInfo.SingleGuardKind != Player {
+			gmk = g.ProcInfo.SingleGuardKind
+			nE--
+			k = 2
+		}
 		if g.IntN(4) > 0 {
-			g.genMonsterGuardian(MadOctopode, p)
+			for range k {
+				g.genMonsterGuardian(gmk, p)
+			}
 		} else {
-			g.genMonster(MadOctopode)
+			for range k {
+				g.genMonster(gmk)
+			}
 			switch g.IntN(3) {
 			case 0:
 				mk := g.randMonsKind(monsMid)
@@ -1422,12 +1721,19 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 			}
 		}
 	}
+	getGuardKind := func(mk ActorKind) ActorKind {
+		if g.ProcInfo.SingleGuardKind == Player {
+			return mk
+		}
+		// Replaces guard kind (corrupted dungeon feature).
+		return g.ProcInfo.SingleGuardKind
+	}
 	if g.ProcInfo.GuardianTotem2 == g.Map.Level {
 		p := g.corruptedTotemGuardianPoint()
 		if g.IntN(4) > 0 {
-			g.genMonsterGuardian(CrazyDruid, p)
+			g.genMonsterGuardian(getGuardKind(CrazyDruid), p)
 		} else {
-			g.genMonster(CrazyDruid)
+			g.genMonster(getGuardKind(CrazyDruid))
 			if g.IntN(3) > 0 {
 				mk := g.randMonsKind(monsEarly)
 				for range 3 {
@@ -1440,27 +1746,39 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 	if g.ProcInfo.WanderingUnique1 == g.Map.Level {
 		nM--
 		if g.IntN(3) > 0 {
-			g.genMonster(WalkingMushroom)
+			g.genMonster(getGuardKind(WalkingMushroom))
 		} else {
 			p := g.corruptedPortalGuardianPoint()
-			g.genMonsterGuardian(WalkingMushroom, p)
+			g.genMonsterGuardian(getGuardKind(WalkingMushroom), p)
 		}
 	}
 	if g.ProcInfo.WanderingUnique2 == g.Map.Level {
 		nM--
 		if g.IntN(3) > 0 {
-			g.genMonster(NoisyImp)
+			g.genMonster(getGuardKind(NoisyImp))
 		} else {
 			p := g.corruptedPortalGuardianPoint()
-			g.genMonsterGuardian(NoisyImp, p)
+			g.genMonsterGuardian(getGuardKind(NoisyImp), p)
 		}
 	}
 	if g.ProcInfo.GuardianTotem1 == g.Map.Level {
 		nE--
 		p := g.corruptedTotemGuardianPoint()
 		if g.IntN(4) > 0 {
-			g.genMonsterGuardian(TotemWasp, p)
-			g.genMonsterGuardian(TotemWasp, p)
+			mk := TotemWasp
+			if g.IntN(15) == 0 {
+				mk = BurningPhoenix
+				nM -= 2
+			} else if g.ProcInfo.SingleGuardKind != Player {
+				mk = g.ProcInfo.SingleGuardKind
+				nM--
+			}
+			g.genMonsterGuardian(mk, p)
+			if g.IntN(30) > 0 {
+				g.genMonsterGuardian(mk, p)
+			} else {
+				nE++
+			}
 		} else {
 			g.genMonster(TotemWasp)
 			g.genMonster(TotemWasp)
@@ -1474,8 +1792,17 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 	}
 	if g.ProcInfo.GuardianEarly == g.Map.Level {
 		nM--
+		if g.ProcInfo.GuardianEarly <= 2 {
+			nE-- // compensation for early bats
+		}
 		p := g.earlyGuardianPoint()
-		g.genMonsterGuardian(ChaosMegabat, p)
+		mk := getGuardKind(ChaosMegabat)
+		g.placeRandomPatrollers(mk, p, g.numberOfBats())
+		if mk != ChaosMegabat {
+			// The alternate ones are stronger, so compensate.
+			nM--
+			nE--
+		}
 		if g.Map.Level >= 3 && g.IntN(3) == 0 {
 			// Rarely, add an imp guardian friend.
 			g.genMonsterGuardian(NoisyImp, p)
@@ -1485,16 +1812,21 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 	if g.ProcInfo.GuardianPortal1 == g.Map.Level {
 		nM--
 		mk := BlazingGolem
-		if g.IntN(5) < 2 {
+		if g.IntN(3) == 0 {
 			mk = DraggingAlligator
 		}
-		if g.IntN(5) == 0 {
+		if g.IntN(9) == 0 {
 			mk = WarpingWraith
 		}
+		mk = getGuardKind(mk)
 		p := g.corruptedPortalGuardianPoint()
 		if g.IntN(4) > 0 {
 			g.genMonsterGuardian(mk, p)
-			g.genMonsterGuardian(mk, p)
+			if g.IntN(30) > 0 {
+				g.genMonsterGuardian(mk, p)
+			} else {
+				nM++
+			}
 		} else {
 			g.genMonster(mk)
 			g.genMonster(mk)
@@ -1506,7 +1838,7 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 			}
 		}
 	}
-	if g.IntN(2*MapLevels) == 0 && nE >= 2 && nM >= 2 {
+	if g.IntN(3*MapLevels) == 0 && nE >= 2 && nM >= 2 {
 		switch g.IntN(2) {
 		case 0:
 			p := g.RandomWaypoint()
@@ -1519,27 +1851,35 @@ func (g *Game) genGuardiansCorrupted(nE, nM, nL int) (int, int, int) {
 			default:
 				mk = HungryRat
 			}
-			for range 5 + g.IntN(4) {
+			n := 5 + g.IntN(g.Map.Level/2)
+			if g.Map.Level == 1 {
+				n -= g.IntN(2) + g.IntN(2)
+			}
+			for range n {
 				g.genMonsterGuardian(mk, p)
 			}
-			nE -= 2
+			nE -= 1 + n/5
 			nM--
 		default:
 			p := g.RandomWaypoint()
 			var mk ActorKind
-			switch g.IntN(3) {
+			switch g.IntN(4) {
 			case 0:
 				mk = BlinkButterfly
-			case 1:
+			case 1, 2:
 				mk = ExplodingNadre
 			default:
 				mk = g.randMonsKind(monsMid)
 			}
-			for range 4 + g.IntN(2) {
+			n := 3 + g.IntN(1+g.Map.Level/4)
+			if g.Map.Level == 1 {
+				n -= g.IntN(2)
+			}
+			for range n {
 				g.genMonsterGuardian(mk, p)
 			}
 			nE--
-			nM -= 2
+			nM -= 1 + n/4
 		}
 	}
 	return max(0, nE), max(0, nM), max(0, nL)
@@ -1564,7 +1904,7 @@ func (g *Game) genOrbAlternateGuardiansAt(p gruid.Point, nE, nM, nL int) (int, i
 			g.genMonsterGuardian(CrazyDruid, p)
 		}
 		mk := BlazingGolem
-		if g.IntN(5) < 2 {
+		if g.IntN(2) == 0 {
 			mk = DraggingAlligator
 		}
 		g.genMonsterGuardian(mk, p)
@@ -1589,11 +1929,12 @@ func (g *Game) genOrbAlternateGuardiansAt(p gruid.Point, nE, nM, nL int) (int, i
 		nL -= 2
 	default:
 		mk := g.randMonsKind(monsMid)
+		n := 4
 		if g.IntN(1+len(monsMid)) == 0 {
 			// Sneaky megabat nest as rare orb guardians, too.
 			mk = ChaosMegabat
+			n += 2
 		}
-		n := 4
 		if mk == ExplodingNadre {
 			// Nadres are frail, so add an extra one to compensate.
 			n++
@@ -1611,7 +1952,7 @@ func (g *Game) genOrbComplementaryGuardiansAt(p gruid.Point, nE, nM, nL int) (in
 	switch g.IntN(4) {
 	case 0:
 		g.genMonsterGuardian(CrazyDruid, p)
-		if g.IntN(5) > 2 {
+		if g.IntN(2) == 0 {
 			g.genMonsterGuardian(BlazingGolem, p)
 		} else {
 			g.genMonsterGuardian(DraggingAlligator, p)
@@ -1641,12 +1982,9 @@ func (g *Game) corruptedPortalGuardianPoint() gruid.Point {
 			p = g.Map.Portal
 		}
 	}
-	if g.IntN(4) == 0 && (g.Map.Orb == InvalidPos || g.IntN(3) > 0) {
+	if g.IntN(5) == 0 && (g.Map.Orb == InvalidPos || g.IntN(3) > 0) {
 		// Occasionally guard a random non-player vault.
 		p = g.RandomWaypoint()
-		if g.Map.Totem != InvalidPos && g.IntN(4) == 0 {
-			p = g.Map.Totem
-		}
 	}
 	switch {
 	case g.Map.Orb != InvalidPos && g.Map.Orb != p && g.IntN(3) > 0:
@@ -1660,10 +1998,13 @@ func (g *Game) corruptedPortalGuardianPoint() gruid.Point {
 }
 
 func (g *Game) corruptedTotemGuardianPoint() gruid.Point {
-	if g.IntN(3) > 0 {
+	if g.IntN(5) > 0 {
 		return g.Map.Totem
 	}
-	return g.corruptedPortalGuardianPoint()
+	if g.IntN(3) > 0 {
+		g.hideLocation(g.Map.Totem)
+	}
+	return g.RandomWaypoint()
 }
 
 // hideLocation attempts to hide the given point by adding foliage or rubble
@@ -1700,14 +2041,11 @@ func (g *Game) hideFrom(lt *lighter, from, dir gruid.Point) {
 			g.Map.Terrain.Set(p, Foliage)
 		}
 	}
-	tp, tq := g.Map.Terrain.At(p), g.Map.Terrain.At(q)
-	if tp == Floor {
+	if g.Map.Terrain.At(p) == Floor {
 		fill(p)
-		tp = g.Map.Terrain.At(p)
 	}
-	if tq == Floor {
+	if g.Map.Terrain.At(q) == Floor {
 		fill(q)
-		tq = g.Map.Terrain.At(q)
 	}
 	vis := lt.diagonalVisibility(from, to)
 	switch vis {
@@ -1750,6 +2088,7 @@ func (g *Game) genMonstersCorrupted(nE, nM, nL int) (int, int, int) {
 		if g.IntN(3) == 0 {
 			// Sometimes replace the crazy druid by a bat.
 			mks[2] = ChaosMegabat
+			g.genMonster(ChaosMegabat) // extra one (because weaker)
 		}
 		nMs := min(nM, 1+g.IntN(2), len(mks))
 		monsSpecialMid := g.monsterSelection(mks, len(mks))
@@ -1806,14 +2145,57 @@ func (g *Game) genMonster(mk ActorKind) (ID, *Entity) {
 	return g.genMonsterAt(mk, q)
 }
 
-// genMonsterGardian spawns a gardian monster of the given kind around a
+// genMonsterGuardian spawns a guardian monster of the given kind around a
 // certain position.
 func (g *Game) genMonsterGuardian(mk ActorKind, at gruid.Point) (ID, *Actor) {
 	p := g.randomFreeNearby(at, 5)
 	id, mons := g.genMonsterAt(mk, p)
 	a := mons.Actor()
-	a.Behavior.Guard = at
+	a.Behavior.Guard = []gruid.Point{at}
 	return id, a
+}
+
+// genMonsterPatroller spawns a patrolling monster between certain positions.
+// Assumes a non-empty list of points.
+func (g *Game) genMonsterPatroller(mk ActorKind, ps []gruid.Point) (ID, *Actor) {
+	p := g.randomFreeNearby(ps[g.IntN(len(ps))], 5)
+	id, mons := g.genMonsterAt(mk, p)
+	a := mons.Actor()
+	a.Behavior.Guard = ps
+	return id, a
+}
+
+// patrolPointCandidates returns a list of suitable patrol destinations sorted
+// by distance to from (excluding from).
+func (g *Game) patrolPointCandidates(from gruid.Point) []gruid.Point {
+	var ps []gruid.Point
+	// Collect item positions that aren't too close nor too far.
+	pp := g.PP()
+	maxdist := 3 * MaxFOVRange
+	dij := &MapPath{passable: g.Map.PassableWithoutTraps}
+	g.PR.BreadthFirstMap(dij, []gruid.Point{from}, maxdist)
+	for _, e := range g.NPMapEntities() {
+		d := g.PR.BreadthFirstMapAt(e.P)
+		if e.IsItem() && d >= MaxFOVRange && d <= maxdist && paths.DistanceManhattan(e.P, pp) > MaxFOVRange {
+			ps = append(ps, e.P)
+		}
+	}
+	if len(ps) > 0 {
+		return ps
+	}
+	// When there are no nearby items, try choosing a random
+	// waypoint at an appropriate distance.
+	var qs []gruid.Point
+	for _, p := range g.Map.Waypoints {
+		d := g.PR.BreadthFirstMapAt(p)
+		if d >= MaxFOVRange && d <= 2*MaxFOVRange && paths.DistanceManhattan(p, pp) > MaxFOVRange {
+			qs = append(qs, p)
+		}
+	}
+	if len(qs) > 0 {
+		ps = []gruid.Point{g.RandomPassableWithin(qs[g.IntN(len(qs))], 5)}
+	}
+	return ps
 }
 
 // genMonsterAt spawns a monster of the given kind on the given position
@@ -1831,7 +2213,7 @@ func (g *Game) genMonsterAt(mk ActorKind, p gruid.Point) (ID, *Entity) {
 func monster(mk ActorKind) *Entity {
 	mi := MonsData[mk]
 	a := NewActor(mi.Attack, mi.Defense, mi.HP, mk, mi.Traits)
-	a.Behavior = &Behavior{Guard: InvalidPos, Target: InvalidPos}
+	a.Behavior = &Behavior{Target: InvalidPos}
 	return &Entity{
 		Name:   mi.Name,
 		Rune:   mi.R,

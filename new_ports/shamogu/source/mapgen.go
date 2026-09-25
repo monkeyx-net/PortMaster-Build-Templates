@@ -36,6 +36,7 @@ type MapGen struct {
 	xtunnel   []gruid.Point   // points belonging to extra tunnels
 	vault     CacheGrid[bool] // in vault
 	itemPlace CacheGrid[bool] // item/static vault place
+	half      bool            // only generate cave for half of the map
 	PR        *paths.PathRange
 	rand      *rand.Rand
 }
@@ -48,6 +49,7 @@ const (
 	ThemeNone mapTheme = iota
 	ThemeBerserk
 	ThemeFire
+	ThemeFootsteps
 	ThemeLignification
 	ThemePoison
 	ThemeWarp
@@ -85,13 +87,26 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 		}
 		return left, right
 	}
+	getTerrain := func() rl.Grid {
+		if !g.Mod(ModCorruptedDungeon) || g.IntN(2*MapLevels) > 0 {
+			return mg.terrain
+		}
+		// Rarely, only use half of the terrain for the cave (excluding
+		// vaults).
+		gd, _ := halves()
+		mg.half = true
+		return gd
+	}
 	switch ml {
 	case CellularAutomataCave:
-		mg.genCellularAutomataCaveMap(mg.terrain)
+		gd := getTerrain()
+		mg.genCellularAutomataCaveMap(gd)
 	case RandomWalkCave:
-		mg.genCaveMap(mg.terrain)
+		gd := getTerrain()
+		mg.genCaveMap(gd)
 	case RandomWalkTreeCave:
-		mg.genTreeCaveMap(mg.terrain)
+		gd := getTerrain()
+		mg.genTreeCaveMap(gd)
 	case MixedAutomataWalkCave:
 		gd1, gd2 := halves()
 		mg.genCellularAutomataCaveMap(gd1)
@@ -152,14 +167,19 @@ func (g *Game) generateMap(ml MapLayout) (*MapGen, bool) {
 	mgen := rl.MapGen{Rand: mg.rand, Grid: mg.terrain}
 	ntiles := mgen.KeepCC(mg.PR, freep, Wall)
 	// Report whether the generated map has enough passable terrain.
-	const minCaveSize = 1000
+	minCaveSize := 1000
+	if g.Mod(ModCorruptedDungeon) {
+		// Allow smaller caves with Corrupted Dungeon (wall-thickening
+		// terrain corruptions may want to go below the default limit).
+		minCaveSize -= 100
+	}
 	return mg, ntiles > minCaveSize
 }
 
 // choseTheme choses the theme for thematic levels.
 func (g *Game) choseTheme(mg *MapGen) {
 	if g.ProcInfo.ThemedLevel == g.Map.Level {
-		switch g.IntN(11) {
+		switch g.IntN(12) {
 		case 0, 1:
 			mg.theme = ThemeBerserk
 		case 2, 3:
@@ -168,6 +188,8 @@ func (g *Game) choseTheme(mg *MapGen) {
 			mg.theme = ThemeLignification
 		case 6, 7:
 			mg.theme = ThemePoison
+		case 8:
+			mg.theme = ThemeFootsteps
 		default:
 			// Higher chance for the warp theme.
 			mg.theme = ThemeWarp
@@ -569,6 +591,10 @@ func (mg *MapGen) connectAllVaults() {
 	case 1:
 		extraTunnels = 5
 	}
+	if mg.half {
+		// Half-map of walls corruption: compensate with extra tunnels.
+		extraTunnels += 3
+	}
 	count := 0
 	for n := range 2 {
 		for _, vi := range mg.vaults {
@@ -813,6 +839,43 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 		})
 	}
 
+	if g.IntN(sometimes) == 0 {
+		terrain := getTerrain()
+		// Wall 1-layer thickening within terrain section of the map
+		// (outside of vaults).
+		freep := []gruid.Point{} // free points adjacent to a wall
+		for p, t := range mg.terrain.All() {
+			if !mg.vault.At(p) && !mg.tunnel.At(p) && p.In(terrain.Bounds()) && (t == Floor || t == Foliage) &&
+				g.Map.AdjacentNonPassableCount(p) >= 1 {
+				freep = append(freep, p)
+			}
+		}
+		g.rand.Shuffle(len(freep), func(i, j int) { freep[i], freep[j] = freep[j], freep[i] })
+		for _, p := range freep {
+			n := g.passabilityToggles(p)
+			if n != 2 {
+				continue
+			}
+			// There are two passability toggles (one from passable
+			// to wall, then one to passable again), so we can put
+			// a wall without changing topology.
+			//
+			// We replace by wall or translucent wall based on the
+			// nature of the non-passable adjacent tile.
+		nbloop:
+			for q := range NeighborsFunc(p, func(q gruid.Point) bool { return !g.Map.Passable(q) }) {
+				switch mg.terrain.At(q) {
+				case Wall:
+					mg.terrain.Set(p, Wall)
+					break nbloop
+				case TranslucentWall:
+					mg.terrain.Set(p, TranslucentWall)
+					break nbloop
+				}
+			}
+		}
+	}
+
 	if g.IntN(often) == 0 || mg.theme != ThemeNone && g.IntN(2) == 0 {
 		// Corrupt terrain around some random point biased toward
 		// center.
@@ -934,4 +997,20 @@ func (g *Game) genCorruptedTerrain(mg *MapGen) {
 			return t
 		})
 	}
+}
+
+// passabilityToggles returns the number of passability toggles
+// (non-passable/passable alternations) when cycling around neighbors.
+func (g *Game) passabilityToggles(p gruid.Point) int {
+	dirs := [8]gruid.Point{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	n, pass := 0, g.Map.Passable(p.Add(gruid.Point{1, -1}))
+	for _, dir := range dirs {
+		q := p.Add(dir)
+		qpass := g.Map.Passable(q)
+		if pass != qpass {
+			n++
+		}
+		pass = qpass
+	}
+	return n
 }
