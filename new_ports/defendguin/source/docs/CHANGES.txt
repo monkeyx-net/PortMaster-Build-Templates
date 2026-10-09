@@ -1,0 +1,524 @@
+CHANGES.txt for Defendguin
+
+by Bill Kendrick
+bill@newbreedsoftware.com
+http://www.newbreedsoftware.com/defendguin/
+
+Version 0.0.13
+
+June 28, 2023
+
+CHANGES SINCE 0.0.12
+--------------------
+  Interface:
+    * Basic, #define-based option to set 800x480 screen width. (Now the default)
+
+    * Player 2's lives / ships in the status bar are red, to match their
+      ship's color in the game.
+
+  Gameplay:
+    * Happy (penguin saved) or sad (splat) sound when displaying
+      end-of-level bonus.
+
+    * Boss warps in when it first appears; always in front of your ship.
+      You cannot shoot it while it warps in.
+
+    * WIP - Started adding Aurora Australis to the sky background.
+      (Cribbed "pixels.c"/".h" from my own Tux Paint; GPL v2)
+
+  Controls:
+    * Now accepting joystick hat input (e.g. used by d-pads on game controllers)
+
+    * Options screen senses joystick input (axes, buttons, hats) and
+      displays them for your reference.  (Joystick button no longer
+      dismisses this screen, obviously.)
+
+    * Now possible to disable horizontal input via joystick axis
+      (set to "CONFIG_JOY_X" to -1) and hat (set "CONFIG_HAT_NO_X" to 1)
+      and set firebuttons for thrust and reverse controls
+      ("CONFIG_JOY_THRUST" & "CONFIG_JOY_REVERSE", respectively).
+
+  Config/Score file:
+    * Modularized how config/score filename is constructed
+
+    * Added support for Haiku settings directory.
+      Abdur-Raheem Idowu <abdurraheemidowu@gmail.com>
+
+    * Reported warnings/errors when having trouble finding or opening
+      config/score file.
+
+  Documentation:
+    * Mention planetary destruction event.
+
+    * Some other minor documentation updates.
+
+  Bugfixes:
+    * Added some missing #ifdef's to allow building with no sound.
+      Marianne Waage <yamara@plush.org>
+
+    * If "--nosound" option was given, it would still call some
+      SDL_mixer functions, and crash. Fixed.
+
+    * On some systems (e.g., mine) [Enter] was arriving as SDLK_KP_ENTER,
+      rather than SDLK_RETURN, so testing for that as well.
+
+    * Pause sound effect (replaced; see below) was never actually used.
+
+    * In a two player game, if one player beat the end boss, the game
+      would end.  Now, it switches back to the other player (and they
+      continue until either running out of lives, or beating the boss).
+
+    * Value of last line of config file would get truncated
+      (e.g., high score would lose a digit). Fixed.
+
+    * Changing setting value from 10+ to <10 resulted in an extranous "0"
+      on the screen (e.g., "90" instead of "9"). Fixed.
+
+    * Boss would disappear before it was completely off the left edge
+      of the screen.  Fixed.
+
+    * Guarantee boss's "success" sounds play whenever the player dies,
+      no matter how they die (bullet, mine, crash into boss).
+
+    * Penguins carried by the ship would pop off mid-air when
+      crossing the seam of the scrolling world.  Fixed.
+
+    * Penguins falling or being carried by the ship at the end of the
+      penultimate level would be stuck in mid-air during the final
+      (boss) level.  Fixed.
+
+    * Increased audio rate from 22KHz to 44KHz, with a larger buffer.
+
+  Replaced some sound effects:
+    * Pause (pause.wav)
+      (CC-BY-3.0 Marcelo Fernandez; https://opengameart.org/content/dreaming [MF])
+
+    * Ship thrust (ship/thrust.wav)
+      (CC-BY 3.0 Iwan 'qubodup' Gabovitch; https://opengameart.org/content/fire-loop [QU])
+
+    * Ship's laser sound (ship/laser.wav)
+      (Public domain; Digital SFX set by Kenney Vleugels (www.kenney.nl) [KV])
+
+    * Ship's smartbomb sound (ship/smartbomb.wav)
+      (Public domain; musopen.com, Recording: Skidmore College Orchestra;
+      https://commons.wikimedia.org/wiki/File:Pyotr_Ilyich_Tchaikovsky_-_1812_overture.ogg)
+
+    * Ship dying sound 1 (ship/die1.wav)
+      (Public domain; Performed by Mariel Carmona Varo, recorded and edited by
+      Fernando Carmona (ferk); https://opengameart.org/content/girly-scream [FC])
+
+    * Ship dying sound 2 (ship/die2.wav)
+      (Public Domain by Kenney.nl; https://opengameart.org/content/voiceover-pack-40-lines [KENNEY])
+
+    * Enemy bullets (bullet.wav) [KV]
+
+    * Explosion sound (explode.wav)
+      (CC-BY-3.0 by dklon; https://opengameart.org/content/atari-booms [DK])
+
+    * Planet explosion sound (planet_death.wav)
+      (From KDE; KDE-Sys-App-Negative.ogg)
+
+    * Materalizing enemy sound (materialize.wav) [DK]
+
+    * Penguin captured sound (peng/capture.wav)
+      (CC-BY-3.0 from "Red Eclipse", "announcer/alert.ogg"; see
+      https://opengameart.org/content/red-eclipse-sounds [RED])
+
+    * Penguin splat sound (peng/splat.wav)
+      (CC-BY-3.0 tim.kahn; http://www.freesound.org/people/Corsica_S/sounds/44664/
+      via https://opengameart.org/content/skweaks [TK])
+
+    * Penguin mutation sound (peng/mutate.wav)
+      (CC-BY 3.0 Gobusto; https://opengameart.org/content/mutant-death [GO])
+
+    * Penguin saved by ship sound (peng/save.wav)
+      (CC-BY 3.0 David McKee:
+      Some of the sounds in this project were created by David McKee (ViRiX)
+      soundcloud.com/virix; https://opengameart.org/content/ui-sound-effects-pack [VIRIX])
+
+    * Penguin shot by ship sound (peng/kill.wav)
+      (CC-BY 3.0 spookymodem; https://opengameart.org/content/breaking-bottle [SM])
+
+    * Penguin drop off sounds (peng/drop*.wav)
+      Replaced with output of 'espeak' tool.
+
+    * Swarmer appearance (swarmer.wav) [VIRIX]
+
+    * "Baiter" ship appearance sound effect (baiter.wav)
+      (Original recording by Bill Kendrick [BK])
+
+    * Menu select (title/select.wav) [KV]
+
+    * Menu confirm (title/confirm.wav) [VIRIX]
+
+    * Menu impatience prompt (title/impatience.wav) [KENNEY]
+
+    * One-up (ship/oneup.wav) [RED]
+
+    * Game over sounds (ship/finish.wav,lose.wav,darn.wav)
+      Replaced with output of 'espeak' tool, edited with Audacity.
+
+    * Final boss intro (intro.wav)
+      "Incoming Suspense Sound"
+      CC Attribution 3.0, recorded by Maximilien
+      (http://soundbible.com/2046-Incoming-Suspense.html)
+
+    * Final boss success #1 (success1.wav)
+      "1 Person Cheering Sound"
+      CC Attribution 3.0, recorded by Jett Rifkin
+      (http://soundbible.com/2103-1-Person-Cheering.html)
+
+    * Final boss success #2 (success2.wav)
+      "Kid Laugh Sound"
+      CC Attribution 3.0, recorded by Mike Koenig [MK]
+      (http://soundbible.com/2026-Kid-Laugh.html)
+
+    * Final boss success #3 (success3.wav)
+      "Children Laughing Sound"
+      CC Attribution 3.0, recorded by Mike Koenig [MK]
+      (http://soundbible.com/1848-Children-Laughing.html)
+
+    * Final boss shooting (shoot.wav)
+      From "Cartoon Ricochet 2 Sound"
+      CC Sampling Plus 1.0
+      (https://creativecommons.org/licenses/sampling+/1.0/)
+      Recorded by Grant Evans
+      (http://soundbible.com/2050-Cartoon-Ricochet-2.html)
+      
+    * Final boss mine drop (mine.wav)
+      "Pew Pew Sound"
+      Public Domain, recorded by DKnight556
+      (http://soundbible.com/1949-Pew-Pew.html)
+
+    * Final boss hurt (hurt.wav)
+      "Mirror Shattering Sound" [MK]
+      (http://soundbible.com/994-Mirror-Shattering.html)
+
+    * Final boss low life (low.wav)
+      "Dry Cough Sound" [MK]
+      (http://soundbible.com/1275-Dry-Cough.html)
+
+    * Final boss death (die.wav)
+      "Piano Breaking Sound"
+      Creative Commons Attribution 3.0, recorded by Brandondorf
+      (http://soundbible.com/2086-Piano-Breaking.html)
+
+  New sound effects:
+    * "Keyboard » Single clicks Keyboard Sound"
+      https://freesound.org/people/StrikeWhistler/sounds/580786/
+      Creative Commons 0 License (CCO 1.0 Universal),
+      by StrikeWhistler
+
+  Replaced / added some music:
+    * Title screen music
+      "fun dancetrack"
+      (https://freesound.org/people/evanjones4/sounds/320089/)
+      Creative Commons 0 License (CCO 1.0 Universal),
+      by evanjones4 (https://freesound.org/people/evanjones4/)
+
+    * Config screen music
+      "FB2 Campaign TH OWL » music elevator"
+      (https://freesound.org/people/Jay_You/sounds/460432/)
+      Creative Commons Attribution 4.0 International (CC BY 4.0),
+      by Jan Ulrich (Stonefree ambience)
+      https://soundcloud.com/stonefree
+      https://www.facebook.com/stonefree.ambient
+      https://www.youtube.com/@stonefree.ambience
+
+    * One of the in-game songs
+      "Musical Mixes » LOUD loopable excerpt of Aminudinaszad's Freesound
+      #550377.flac"
+      (https://freesound.org/people/Timbre/sounds/572378/)
+      Creative Commons Attribution 4.0 International (CC BY 4.0),
+      by Timbre (https://freesound.org/people/Timbre/)
+      + Based on "CYBORG (EDM).mp3"
+        (https://freesound.org/people/Aminudinaszad/sounds/550377/)
+        CC BY 4.0, by Aminudinaszad
+        (https://freesound.org/people/Aminudinaszad/)
+
+  Replaced some art:
+    * UFOs and final boss - artwork created in POVray (design by me, circa 2000)
+
+    * Ship's pilot - with Tux the Linux penguin (variation from Tux Paint)
+      Original artist: Sam Hart for Tux, of Math Command (GPL v2)
+      Original Tux art: Larry Ewing
+
+  Internal:
+    * Game now prefers 32-bit (bpp) display color depth.
+
+
+CHANGES SINCE 0.0.11
+--------------------
+  Bugfixes:
+    * Sound playing function could segfault.  Fixed.
+      (Example: hitting [Down] in main menu!)
+
+    * Makefile would abort during install if manpage directory
+      didn't exist. Made sure it does.
+
+
+CHANGES SINCE 0.0.10
+--------------------
+  Packaging
+    * Placed documentation into "docs/" subfolder in source tarball release.
+    * Placed sourcefiles into "src/" subfolder in source tarball release.
+
+  Graphics
+    * Converted all BMPs to indexed (256 colors or less), reducing image files
+      by 1MB and removing white artifacts seen on 24bpp and 32bpp displays.
+      (Some color key colors were off, thanks to a Gimp bug.)
+
+    * Made some unloadable BMPs loadable again.  (Opened in Kuickshow,
+      saved as PNG, and then converted back to BMP using Gimp.)
+
+  Interface
+    * Added configuration for joystick buttons and axes to Options screen.
+      (Values stored in config file (e.g., ~/.defendguinrc))
+
+    * Now keeps track of your highest score.
+
+    * Displays labels ("Player 1" and "Player 2") above score/levels on
+      main menu.
+
+    * Displays highest score on main menu.
+
+    * Does not display Player 2 stats on main menu after a 1-player game.
+
+  Internal
+    * Last scores and levels and high score are saved-to and
+      loaded-from ~/.defendguinrc
+
+  Enemies
+    * Points awarded for shooting boss.  Large bonus awarded for beating game.
+
+
+CHANGES SINCE 0.0.9
+-------------------
+  Bugfixes:
+    * Fixed bug where not all aliens would be killed by smartbomb
+      when near the 'seam' of the scrolling map.
+      Oohara Yuuma <oohara@libra.interq.or.jp>
+    * Fixed non-transparent color in one of the ships-flame animation images.
+
+  Interface:
+    * Option screen allows adjusting volume for sound effects and music
+
+  Internal:
+    * Volume options now saved-to and loaded-from ~/.defendguinrc
+
+
+CHANGES SINCE 0.0.8
+-------------------
+  Bugfixes:
+    * Removed reference to "tetris.mid", which was removed in 0.0.8. (Sorry!)
+
+  Installation:
+    * Alter Makefile for install target
+      Christian T. Steigies <christian@steigies.net>
+
+
+CHANGES SINCE 0.0.7
+-------------------
+  Graphics:
+    * Fixed bug with Evil Bill explosion.
+    * Added radioactive symbol to smartbomb icon.
+    * Changed main menu's arrow to a spinning Tux.
+    * Made ship icon (lives display in HUD) nicer looking.
+    * Made mountains look nicer.
+
+  Documentation:
+    * A few touch-ups in README.txt.
+    * Added a man page!
+
+  Interface:
+    * More work on the options screen.
+    * Level and score for each player from the last game are displayed
+      on the title screen at the bottom left and right.
+
+
+CHANGES SINCE 0.0.6
+-------------------
+  Graphics:
+    * Spiffy 'one-up' effect added.
+
+
+CHANGES SINCE 0.0.5
+-------------------
+  Internal:
+    * Two player mode now supported!!!
+
+    * Now calls "Mix_HaltChannel()" to stop all audio before quitting.
+      (Not doing this could cause seg. faults)
+      Andreas Umbach <marvin@tulpe.ards.dataway.ch>
+
+    * rand() calls in SDL_MapRGB() call are now casted to Uint8.
+      Andy Howe <Parasite@cooper-mtn.com>
+
+    * M_PI defined at the top of defendguin.c in case math.h doesn't do it.
+      Andy Howe <Parasite@cooper-mtn.com>
+
+    * Six digit scores are justified correctly.
+
+  Enemies:
+    * Mutants are harder to kill (it was especially easy to kill many of
+      them at once when the planet had been destroyed).
+
+  Documentation:
+    * INSTALL.txt cleaned up.
+
+
+CHANGES SINCE 0.0.4
+-------------------
+  Installation:
+    * "install" target added to "Makefile".
+
+    * RPM ".spec" file created.
+
+    * ".lsm" description created.
+
+  Documentation:
+    * Information on using "make install" and the new Makefile defaults added
+      to INSTALL.txt.
+
+
+CHANGES SINCE 0.0.3
+-------------------
+  Internal:
+    * "random()" and "srandom()" calls changed to "rand()" and "srand()"
+      Phoenix Kokido <kokido@postmark.net>
+
+    * Game prefers 16-bit depth, but prefers native depth over emulated 16-bit!
+      Mattias Engdegard <f91-men@nada.kth.se>
+
+    * Enemies shoot more and more often as levels progress.
+
+    * Penguinoids would remain un-abductable even if their abductor was
+      destroyed.  This caused fewer and fewer penguinoids getting
+      abducted.
+
+    * Evil Bill would disappear and the game would never end if you
+      destroyed all penguins on level 20.  Fixed!
+
+  Enemies:
+    * Boss character no longer easy to kill with an autofire joystick.
+
+    * Mutants can no longer shoot while they're warping in.
+
+    * Mutant and UFO shots come out of the right spot now.
+
+  Sounds:
+    * Alien bullets make noise.
+
+    * Game success music continues to play on title screen after you beat
+      the game (it's a nice song).
+
+  Interface:
+    * Pause feature added.  Press [TAB] or [P] to pause.  Enjoy the
+      pretty effects.
+
+    * Current level displayed above score.
+ 
+
+CHANGES SINCE 0.0.2b
+--------------------
+  Internal:
+    * Evil Bill's size is taken into account when shooting / colliding.
+
+  Interface:
+    * Command-line options now supported.
+
+  Graphics:
+    * Evil Bill graphics changed.
+
+    * Evil Bill starts burning flames when he's really hurt.
+
+  Controls:
+    * Joystick support.
+      Eric Lefevre <lefevre.tmp@wanadoo.fr>
+
+    * Joystick fire button can be used to skip intro screen and to select
+      the current option.
+
+
+CHANCES SINCE 0.0.2
+-------------------
+  * Oops - 0.0.2 wasn't supposed to be released!
+    FPS display turned off, and you start at level 1 (instead of 19!!!)
+
+
+CHANGES SINCE 0.0.1
+-------------------
+  Internal:
+    * Updated for SDL 1.0.0 and SDL mixer library 1.0.0.
+
+    * Fixed bug in alien-creation function.
+
+    * Made lasers go faster (it was too easy before).
+
+    * Tweaked number of aliens to appear at beginning of a level.
+
+    * Stars in background streak the right way all the time.
+
+    * Tweaked how mutants fly around.
+
+  Enemies:
+    * Added boss character.
+
+  Installation:
+    * Makefile changed to use SDL's new "sdl-config" script.
+
+  Documentation:
+    * Files renamed to have ".txt" extensions.
+
+  Graphics:
+    * Ship graphics changed to look like the nice one from loader screen.
+
+
+CHANGES SINCE 0.0.0
+-------------------
+  Display:
+    * Title screen starfield speed tweaked.
+
+    * Level bonus display added.
+
+    * Game over display added.
+
+  Controls:
+    * Thrust key added ([1]).
+
+    * Reverse key added ([2]).
+
+  Documentation:
+    * AUTHORS file updated.
+
+    * README file updated.
+
+  Sound:
+    * Music doesn't stop during the "PRESS A KEY" screen.
+
+    * Music is played during the game.
+
+  Levels:
+    * More aliens materialize if the first batch are killed or approx.
+      30 seconds pass.
+
+    * Baiters materialize if you take too long to complete a level.
+
+    * One-up and extra smart bombs every 10,000 points.
+
+  Internal:
+    * The array of floating score images was never initialized.  Now it is.
+
+    * UFO's will no longer go out of bounds if the planet's destroyed.
+
+    * You can't catch a penguinoid if you just died.
+
+    * UFO's can't shoot while they're beaming in.
+
+    * You can't get hurt by aliens if you collide with them while they're
+      beaming in.
+
+
+INITIAL RELEASE 0.0.0 - November 26, 1999
+---------------------
+  * Initial alpha release.

@@ -1,0 +1,114 @@
+INSTALL for Defendguin
+
+by Bill Kendrick
+bill@newbreedsoftware.com
+http://www.newbreedsoftware.com/defendguin/
+
+Version 0.0.13
+
+May 26, 2020
+
+
+REQUIREMENTS
+------------
+  "Defendguin" was programmed using the "Simple Direct Media" layer (libSDL)
+  libraries by Sam Lantinga, et al.  This means that the game can
+  theoretically run under any environment that the SDL libraries support.
+  (Windows, MacOS, BeOS, Linux and other Unixes, and more...)
+
+  The game is played with a keyboard or a joystick.
+
+  Sound and music are available, but are not required (see below).
+  You will need the "SDL_mixer" library compiled and installed.
+
+  You can download the SDL and SDL_mixer libraries at:
+    http://www.libsdl.org/
+
+
+INSTALLING
+----------
+  -----------------------------------------------------------------
+  Note: Read this entire section before you start issuing commands!
+  This is Linux/Unix centric.  Your mileage may vary.
+  -----------------------------------------------------------------
+
+  Compilation
+  -----------
+    To compile the game, type the command:
+
+        make
+
+
+    Note: If you do not have the SDL_mixer library, or wish to not
+    compile sound support into the game, you can compile it like this:
+
+        make nosound
+
+
+    If you have an older version of SDL that doesn't support joysticks,
+    or wish not to compile Defendguin with joystick support, add
+    "JOY=NO" to the "make" command above.  For example:
+
+        make JOY=NO
+
+
+  Installation
+  ------------
+    Once compiled, to install Defendguin, type:
+
+        make install
+
+
+    By default, Defendguin is set up to be installed in "/usr/local/" on
+    your system.  The program file will install into "/usr/local/bin/",
+    and all of the data files will install into "/usr/local/share/defendguin/".
+
+    For these defaults, you will most likely need to be superuser ("root")
+    (e.g., run "sudo make install").
+
+
+  Directories
+  -----------
+    If you wish to change this, you can set the path when you run "make" and
+    "make install".  The following Makefile variables can be set:
+
+        PREFIX        (defaults to "/usr/local/")
+
+        DATA_PREFIX   (defaults to "$(PREFIX)/share/defendguin/")
+
+
+    For example:
+
+        make PREFIX=/home/username/
+
+    or:
+
+        make PREFIX=/usr/ DATA_PREFIX=/opt/defendguin/
+
+    Followed with "make install" with the same arguments attached...
+
+
+  Cleanup
+  -------
+    If you wish to return the Defendguin directory to its distribution state,
+    (remove the ".o" object files, and the "defendguin" executable program
+    file), you can run:
+
+        make clean
+
+
+  Uninstallation
+  --------------
+    To uninstall Defendguin, you can run:
+
+        make uninstall
+
+    Make sure the "PREFIX" and "DATA_PREFIX" variables are set the
+    same as when you ran "make install"!
+
+    For the defaults, you will most likely need to be superuser ("root")
+    (e.g., run "sudo make uninstall").
+
+
+That's it!
+

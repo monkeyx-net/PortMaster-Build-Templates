@@ -1,0 +1,52 @@
+AUTHORS for Defendguin
+
+by Bill Kendrick
+bill@newbreedsoftware.com
+http://www.newbreedsoftware.com/defendguin/
+
+Version 0.0.13
+
+June 26, 2023
+
+
+CREDITS
+-------
+  Game Software:     Bill Kendrick, <bill@newbreedsoftware.com>
+                     http://www.newbreedsoftware.com/
+
+  Bug Fixes:         [Various; see CHANGES.txt]
+
+  Original Concept:  Eugene Jarvis' "Defender," (c) 1980 Williams.
+                     Defender is available for Atari 2600, Atari 5200,
+                     Atari 8-bits, Commodore 64, Nintendo NES, PlayStation,
+                     Atari Jaguar, and PC's, and probably much, much more!
+
+  Graphics:          Some by Bill Kendrick, using The GIMP, and POVRay
+                     http://www.gimp.org/
+
+                     Mountain graphics on loading screen created using
+                     xmountains by Stephen Booth <spb@epcc.ed.ac.uk>.
+                     http://www.epcc.ed.ac.uk/~spb/xmountains/
+
+                     Various others; see CHANGES.txt
+
+  Sound Effects:     [Various; see CHANGES.txt]
+
+  Title Music:       "fun dancetrack", by evanjones4 [see CHANGES.txt]
+                     Creative Commons 0 License (CCO 1.0 Universal)
+
+  Config Music:      "FB2 Campaign TH OWL » music elevator"
+                     Attribution 4.0 International (CC BY 4.0),
+                     by Jan Ulrich (Stonefree ambience) [see CHANGES.txt]
+
+  Game Musics:       "ants", "no!inhibitions", "summerpanic",
+                     "little spacetrip" and "easytrip" and
+                     "confusion in fusion"
+                     by "Nutcase" (Sami I Saarnio) <saarnio@cc.helsinki.fi>
+                     Used with permission.
+
+                     "Musical Mixes » LOUD loopable excerpt of Aminudinaszad's
+                     Freesound #550377.flac", by Timbre,
+                     based on "CYBORG (EDM).mp3" by Aminudinaszad,
+                     Attribution 4.0 International (CC BY 4.0) [see CHANGES.txt]
+

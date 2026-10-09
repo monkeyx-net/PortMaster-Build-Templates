@@ -1,0 +1,22 @@
+TODO for Defendguin
+
+by Bill Kendrick
+bill@newbreedsoftware.com
+http://www.newbreedsoftware.com/defendguin/
+
+Version 0.0.13
+
+June 26, 2023
+
+
+TO DO
+-----
+  * Allow alternate configs for player 1 and player 2 joysticks.
+  * Allow joystick config to be provided on the command-line.
+  * Allow configuration of keyboard controls (e.g., to allow mapping
+    of fire buttons on an OpenPandora, which are keys, not joystick buttons)
+  * Auto-fire firebutton
+  * Finish southern lights effect
+  * Reverse/Thrust controls via joystick input:
+    * Allow disabling left/right hat input
+  * On-screen help screen
