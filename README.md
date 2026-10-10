@@ -4,24 +4,24 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-10-09_
+_Last checked: 2026-10-10_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
 | -- | animalcrossing | 🟢 OK | commit:f7fc9a1 | 2026-04-23 | -- |
-| Defendguin | defendguin | 🔵 UPDATE | commit:9e49e17 | 2026-10-09 | 2026-02-14 |
+| Defendguin | defendguin | 🟢 OK | commit:9e49e17 | 2026-10-09 | 2026-02-14 |
 | -- | edgar | 🟢 OK | 1.38 | 2026-03-27 | -- |
-| -- | epiphany | 🔵 UPDATE | commit:2e8af38 | 2026-10-09 | -- |
+| -- | epiphany | 🟢 OK | commit:2e8af38 | 2026-10-09 | -- |
 | Harmonist | harmonist | 🟢 OK | v1.0.3 | 2026-08-07 | 2026-01-07 |
 | Manic Miner | manicminer | 🟢 OK | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | Shamogu | shamogu | 🟢 OK | v1.6.0 | 2026-09-25 | 2026-08-21 |
-| Space Invaders Part 2 | sip2 | 🔵 UPDATE | commit:837b385 | 2026-10-09 | 2026-03-17 |
+| Space Invaders Part 2 | sip2 | 🟢 OK | commit:837b385 | 2026-10-09 | 2026-03-17 |
 | Ship of Harkinian | soh | 🟢 OK | 9.3.0 | 2026-10-06 | 2026-03-16 |
 | Ship of Harkinian 2 | soh2 | 🔴 ERROR | 5.0.1 | 2026-08-26 | 2026-03-16 |
 | SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
 | Stunt Car Racer | stuntcarracer | 🟢 OK | continuous | 2026-02-25 | 2026-01-25 |
 
-_Checked: 12 &nbsp; OK: 8 &nbsp; Updates: 3 &nbsp; Errors: 1 &nbsp; Skipped: 0_
+_Checked: 12 &nbsp; OK: 11 &nbsp; Updates: 0 &nbsp; Errors: 1 &nbsp; Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
