@@ -3,11 +3,11 @@
   "name": "defendguin.zip",
   "port_json": "new_ports/defendguin/defendguin/defendguin/port.json",
   "source": {
-    "date_updated": "2026-10-09",
+    "date_updated": "2026-10-14",
     "port_exe": "defendguin",
     "port_build": "make",
-    "port_checksum": "b961fbb8e0f7e02567948a32956b6530e711d7baab8274bcb235e2b60847e264",
+    "port_checksum": "3a40f43666418c5c86ecd988dc91fd3cc9efb29c5a2fab9893c7b17913bb37d8",
     "port_url": "monkeyx-net/defendguin_PortMaster",
-    "port_version": "commit:9e49e17"
+    "port_version": "commit:f8b653e"
   }
 }

@@ -3,11 +3,11 @@
   "name": "epiphany.zip",
   "port_json": "new_ports/epiphany/epiphany/epiphany/port.json",
   "source": {
-    "date_updated": "2026-10-09",
+    "date_updated": "2026-10-14",
     "port_exe": "epiphany-game",
     "port_build": "",
-    "port_checksum": "60e840d7c11bb5debfad5bdf4152d9e56be1a61280651c988037dfe0b8f8562a",
+    "port_checksum": "a30dc01ff548c8c21a7fc51b588f58da18be8e7a05d68c1e9d7b811963d3d9e2",
     "port_url": "monkeyx-net/Epiphany_4_PortMaster",
-    "port_version": "commit:2e8af38"
+    "port_version": "commit:402e230"
   }
 }
