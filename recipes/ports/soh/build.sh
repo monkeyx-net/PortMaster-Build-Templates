@@ -40,6 +40,10 @@ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 git submodule update --init
 
+# Ubuntu 20.04 builder ships libstdc++-10 which lacks std::bit_cast (C++20, libstdc++-11+).
+# Provide a shim backed by clang's __builtin_bit_cast.
+sed -i 's|#include <bit>|#include <bit>\n#ifndef __cpp_lib_bit_cast\nnamespace std { template <class To, class From> constexpr To bit_cast(const From\& f) noexcept { return __builtin_bit_cast(To, f); } }\n#endif|' soh/soh/GbiWrap.cpp
+
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
@@ -54,22 +58,18 @@ cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=1 -DCMAKE_BUILD_TYPE=DEB
 cmake --build . -j$(nproc)
 cmake --build . --target GenerateSohOtr -j$(nproc)
 cd ../..
-mkdir -p ${CDIR}/dist/assets/extractor
 ls -lha Shipwright/build-soh/soh/
+if [[ ! -f "Shipwright/build-soh/soh/${PORT_EXE}.elf" ]]; then
+  echo "Error: ${PORT_EXE}.elf was not built"
+  exit 1
+fi
 strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
-strip "Shipwright/build-soh/ZAPD/ZAPD.out" || true
-cp "Shipwright/build-soh/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
+# 9.3+: ZAPD/xml extractor replaced by torch built into soh.elf; it reads the asset ymls from ./assets
+mkdir -p "${CDIR}/dist/assets"
+cp -r "${CDIR}/Shipwright/soh/assets/yml/." "${CDIR}/dist/assets/"
 ls -lha dist/
-cd dist/assets
-mkdir assets_zip
-cp -r "${CDIR}/Shipwright/soh/assets/extractor/." assets_zip/
-cp -r "${CDIR}/Shipwright/soh/assets/xml/" assets_zip/
-cd assets_zip
-zip -r ../extractor.zip ./*
-cd ..
-rm -rf assets_zip
 
 #get license file
 
