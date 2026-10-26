@@ -67,9 +67,12 @@ strip "Shipwright/build-soh/soh/${PORT_EXE}.elf" || true
 cp "Shipwright/build-soh/soh/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "Shipwright/build-soh/soh/${PORT_EXE}.o2r" "dist/"
 # 9.3+: ZAPD/xml extractor replaced by torch built into soh.elf; it reads the asset ymls from ./assets
+# Ship them as extractor.zip (unpacked into assets/ by otrgen). This also replaces the LFS pointer
+# for extractor.zip that the package job checks out with lfs: false.
 mkdir -p "${CDIR}/dist/assets"
-cp -r "${CDIR}/Shipwright/soh/assets/yml/." "${CDIR}/dist/assets/"
-ls -lha dist/
+(cd "${CDIR}/Shipwright/soh/assets/yml" && zip -qr "${CDIR}/dist/assets/extractor.zip" .)
+unzip -tq "${CDIR}/dist/assets/extractor.zip" || exit 1
+ls -lha dist/ dist/assets/
 
 #get license file
 
