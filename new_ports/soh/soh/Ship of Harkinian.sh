@@ -95,11 +95,74 @@ otr_check() {
     fi
 }
 
+# Temporary swap for rom extraction on <=1GB devices (torch builds the whole o2r in RAM)
+SWAP_MB=1024
+
+# Filesystem type of the mount holding $1 (BusyBox stat has no -f)
+fs_type() {
+    dir=$(realpath "$1" 2>/dev/null || echo "$1")
+    awk -v d="$dir" '
+        { mp = $2; gsub(/\\040/, " ", mp) }
+        (d == mp || index(d, mp == "/" ? "/" : mp "/") == 1) && length(mp) > len { len = length(mp); t = $3 }
+        END { print t }' /proc/mounts
+}
+
+swap_on() {
+    [ ${#ROMS[@]} -eq 0 ] && return
+    [ "${DEVICE_RAM:-0}" -le 1 ] || return
+
+    # /roms is often exFAT, which can't hold a swapfile, so look for a Linux filesystem elsewhere
+    for dir in "$GAMEDIR" /storage /userdata "$HOME" /var/tmp /opt /; do
+        [ -d "$dir" ] && [ -w "$dir" -o -n "$ESUDO" ] || continue
+        fstype=$(fs_type "$dir")
+        case "$fstype" in
+            ext2|ext3|ext4|btrfs|xfs|f2fs) ;;
+            *) echo "Swap: skipping $dir ($fstype)"; continue ;;
+        esac
+        free_mb=$(df -Pk "$dir" 2>/dev/null | awk 'NR==2 { print int($4 / 1024) }')
+        if [ "${free_mb:-0}" -lt $((SWAP_MB + 100)) ]; then
+            echo "Swap: skipping $dir (${free_mb:-0}MB free)"
+            continue
+        fi
+        SWAPFILE="$dir/soh.swap"
+        break
+    done
+
+    if [ -z "$SWAPFILE" ]; then
+        echo "Swap: no suitable filesystem found, continuing without"
+        return
+    fi
+    grep -q "$SWAPFILE" /proc/swaps && return
+
+    pm_message "Low memory device, creating temporary swap..."
+    if $ESUDO dd if=/dev/zero of="$SWAPFILE" bs=1M count=$SWAP_MB >/dev/null 2>&1 \
+       && $ESUDO chmod 600 "$SWAPFILE" \
+       && $ESUDO mkswap "$SWAPFILE" >/dev/null 2>&1 \
+       && $ESUDO swapon "$SWAPFILE"; then
+        SWAP_ON=1
+        echo "Swap enabled at $SWAPFILE ($fstype):"
+        cat /proc/swaps
+    else
+        echo "Swap setup failed at $SWAPFILE, continuing without"
+        $ESUDO rm -f "$SWAPFILE"
+    fi
+}
+
+swap_off() {
+    if [ -n "$SWAP_ON" ]; then
+        $ESUDO swapoff "$SWAPFILE"
+        $ESUDO rm -f "$SWAPFILE"
+        SWAP_ON=
+    fi
+}
+
 # --------------------- END FUNCTIONS ---------------------
 
 # Perform functions
 unzip_assets
 otr_check
+swap_on
+trap swap_off EXIT
 
 if [ -f "imgui.ini" ]; then
     imgui_reset
@@ -111,5 +174,6 @@ pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
 ./soh.elf.${DEVICE_ARCH} "${ROMS[@]}"
 
 # Cleanup
+swap_off
 rm -rf "$GAMEDIR/logs/"
 pm_finish
