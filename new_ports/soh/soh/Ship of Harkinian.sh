@@ -97,6 +97,8 @@ otr_check() {
 
 # Temporary swap for rom extraction on <=1GB devices (torch builds the whole o2r in RAM)
 SWAP_MB=1024
+ZRAM_MB=512
+ARKOS_ZRAM_MB=300
 
 # Filesystem type of the mount holding $1 (BusyBox stat has no -f)
 fs_type() {
@@ -107,53 +109,157 @@ fs_type() {
         END { print t }' /proc/mounts
 }
 
+# Try a swapfile in $1: direct swapon first (Linux filesystems), then through a loop device,
+# which works where the kernel refuses swapfiles (btrfs before 5.0, exFAT/vfat)
+swap_try_dir() {
+    dir="$1"; direct="$2"
+    free_mb=$(df -Pk "$dir" 2>/dev/null | awk 'NR==2 { print int($4 / 1024) }')
+    if [ "${free_mb:-0}" -lt $((SWAP_MB + 100)) ]; then
+        echo "Swap: skipping $dir (${free_mb:-0}MB free)"
+        return 1
+    fi
+
+    SWAPFILE="$dir/soh.swap"
+    pm_message "Low memory device, creating temporary swap..."
+    if ! { $ESUDO dd if=/dev/zero of="$SWAPFILE" bs=1M count=$SWAP_MB >/dev/null 2>&1 \
+           && $ESUDO chmod 600 "$SWAPFILE"; }; then
+        echo "Swap: could not create $SWAPFILE"
+        $ESUDO rm -f "$SWAPFILE"; SWAPFILE=
+        return 1
+    fi
+
+    if [ -n "$direct" ] && $ESUDO mkswap "$SWAPFILE" >/dev/null 2>&1 \
+       && $ESUDO swapon "$SWAPFILE" 2>/dev/null; then
+        SWAP_DEV="$SWAPFILE"
+        echo "Swap enabled at $SWAPFILE ($fstype)"
+        return 0
+    fi
+
+    LOOPDEV=$($ESUDO losetup -f 2>/dev/null)
+    if [ -n "$LOOPDEV" ] && $ESUDO losetup "$LOOPDEV" "$SWAPFILE" \
+       && $ESUDO mkswap "$LOOPDEV" >/dev/null 2>&1 \
+       && $ESUDO swapon "$LOOPDEV"; then
+        SWAP_DEV="$LOOPDEV"
+        echo "Swap enabled at $SWAPFILE via $LOOPDEV ($fstype)"
+        return 0
+    fi
+
+    echo "Swap: failed at $SWAPFILE ($fstype)"
+    [ -n "$LOOPDEV" ] && $ESUDO losetup -d "$LOOPDEV" 2>/dev/null
+    $ESUDO rm -f "$SWAPFILE"
+    SWAPFILE= LOOPDEV=
+    return 1
+}
+
+# Last resort: compressed RAM swap. Helps less (the o2r buffer is already compressed) but is better than nothing
+swap_try_zram() {
+    [ -e /sys/block/zram0 ] || $ESUDO modprobe zram num_devices=1 2>/dev/null
+    if [ -e /sys/block/zram0 ] && [ "$(cat /sys/block/zram0/disksize)" = "0" ]; then
+        ZRAMDEV=zram0
+    elif [ -e /sys/class/zram-control/hot_add ]; then
+        ZRAMDEV="zram$($ESUDO cat /sys/class/zram-control/hot_add 2>/dev/null)"
+        ZRAM_ADDED=1
+    fi
+    if [ -z "$ZRAMDEV" ] || [ ! -e "/sys/block/$ZRAMDEV" ]; then
+        echo "Swap: zram not available"
+        ZRAMDEV= ZRAM_ADDED=
+        return 1
+    fi
+
+    echo lz4 | $ESUDO tee "/sys/block/$ZRAMDEV/comp_algorithm" >/dev/null 2>&1
+    if echo "${ZRAM_MB}M" | $ESUDO tee "/sys/block/$ZRAMDEV/disksize" >/dev/null \
+       && $ESUDO mkswap "/dev/$ZRAMDEV" >/dev/null 2>&1 \
+       && $ESUDO swapon -p 5 "/dev/$ZRAMDEV"; then
+        SWAP_DEV="/dev/$ZRAMDEV"
+        echo "Swap enabled on /dev/$ZRAMDEV (zram ${ZRAM_MB}MB)"
+        return 0
+    fi
+
+    echo "Swap: zram setup failed"
+    zram_reset
+    return 1
+}
+
+# ArkOS/dArkOS: zram via zramctl. Leaves an existing big-enough zram swap alone and adds a device
+# rather than tearing down the system's own one
+swap_try_zramctl() {
+    command -v zramctl >/dev/null 2>&1 || { echo "Swap: zramctl not found"; return 1; }
+    have_kb=$(awk '$1 ~ /zram/ { s += $3 } END { print s + 0 }' /proc/swaps)
+    if [ "$have_kb" -ge $((ARKOS_ZRAM_MB * 1024)) ]; then
+        echo "Swap: zram swap already $((have_kb / 1024))MB, nothing to do"
+        return 0
+    fi
+
+    dev=$($ESUDO zramctl --find --size "${ARKOS_ZRAM_MB}M" 2>/dev/null)
+    if [ -z "$dev" ]; then
+        echo "Swap: zramctl could not create a device"
+        return 1
+    fi
+    ZRAMDEV="${dev#/dev/}"
+    [ "$ZRAMDEV" != "zram0" ] && ZRAM_ADDED=1
+
+    if $ESUDO mkswap "$dev" >/dev/null 2>&1 && $ESUDO swapon -p 5 "$dev"; then
+        SWAP_DEV="$dev"
+        echo "Swap enabled on $dev (zram ${ARKOS_ZRAM_MB}MB)"
+        return 0
+    fi
+
+    echo "Swap: zram setup failed on $dev"
+    zram_reset
+    return 1
+}
+
+zram_reset() {
+    [ -n "$ZRAMDEV" ] || return
+    echo 1 | $ESUDO tee "/sys/block/$ZRAMDEV/reset" >/dev/null 2>&1
+    if [ -n "$ZRAM_ADDED" ]; then
+        echo "${ZRAMDEV#zram}" | $ESUDO tee /sys/class/zram-control/hot_remove >/dev/null 2>&1
+    fi
+    ZRAMDEV= ZRAM_ADDED=
+}
+
 swap_on() {
     [ ${#ROMS[@]} -eq 0 ] && return
     [ "${DEVICE_RAM:-0}" -le 1 ] || return
 
-    # /roms is often exFAT, which can't hold a swapfile, so look for a Linux filesystem elsewhere
-    for dir in "$GAMEDIR" /storage /userdata "$HOME" /var/tmp /opt /; do
-        [ -d "$dir" ] && [ -w "$dir" -o -n "$ESUDO" ] || continue
-        fstype=$(fs_type "$dir")
-        case "$fstype" in
-            ext2|ext3|ext4|btrfs|xfs|f2fs) ;;
-            *) echo "Swap: skipping $dir ($fstype)"; continue ;;
-        esac
-        free_mb=$(df -Pk "$dir" 2>/dev/null | awk 'NR==2 { print int($4 / 1024) }')
-        if [ "${free_mb:-0}" -lt $((SWAP_MB + 100)) ]; then
-            echo "Swap: skipping $dir (${free_mb:-0}MB free)"
-            continue
-        fi
-        SWAPFILE="$dir/soh.swap"
-        break
-    done
-
-    if [ -z "$SWAPFILE" ]; then
-        echo "Swap: no suitable filesystem found, continuing without"
+    # ArkOS/dArkOS (btrfs root on kernel 4.4 refuses swapfiles): use zram
+    if [[ "$CFW_NAME" == *"ArkOS"* ]]; then
+        swap_try_zramctl || swap_try_zram || echo "Swap: none available, continuing without"
+        [ -n "$SWAP_DEV" ] && cat /proc/swaps
         return
     fi
-    grep -q "$SWAPFILE" /proc/swaps && return
 
-    pm_message "Low memory device, creating temporary swap..."
-    if $ESUDO dd if=/dev/zero of="$SWAPFILE" bs=1M count=$SWAP_MB >/dev/null 2>&1 \
-       && $ESUDO chmod 600 "$SWAPFILE" \
-       && $ESUDO mkswap "$SWAPFILE" >/dev/null 2>&1 \
-       && $ESUDO swapon "$SWAPFILE"; then
-        SWAP_ON=1
-        echo "Swap enabled at $SWAPFILE ($fstype):"
-        cat /proc/swaps
-    else
-        echo "Swap setup failed at $SWAPFILE, continuing without"
-        $ESUDO rm -f "$SWAPFILE"
-    fi
+    # Prefer Linux filesystems (direct swapfile, else loop), then exFAT/vfat (loop only), then zram
+    tried=" "
+    for pass in linux fat; do
+        for dir in "$GAMEDIR" /storage /userdata "$HOME" /var/tmp /opt /; do
+            [ -d "$dir" ] && [ -w "$dir" -o -n "$ESUDO" ] || continue
+            # several candidates often share one filesystem; only try each once
+            fsdev=$(df -P "$dir" 2>/dev/null | awk 'NR==2 { print $1 }')
+            case "$tried" in *" $fsdev "*) continue ;; esac
+            fstype=$(fs_type "$dir")
+            case "$pass:$fstype" in
+                linux:ext2|linux:ext3|linux:ext4|linux:btrfs|linux:xfs|linux:f2fs)
+                    tried="$tried$fsdev "
+                    swap_try_dir "$dir" direct && break 2 ;;
+                fat:exfat|fat:vfat)
+                    tried="$tried$fsdev "
+                    swap_try_dir "$dir" && break 2 ;;
+                linux:*) echo "Swap: skipping $dir ($fstype)" ;;
+            esac
+        done
+    done
+
+    [ -n "$SWAP_DEV" ] || swap_try_zram || echo "Swap: none available, continuing without"
+    [ -n "$SWAP_DEV" ] && cat /proc/swaps
 }
 
 swap_off() {
-    if [ -n "$SWAP_ON" ]; then
-        $ESUDO swapoff "$SWAPFILE"
-        $ESUDO rm -f "$SWAPFILE"
-        SWAP_ON=
-    fi
+    [ -n "$SWAP_DEV" ] && $ESUDO swapoff "$SWAP_DEV" 2>/dev/null
+    [ -n "$LOOPDEV" ] && $ESUDO losetup -d "$LOOPDEV" 2>/dev/null
+    [ -n "$SWAPFILE" ] && $ESUDO rm -f "$SWAPFILE"
+    zram_reset
+    SWAP_DEV= LOOPDEV= SWAPFILE=
 }
 
 # --------------------- END FUNCTIONS ---------------------
@@ -168,12 +274,38 @@ if [ -f "imgui.ini" ]; then
     imgui_reset
 fi
 
+# torch writes the finished o2r to $TMPDIR before copying it here; /tmp is RAM (tmpfs) on most CFWs
+if [ ${#ROMS[@]} -gt 0 ]; then
+    rm -rf "$GAMEDIR/tmp"
+    mkdir -p "$GAMEDIR/tmp"
+    export TMPDIR="$GAMEDIR/tmp"
+    pm_message "After extraction choose No at 'Run SoH?', the game restarts automatically"
+fi
+
 # Run the game
 $GPTOKEYB "soh.elf.${DEVICE_ARCH}" -c "soh.gptk" &
 pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
 ./soh.elf.${DEVICE_ARCH} "${ROMS[@]}"
+status=$?
+
+# torch keeps the whole o2r in RAM after extracting (upstream leak), so the game can lock up or crash
+# in the same process; start it fresh if extraction just finished or that run died
+if [ ${#ROMS[@]} -gt 0 ]; then
+    swap_off
+    rm -rf "$GAMEDIR/tmp"
+    unset TMPDIR
+    newest=$(ls -t oot.o2r oot-mq.o2r 2>/dev/null | head -n 1)
+    if [ -n "$newest" ]; then
+        age=$(( $(date +%s) - $(date -r "$newest" +%s) ))
+        if [ $status -ne 0 ] || [ $age -lt 120 ]; then
+            echo "Restarting SoH after extraction (exit $status, $newest ${age}s old)"
+            ./soh.elf.${DEVICE_ARCH}
+        fi
+    fi
+fi
 
 # Cleanup
 swap_off
+rm -rf "$GAMEDIR/tmp"
 rm -rf "$GAMEDIR/logs/"
 pm_finish

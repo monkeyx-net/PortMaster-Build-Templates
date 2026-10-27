@@ -40,6 +40,10 @@ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 git submodule update --init
 
+# torch builds the whole O2R in RAM (and never frees it), which runs 1GB devices out of memory
+# during rom extraction; replace its writer with one that streams entries straight to the file.
+cp "${CDIR}/recipes/ports/soh/torch/ZWrapper.h" "${CDIR}/recipes/ports/soh/torch/ZWrapper.cpp" torch/src/archive/
+
 # Ubuntu 20.04 builder ships libstdc++-10 which lacks std::bit_cast (C++20, libstdc++-11+).
 # Provide a shim backed by clang's __builtin_bit_cast.
 sed -i 's|#include <bit>|#include <bit>\n#ifndef __cpp_lib_bit_cast\nnamespace std { template <class To, class From> constexpr To bit_cast(const From\& f) noexcept { return __builtin_bit_cast(To, f); } }\n#endif|' soh/soh/GbiWrap.cpp
