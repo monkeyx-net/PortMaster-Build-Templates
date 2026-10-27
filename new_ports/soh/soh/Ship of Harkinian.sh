@@ -95,10 +95,10 @@ otr_check() {
     fi
 }
 
-# Temporary swap for rom extraction on <=1GB devices (torch builds the whole o2r in RAM)
+# Temporary swap for rom extraction on <=1GB devices: zram first (fast, any filesystem),
+# swapfile/loop device only where zram isn't available
+ZRAM_MB=1024
 SWAP_MB=1024
-ZRAM_MB=512
-ARKOS_ZRAM_MB=300
 
 # Filesystem type of the mount holding $1 (BusyBox stat has no -f)
 fs_type() {
@@ -151,7 +151,7 @@ swap_try_dir() {
     return 1
 }
 
-# Last resort: compressed RAM swap. Helps less (the o2r buffer is already compressed) but is better than nothing
+# zram through sysfs, for systems without zramctl (BusyBox)
 swap_try_zram() {
     [ -e /sys/block/zram0 ] || $ESUDO modprobe zram num_devices=1 2>/dev/null
     if [ -e /sys/block/zram0 ] && [ "$(cat /sys/block/zram0/disksize)" = "0" ]; then
@@ -180,17 +180,10 @@ swap_try_zram() {
     return 1
 }
 
-# ArkOS/dArkOS: zram via zramctl. Leaves an existing big-enough zram swap alone and adds a device
-# rather than tearing down the system's own one
+# zram via zramctl; adds a device rather than tearing down the system's own zram swap
 swap_try_zramctl() {
     command -v zramctl >/dev/null 2>&1 || { echo "Swap: zramctl not found"; return 1; }
-    have_kb=$(awk '$1 ~ /zram/ { s += $3 } END { print s + 0 }' /proc/swaps)
-    if [ "$have_kb" -ge $((ARKOS_ZRAM_MB * 1024)) ]; then
-        echo "Swap: zram swap already $((have_kb / 1024))MB, nothing to do"
-        return 0
-    fi
-
-    dev=$($ESUDO zramctl --find --size "${ARKOS_ZRAM_MB}M" 2>/dev/null)
+    dev=$($ESUDO zramctl --find --size "${ZRAM_MB}M" 2>/dev/null)
     if [ -z "$dev" ]; then
         echo "Swap: zramctl could not create a device"
         return 1
@@ -200,7 +193,7 @@ swap_try_zramctl() {
 
     if $ESUDO mkswap "$dev" >/dev/null 2>&1 && $ESUDO swapon -p 5 "$dev"; then
         SWAP_DEV="$dev"
-        echo "Swap enabled on $dev (zram ${ARKOS_ZRAM_MB}MB)"
+        echo "Swap enabled on $dev (zram ${ZRAM_MB}MB)"
         return 0
     fi
 
@@ -218,18 +211,8 @@ zram_reset() {
     ZRAMDEV= ZRAM_ADDED=
 }
 
-swap_on() {
-    [ ${#ROMS[@]} -eq 0 ] && return
-    [ "${DEVICE_RAM:-0}" -le 1 ] || return
-
-    # ArkOS/dArkOS (btrfs root on kernel 4.4 refuses swapfiles): use zram
-    if [[ "$CFW_NAME" == *"ArkOS"* ]]; then
-        swap_try_zramctl || swap_try_zram || echo "Swap: none available, continuing without"
-        [ -n "$SWAP_DEV" ] && cat /proc/swaps
-        return
-    fi
-
-    # Prefer Linux filesystems (direct swapfile, else loop), then exFAT/vfat (loop only), then zram
+# Swapfile fallback: Linux filesystems first (direct, else loop device), then exFAT/vfat (loop only)
+swap_try_files() {
     tried=" "
     for pass in linux fat; do
         for dir in "$GAMEDIR" /storage /userdata "$HOME" /var/tmp /opt /; do
@@ -241,16 +224,30 @@ swap_on() {
             case "$pass:$fstype" in
                 linux:ext2|linux:ext3|linux:ext4|linux:btrfs|linux:xfs|linux:f2fs)
                     tried="$tried$fsdev "
-                    swap_try_dir "$dir" direct && break 2 ;;
+                    swap_try_dir "$dir" direct && return 0 ;;
                 fat:exfat|fat:vfat)
                     tried="$tried$fsdev "
-                    swap_try_dir "$dir" && break 2 ;;
+                    swap_try_dir "$dir" && return 0 ;;
                 linux:*) echo "Swap: skipping $dir ($fstype)" ;;
             esac
         done
     done
+    return 1
+}
 
-    [ -n "$SWAP_DEV" ] || swap_try_zram || echo "Swap: none available, continuing without"
+swap_on() {
+    [ ${#ROMS[@]} -eq 0 ] && return
+    [ "${DEVICE_RAM:-0}" -le 1 ] || return
+
+    # Leave an existing big-enough zram swap (e.g. the CFW's own) alone; /proc/swaps lists sizes
+    # a page short, so allow 1MB slack
+    have_kb=$(awk '$1 ~ /zram/ { s += $3 } END { print s + 0 }' /proc/swaps)
+    if [ $((have_kb + 1024)) -ge $((ZRAM_MB * 1024)) ]; then
+        echo "Swap: zram swap already $((have_kb / 1024))MB, nothing to do"
+        return
+    fi
+
+    swap_try_zramctl || swap_try_zram || swap_try_files || echo "Swap: none available, continuing without"
     [ -n "$SWAP_DEV" ] && cat /proc/swaps
 }
 
