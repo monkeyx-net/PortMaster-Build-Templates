@@ -183,7 +183,8 @@ swap_try_zram() {
 # zram via zramctl; adds a device rather than tearing down the system's own zram swap
 swap_try_zramctl() {
     command -v zramctl >/dev/null 2>&1 || { echo "Swap: zramctl not found"; return 1; }
-    dev=$($ESUDO zramctl --find --size "${ZRAM_MB}M" 2>/dev/null)
+    dev=$($ESUDO zramctl --find --size "${ZRAM_MB}M" --algorithm lz4 2>/dev/null) \
+         || dev=$($ESUDO zramctl --find --size "${ZRAM_MB}M" 2>/dev/null)
     if [ -z "$dev" ]; then
         echo "Swap: zramctl could not create a device"
         return 1
