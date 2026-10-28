@@ -64,7 +64,9 @@ else
 fi
 
 mkdir build-starship && cd build-starship
-cmake .. -GNinja -DUSE_OPENGLES=1 -DCMAKE_BUILD_TYPE=Release
+# dladdr (libultraship's crash handler) lives in libdl on glibc < 2.34 (the 20.04 aarch64 builder),
+# and Starship doesn't link it; append it after the objects so it isn't dropped
+cmake .. -GNinja -DUSE_OPENGLES=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD_LIBRARIES="-ldl"
 # Builds the standalone torch and packs starship.o2r (sf64.o2r needs the rom, so it's made on device)
 cmake --build . --target GeneratePortO2R -j$(nproc)
 cmake --build . -j$(nproc)
