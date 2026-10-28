@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "lighthouse.zip",
+  "port_json": "new_ports/lighthouse/lighthouse/lighthouse/port.json",
+  "source": {
+    "date_updated": "",
+    "port_exe": "Lighthouse",
+    "port_build": "cmake",
+    "port_checksum": "",
+    "port_url": "HarbourMasters/Lighthouse",
+    "port_version": ""
+  }
+}

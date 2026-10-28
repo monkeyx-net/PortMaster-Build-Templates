@@ -18,6 +18,7 @@ on:
           - 'recipes/ports/edgar/recipe.json'
           - 'recipes/ports/epiphany/recipe.json'
           - 'recipes/ports/harmonist/recipe.json'
+          - 'recipes/ports/lighthouse/recipe.json'
           - 'recipes/ports/manicminer/recipe.json'
           - 'recipes/ports/shamogu/recipe.json'
           - 'recipes/ports/sip2/recipe.json'
