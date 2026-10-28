@@ -45,6 +45,12 @@ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 git submodule update --init --recursive
 
+# On Linux the extractor ignores rom paths passed on the command line and always asks first
+# ("No O2R files... Generate?", "ROMs found... process?"). Use them directly like SoH and
+# Lighthouse's own Windows path do, so the launcher's baseroms are extracted without prompting.
+perl -0pi -e 's/(#elif \(defined\(__WIIU__\) \|\| defined\(__SWITCH__\)\)\n(\s*)extractStep = ES_VERIFY;\n#else\n\s*)extractStep = ES_EXTRACT;/$1extractStep = args.empty() ? ES_EXTRACT : ES_EXTRACT_ARGS;/' src/port/Extractor/ExtractFlow.cpp
+grep -q "args.empty() ? ES_EXTRACT : ES_EXTRACT_ARGS" src/port/Extractor/ExtractFlow.cpp || echo "Warning: ExtractFlow.cpp rom-args patch did not apply"
+
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
