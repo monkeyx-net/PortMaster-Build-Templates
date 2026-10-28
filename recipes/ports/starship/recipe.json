@@ -6,8 +6,8 @@
     "date_updated": "2026-10-28",
     "port_exe": "Starship",
     "port_build": "cmake",
-    "port_checksum": "e96e03c5f077d045ced5488208b60bdc4077c381158d17b2571f9a476622d20b",
+    "port_checksum": "",
     "port_url": "HarbourMasters/Starship",
-    "port_version": "v2.0.0"
+    "port_version": ""
   }
 }
