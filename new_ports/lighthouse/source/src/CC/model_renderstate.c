@@ -1,0 +1,192 @@
+// BanjoDecomp: code_13C0.c
+#include <ultra64.h>
+#include "core1/core1.h"
+#include "functions.h"
+#include "variables.h"
+#include "CC.h"
+
+#include "core2/modelRender.h"
+
+#include <bk_math.h>
+
+typedef struct{
+    void (*unk0)(s32 arg0);
+    u8 pad4[0x14];
+    s32 unk10;
+    u8 pad14[0x4];
+    f32 unk18[3];
+    u8 unk24[8];
+}Struct_CC_13C0_0;
+
+typedef struct{
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    f32 unkC;
+}Struct_CC_13C0_1;
+
+extern Struct_CC_13C0_0 D_8036E834[];
+
+extern s32 D_80383568;
+
+// Struct5Fs *, struct struct_68_s *, f32[3], f32[3], f32, BKModelBin*, Gfx**, Mtx**, Vtx**);
+
+void func_803877B0(Struct_CC_13C0_1* arg0, void* arg1, f32 position[3], f32 rotation[3], f32 arg4, BKModelBin* modeL_ptr, Gfx** gfx, Mtx** mtx, Vtx **vtx) {
+    s32 temp_v0 = arg0->unk4;
+
+    if (temp_v0 == 3)
+        return;
+
+    if (temp_v0 == 0) {
+        modelRender_setAppendageVisibility(1, 1);
+    } else if (temp_v0 == 1) {
+        modelRender_setAppendageVisibility(1, 2);
+    } else if (temp_v0 == 2) {
+        modelRender_setAppendageVisibility(1, 2);
+        rotation[2] += (arg0->unkC * 20.0f);
+        arg4 = arg4*(1.0f - arg0->unkC);
+    }
+    modelRender_setAppendageVisibility(2, 0);
+    modelRender_setDepthMode(MODEL_RENDER_DEPTH_FULL);
+    modelRender_draw(gfx, mtx, position, rotation, arg4, NULL, modeL_ptr);
+}
+
+void func_803878AC(Struct_CC_13C0_1 *arg0, Struct68s *arg1, s32 arg2) {
+    arg0->unk4 = arg2;
+    arg0->unkC = 0.0f;
+    if ((arg2 == 2) || (arg2 == 3)) {
+        func_80351A04(arg1, 1);
+    }
+}
+
+void func_803878F0(Struct_CC_13C0_1 *arg0, Struct68s *arg1, s32 arg2) {
+    arg0->unk0 = arg2;
+    arg0->unk4 = 0;
+    arg0->unk8 = 0;
+    arg0 = arg0;
+    func_80351A14(arg1, (Struct68DrawMethod) func_803877B0);
+    func_803878AC(arg0, arg1, 0);
+}
+
+void func_80387940(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 1);
+}
+
+void CC_func_80387960(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 2);
+}
+
+void func_80387980(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 3);
+}
+
+void func_803879A0(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 4);
+}
+
+void func_803879C0(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 5);
+}
+
+void CC_func_803879E0(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 6);
+}
+
+void CC_func_80387A00(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 7);
+}
+
+void CC_func_80387A20(Struct_CC_13C0_1 *arg0, Struct68s *arg1) {
+    func_803878F0(arg0, arg1, 8);
+}
+
+void CC_func_80387A40(Struct_CC_13C0_1* arg0, Struct68s* arg1, f32 arg2) {
+    s32 temp_v0;
+    f32 player_position[3];
+    f32 sp44[3];
+    f32 sp38[3];
+    f32 sp2C[3];
+    s32 sp28;
+
+    arg0->unkC += arg2;
+    temp_v0 = maClankerRings_isMinigameActive();
+    if (temp_v0 == 0) {
+        func_803878AC(arg0, arg1, 3);
+    } else {
+        if (temp_v0 < arg0->unk0) {
+            func_803878AC(arg0, arg1, 0);
+        } else if (temp_v0 == arg0->unk0) {
+            func_803878AC(arg0, arg1, 1);
+        } else if ((arg0->unk0 < temp_v0) && ((arg0->unk4 != 2)) && (arg0->unk4 != 3)) {
+            func_803878AC(arg0, arg1, 2);
+        } else if ((arg0->unk4 == 2) && (arg0->unkC >= 1.0f)) {
+            func_803878AC(arg0, arg1, 3);
+        }
+    }
+    if ((arg0->unk4 == 0) || (arg0->unk4 == 1)) {
+        func_8035179C_copyPosition(arg1, sp38);
+        func_80351814(arg1, sp2C);
+        sp44[0] = 0.0f;
+        sp44[1] = 0.0f;
+        sp44[2] = 1.0f;
+        mlMtxIdent();
+        func_80252C08(NULL, sp2C, 1.0f, NULL);
+        mlMtx_apply_vec3f(sp44, sp44);
+        player_getPosition(player_position);
+        player_position[1] += 50.0f;
+        player_position[0] -= sp38[0];
+        player_position[1] -= sp38[1];
+        player_position[2] -= sp38[2];
+        sp28 = ((player_position[0] * sp44[0] + player_position[1] * sp44[1] + player_position[2] * sp44[2]) >= 0.0f) ? 1 : -1;
+        if (sp28 == -arg0->unk8) {
+            if (LENGTH_VEC3F(player_position) < (func_80351830(arg1) * 250.0f)) {
+                maClankerRings_passRing(arg0->unk0);
+            }
+        }
+        arg0->unk8 = sp28;
+    }
+}
+
+void code13C0_makeCameraFlipAndTilt(void){
+    f32 rotation[3];
+    s32 timer;
+    if(getGameMode() == GAME_MODE_7_ATTRACT_DEMO)
+        return;
+
+    viewport_getRotation_vec3f(rotation);
+    timer = globalTimer_getTimeMasked(0x7F);
+    if(timer >= 0x40){
+        timer = 0x7F - timer;
+    }
+    rotation[2] += timer + 0x94;
+    if(360.0f <= rotation[2]){
+        rotation[2] -= 360.0f;
+    }
+    viewport_setRotation_vec3f(rotation);
+}
+
+void code13C0_checkCCChecksums(void){
+#if ANTI_TAMPER
+    u32 rom_data;
+    u32 unused;
+    osPiReadIo(0x504, &rom_data);
+    rom_data = (rom_data & 0xffff) + 0xffff5BA0;
+    if(rom_data){
+        code13C0_makeCameraFlipAndTilt();
+    }
+#endif
+}
+
+void CC_func_80387D4C(void){
+    // [port] anti-tamper: ROM CRC check via osPiReadIo — not applicable on PC
+#if ANTI_TAMPER
+    u32 sp1C;
+    u32 tmp_v0;
+    osPiReadIo(0x504, &sp1C);
+    sp1C = (sp1C & 0xffff) + 0xffff5BA0;
+    if(sp1C){
+        code13C0_makeCameraFlipAndTilt();
+    }
+#endif
+}
+

@@ -1,0 +1,106 @@
+// BanjoDecomp: lair/ch/refillpillow.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+
+void func_803906A0(Actor *this);
+Actor *func_80390560(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
+
+/* .data */
+ActorAnimationInfo D_803948E0[] = {
+    {0, 0.0f},
+    {ASSET_268_ANIM_unk, 1.6f},
+};
+ActorAnimationInfo D_803948F0[] = {
+    {0, 0.0f},
+    {ASSET_269_ANIM_unk, 1.6f},
+};
+ActorAnimationInfo D_80394900[] = {
+    {0, 0.0f},
+    {ASSET_26A_ANIM_unk, 1.6f},
+};
+ActorInfo D_80394910 = {
+    MARKER_170_BLUE_EGG_REFILL_PILLOW, 0x1D8, ASSET_547_MODEL_BLUE_EGG_REFILL_PILLOW,
+    0x1, D_803948E0,
+    func_803906A0, actor_update_func_80326224, func_80390560,
+    0, 0, 0.7f, 0
+};
+
+ActorInfo D_80394934 = {
+    MARKER_171_RED_FEATHER_REFILL_PILLOW, 0x1D9, ASSET_548_MODEL_RED_FEATHER_REFILL_PILLOW,
+    0x1, D_803948F0,
+    func_803906A0, actor_update_func_80326224, func_80390560,
+    0, 0, 0.5f, 0
+};
+
+ActorInfo D_80394958 = {
+    MARKER_172_GOLD_FEATHER_REFILL_PILLOW, 0x1DA, ASSET_549_MODEL_GOLD_FEATHER_REFILL_PILLOW,
+    0x1, D_80394900,
+    func_803906A0, actor_update_func_80326224, func_80390560,
+    0, 0, 0.5f, 0
+};
+
+/* .code */
+Actor *func_80390560(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
+    modelRender_setAppendageVisibility(3, marker->collidable);
+    modelRender_setAppendageVisibility(4, marker->collidable);
+    return actor_draw(marker, gfx, mtx, vtx);
+}
+
+void func_803905CC(ActorMarker *marker, ActorMarker *other_marker){
+    switch (marker->id) {
+    case 0x170:
+        item_setMaxCount(ITEM_D_EGGS);
+        fxSparkle_giantBlueEgg(&marker->propPtr->position_x);
+        coMusicPlayer_playMusic(SFX_EGG_REFILL, -1);
+        break;
+    case 0x171:
+        item_setMaxCount(ITEM_F_RED_FEATHER);
+        fxSparkle_giantRedFeather(&marker->propPtr->position_x);
+        coMusicPlayer_playMusic(SFX_RED_FEATHER_REFILL, -1);
+        break;
+    case 0x172:
+        item_setMaxCount(ITEM_10_GOLD_FEATHER);
+        fxSparkle_giantGoldFeather(&marker->propPtr->position_x);
+        coMusicPlayer_playMusic(SFX_GOLD_FEATHER_REFILL, -1);
+        break;
+    }
+    marker->collidable = false;
+}
+
+void func_803906A0(Actor *this) {
+    s32 phi_s0;
+    s32 phi_s2 = 0;
+    s32 phi_s4;
+
+    if (!this->initialized) {
+        marker_setCollisionScripts(this->marker, func_803905CC, NULL, NULL);
+        this->initialized = true;
+        this->marker->propPtr->unk8_3 = true;
+    }
+    if (this->marker->unk14_21 && this->marker->collidable) {
+        switch (this->marker->modelId) {
+            default:
+                break;
+            case 0x547:
+                phi_s2 = 4;
+                phi_s4 = 8;
+                break;
+            case 0x548:
+                phi_s2 = 4;
+                phi_s4 = 8;
+                break;
+            case 0x549:
+                phi_s2 = 4;
+                phi_s4 = 8;
+                break;
+        }
+        for(phi_s0 = 0; phi_s0 < phi_s2; phi_s0++){
+            if (randf() < ((1.0 / (f64) phi_s2) / 15.0)) {
+                commonParticle_add(this->marker, phi_s0 + 5, &func_80329904);
+                commonParticle_new(phi_s4, 1);
+            }
+        }
+    }
+}

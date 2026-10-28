@@ -1,0 +1,70 @@
+# Supplied ROMs
+baseroms/*
+*.z64
+*.n64
+*.v64
+
+# Decomp: split and disassembled output
+asm/nonmatchings
+asm/*.s
+asm/*/*.s
+asm/core1/os
+!asm/ultra
+!asm/core1/ultra
+nonmatchings/
+.splat_cache*
+undefined_syms_auto*
+undefined_funcs_auto*
+*auto.txt
+*.ld
+*.map
+ctx.c
+diff_settings.py
+expected/
+*.csv
+
+# Decomp: binaries ripped from the ROMs, and modified binaries that override them at compile time
+assets/bko2r*
+assets/log.txt
+bin/
+mod/
+tools/bk_crc/bk_crc
+
+# Build output
+build/
+build-cmake
+/build-arm64
+x64
+
+# Compiler output
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.lai
+*.la
+*.a
+*.lib
+*.pdb
+
+# Port: generated archives and runtime files
+torch.hash.yml
+*.o2r
+*.otr
+imgui.ini
+lighthouse.cfg.json
+logs/
+/saves
+
+# Tools and scratch
+/clang-format.exe
+__pycache__/
+tmp/
+.*/
+!.github/
+!.gitlab/

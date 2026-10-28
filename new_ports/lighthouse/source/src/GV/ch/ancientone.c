@@ -1,0 +1,297 @@
+// BanjoDecomp: GV/ch/ancientone.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+extern void core1_7090_initSfxSource(s32, s32, s32, f32);
+extern s32 port_anchor_isWorldSyncActive(void);
+
+typedef struct {
+    f32 unk0[3];
+    u32 unk4_31:1;
+    u32 unk4_30:31;
+    f32 unk10[3];
+    f32 unk1C;
+}ActorLocal_chAncientOne;
+#define LOCAL_CH_ANCIENT_ONE(s) ((ActorLocal_chAncientOne *)&s->local)
+
+void chAncientOne_update(Actor *this);
+Actor *chAncientOne_draw(ActorMarker *this_marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
+
+/* .data */
+s16 GV_D_80390C20[4] = {5, 6, 7, 8};
+ActorMarker *D_80390C28[5] = {NULL};
+ActorAnimationInfo chAncientOneAnimations[] = {
+    {0, 0.0f},
+    {0, 0.0f},
+    {ASSET_ED_ANIM_ANCIENT_ONE, 2.0f},
+    {ASSET_ED_ANIM_ANCIENT_ONE, 33000000.f}
+};
+
+ActorInfo chAncientOne = { MARKER_F4_ANCIENT_ONE, ACTOR_147_ANCIENT_ONE, ASSET_3E8_MODEL_ANCIENT_ONE, 
+    0x1, chAncientOneAnimations, 
+    chAncientOne_update, actor_update_func_80326224, chAncientOne_draw, 
+    0, 0x100, 0.0f, 0
+};
+
+/* .code */
+void func_80386620(Actor *this){
+    int i;
+    s32 *temp_v0;
+    ActorMarker *temp_a0;
+    s32 temp_a1;
+    Actor *temp_v0_3;
+    s32 phi_s2;
+    s32 phi_s1;
+    s32 phi_s3;
+
+    for(i = 0; i <5; i++){
+        if(D_80390C28[i] == NULL)
+            return;
+    }
+
+     GV_D_80390C20[0] = 5;
+     GV_D_80390C20[1] = 6;
+     GV_D_80390C20[2] = 7;
+     GV_D_80390C20[3] = 8;
+
+    phi_s3 = (randf() * 1.0737418e9f);
+    phi_s2 = 1;
+    phi_s1 = 0;
+    while(phi_s2 != 0x40000000){
+        if ((phi_s3 & phi_s2) != 0) {
+            temp_a1 = GV_D_80390C20[phi_s1];
+            GV_D_80390C20[phi_s1] = GV_D_80390C20[phi_s1 + 1];
+            GV_D_80390C20[phi_s1 + 1] = temp_a1;
+            temp_a0 = D_80390C28[phi_s1 + 1];
+            D_80390C28[phi_s1 + 1] = D_80390C28[phi_s1 + 2];
+            D_80390C28[phi_s1 + 2] = temp_a0;
+            temp_v0_3 = marker_getActor(D_80390C28[phi_s1 + 1]);
+            temp_v0_3->actorTypeSpecificField = phi_s1 + 2;
+            temp_v0_3 = marker_getActor(D_80390C28[phi_s1 + 2]);
+            temp_v0_3->actorTypeSpecificField = phi_s1 + 3;
+        }
+        phi_s1 = (phi_s1 == 2) ? 0 : phi_s1 + 1;
+        phi_s2 <<= 1;
+    };
+}
+
+void func_8038678C(void){
+    core1_7090_initSfxSource(3, 0x85, 0x7ff8, 1.0f);
+    core1_7090_initSfxSource(4, 0x85, 0x7ff8, 1.0f);
+}
+
+void func_803867CC(void){
+    core1_7090_freeSfxSource(3);
+    core1_7090_freeSfxSource(4);
+}
+
+void func_803867F4(void){
+    f32 sp24[3];
+    gcStaticCamera_activate(4);
+    if(nodeProp_findPositionFromActorId(0x148, sp24)){
+        jiggy_spawn(JIGGY_46_GV_ANCIENT_ONES, sp24);
+        __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_f32, 0x4C, reinterpret_cast(s32, sp24[0]), reinterpret_cast(s32, sp24[1]), reinterpret_cast(s32, sp24[2]));
+    }
+}
+
+void func_80386850(ActorMarker *caller_marker, enum asset_e text_id, s32 arg2){
+    Actor *caller = marker_getActor(caller_marker); 
+    if(text_id == VER_SELECT(0xA80, 0x93C, 0, 0)){
+        subaddie_set_state_with_direction(caller, 2, 0.0f, 1);
+        actor_playAnimationOnce(caller);
+        coMusicPlayer_playMusic(COMUSIC_2D_PUZZLE_SOLVED_FANFARE, 0x7fff);
+        timedFunc_set_0(1.0f, func_803867F4);
+    }
+}
+
+void chAncientOne_update(Actor *this){
+    f32 sp44[3];
+    s32 sp40;
+    s32 sp38;
+    s32 pad;
+    f32 sp34;
+
+    
+    if(!this->volatile_initialized){
+        this->volatile_initialized = true;
+        if(jiggyscore_isSpawned(JIGGY_46_GV_ANCIENT_ONES)){
+            marker_despawn(this->marker);
+            return;
+        }
+    }
+    if(!this->initialized){
+        if(D_80390C28[this->actorTypeSpecificField - 1] == NULL){
+            LOCAL_CH_ANCIENT_ONE(this)->unk1C = this->position_y;
+            this->position_y -= 1100.0f;
+            D_80390C28[this->actorTypeSpecificField - 1] = this->marker;
+            if(this->actorTypeSpecificField != 1){
+                this->marker->propPtr->isNotFeatherEggOrNote = false;
+            }
+            this->marker->propPtr->unk8_3 = true;
+            actor_collisionOff(this);
+            func_80386620(this);
+            return;
+        }
+        // Anchor only. A statue that has not been drawn yet still has to run the
+        // body below so it can catch up to flags another client set.
+        if(!port_anchor_isWorldSyncActive()){
+            return;
+        }
+        {
+            s32 fc = 0, fi;
+            for(fi = 7; fi < 0xC && mapSpecificFlags_get(fi); fi++) fc++;
+            if(fc == 0){
+                return;
+            }
+        }
+    }
+    {//L803869B4
+        if(port_anchor_isWorldSyncActive() && jiggyscore_isSpawned(JIGGY_46_GV_ANCIENT_ONES)){
+            marker_despawn(this->marker);
+            return;
+        }
+        // Anchor: ring order is randomized per-client; advance by synced-flag count.
+        if(port_anchor_isWorldSyncActive()){
+            s32 fc = 0, fi;
+            for(fi = 7; fi < 0xC && mapSpecificFlags_get(fi); fi++) fc++;
+            if(this->state == 1 && this->actorTypeSpecificField <= fc){
+                subaddie_set_state_with_direction(this, 2, 0.0f, 1);
+                actor_playAnimationOnce(this);
+                if(this->actorTypeSpecificField < 5 && D_80390C28[this->actorTypeSpecificField]){
+                    D_80390C28[this->actorTypeSpecificField]->propPtr->isNotFeatherEggOrNote = true;
+                }
+            }
+        }
+        switch(this->state){
+            case 1: //L803869E4
+                player_getPosition(sp44);
+                sp44[0] -= LOCAL_CH_ANCIENT_ONE(this)->unk10[0];
+                sp44[1] -= LOCAL_CH_ANCIENT_ONE(this)->unk10[1];
+                sp44[2] -= LOCAL_CH_ANCIENT_ONE(this)->unk10[2];
+                sp40 = (0.0f <= sp44[0]*LOCAL_CH_ANCIENT_ONE(this)->unk0[0] + sp44[1]*LOCAL_CH_ANCIENT_ONE(this)->unk0[1] + sp44[2]*LOCAL_CH_ANCIENT_ONE(this)->unk0[2]) ? 0 : 1;
+                if(LOCAL_CH_ANCIENT_ONE(this)->unk1C <= this->position_y){
+                    this->position_y = LOCAL_CH_ANCIENT_ONE(this)->unk1C;
+                    if( sp40 == (LOCAL_CH_ANCIENT_ONE(this)->unk4_31 ^ 1)){
+                        if((sp44[0]*sp44[0] + sp44[1]*sp44[1] + sp44[2]*sp44[2]) < (f32)LOCAL_CH_ANCIENT_ONE(this)->unk4_30){
+                            coMusicPlayer_playMusic(COMUSIC_2B_DING_B, 28000);
+                            for(sp38= 7; sp38< 0xC && mapSpecificFlags_get(sp38);sp38++);
+                            mapSpecificFlags_set(sp38, true);
+                            if(sp38== 0xB){
+                                if(!jiggyscore_isCollected(JIGGY_46_GV_ANCIENT_ONES)){
+                                    gcdialog_showDialog(VER_SELECT(ASSET_A80_DIALOG_ANCIENT_ONES_DONE, 0x93C, 0, 0), 0xE, NULL, this->marker, func_80386850, NULL);
+                                }
+                                else{
+                                    func_80386850(this->marker, VER_SELECT(ASSET_A80_DIALOG_ANCIENT_ONES_DONE, 0x93C, 0, 0), -1);
+                                }
+                            }//L80386B98
+                            else {   
+                                if(sp38== 7){
+                                    if(!jiggyscore_isCollected(JIGGY_46_GV_ANCIENT_ONES)){
+                                        gcdialog_showDialog(VER_SELECT(ASSET_A7F_DIALOG_ANCIENT_ONES_MEET, 0x93B, 0, 0), 0x4, NULL, NULL, NULL, NULL);
+                                    }
+                                }
+                                
+                                subaddie_set_state_with_direction(this, 2, 0.0f, 1);
+                                actor_playAnimationOnce(this);
+                                if(this->actorTypeSpecificField < 5){
+                                    D_80390C28[this->actorTypeSpecificField]->propPtr->isNotFeatherEggOrNote = true;
+                                    gcStaticCamera_activate(GV_D_80390C20[this->actorTypeSpecificField - 1]);
+                                    core1_7090_initSfxSource(2, 0x86, 0x7ff8, 0.3f);
+                                    timedFunc_set_0(0.45f, func_8038678C);
+                                
+                                }//L80386DB0
+                            }
+                        }
+                    }
+                }
+                else{//L80386C64
+                    sp38 = globalTimer_getTime() & 0xF;
+                    sp34 = LOCAL_CH_ANCIENT_ONE(this)->unk1C + 40.0f;
+                    this->position_y += 18.0;
+                    this->position_x += (sp38 & 1) ? 0x17 : -0x17;
+                    this->position_z += (sp38 & 2) ? 0xC : -0xC;
+                    if(this->actorTypeSpecificField != 1){
+                        if(sp38 == 6){
+                            __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_f32, 0x4C, reinterpret_cast(s32, this->position_x), reinterpret_cast(s32, sp34), reinterpret_cast(s32, this->position_z));
+                        }
+                        if(sp38 == 4 && this->position_y < LOCAL_CH_ANCIENT_ONE(this)->unk1C - 600.0f){
+                            __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_f32, 0x11f, reinterpret_cast(s32, this->position_x), reinterpret_cast(s32, sp34), reinterpret_cast(s32, this->position_z));
+                        }//L80386D80
+                    }
+                    if(LOCAL_CH_ANCIENT_ONE(this)->unk1C <= this->position_y){
+                        core1_7090_freeSfxSource(2);
+                        timedFunc_set_0(0.5f, func_803867CC);
+                    }
+                }//L80386DB0 
+                LOCAL_CH_ANCIENT_ONE(this)->unk4_31 = sp40;
+                break;
+            case 2: //L80386DCC
+                if(actor_animationIsAt(this, 0.999f)){
+                    subaddie_set_state_with_direction(this, 3, 0.9999f, 1);
+                    actor_playAnimationOnce(this);
+                }
+                break;
+            case 3: //L80386E04
+                if(LOCAL_CH_ANCIENT_ONE(this)->unk1C - 1100.0f < this->position_y){
+                    this->position_y -= 10.0;
+                }
+                else{
+                    this->marker->propPtr->isNotFeatherEggOrNote = false;
+                }
+                break;
+        }//L80386E60
+    }//L80386E60
+}
+
+Actor *chAncientOne_draw(ActorMarker *this_marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
+    Actor *this = marker_getActor(this_marker);
+    int sp58;
+    s32 sp4C[3];
+    s32 sp40[3];
+    s32 sp34[3];
+    f32 sp28[3];
+    s32 tmp_v0;
+
+    sp58 = (this->state == 3) ? 0 : 1;
+    modelRender_setAppendageVisibility(3, sp58);
+    modelRender_setAppendageVisibility(4, sp58);
+    actor_draw(this_marker, gfx, mtx, vtx);
+    if( !this->initialized && this_marker->unk14_21){
+        vec3fArray_get_vec3i(func_80329934(), 5, sp4C);
+        vec3fArray_get_vec3i(func_80329934(), 6, sp40);
+        vec3fArray_get_vec3i(func_80329934(), 7, sp34);
+        sp4C[1] += 1100;
+        sp40[1] += 1100;
+        sp34[1] += 1100;
+        LOCAL_CH_ANCIENT_ONE(this)->unk0[0] = (sp4C[0] - sp40[0]);
+        LOCAL_CH_ANCIENT_ONE(this)->unk0[1] = (sp4C[1] - sp40[1]);
+        LOCAL_CH_ANCIENT_ONE(this)->unk0[2] = (sp4C[2] - sp40[2]);
+        player_getPosition(sp28);
+
+        sp28[0] -= sp40[0];
+        sp28[1] -= sp40[1];
+        sp28[2] -= sp40[2];
+
+        if(0.0f <= sp28[0] *LOCAL_CH_ANCIENT_ONE(this)->unk0[0] + sp28[1]*LOCAL_CH_ANCIENT_ONE(this)->unk0[1] + sp28[2]*LOCAL_CH_ANCIENT_ONE(this)->unk0[2])
+            LOCAL_CH_ANCIENT_ONE(this)->unk4_31 = false;
+        else
+            LOCAL_CH_ANCIENT_ONE(this)->unk4_31 = true;
+
+        LOCAL_CH_ANCIENT_ONE(this)->unk10[0] = (f32)sp40[0];
+        LOCAL_CH_ANCIENT_ONE(this)->unk10[1] = (f32)sp40[1];
+        LOCAL_CH_ANCIENT_ONE(this)->unk10[2] = (f32)sp40[2];
+        tmp_v0 = (sp34[1]- sp40[1]);
+        LOCAL_CH_ANCIENT_ONE(this)->unk4_30 = (s32)(0.95*(f32)(tmp_v0*tmp_v0));
+        this->initialized = true;
+    }
+    return this;
+}
+
+
+void GV_func_80387118(void){
+    int i;
+    for(i = 0; i < 5; i++){
+        D_80390C28[i] = NULL;
+    }
+}

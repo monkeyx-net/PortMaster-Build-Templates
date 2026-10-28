@@ -1,0 +1,39 @@
+// BanjoDecomp: core2/code_C5F00.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+#include "core2/model.h"
+
+void func_8034CE90(s32 arg0, BKModelVtxRef *arg1, Vtx *arg2, void *arg3){
+    Struct72s *data = (Struct72s *)arg3;
+    s32 i;
+
+    for(i = 0; i < 3; i++){
+        arg2->v.cn[i] = arg1->v.v.cn[i] * data->unk0;
+    }
+}
+
+void func_8034CF6C(void *arg0_){
+    Struct72s *arg0 = (Struct72s *)arg0_; (void)arg0;
+}
+
+void func_8034CF74(void *arg0_, s32 arg1, BKModel *arg2, s32 arg3){
+    Struct72s *arg0 = (Struct72s *)arg0_;
+    arg0->unk0 = 1.0f;
+}
+
+void func_8034CF90(void *arg0_, BKModel *arg1, s32 arg2) {
+    Struct72s *arg0 = (Struct72s *)arg0_;
+    arg0->unk0 += randf2(-0.04f, 0.04f);
+    arg0->unk0 = (arg0->unk0 > 1.0f) ? 1.0f : arg0->unk0;
+    arg0->unk0 = (arg0->unk0 < 0.8) ? 0.8 : arg0->unk0;
+    model_transformMesh(arg1, arg2, func_8034CE90, (void *) arg0);
+}
+
+void func_8034D048(Struct72s *arg0, BKModel *arg1, s32 arg2) {
+    arg0->unk0 -= 0.04;
+    arg0->unk0 += (osGetCount() & 0x1F) / 387.5;
+    arg0->unk0 =  (arg0->unk0 > 1.0f) ? 1.0f : arg0->unk0;
+    arg0->unk0 =  (arg0->unk0 < 0.8) ? 0.8 : arg0->unk0;
+    model_transformMesh(arg1, arg2, func_8034CE90, (void *) arg0);
+}

@@ -1,0 +1,487 @@
+#include "Language.h"
+
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include <spdlog/spdlog.h>
+#include <zip.h>
+
+#include "libultraship/libultraship.h"
+#include "ship/Context.h"
+#include "ship/resource/ResourceManager.h"
+#include "ship/resource/archive/Archive.h"
+#include "ship/resource/archive/ArchiveManager.h"
+#include "ship/resource/File.h"
+
+#include "port/ResourceHelpers.h"
+#include "port/GameVersion/BaseGameVersion.h"
+#include "port/Romhack/RomhackConfig.h"
+#include "port/UI/cvar_prefixes.h"
+
+namespace Lighthouse {
+namespace {
+
+enum LanguageScript { SCRIPT_LATIN = 0, SCRIPT_JP = 1 };
+
+struct LanguageEntry {
+    std::string name;      // display name (from region defaults or pack langinfo)
+    Ship::Archive* source; // base game's own dialog if nullptr; else the pack
+    int index;             // dialog index within the source's multi-language blob
+    int count;             // number of languages packed in the source's blobs
+    int script;            // LanguageScript: drives the JP font/sprite path
+    // A pack from mods/~lang/<hack>/ translating the active romhack's own lines.
+    // Independent of `source`: a language can be provided by either or both.
+    Ship::Archive* scopedSource = nullptr;
+    int scopedIndex = 0; // this language's dialog index within scopedSource's blobs
+};
+
+std::vector<LanguageEntry> sLanguages;
+std::string sActiveLanguage;
+
+// Localized UI-string tables (key = English, value = translation), keyed by language
+// name; one table per pack, shared by its languages. sActiveLangStrings points at the
+// selected language's table.
+using StringMap = std::unordered_map<std::string, std::string>;
+std::unordered_map<std::string, std::shared_ptr<StringMap>> sLangStringsByName;
+std::shared_ptr<StringMap> sActiveLangStrings;
+
+// One parsed langinfo entry: display name, dialog index, script.
+struct LangInfoEntry {
+    std::string name;
+    int index;
+    int script;
+};
+
+// Parse a pack's binary langinfo. The optional out-map receives the localized-string
+// table appended after the languages.
+std::vector<LangInfoEntry> ParseLangInfo(const char* data, size_t size,
+                                         std::unordered_map<std::string, std::string>* strings = nullptr) {
+    std::vector<LangInfoEntry> out;
+    size_t pos = 0;
+    auto getU32 = [&](uint32_t& v) -> bool {
+        if (pos + 4 > size) {
+            return false;
+        }
+        std::memcpy(&v, data + pos, 4);
+        pos += 4;
+        return true;
+    };
+    auto getStr = [&](std::string& s) -> bool {
+        uint32_t len = 0;
+        if (!getU32(len) || pos + len > size) {
+            return false;
+        }
+        s.assign(data + pos, len);
+        pos += len;
+        return true;
+    };
+    uint32_t version = 0, count = 0;
+    if (!getU32(version) || (version != 1 && version != 2) || !getU32(count)) {
+        return out; // unknown/old format — ignore (pack must be re-extracted)
+    }
+    for (uint32_t i = 0; i < count; i++) {
+        uint32_t index = 0, script = 0;
+        std::string name;
+        if (!getU32(index) || !getU32(script) || !getStr(name)) {
+            break;
+        }
+        out.push_back({ std::move(name), static_cast<int>(index), static_cast<int>(script) });
+    }
+    // Appended localized-string table (key = English, value = translation). EOF here
+    // just means the pack carries no overrides.
+    if (strings != nullptr) {
+        uint32_t scount = 0;
+        if (getU32(scount)) {
+            for (uint32_t i = 0; i < scount; i++) {
+                std::string key, val;
+                if (!getStr(key) || !getStr(val)) {
+                    break;
+                }
+                (*strings)[std::move(key)] = std::move(val);
+            }
+        }
+    }
+    return out;
+}
+
+// True if the archive contains an asset whose id hex matches `hex`.
+bool ArchiveHasAssetHex(Ship::Archive* archive, uint32_t hex) {
+    if (archive == nullptr) {
+        return false;
+    }
+    auto files = archive->ListFiles();
+    if (!files) {
+        return false;
+    }
+    for (const auto& [hash, path] : *files) {
+        uint32_t x = 0;
+        if (AssetHexFromPath(path, x) && x == hex) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool IsLocalizedText(const std::string& path) {
+    return path.find("/dialog/") != std::string::npos || path.find("/quizq/") != std::string::npos ||
+           path.find("/gruntyq/") != std::string::npos;
+}
+
+bool EntryStamp(zip_t* z, const std::string& entryPath, uint32_t& outCrc, uint64_t& outSize) {
+    zip_stat_t st;
+    zip_stat_init(&st);
+    if (zip_stat(z, entryPath.c_str(), 0, &st) != 0 || !(st.valid & ZIP_STAT_CRC) || !(st.valid & ZIP_STAT_SIZE)) {
+        return false;
+    }
+    outCrc = static_cast<uint32_t>(st.crc);
+    outSize = static_cast<uint64_t>(st.size);
+    return true;
+}
+
+// Drop the overrides whose asset is byte-identical to the one it would replace, so the
+// pack does not shadow HD art for slots it never localized.
+size_t DropUnchangedOverrides(const std::string& packArchivePath, bool scoped,
+                              std::unordered_map<uint32_t, std::string>& overrides,
+                              const std::unordered_map<uint32_t, std::vector<std::string>>& packFamilies) {
+    const std::string basePath = BaseArchivePath();
+    if (basePath.empty() || packArchivePath.empty()) {
+        return 0;
+    }
+    zip_t* packZip = zip_open(packArchivePath.c_str(), ZIP_RDONLY, nullptr);
+    if (packZip == nullptr) {
+        return 0; // a folder-based archive, not a zip: no cheap stamp to compare
+    }
+
+    // Reference archives are opened once each and reused across ids.
+    std::unordered_map<std::string, zip_t*> refZips;
+    auto refZip = [&](const std::string& path) -> zip_t* {
+        auto [it, inserted] = refZips.try_emplace(path, nullptr);
+        if (inserted) {
+            it->second = zip_open(path.c_str(), ZIP_RDONLY, nullptr);
+        }
+        return it->second;
+    };
+
+    size_t dropped = 0;
+    for (auto it = overrides.begin(); it != overrides.end();) {
+        if (IsLocalizedText(it->second)) {
+            ++it;
+            continue;
+        }
+        std::string refArchive = basePath;
+        std::string refEntry;
+        if (!scoped || !ResourceHelpers_GetOverlayAsset(it->first, refArchive, refEntry)) {
+            refArchive = basePath;
+            refEntry = ResourceHelpers_GetBaseAssetPath(it->first);
+        }
+        zip_t* ref = refEntry.empty() ? nullptr : refZip(refArchive);
+        if (ref == nullptr) {
+            ++it;
+            continue;
+        }
+
+        bool unchanged = true;
+        auto family = packFamilies.find(it->first);
+        const std::vector<std::string> single = { it->second };
+        const std::vector<std::string>& entries = family != packFamilies.end() ? family->second : single;
+        for (const std::string& packEntry : entries) {
+            if (packEntry.rfind(it->second, 0) != 0) {
+                unchanged = false;
+                break;
+            }
+            const std::string refSibling = refEntry + packEntry.substr(it->second.size());
+            uint32_t packCrc = 0, refCrc = 0;
+            uint64_t packSize = 0, refSize = 0;
+            if (!EntryStamp(packZip, packEntry, packCrc, packSize) || !EntryStamp(ref, refSibling, refCrc, refSize) ||
+                packCrc != refCrc || packSize != refSize) {
+                unchanged = false;
+                break;
+            }
+        }
+        if (!unchanged) {
+            ++it;
+            continue;
+        }
+        it = overrides.erase(it);
+        dropped++;
+    }
+
+    for (auto& [path, z] : refZips) {
+        if (z != nullptr) {
+            zip_close(z);
+        }
+    }
+    zip_close(packZip);
+    return dropped;
+}
+
+const LanguageEntry* FindLanguage(const std::string& name) {
+    for (const auto& e : sLanguages) {
+        if (e.name == name) {
+            return &e;
+        }
+    }
+    return nullptr;
+}
+
+uint32_t LangInfoFormat(Ship::Archive* pack) {
+    uint32_t format = 0;
+    auto file = pack->LoadFile("langinfo");
+    if (file && file->IsLoaded && file->Buffer && file->Buffer->size() - file->BufferOffset >= 4) {
+        std::memcpy(&format, file->Buffer->data() + file->BufferOffset, 4);
+    }
+    return format;
+}
+
+bool BuildPackOverride(Ship::Archive* pack, const std::string& name, bool scoped,
+                       std::unordered_map<uint32_t, std::string>& out) {
+    if (!scoped && LangInfoFormat(pack) == 1) {
+        // The pack's assets are numbered for the ROM it was extracted from.
+        const uint32_t rawVersion = static_cast<uint32_t>(pack->GetGameVersion());
+        BKVersion packVersion = BK_VER_US_10;
+        if (!ClassifyArchiveVersion(rawVersion, packVersion) || packVersion != BK_VER_US_10) {
+            SPDLOG_ERROR("[Lang] '{}': pack was built for ROM {:#010x} by an older Torch; re-export it with the "
+                         "current one.",
+                         name, rawVersion);
+            return false;
+        }
+    }
+
+    std::unordered_map<uint32_t, std::string> packMain;
+    std::unordered_map<uint32_t, std::vector<std::string>> packFamilies;
+    if (auto files = pack->ListFiles()) {
+        for (const auto& [hash, path] : *files) {
+            uint32_t id = 0;
+            if (!AssetHexFromPath(path, id)) {
+                continue;
+            }
+            packFamilies[id].push_back(path);
+            auto it = packMain.find(id);
+            if (it == packMain.end() || path.size() < it->second.size()) {
+                packMain[id] = path;
+            }
+        }
+    }
+
+    for (const auto& [packId, path] : packMain) {
+        out[packId] = path;
+    }
+
+    if (const size_t dropped = DropUnchangedOverrides(pack->GetPath(), scoped, out, packFamilies); dropped > 0) {
+        SPDLOG_INFO("[Lang] '{}': {} pack asset(s) are identical to the base game and were left un-repointed", name,
+                    dropped);
+    }
+    return true;
+}
+
+// A pack in mods/~lang/<hack>/ belongs to that romhack; one directly in mods/~lang/
+// localizes the base game.
+bool IsHackScopedPack(const std::string& archivePath) {
+    const std::string marker = "/~lang/";
+    const auto pos = archivePath.find(marker);
+    if (pos == std::string::npos) {
+        return false;
+    }
+    return archivePath.find('/', pos + marker.size()) != std::string::npos;
+}
+
+} // namespace
+
+bool AssetHexFromPath(const std::string& path, uint32_t& out) {
+    auto a = path.rfind("ASSET_");
+    if (a == std::string::npos) {
+        return false;
+    }
+    a += 6;
+    auto e = path.find('_', a);
+    if (e == std::string::npos) {
+        return false;
+    }
+    try {
+        out = static_cast<uint32_t>(std::stoul(path.substr(a, e - a), nullptr, 16));
+        return true;
+    } catch (...) { return false; }
+}
+
+int32_t LanguageKey(const std::string& name) {
+    // Stable FNV-1a hash so the combobox key / CVar survives reboots and changes
+    // to the pack list (unlike a list index).
+    uint32_t h = 2166136261u;
+    for (unsigned char c : name) {
+        h ^= c;
+        h *= 16777619u;
+    }
+    return static_cast<int32_t>(h & 0x7FFFFFFF);
+}
+
+std::vector<std::string> GetAvailableLanguageNames() {
+    std::vector<std::string> names;
+    names.reserve(sLanguages.size());
+    for (const auto& e : sLanguages) {
+        names.push_back(e.name);
+    }
+    return names;
+}
+
+// Localize a hardcoded UI string: returns the active pack's translation of `english`,
+// or `english` itself when the pack doesn't override it (or no pack is active). The
+// returned pointer is valid until the language changes; callers pass string literals.
+extern "C" const char* ResourceMgr_GetLangString(const char* english) {
+    if (english != nullptr && sActiveLangStrings != nullptr) {
+        auto it = sActiveLangStrings->find(english);
+        if (it != sActiveLangStrings->end() && !it->second.empty()) {
+            return it->second.c_str();
+        }
+    }
+    return english;
+}
+
+// True when the active language is a pack that carries UI-string overrides. Lets the port
+// rebuild variable-formatted lines (the file-select info box) only for such packs, leaving
+// the base game's own (English / PAL FR-DE) assembly untouched.
+extern "C" int ResourceMgr_HasLangStrings(void) {
+    return (sActiveLangStrings != nullptr && !sActiveLangStrings->empty()) ? 1 : 0;
+}
+
+int GetAvailableLanguageCount() {
+    return static_cast<int>(sLanguages.size());
+}
+
+std::vector<std::pair<int32_t, const char*>> GetLanguageComboEntries() {
+    std::vector<std::pair<int32_t, const char*>> entries;
+    entries.reserve(sLanguages.size());
+    for (const auto& e : sLanguages) {
+        entries.emplace_back(LanguageKey(e.name), e.name.c_str());
+    }
+    return entries;
+}
+
+void SetActiveLanguage(const std::string& name) {
+    const LanguageEntry* entry = FindLanguage(name);
+    if (entry == nullptr) {
+        return;
+    }
+    sActiveLanguage = name;
+    CVarSetInteger(CVAR_SETTING("DialogLanguage"), LanguageKey(name));
+    if (auto it = sLangStringsByName.find(name); it != sLangStringsByName.end()) {
+        sActiveLangStrings = it->second;
+    } else {
+        sActiveLangStrings = nullptr;
+    }
+
+    std::unordered_map<uint32_t, std::string> dialogOverride;
+    std::unordered_map<uint32_t, std::string> scopedOverride;
+    if (entry->source != nullptr && !BuildPackOverride(entry->source, name, false, dialogOverride)) {
+        return;
+    }
+    if (entry->scopedSource != nullptr) {
+        BuildPackOverride(entry->scopedSource, name, true, scopedOverride);
+    }
+
+    // Hand the computed language to the resource layer
+    const size_t repointed = dialogOverride.size() + scopedOverride.size();
+    ResourceHelpers_ApplyLanguage(std::move(dialogOverride), std::move(scopedOverride), entry->script == SCRIPT_JP,
+                                  entry->count, entry->index, entry->scopedIndex);
+    SPDLOG_INFO("[Lang] Active language '{}'", name, repointed);
+}
+
+void RescanLanguages() {
+    sLanguages.clear();
+    sLangStringsByName.clear();
+
+    // Base language(s) inferred from the base game's region.
+    switch (GetBaseVersion()) {
+        case BK_VER_PAL:
+            sLanguages.push_back({ "English (UK)", nullptr, 0, 3, SCRIPT_LATIN });
+            sLanguages.push_back({ "French", nullptr, 1, 3, SCRIPT_LATIN });
+            sLanguages.push_back({ "German", nullptr, 2, 3, SCRIPT_LATIN });
+            break;
+        case BK_VER_JP:
+            sLanguages.push_back({ "Japanese", nullptr, 0, 1, SCRIPT_JP });
+            break;
+        default: // US v1.0 / v1.1
+            sLanguages.push_back({ "English (US)", nullptr, 0, 1, SCRIPT_LATIN });
+            break;
+    }
+
+    if (auto archives = Ship::Context::GetRawInstance()->GetResourceManager()->GetArchiveManager()->GetArchives()) {
+        for (const auto& archive : *archives) {
+            if (!archive) {
+                continue;
+            }
+            auto file = archive->LoadFile("langinfo");
+            if (!file || !file->IsLoaded || !file->Buffer) {
+                continue;
+            }
+            const char* data = file->Buffer->data() + file->BufferOffset;
+            const size_t size = file->Buffer->size() - file->BufferOffset;
+            auto packStrings = std::make_shared<StringMap>();
+            auto langs = ParseLangInfo(data, size, packStrings.get());
+            const int cnt = static_cast<int>(langs.size());
+            const bool scoped = IsHackScopedPack(archive->GetPath());
+            for (const auto& le : langs) {
+                // A JP-script pack must carry the JP dialog font (0x6EA).
+                if (le.script == SCRIPT_JP && !ArchiveHasAssetHex(archive.get(), 0x6EA)) {
+                    SPDLOG_ERROR("[Lang] Pack '{}' declares Japanese ('{}') but is missing the JP font sprite "
+                                 "(0x6EA); excluding it. Re-extract the pack from a Japanese ROM.",
+                                 archive->GetPath(), le.name);
+                    continue;
+                }
+                auto existing = std::find_if(sLanguages.begin(), sLanguages.end(),
+                                             [&](const LanguageEntry& e) { return e.name == le.name; });
+                if (existing != sLanguages.end()) {
+                    // Only a hack's pack joins a language already listed; a base game pack never
+                    // displaces the base game's own language or an earlier pack.
+                    if (scoped && existing->scopedSource == nullptr) {
+                        existing->scopedSource = archive.get();
+                        existing->scopedIndex = le.index;
+                    }
+                } else {
+                    LanguageEntry entry{ le.name, scoped ? nullptr : archive.get(), le.index, cnt, le.script };
+                    if (scoped) {
+                        entry.scopedSource = archive.get();
+                        entry.scopedIndex = le.index;
+                    }
+                    sLanguages.push_back(entry);
+                }
+                if (!packStrings->empty() && sLangStringsByName.find(le.name) == sLangStringsByName.end()) {
+                    sLangStringsByName[le.name] = packStrings;
+                }
+            }
+        }
+    }
+
+    // Hide vanilla language packs unless there's a hack langpack as well,
+    // exemptions for languages the base o2r provides.
+    if (port_isRomhack()) {
+        sLanguages.erase(
+            std::remove_if(sLanguages.begin(), sLanguages.end(),
+                           [](const LanguageEntry& e) { return e.source != nullptr && e.scopedSource == nullptr; }),
+            sLanguages.end());
+    }
+
+    // Re-apply the persisted selection against the refreshed list; fall back to
+    // the base game's native (first) language.
+    const int32_t savedKey = CVarGetInteger(CVAR_SETTING("DialogLanguage"), 0);
+    std::string target;
+    for (const auto& e : sLanguages) {
+        if (LanguageKey(e.name) == savedKey) {
+            target = e.name;
+            break;
+        }
+    }
+    if (target.empty() && !sLanguages.empty()) {
+        target = sLanguages.front().name;
+    }
+    sActiveLanguage.clear();
+    if (!target.empty()) {
+        SetActiveLanguage(target);
+    }
+}
+
+} // namespace Lighthouse

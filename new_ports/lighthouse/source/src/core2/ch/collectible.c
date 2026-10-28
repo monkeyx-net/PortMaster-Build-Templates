@@ -1,0 +1,185 @@
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+
+extern void actor_setOpacity(Actor*,s32);
+
+bool chCollectible_collectItem(Actor*, enum file_progress_e, enum asset_e, enum comusic_e, enum item_e, f32);
+Actor *chCollectible_draw(ActorMarker *this, Gfx **gdl, Mtx **mptr, Vtx **arg3);
+void chCollectible_update(Actor *this);
+
+/* .data */
+extern ActorInfo chBlueEgg = {
+    MARKER_60_BLUE_EGG_COLLECTIBLE, ACTOR_52_BLUE_EGG, ASSET_36D_SPRITE_BLUE_EGG,
+    0, NULL, 
+    chCollectible_update, actor_update_func_80326224, chCollectible_draw, 
+    0, 0, 0.7f, 0
+};
+
+extern ActorInfo chRedFeather = {
+    MARKER_B5_RED_FEATHER_COLLECTIBLE, ACTOR_129_RED_FEATHER, ASSET_580_SPRITE_RED_FEATHER,
+    0, NULL, 
+    chCollectible_update, actor_update_func_80326224, chCollectible_draw, 
+    0, 0, 0.5f, 0
+};
+
+extern ActorInfo chGoldFeather = {
+    MARKER_1E5_GOLD_FEATHER_COLLECTIBLE, ACTOR_370_GOLD_FEATHER, ASSET_6D1_SPRITE_GOLDFEATHER,
+    0, NULL, 
+    chCollectible_update, actor_update_func_80326224, chCollectible_draw, 
+    0, 0, 0.5f, 0
+};
+
+/* .code */
+void chCollectible_setState(Actor *arg0, s32 next_state){
+    switch(next_state){
+        default:
+            break;
+        case 1:
+            arg0->actor_specific_1_f = 0.0f;
+            //fall-through
+        case 3:
+            actor_collisionOff(arg0);
+            break;
+        case 2:
+            actor_collisionOn(arg0);
+            break;
+    }
+    subaddie_set_state(arg0, next_state);
+}
+
+void func_802D8C98(Actor *this, s32 arg1) {
+    s32 phi_v0;
+
+    switch (this->marker->id)
+    {
+    case MARKER_60_BLUE_EGG_COLLECTIBLE:
+        phi_v0 = true;
+        break;
+
+    case MARKER_B5_RED_FEATHER_COLLECTIBLE:
+        phi_v0 = (arg1 == 1) || (arg1 == 2) || (arg1 == 3);
+        break;
+
+    case MARKER_1E5_GOLD_FEATHER_COLLECTIBLE:
+        phi_v0 = true;
+        break;
+
+    default:
+        phi_v0 = false;
+        break;
+    }
+
+    this->unk10_12 = arg1;
+    chCollectible_setState(this, (phi_v0 ) ? 2 : 3);
+}
+
+bool chCollectible_collectItem(Actor* actor, enum file_progress_e arg1, enum asset_e dialogId, enum comusic_e sfxId, enum item_e itemId, f32 arg5){
+    coMusicPlayer_playMusic(sfxId,32000);
+    timedFunc_set_1(0.75f, (GenFunction_1)progressDialog_showDialogMaskZero, arg1);
+    if(!func_802FADD4(0x1b)){
+        item_inc(itemId);
+    } else {
+        item_adjustByDiffWithoutHud(itemId,1);   
+    }
+
+    if(!actor || !actor->unk38_0)
+        return true;
+            
+    actor->lifetime_value = arg5;
+    chCollectible_setState(actor, 1);
+    return false;
+}
+
+s32 chCollectible_collectEgg(ActorProp *arg0){
+    Actor *actPtr = NULL;
+    if(arg0 != NULL){
+        fxSparkle_blueEgg(&arg0->position_x);
+        if(arg0->isActorProp)
+            actPtr = marker_getActor(arg0->marker);
+    }
+    CALL_EVENT(OnConsumableCollected, arg0);
+//  chCollectible_collectItem(actPtr, FILEPROG_5_BLUE_EGG_TEXT, VER_SELECT(0xD9E, 0xA1C, 0, 0), COMUSIC_C_EGG_COLLECTED, 0xD, 2.0f);
+    return chCollectible_collectItem(actPtr, FILEPROG_5_BLUE_EGG_TEXT, VER_SELECT(0xD9E, 0xA1C, 0, 0), COMUSIC_C_EGG_COLLECTED, 0xD, 2.0f);
+}
+
+bool chCollectible_collectRedFeather(ActorProp *arg0){
+    Actor *actPtr = NULL;
+    fxSparkle_redFeather(&arg0->position_x);
+    if(arg0->isActorProp)
+        actPtr = marker_getActor(arg0->marker);
+    CALL_EVENT(OnConsumableCollected, arg0);
+//  chCollectible_collectItem(actPtr, FILEPROG_6_RED_FEATHER_TEXT, VER_SELECT(0xD9F, 0xA1D, 0, 0), COMUSIC_B_RED_FEATHER_COLLECTED, 0xF, 4.0f);
+    return chCollectible_collectItem(actPtr, FILEPROG_6_RED_FEATHER_TEXT, VER_SELECT(0xD9F, 0xA1D, 0, 0), COMUSIC_B_RED_FEATHER_COLLECTED, 0xF, 4.0f);
+}
+
+bool chCollectible_collectGoldFeather(ActorProp *arg0){
+    Actor *actPtr = NULL;
+    fxSparkle_goldFeather(&arg0->position_x);
+    if(arg0->isActorProp)
+        actPtr = marker_getActor(arg0->marker);
+    CALL_EVENT(OnConsumableCollected, arg0);
+//  chCollectible_collectItem(actPtr, FILEPROG_7_GOLD_FEATHER_TEXT, VER_SELECT(0xDA0, 0xA1E, 0, 0), COMUSIC_14_GOLD_FEATHER_COLLECTED, ITEM_10_GOLD_FEATHER, 6.0f);
+    return chCollectible_collectItem(actPtr, FILEPROG_7_GOLD_FEATHER_TEXT, VER_SELECT(0xDA0, 0xA1E, 0, 0), COMUSIC_14_GOLD_FEATHER_COLLECTED, ITEM_10_GOLD_FEATHER, 6.0f);
+}
+
+Actor *chCollectible_draw(ActorMarker *this, Gfx **gdl, Mtx **mptr, Vtx **arg3){
+    Actor *thisActor = marker_getActor(this);
+
+    if (thisActor->actor_specific_1_f != 0.0f) {
+        if(thisActor->unk38_0){
+            func_80344C2C(1);
+            if (thisActor->actor_specific_1_f == 255.0f) {
+                func_803262B8(thisActor);
+            } else{
+                actor_setOpacity(thisActor, thisActor->actor_specific_1_f);
+            }
+        }
+        return fxTouchSparkle_draw(this, gdl, mptr, arg3);
+    }
+    return thisActor;
+}
+
+void chCollectible_update(Actor *this) {
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f2;
+    u32 temp_v0;
+
+    if (!this->initialized) {
+        if (this->marker->id != 0x60) {
+            suSetSpriteScale(this, 0.56f);
+        }
+        this->unk10_12 = -1;
+        this->unk38_0 = (gsworld_getMap() == MAP_90_GL_BATTLEMENTS);
+        this->actor_specific_1_f = this->unk38_0 ? 0.0f : 255.0f;
+        this->initialized = true;
+    }
+    if(!this->unk38_0)
+        return;
+
+    if (volatileFlag_getN(VOLATILE_FLAG_23_FINAL_BOSS_PHASE, 3) != this->unk10_12) {
+        func_802D8C98(this, volatileFlag_getN(VOLATILE_FLAG_23_FINAL_BOSS_PHASE, 3));
+    }
+
+    switch (this->state) {
+    case 1:
+        if (this->lifetime_value > 0.0) {
+            this->lifetime_value -= time_getDelta();
+        } else {
+            chCollectible_setState(this, 2);
+        }
+        /* fallthrough */
+    case 3:
+        if (this->actor_specific_1_f > 0) {
+            this->actor_specific_1_f = MAX(this->actor_specific_1_f - 8, 0);
+        }
+        break;
+    case 2:
+        if (this->actor_specific_1_f < 255) {
+            this->actor_specific_1_f = MIN(this->actor_specific_1_f + 8, 255);
+        }
+        break;
+    }
+}

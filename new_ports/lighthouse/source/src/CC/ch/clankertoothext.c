@@ -1,0 +1,179 @@
+// BanjoDecomp: ch/clankertoothext.c
+#include "functions.h"
+#include "variables.h"
+#include <ultra64.h>
+
+#include <bk_math.h>
+
+#include "port/Patches/Patches.h"
+
+typedef struct{
+    s32 unk0;
+    s32 egg_count;
+    f32 unk8;
+}ActorLocal_CC_BF0;
+
+void maClankerTooth_update(Actor *this);
+
+/* .data */
+enum maClankerTooth_state_e {
+    CLANKER_TOOTH_STATE_1_UPRIGHT = 1,
+    CLANKER_TOOTH_STATE_2_FALLING_OVER,
+    CLANKER_TOOTH_STATE_3_KNOCKED_OUT,
+};
+
+extern ActorInfo chClankerTokenToothExt = {
+    MARKER_4C_CLANKER_TOKEN_TOOTH_EXT, ACTOR_44_CLANKER_TOKEN_TOOTH_EXTERIOR, ASSET_309_MODEL_CLANKER_TOKEN_TOOTH_EXTERIOR, 
+    0, NULL,
+    maClankerTooth_update, actor_update_func_80326224, actor_draw,
+    0, 0, 0.0f, 0
+};
+
+extern ActorInfo chClankerJiggyToothExt = {
+    MARKER_4D_CLANKER_JIGGY_TOOTH_EXT, ACTOR_45_CLANKER_JIGGY_TOOTH_EXTERIOR, ASSET_30A_MODEL_CLANKER_JIGGY_TOOTH_EXTERIOR, 
+    0, NULL,
+    maClankerTooth_update, actor_update_func_80326224, actor_draw,
+    0, 0, 0.0f, 0
+};
+
+/* .bss */
+u8 D_80389F80;
+
+/* .code */
+void maClankerTooth_setNextState(Actor *this, s32 next_state){
+    ActorLocal_CC_BF0 *local = (ActorLocal_CC_BF0 *)&this->local;
+    s32 prev_state = this->state;
+    this->state = next_state;
+    local->unk8 = 0.0f;
+    if(this->state == CLANKER_TOOTH_STATE_2_FALLING_OVER){
+        coMusicPlayer_playMusic(COMUSIC_2D_PUZZLE_SOLVED_FANFARE, 28000);
+    }
+    else if(this->state == CLANKER_TOOTH_STATE_3_KNOCKED_OUT){
+        if(prev_state == CLANKER_TOOTH_STATE_2_FALLING_OVER){
+            levelSpecificFlags_set((local->unk0 == 1) ? LEVEL_FLAG_0_CC_TOKEN_TOOTH_OPEN : LEVEL_FLAG_1_CC_JIGGY_TOOTH_OPEN, true);
+        }
+        if(local->unk0 == 1){
+            this->yaw = -30.0f;
+            this->pitch = -90.0f;
+            this->roll = -5.0f;
+        }
+        else{
+            this->yaw = 30.0f;
+            this->pitch = 90.0f;
+            this->roll = 5.0f;
+        }
+    }
+}
+
+void CC_func_803870E0(void) {
+    D_80389F80 = 0;
+}
+
+void func_803870EC(s32 arg0) {
+    D_80389F80 = arg0;
+}
+
+void maClankerTooth_update(Actor *this){
+    ActorMarker *marker = this->marker;
+    f32 player_pos[3];
+    ActorLocal_CC_BF0 *local = (ActorLocal_CC_BF0 *)&this->local;
+    f32 sp68 = time_getDelta();
+    f32 sp5C[3];
+    f32 sp50[3];
+    f32 temp_f2;
+    s32 flagCnt;
+    f32 sp3C[3];
+
+    if(!this->volatile_initialized){
+        this->volatile_initialized = true;
+        marker->propPtr->unk8_3 = 1;
+        this->pitch = 0.0f;
+        this->yaw = 0.0f;
+        this->roll = 0.0f;
+        local->unk0 = (marker->modelId == 0x309) ? 1 : 2;
+        local->egg_count = 0;
+        maClankerTooth_setNextState(this, CLANKER_TOOTH_STATE_1_UPRIGHT);
+        if(levelSpecificFlags_get((local->unk0 == 1)? LEVEL_FLAG_0_CC_TOKEN_TOOTH_OPEN: LEVEL_FLAG_1_CC_JIGGY_TOOTH_OPEN)){
+            maClankerTooth_setNextState(this, CLANKER_TOOTH_STATE_3_KNOCKED_OUT);
+        }
+    }//L803871D8
+    if(this->state == 1){
+        s32 base = (local->unk0 - 1) * 3;
+        s32 bits = (port_puzzleStep_get(ANCHOR_PUZZLE_CC_CLANKER_TEETH) >> base) & 0x7;
+        s32 shared = (bits & 1) + ((bits >> 1) & 1) + ((bits >> 2) & 1);
+        while(this->state == 1 && local->egg_count < shared){
+            local->egg_count++;
+            if(local->egg_count == 3){
+                maClankerTooth_setNextState(this, 2);
+            }else{
+                coMusicPlayer_playMusic(COMUSIC_2B_DING_B, 28000);
+            }
+        }
+    }
+    player_getPosition(player_pos);
+    local->unk8 += sp68;
+    if(this->state == CLANKER_TOOTH_STATE_2_FALLING_OVER){
+        temp_f2 = local->unk8/1;
+        if(local->unk0 == 1){
+            this->yaw = -temp_f2*30.0f;
+            this->pitch = -temp_f2*90.0f;
+            this->roll = -temp_f2*5.0f;
+
+        }//L8038726C
+        else{
+            this->yaw = temp_f2*30.0f;
+            this->pitch = temp_f2*90.0f;
+            this->roll = temp_f2*5.0f;
+        }
+    }//L803872A0
+
+    if(local->unk0 == 1){
+        func_80388B78(sp5C, sp50);
+    }
+    else{
+        func_80388BBC(sp5C, sp50);
+    }//L803872D4
+    TUPLE_COPY(this->position, sp5C);
+
+    if(this->state == CLANKER_TOOTH_STATE_1_UPRIGHT)
+        func_8028E668(this->position, 290.0f, -10.0f, 150.0f);
+    
+    if(this->state == CLANKER_TOOTH_STATE_1_UPRIGHT && D_80389F80 == local->unk0){
+        D_80389F80 = 0;
+        local->egg_count++;
+        // Anchor: broadcast cumulative egg progress.
+        port_puzzleStep_orBits(ANCHOR_PUZZLE_CC_CLANKER_TEETH,
+                               ((1 << local->egg_count) - 1) << ((local->unk0 - 1) * 3));
+        if(local->egg_count == 3){
+            maClankerTooth_setNextState(this, CLANKER_TOOTH_STATE_2_FALLING_OVER);
+        }else{
+            coMusicPlayer_playMusic(COMUSIC_2B_DING_B, 28000);
+        }
+    }
+    else if(this->state == CLANKER_TOOTH_STATE_2_FALLING_OVER && 1.0f <= local->unk8){
+        flagCnt = levelSpecificFlags_get(LEVEL_FLAG_0_CC_TOKEN_TOOTH_OPEN) + levelSpecificFlags_get(LEVEL_FLAG_1_CC_JIGGY_TOOTH_OPEN);
+        if(!jiggyscore_isCollected(JIGGY_1B_CC_TOOTH)){
+            gcdialog_showDialog(
+                (local->unk0 == 1)?
+                    ((flagCnt == 0)?
+                        VER_SELECT(ASSET_D30_DIALOG_CLANKER_RIGHT_TOOTH_FIRST, 0xA03, 0, 0) : VER_SELECT(ASSET_D31_DIALOG_CLANKER_RIGHT_TOOTH_SECOND, 0xA04, 0, 0)) :
+                    ((flagCnt == 0)?
+                        VER_SELECT(ASSET_D2E_DIALOG_CLANKER_LEFT_TOOTH_FIRST, 0xA01, 0, 0) : VER_SELECT(ASSET_D2F_DIALOG_CLANKER_LEFT_TOOTH_SECOND, 0xA02, 0, 0)),
+                4,
+                NULL,
+                NULL,
+                NULL,
+                NULL);
+        }
+        maClankerTooth_setNextState(this, CLANKER_TOOTH_STATE_3_KNOCKED_OUT);
+    }//L80387474
+
+    if(this->state == 3){
+        sp3C[0] = this->position_x;
+        sp3C[1] = this->position_y + 100;
+        sp3C[2] = this->position_z;
+        if(ml_vec3f_distance(sp3C, player_pos) < 120.0f){
+            func_8031D04C(MAP_22_CC_INSIDE_CLANKER, (local->unk0  == 1)? 7 : 6);
+        }
+    }//L80387500
+}

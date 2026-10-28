@@ -1,0 +1,441 @@
+// BanjoDecomp: twinklybox.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+#include "port/Patches/Patches.h"
+
+extern void func_80324CD8(f32);
+extern Actor *actor_spawnWithYaw_f32(enum actor_e, f32[3], s32);
+
+Actor *chTwinklyBox_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
+void chTwinklyBox_update(Actor *this);
+
+/* .data */
+ActorAnimationInfo D_803920C0[] ={
+    {0x000, 0.0f},
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 10000000.0f},
+    {ASSET_237_ANIM_TWINKLYBOX_SHAKING, 2.0f},
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 0.8f},
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 0.8f}
+};
+
+ActorInfo gChTwinklyBox = { 0x204, 0x336, 0x442,
+    0x1, D_803920C0,
+    chTwinklyBox_update, actor_update_func_80326224, chTwinklyBox_draw,
+    0, 0, 0.0f, 0
+};
+
+/* .code */
+Actor *chTwinklyBox_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
+    Actor *this = marker_getActor(marker);
+    if( maSlalom_isActive() || fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME) ){
+        if(0.0f == this->velocity[1])
+            return this;
+    }
+    return actor_draw(marker, gfx, mtx, vtx);
+}
+
+void chTwinklyBox_destroyBoxShards(f32 position[3], s32 count, enum asset_e model_id){
+    static ParticleScaleAndLifetimeRanges D_8039210C = {
+        { 0.4f,  0.8f },
+        {-1.0f, -1.0f },
+        { 0.0f,  0.02f},
+        { 1.8f,  2.2f },
+        0.0f,  
+        0.7f
+    };
+    static ParticleSettingsVelocityAccelerationPosition D_80392134 = {
+        {{-200.0f, 200.0f, -200.0f}, {200.0f, 400.0f, 200.0f}},
+        {{   0.0f, -800.0f,    0.0f}, {  0.0f, -800.0f,   0.0f}},
+        {{-100.0f,    0.0f, -100.0f}, {100.0f,  100.0f, 100.0f}}
+    };
+    ParticleEmitter *pCtrl;
+
+    pCtrl = partEmitMgr_newEmitter(count);
+    particleEmitter_setModel(pCtrl, model_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_80392134);
+    particleEmitter_setAngularVelocityRange(pCtrl,
+        100.0f, 100.0f, 100.0f,
+        200.0f, 200.0f, 200.0f
+    );
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_8039210C);
+    particleEmitter_func_802EF9F8(pCtrl, 0.6f);
+    particleEmitter_func_802EFA18(pCtrl, 3);
+    particleEmitter_emitN(pCtrl, count);
+}
+
+void chTwinklyBox_destroyBoxDust(f32 position[3], s32 count, enum asset_e sprite_id){
+    static ParticleScaleAndLifetimeRanges D_8039217C = {
+        {0.8f, 1.2f },
+        {1.4f, 2.0f },
+        {0.0f, 0.01f},
+        {1.2f, 1.8f },
+        0.0f,
+        0.01f
+    };
+    static s32 D_803921A4[3] = { 0xDC, 0xDC, 0xE6};
+    static ParticleSettingsVelocityAccelerationPosition D_803921B0 = {
+        {{-200.0f, 0.0f, -200.0f}, {200.0f, 200.0f, 200.0f}},
+        {{  0.0f, -10.0f,   0.0f}, { 0.0f, -10.0f,  0.0f}},
+        {{-50.0f,   0.0f, -50.0f}, {50.0f, 200.0f, 50.0f}}
+    };
+
+    ParticleEmitter *pCtrl;
+
+    pCtrl = partEmitMgr_newEmitter(count);
+    particleEmitter_setRGB(pCtrl, D_803921A4);
+    particleEmitter_setSprite(pCtrl, sprite_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_803921B0);
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_8039217C);
+    particleEmitter_emitN(pCtrl, count);
+}
+
+void chTwinklyBox_openBoxShards(f32 position[3], s32 count, enum asset_e model_id){
+    static ParticleScaleAndLifetimeRanges D_803921F8 = {
+        { 0.2f,  0.3f },
+        {-1.0f, -1.0f },
+        { 0.0f,  0.02f},
+        { 2.0f,  2.5f },
+        0.0f, 0.3f
+    };
+
+    static ParticleSettingsVelocityAccelerationPosition D_80392220 = {
+        {{-300.0f, 400.0f, -300.0f}, {300.0f, 800.0f, 300.0f}},
+        {{  0.0f, -800.0f,  0.0f}, { 0.0f, -800.0f,  0.0f}},
+        {{-80.0f,  80.0f, -80.0f}, {80.0f,   80.0f, 80.0f}}
+    };
+    ParticleEmitter *pCtrl;
+
+    pCtrl = partEmitMgr_newEmitter(count);
+    particleEmitter_setModel(pCtrl, model_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_80392220);
+    particleEmitter_setAngularVelocityRange(pCtrl,
+        200.0f, 200.0f, 200.0f,
+        300.0f, 300.0f, 300.0f
+    );
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_803921F8);
+    particleEmitter_func_802EF9F8(pCtrl, 0.2f);
+    particleEmitter_func_802EFA18(pCtrl, 2);
+    particleEmitter_emitN(pCtrl, count);
+}
+
+void chTwinklyBox_openBoxSparkles(f32 position[3], s32 count, enum asset_e sprite_id){
+    static ParticleScaleAndLifetimeRanges D_80392268 ={
+        { 0.4f,  0.6f },
+        {-1.0f, -1.0f },
+        { 0.0f,  0.02f},
+        { 2.0f,  2.5f },
+        0.0f,
+        0.3f
+    };
+    static ParticleSettingsVelocityAccelerationPosition D_80392290 = {
+        {{-300.0f, 400.0f, -300.0f}, {300.0f, 800.0f, 300.0f}},
+        {{  0.0f, -800.0f,   0.0f}, { 0.0f, -800.0f,  0.0f}},
+        {{-80.0f,   80.0f, -80.0f}, {80.0f,   80.0f, 80.0f}}
+    };
+    ParticleEmitter *pCtrl;
+
+    pCtrl = partEmitMgr_newEmitter(count);
+    particleEmitter_setSprite(pCtrl, sprite_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_80392290);
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_80392268);
+    particleEmitter_func_802EF9F8(pCtrl, 0.2f);
+    particleEmitter_func_802EFA18(pCtrl, 2);
+    particleEmitter_emitN(pCtrl, count);
+}
+
+void chTwinklyBox_openBoxDust(f32 position[3], s32 count, enum asset_e sprite_id){
+    static ParticleScaleAndLifetimeRanges D_803922D8 = {
+        {0.5f, 0.7f },
+        {1.4f, 1.7f },
+        {0.0f, 0.01f},
+        {0.6f, 0.9f },
+        0.0f, 0.01f
+    };
+    static s32 D_80392300[3] = { 0xDC, 0xDC, 0xE6};
+    static ParticleSettingsVelocityAccelerationPosition D_8039230C = {
+        {{-100.0f, 0.0f, -100.0f}, {100.0f, 100.0f, 100.0f}},
+        {{0.0f, -10.0f, 0.0f}, {0.0f, -10.0f, 0.0f}},
+        {{-80.0f, 0.0f, -80.0f}, {50.0f, 200.0f, 80.0f}}
+};
+    ParticleEmitter *pCtrl;
+
+    pCtrl = partEmitMgr_newEmitter(count);
+    particleEmitter_setRGB(pCtrl, D_80392300);
+    particleEmitter_setSprite(pCtrl, sprite_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_8039230C);
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_803922D8);
+    particleEmitter_emitN(pCtrl, count);
+}
+
+void chTwinklyBox_destroyBox(ActorMarker *marker){
+    Actor *this = marker_getActor(marker);
+    chTwinklyBox_destroyBoxShards(this->position, 12, ASSET_4D4_MODEL_TWINKLY_BOX_PAPER_SHARD);
+    chTwinklyBox_destroyBoxDust(this->position, 12, ASSET_700_SPRITE_DUST);
+    this->velocity[1] = 0.0f;
+    sfx_playFadeShorthandDefault(SFX_30_MAGIC_POOF, 1.0f, 32000, this->position, 1000, 3500);
+    gcdialog_showDialog(VER_SELECT(ASSET_C13_DIALOG_TWINKLIE_MINIGAME_COMPLETE, 0x98D, 0, 0), 0, NULL, NULL, NULL, NULL);
+}
+
+void chTwinklyBox_openBox(Actor *this){
+    int i;
+
+    chTwinklyBox_openBoxShards(this->position, 24, ASSET_4D4_MODEL_TWINKLY_BOX_PAPER_SHARD);
+    for(i = 0; i < 24; i++){
+        chTwinklyBox_openBoxSparkles(this->position, 1, ASSET_710_SPRITE_SPARKLE_PURPLE + randi2(0, 10));
+    }
+    chTwinklyBox_openBoxDust(this->position, 8, ASSET_700_SPRITE_DUST);
+    FUNC_8030E624(SFX_30_MAGIC_POOF, 1.0f, 32000);
+}
+
+void chTwinklyBox_free(Actor *arg0){
+    item_set(ITEM_6_HOURGLASS, false);
+}
+
+void func_8038D3D8(void){
+    comusic_8025AB44(COMUSIC_68_TWINKLY_MINIGAME, 0, 4000);
+    func_8025AABC(COMUSIC_68_TWINKLY_MINIGAME);
+    func_8025A58C(-1, 4000);
+    midichannel_incOrDecCounter(true);
+}
+
+void chTwinklyBox_spawnSecondAndThirdMuncher(ActorMarker *marker){
+    static f32 D_80392354[3] = {-4165.0f, 73.0f, 4483.0f};
+    static f32 D_80392360[3] = {-4292.0f, 73.0f, 5054.0f};
+    s32 pad[2];
+    ActorMarker *_marker = reinterpret_cast(ActorMarker *, marker);
+    Actor *actor;
+    
+    actor = actor_spawnWithYaw_f32(ACTOR_337_TWINKLY_MUNCHER, D_80392354, 170);
+    actor->partnerActor = _marker;
+    actor = actor_spawnWithYaw_f32(ACTOR_337_TWINKLY_MUNCHER, D_80392360, 170);
+    actor->partnerActor = _marker;
+    if(pad[0]);
+}
+
+void chTwinklyBox_spawnTwinkly(ActorMarker *marker){
+    static enum actor_e D_8039236C[4] = {
+        ACTOR_332_TWINKLY_BLUE,
+        ACTOR_333_TWINKLY_GREEN,
+        ACTOR_334_TWINKLY_ORANGE, 
+        ACTOR_335_TWINKLY_RED,
+        
+    };
+    Actor *actor  = marker_getActor(reinterpret_cast(ActorMarker*, marker));
+    Actor *child;
+    s32 pad;
+
+    if((s32)actor->unk1C[0] >= 3){
+        actor->unk1C[0] = -1.0f;
+    }
+    actor->unk1C[0] += 1.0;
+    child = spawn_child_actor(D_8039236C[(s32)actor->unk1C[0]], &actor);
+    child->partnerActor = actor->marker;
+}
+
+void chTwinklyBox_completeMinigame(ActorMarker *marker){
+    Actor *this = marker_getActor(marker);
+
+    port_fpTwinkly_release();
+    item_set(ITEM_6_HOURGLASS, false);
+    fileProgressFlag_set(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME, true);
+    FUNC_8030E624(SFX_416_ELECTRIC_ZAP, 0.8f, 32000);
+    func_8028F8F8(7, 0);
+    this->unk1C[1] = 1.0f;
+    timed_exitStaticCamera(1.7f);
+    func_80324E38(1.7f, 0);
+    timedFunc_set_1(2.3f, (GenFunction_1)chTwinklyBox_destroyBox, (uintptr_t)this->marker);
+    this->velocity[1] = 1.0f;
+}
+
+void chTwinklyBox_activateBox(ActorMarker *this_marker, ActorMarker *other_marker){
+    static f32 D_8039237C[3] = {-3940.0f, 69.0f, 3570.0f};
+
+    Actor *this = marker_getActor(this_marker);
+
+    if(this->state == 1 || this->state == 2){
+        // Anchor: only one client may run this minigame at a time — claim it or block if already held.
+        if(!EventSystem_Should(VB_FP_TWINKLY_START, true)){
+            return;
+        }
+        actor_collisionOff(this);
+        timed_setStaticCameraToNode(0.0f, 0xa);
+        func_80324CD8(0.1f);
+        func_8028F784(1);
+        func_8028F490(D_8039237C);
+        func_8028F8F8(7, 1);
+        this->unk1C[1] = 0.0f;
+        coMusicPlayer_playMusic(COMUSIC_68_TWINKLY_MINIGAME, 25000);
+        func_8025A58C(0, 4000);
+        midichannel_incOrDecCounter(false);
+        this->unk1C[2] = 428571.0f;
+        func_8025AEA0(COMUSIC_68_TWINKLY_MINIGAME, (s32)this->unk1C[2]);
+        subaddie_set_state_with_direction(this, 3, 0.001f, 1);
+        actor_playAnimationOnce(this);
+        this->velocity[0] = 1.0f;
+    }//L8038D6B8
+}
+
+void chTwinklyBox_update(Actor *this){
+    f32 sp24;
+    bool sp20;
+    
+    sp24 = time_getDelta();
+    mapSpecificFlags_set(FP_SPECIFIC_FLAG_D_UNKNOWN, BOOL(this->state != 1 && this->state != 2));
+    
+    if(maSlalom_isActive() || fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME)){
+        this->marker->propPtr->unk8_3 = false;
+        actor_collisionOff(this);
+        func_8028F8F8(7, false);
+        return;
+    }
+
+
+    this->marker->propPtr->unk8_3 = true;
+    actor_collisionOn(this);
+
+    if(!this->volatile_initialized){
+        this->volatile_initialized = true;
+        marker_setFreeMethod(this->marker, chTwinklyBox_free);
+        marker_setCollisionScripts(this->marker, NULL, chTwinklyBox_activateBox, NULL);
+        this->unk38_31 = 0;
+        this->unk1C[1] = 0.0f;
+        this->velocity[0] = 0.0f;
+        this->velocity[1] = 0.0f;
+        this->unk1C[0] = -1.0f;
+        func_8028F8F8(7, false);
+        if(volatileFlag_get(VOLATILE_FLAG_C1_IN_FINAL_CHARACTER_PARADE) && gcparade_8031B4F4() == -1){
+            subaddie_set_state_with_direction(this, 3, 0.001f, 1);
+            actor_playAnimationOnce(this);
+            this->velocity[0] = 1.0f;
+        }
+    }//L8038D844
+
+    if(volatileFlag_get(VOLATILE_FLAG_C1_IN_FINAL_CHARACTER_PARADE)){
+        this->velocity[0] = 1.0f;
+    }
+
+    switch (this->state)
+    {
+    case 1: //L8038D89C
+        if(!subaddie_playerIsWithinSphereAndActive(this, 800))
+            break;
+
+        if(!(globalTimer_getTime() & 1))
+            subaddie_set_state_with_direction(this, 2, 0.001f, 1);
+        else
+            subaddie_set_state_with_direction(this, 2, 0.999f, 0);
+
+        actor_playAnimationOnce(this);
+        this->velocity[2] = randf2(1.4f, 2.0f);
+
+        break;
+    
+    case 2: //L8038D91C
+        sp20 = anctrl_isPlayedForwards(this->anctrl);
+        anctrl_setDuration(this->anctrl, this->velocity[2]);
+        if( ( sp20 == true && actor_animationIsAt(this, 0.999f) )
+            || ( sp20 == false && actor_animationIsAt(this, 0.001f) )
+        ){
+            subaddie_set_state_with_direction(this, 1, 0.001f, 0);
+            actor_playAnimationOnce(this);
+            break;
+        }
+
+        if( actor_animationIsAt(this, 0.02f)
+            || actor_animationIsAt(this, 0.15f)
+            || actor_animationIsAt(this, 0.28f)
+            || actor_animationIsAt(this, 0.63f)
+            || actor_animationIsAt(this, 0.81f)
+        ){
+            sfx_playFadeShorthandDefault(SFX_98_DEAF_THUD, 1.0f, 32000, this->position, 400, 2000);
+        }
+        break;
+
+    case 3: //L8038DA24
+        if(actor_animationIsAt(this, 0.3f))
+            chTwinklyBox_openBox(this);
+        
+        if(actor_animationIsAt(this, 0.999f))
+            __spawnQueue_add_1((GenFunction_1)chTwinklyBox_spawnTwinkly, (uintptr_t)this->marker);
+        
+        if(this->velocity[0] != 0.0f)
+            break;
+
+        timed_exitStaticCamera(0.0f);
+        func_8028F784(0);
+        subaddie_set_state_with_direction(this, 4, 0.999f, 1);
+        actor_playAnimationOnce(this);
+        item_set(ITEM_0_HOURGLASS_TIMER, 80*FRAMERATE - 1);
+        item_set(ITEM_6_HOURGLASS, TRUE);
+        this->unk38_31 = 0xA;
+        item_set(ITEM_24_TWINKLY_SCORE, this->unk38_31);
+        __spawnQueue_add_1((GenFunction_1)chTwinklyBox_spawnSecondAndThirdMuncher, (uintptr_t)this->marker);
+        this->lifetime_value = 0.0f;
+        func_80347A14(0);
+        func_802FAD64(ITEM_14_HEALTH);
+        break;
+    
+    case 4: //L8038DB18
+        this->unk1C[2] += (sp24*-195238.0f)/80.0f;
+        if(this->unk1C[2] < 233333.0f)
+            this->unk1C[2] = 233333.0f;
+
+        func_8025AEA0(COMUSIC_68_TWINKLY_MINIGAME, (s32)this->unk1C[2]);
+        if(item_getCount(ITEM_24_TWINKLY_SCORE) == 0){
+            subaddie_set_state_with_direction(this, 1, 0.001f, 1);
+            coMusicPlayer_playMusic(COMUSIC_2D_PUZZLE_SOLVED_FANFARE, 28000);
+            func_8038D3D8();
+            func_80324E38(0.0f, 3);
+            timedFunc_set_1(1.3f, (GenFunction_1)chTwinklyBox_completeMinigame, (uintptr_t)this->marker);
+            timed_setStaticCameraToNode(0.9f, 0xC);
+            item_set(ITEM_24_TWINKLY_SCORE, this->unk38_31);
+            func_80347A14(1);
+            break;
+        }
+
+        if(item_empty(ITEM_6_HOURGLASS)){
+            port_fpTwinkly_release();
+            subaddie_set_state_with_direction(this, 1, 0.001f, 0);
+            actor_playAnimationOnce(this);
+            this->unk38_31 = 0;
+            item_set(ITEM_6_HOURGLASS, false);
+            coMusicPlayer_playMusic(COMUSIC_3C_MINIGAME_LOSS, 28000);
+            func_8028F8F8(7, false);
+            this->unk1C[1] = 1.0f;
+            func_8038D3D8();
+            func_80347A14(1);
+            break;
+        }
+
+
+        if(0.96 < anctrl_getAnimTimer(this->anctrl)){
+            if(this->lifetime_value <= 0.0){
+                __spawnQueue_add_1((GenFunction_1)chTwinklyBox_spawnTwinkly, (uintptr_t)this->marker);
+                this->lifetime_value = 2.9f;
+            }
+            else{
+                this->lifetime_value -= sp24;
+            }
+            item_set(ITEM_24_TWINKLY_SCORE, this->unk38_31);
+        }
+        break;
+    }
+}
+
+bool func_8038DD14(void){
+    return mapSpecificFlags_get(FP_SPECIFIC_FLAG_D_UNKNOWN);
+}
+
+bool preventSnowmanAttack(ActorMarker *marker){
+    Actor *this = marker_getActor(marker);
+    if(subaddie_playerIsWithinSphereAndActive(this, 800))
+        return true;
+    return false;
+}

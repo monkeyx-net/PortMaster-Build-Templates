@@ -1,0 +1,430 @@
+// BanjoDecomp: debugtext.c
+#include <ultra64.h>
+#include "core1/core1.h"
+#include "version.h"
+
+#if VERSION == VERSION_USA_1_0
+
+/* .data */
+u8 RGB_VALUES[8][3] = {
+    {0xFF, 0x00, 0x00}, // Red
+    {0x00, 0xFF, 0x00}, // Green
+    {0x00, 0x00, 0xFF}, // Blue
+    {0xFF, 0xFF, 0x00}, // Yellow
+    {0xFF, 0x00, 0xFF}, // Pink
+    {0xFF, 0xFF, 0xFF}, // White
+    {0xFF, 0x80, 0x00}, // Orange
+    {0x00, 0xFF, 0xFF}  // Cyan
+};
+s32 D_80275A68 = 0xFF;
+s32 D_80275A6C = 0xFF;
+s32 D_80275A70 = 0xFF;
+u8  COLOR_SELECTOR[] = {1, 7, 3, 4, 0, 6, 5, 0};
+u32 CHARACTER_ENCODING[] = {
+    3, 0x0F6DE000,
+    1, 0x0F800000,
+    3, 0x0C4AE000,
+    3, 0x0E59E000, 
+    4, 0x088AF200,
+    3, 0x0F39E000, 
+    3, 0x0F3DE000,
+    3, 0x0E4A4000, 
+    3, 0x0F7DE000,
+    3, 0x0F79E000, 
+    3, 0x0F6FA000,
+    3, 0x0D75C000, 
+    3, 0x0F24E000,
+    3, 0x0D6DC000, 
+    3, 0x0F34E000,
+    3, 0x0F348000, 
+    3, 0x0F25E000,
+    3, 0x0B7DA000, 
+    3, 0x0E92E000,
+    3, 0x0E928000, 
+    3, 0x0B75A000,
+    3, 0x0924E000, 
+    5, 0x08EEB188,
+    4, 0x09DFB900, 
+    4, 0x06999600,
+    3, 0x0F7C8000, 
+    4, 0x069DB700,
+    3, 0x0F7EA000, 
+    3, 0x0F39E000,
+    3, 0x0E924000, 
+    4, 0x09999600,
+    5, 0x08C62A20, 
+    5, 0x08C63550,
+    3, 0x0B55A000, 
+    3, 0x0B79E000, 
+    4, 0x0F124F00,
+    1, 0x00800000,
+    1, 0x05000000,
+    3, 0x00380000,
+    2, 0x00000000
+};
+
+s16 D_80275BBC = 0;
+s16 D_80275BC0 = 0;
+s16 D_80275BC4 = 0;
+s16 D_80275BC8 = 0;
+s16 D_80275BCC = 0;
+s16 D_80275BD0 = 0;
+s16 D_80275BD4 = 0;
+s16 D_80275BD8 = 0;
+s16 D_80275BDC = 0;
+ u8 shouldClearText = 0;
+s32 D_80275BE4 = 0;
+char CHARACTER_RANGE[] = {'a','z','A','Z','0','9','.',':', '-', ' '};
+
+
+void gcdebugtext_setRGB(s32 r, s32 g, s32 b){
+    D_80275A68 = r;
+    D_80275A6C = g;
+    D_80275A70 = b;
+}
+
+void gcdebugtext_setPixelInFrameBuffer(s32 x, s32 y) {
+    s32 rgba16;
+    if( ((x >= 0) && (x < gFramebufferWidth))
+        && ((y >= 0) && (y < gFramebufferHeight))
+    ) {
+        gFramebuffers[0][x + y*gFramebufferWidth] = _SHIFTL(D_80275A68 >> 3, 11, 5) | _SHIFTL(D_80275A6C >> 3, 6, 5) | _SHIFTL(D_80275A70 >> 3, 1, 5) | _SHIFTL(1, 0, 1);
+        gFramebuffers[1][x + y*gFramebufferWidth] = _SHIFTL(D_80275A68 >> 3, 11, 5) | _SHIFTL(D_80275A6C >> 3, 6, 5) | _SHIFTL(D_80275A70 >> 3, 1, 5) | _SHIFTL(1, 0, 1);
+        
+    }
+}
+
+void gcdebugtext_drawPixel(s32 x, s32 y, s32 w, s32 h) {
+    s32 iy;
+    s32 var_s1;
+    s32 ix;
+
+    for(ix = 0; ix < w; ix++){
+        for(iy = 0; iy < h; iy++){
+            gcdebugtext_setPixelInFrameBuffer(x + ix, y + iy);
+        }
+    }
+    osWritebackDCacheAll();
+}
+
+void gcdebugtext_drawSquare(s32 r, s32 g, s32 b) {
+    gcdebugtext_setRGB(r, g, b);
+    gcdebugtext_drawPixel((gFramebufferWidth - 128) / 2, (gFramebufferHeight - 100) / 2, 128, 100);
+}
+
+void gcdebugtext_stub1(void){}
+
+void gcdebugtext_stallOnThread(void) {
+    s32 var_s0;
+
+    for(var_s0 = 0; var_s0 < 2000000; var_s0++){
+        gcdebugtext_stub1();
+    }
+}
+
+void gcdebugtext_flashSquare(s32 arg0) {
+    do{
+        gcdebugtext_drawSquare(RGB_VALUES[arg0][0], RGB_VALUES[arg0][1], RGB_VALUES[arg0][2]);
+        gcdebugtext_stallOnThread();
+        gcdebugtext_drawSquare(0, 0, 0);
+        gcdebugtext_stallOnThread();
+    }
+    while(1);
+}
+
+void gcdebugtext_drawSquare2(s32 arg0) {
+    gcdebugtext_drawSquare(RGB_VALUES[arg0][0], RGB_VALUES[arg0][1], RGB_VALUES[arg0][2]);
+    gcdebugtext_stallOnThread();
+    gcdebugtext_drawSquare(0, 0, 0);
+    gcdebugtext_stallOnThread();
+}
+
+void gcdebugtext_drawSquareOnly(s32 arg0) {
+    gcdebugtext_drawSquare(RGB_VALUES[arg0][0], RGB_VALUES[arg0][1], RGB_VALUES[arg0][2]);
+}
+
+void gcdebugtext_drawCharacter(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 r, s32 g, s32 b) {
+    s32 var_s3;
+    s32 sp48;
+    u32 sp44;
+    u32 sp40;
+    s32 temp_lo;
+    s32 temp_s1;
+    s32 temp_t8;
+    s32 var_s0;
+    u32 temp_t4;
+    u32 var_s4;
+    u32 *ptr = CHARACTER_ENCODING + (arg1*2);
+    
+    var_s4 = 0x10000000;
+    sp44 = ptr[0];
+    sp40 = ptr[1];
+    for(sp48 = 0; sp48 < 5; sp48++){
+        temp_lo = sp48 * arg2;
+        for(var_s3 = 0; var_s3 != sp44; var_s3++){
+            var_s4 >>= 1;
+            if (sp40 & var_s4) {
+                gcdebugtext_setRGB(r, g, b);
+                gcdebugtext_drawPixel((D_80275BC4 + arg2*var_s3) - arg3, (D_80275BC8 + temp_lo) - arg3, (arg2 + arg3) + arg3, (arg2 + arg3) + arg3);
+            } else {
+                if (arg4 != 0) {
+                    gcdebugtext_setRGB(0, 0, 0);
+                }
+                gcdebugtext_drawPixel((D_80275BC4 + arg2*var_s3) - arg3, (D_80275BC8 + temp_lo) - arg3, (arg2 + arg3) + arg3, (arg2 + arg3) + arg3);
+            }
+        }
+    }
+    if (arg3 == 0) {
+        D_80275BC4 += (sp44 * arg2) + 2;
+    }
+}
+
+void gcdebugtext_clearText(void) {
+    s16 *var_v0;
+    s16 *var_v1;
+    s32 temp_lo;
+    void *temp_a0;
+    s32 i;
+
+    if (D_80275BE4 == 0) {
+        D_80275BE4 = globalTimer_getTime();
+        return;
+    }
+    if (globalTimer_getTime() != D_80275BE4) {
+        shouldClearText = false;
+        D_80275BE4 = globalTimer_getTime();
+    }
+
+    if (shouldClearText) {
+        for(i = 0; i < gFramebufferWidth * gFramebufferHeight; i++){
+                gFramebuffers[0][i] = 0;
+                gFramebuffers[1][i] = 0;
+        }
+        osWritebackDCacheAll();
+    }
+}
+
+void gcdebugtext_printCharacter(s32 arg0, s32 arg1, s32 arg2) {
+    gcdebugtext_drawCharacter(arg0, arg1, arg2, 1, 1, 0, 0, 0);
+    gcdebugtext_drawCharacter(arg0, arg1, arg2, 0, 1, RGB_VALUES[COLOR_SELECTOR[arg0]][0], RGB_VALUES[COLOR_SELECTOR[arg0]][1], RGB_VALUES[COLOR_SELECTOR[arg0]][2]);
+}
+
+void gcdebugtext_printValue(s32 arg0, s32 arg1, s32 arg2) {
+    s16 temp_v0;
+    s32 var_a1;
+    s32 var_s0;
+    s32 var_s1;
+
+    D_80275BC4 = D_80275BBC;
+    D_80275BD4 = arg2;
+    if (arg1 < 0) {
+        gcdebugtext_printCharacter(arg0, 0x26, arg2);
+        arg1 *= -1;
+    }
+    
+    for(var_s0 = 1000000000; var_s0 >= 10 && arg1 < var_s0; var_s0 /= 10){
+        continue;
+    }
+
+    for(var_s0 = var_s0; var_s0 >= 10; var_s0 /= 10){
+        for(var_a1 = 0; arg1 >= var_s0; var_a1++){
+            arg1 -= var_s0;
+        }
+        gcdebugtext_printCharacter(arg0, var_a1, arg2);
+    }
+
+    gcdebugtext_printCharacter(arg0, arg1, arg2);
+    gcdebugtext_printSpace();
+    if (arg2 == 7) {
+        D_80275BD8 = D_80275BC4;
+        D_80275BDC = 0;
+    }
+    else if (D_80275BC4 >= D_80275BDC) {
+        D_80275BDC = D_80275BC4;
+    }
+}
+
+void gcdebugtext_showLargeValue(s32 arg0, s32 arg1) {
+    D_80275BD0 = 0;
+    D_80275BCC = arg0;
+    D_80275BBC = 0xE;
+    D_80275BC8 = 0xA;
+    gcdebugtext_printValue(arg0, arg1, 7);
+    gcdebugtext_wrapToTop();
+    D_80275BC0 = D_80275BC8;
+    D_80275BDC = D_80275BBC;
+    shouldClearText = 1;
+}
+
+
+void gcdebugtext_showValue(s32 arg0){
+    gcdebugtext_printValue(D_80275BCC, arg0, 2);
+    gcdebugtext_wrapToTop();
+}
+
+void gcdebugtext_showHexValue(u32 arg0) {
+    s32 var_s0;
+
+    D_80275BC4 = D_80275BBC;
+    D_80275BD4 = 2;
+    gcdebugtext_printCharacter(D_80275BCC, 0x25, 2);
+     var_s0 = (arg0 >= 0x01000000U) ? 0x1C
+            : (arg0 >= 0x10000U) ? 0x14
+            :0xC;
+    if (var_s0 >= 0) {
+        do {
+            gcdebugtext_printCharacter(D_80275BCC, ((s32) arg0 >> var_s0) & 0xF, 2);
+            var_s0 -= 4;
+        } while (var_s0 >= 0);
+    }
+    gcdebugtext_endLine();
+}
+
+void gcdebugtext_showFloat(f32 arg0) {
+    f32 var_f22;
+    s32 var_s0;
+
+    D_80275BC4 = D_80275BBC;
+    D_80275BD4 = 2;
+    if (arg0 < 0.0f) {
+        gcdebugtext_printCharacter(D_80275BCC, 0x26, 2);
+        arg0 *= -1.0f;
+    }
+    var_f22 = 1e+09;
+    while((var_f22 >= 10.0f) && (arg0 < var_f22)) {
+        var_f22 /= 10.0f;
+    }
+    while (1e-09 <= var_f22) {
+            if ((0.09 < var_f22) && (var_f22 < 0.11)) {
+                gcdebugtext_printCharacter(D_80275BCC, 0x24, 2);
+            }
+            
+            var_s0 = 0;
+            while (var_f22 <= arg0) {
+                    arg0 -= var_f22;
+                    var_s0 += 1;
+            }
+            gcdebugtext_printCharacter(D_80275BCC, var_s0, 2);
+            var_f22 /= 10.0f;
+    }
+    gcdebugtext_endLine();
+}
+
+//letter to font index???
+s32 gcdebugtext_encodeCharacter(s32 arg0) {
+    //lowercase_letter
+    if ((arg0 >= (s32) CHARACTER_RANGE[0]) && ((s32) CHARACTER_RANGE[1] >= arg0)) {
+        return (arg0 - CHARACTER_RANGE[0]) + 0xA;
+    }
+
+    //uppercase_letter
+    if ((arg0 >= (s32) CHARACTER_RANGE[2]) && ((s32) CHARACTER_RANGE[3] >= arg0)) {
+        return (arg0 - CHARACTER_RANGE[2]) + 0xA;
+    }
+
+    //number
+    if ((arg0 >= (s32) CHARACTER_RANGE[4]) && ((s32) CHARACTER_RANGE[5] >= arg0)) {
+        return (arg0 - CHARACTER_RANGE[4]);
+    }
+
+    //.
+    if (arg0 == CHARACTER_RANGE[6]) {
+        return 0x24;
+    }
+
+    //:
+    if (arg0 == CHARACTER_RANGE[7]) {
+        return 0x25;
+    }
+
+    //-
+    if (arg0 == CHARACTER_RANGE[8]) {
+        return 0x26;
+    }
+    // 
+    if (arg0 == CHARACTER_RANGE[9]) {
+        return 0x27;
+    }
+    return 0x27;
+}
+
+
+void gcdebugtext_showText(u8 *arg0){
+    s32 i;
+    s32 var_v0;
+
+    D_80275BC4 = D_80275BBC;
+    D_80275BD4 = 2;
+    for(i = 0; arg0[i] != 0; i++){
+        var_v0 = arg0[i];
+        gcdebugtext_printCharacter(D_80275BCC, gcdebugtext_encodeCharacter(var_v0), 2);
+    }
+    gcdebugtext_endLine();
+}
+
+
+void gcdebugtext_lockScreen(void){
+    D_80275BD0 = 1;
+    do{}while(1);
+}
+
+void gcdebugtext_pauseThread(void){
+    s32 i;
+    D_80275BD0 = 1;
+    for(i = 30000000; i != 0; i--){}
+    D_80275BD0 = 0;
+}
+
+void gcdebugtext_pauseThreadForTime(s32 arg0){
+    s32 i;
+
+    D_80275BD0 = 1;
+    while(arg0 != 0){
+        for(i = 30000000; i != 0; i--){}
+        arg0--;
+    }
+    D_80275BD0 = 0;
+}
+
+void gcdebugtext_checkYAndgcdebugtext_wrapToTop(s32 arg0) {
+    D_80275BC8 += arg0;
+    if (D_80275BC8 >= 0xCD) {
+        D_80275BBC = D_80275BDC + 4;
+        D_80275BC4 = D_80275BBC;
+        D_80275BC8 = (D_80275BD8 < D_80275BC4) ? 0xA : D_80275BC0;
+        D_80275BDC = 0;
+    }
+}
+
+void gcdebugtext_wrapToTop(void){
+    gcdebugtext_checkYAndgcdebugtext_wrapToTop( D_80275BD4*5 + 2);
+}
+
+void gcdebugtext_wrapToTopSmall(void){
+    gcdebugtext_checkYAndgcdebugtext_wrapToTop(2);
+}
+
+void gcdebugtext_endLine(void){
+    gcdebugtext_printSpace();
+    if(D_80275BC4 >= D_80275BDC){
+        D_80275BDC = D_80275BC4;
+    }
+    gcdebugtext_wrapToTop();
+}
+
+void gcdebugtext_printSpace(void) {
+    s16 sp1E;
+    s16 temp_v0;
+
+    sp1E = D_80275BC4--;
+    gcdebugtext_printCharacter(D_80275BCC, 0x27, D_80275BD4);
+    D_80275BC4 = sp1E;
+}
+
+
+bool gcdebugtext_isThreadLocked(void){
+    return D_80275BD0;
+}
+
+void gcdebugtext_stub2(s32 arg0) {}
+#endif

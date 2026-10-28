@@ -1,0 +1,86 @@
+// BanjoDecomp: ch/anchorctrl.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+
+void __chAnchorCtrl_setState(Actor *this, s32 next_state);
+
+void chAnchorCtrl_update(Actor *this);
+
+/* .data */
+ActorInfo chAnchorCtrl = {
+    0x199, 0x1CB, 0x0,
+    0x0, NULL,
+    chAnchorCtrl_update, NULL, func_80325340,
+    0, 0, 0.0f, 0
+};
+
+enum chanchorctrl_state_e {
+    CH_ANCHOR_CTRL_STATE_0_NOT_INIT,
+    CH_ANCHOR_CTRL_STATE_1_LOWERED,
+    CH_ANCHOR_CTRL_STATE_2_RAISING,
+    CH_ANCHOR_CTRL_STATE_3_RAISED
+};
+
+/* .code */
+void func_8038C000(void){
+    s32 sp1C = func_802F9AA8(SFX_7D_ANCHOR_LIFTING);
+    func_802FA060(sp1C, 27000, 27000, 0.0f);
+    func_802F9F80(sp1C, 0.5f, 7.0f, 0.5f);
+}
+
+void func_8038C058(void){
+    func_8030E760(SFX_7F_HEAVYDOOR_SLAM, 0.8f, 0x55f0);
+    func_8030E760(SFX_7F_HEAVYDOOR_SLAM, 0.9f, 0x55f0);
+    func_8030E760(SFX_7F_HEAVYDOOR_SLAM, 1.0f, 0x55f0);
+}
+
+void __chAnchorCtrl_spawnJiggy(ActorMarker *marker, enum asset_e id, s32 arg2){
+    static f32 chAnchorCtrlJiggyPosition[3] = {-5100.0f, -2550.0f, 1470.0f};
+
+    Actor *actor = marker_getActor(marker);
+    jiggy_spawn(JIGGY_53_RBB_SNORKEL, chAnchorCtrlJiggyPosition);
+    timed_setStaticCameraToNode(0.5f, 0xB);
+    __chAnchorCtrl_setState(actor, CH_ANCHOR_CTRL_STATE_3_RAISED);
+}
+
+void __chAnchorCtrl_setState(Actor *this, s32 next_state){
+    if(next_state == CH_ANCHOR_CTRL_STATE_2_RAISING)
+    {
+        ncStaticCamera_setToNode(0xC);
+        func_80324E38(0.0f, 3);
+        timedFunc_set_0(1.0f, func_8038C000);
+        timedFunc_set_2(1.0f, (GenFunction_2)mapSpecificFlags_set, RBB_MAIN_SPECIFIC_FLAG_8_UNK, true);
+        timed_playSfx(2.1f, SFX_3F6_RUBBING, 0.6f, 32700);
+        timedFunc_set_2(2.7f, (GenFunction_2)mapSpecificFlags_set, RBB_MAIN_SPECIFIC_FLAG_4_ANCHOR_LIFTING, true);
+        timedFunc_set_0(3.0f, func_8038C058);
+        func_80324DBC(3.0f, VER_SELECT(ASSET_B9C_DIALOG_SNORKEL_COMPLETE, 0x971, 0, 0), 7, NULL, this->marker, __chAnchorCtrl_spawnJiggy, NULL);
+    }//L8038C1D8
+    this->state = next_state;
+}
+
+void chAnchorCtrl_update(Actor *this){
+    if(!this->volatile_initialized){
+        this->volatile_initialized = true;
+
+        if (levelSpecificFlags_getSet(LEVEL_FLAG_30_RBB_UNKNOWN, false)) {
+            __chAnchorCtrl_setState(this, CH_ANCHOR_CTRL_STATE_2_RAISING);
+        }
+        else {
+            __chAnchorCtrl_setState(this, CH_ANCHOR_CTRL_STATE_1_LOWERED);
+        }
+        
+        if(jiggyscore_isSpawned(JIGGY_53_RBB_SNORKEL))
+            marker_despawn(this->marker);
+    }//L8038C27C
+
+    if(this->state == CH_ANCHOR_CTRL_STATE_3_RAISED
+        && !mapSpecificFlags_get(RBB_MAIN_SPECIFIC_FLAG_4_ANCHOR_LIFTING))
+    {
+        timed_exitStaticCamera(0.0f);
+        func_80324E38(0.0f, 0);
+        timedFunc_set_0(0.0f, musicKeepsPlaying);
+        timedFunc_set_3(0.0f, (GenFunction_3)transitionToMap, MAP_8B_RBB_ANCHOR_ROOM, WARP_RBB_ANCHOR_2_ENTRANCE, 0);
+    }//L8038C2E4
+}

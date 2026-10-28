@@ -1,0 +1,129 @@
+// BanjoDecomp: ch/xmastreeice.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+#include "port/Patches/Patches.h"
+
+typedef struct {
+    u8 initShatter; // took the warped-in cutscene path at init; suppresses the live shatter
+} ActorLocal_XmasTreeIce;
+
+Actor *chXmasTreeIce_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
+void chXmasTreeIce_update(Actor *this);
+
+/* .data */
+ActorInfo D_80392730 = { 0x210, 0x340, 0x4D2,
+    0x0, NULL,
+    chXmasTreeIce_update, actor_update_func_80326224, chXmasTreeIce_draw,
+    0, 0, 1.0f, 0
+};
+
+/* .code */
+Actor *chXmasTreeIce_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
+    Actor *this = marker_getActor(marker);
+    if(this->unk38_31 != 0) return this;
+    
+    return actor_draw(marker, gfx, mtx, vtx);
+}
+
+void chXmasTreeIce_shatterEffect(f32 position[3], s32 cnt, enum asset_e model_id){
+    static ParticleScaleAndLifetimeRanges D_80392754 = {{0.2f, 0.4f}, {-1.0f, -1.0f}, {0.0f, 0.02f}, {2.2f, 2.2f}, 0.0f, 0.3f};
+    static ParticleSettingsVelocityAccelerationPosition D_8039277C = {
+        {{-300.0f,   350.0f, -300.0f}, {300.0f,   600.0f, 300.0f}}, /*position*/
+        {{   0.0f, -1000.0f,    0.0f}, {  0.0f, -1000.0f,   0.0f}}, /*velocitcy*/
+        {{-100.0f,     0.0f, -100.0f}, {100.0f,   200.0f, 100.0f}}  /*acceleration*/
+    };
+    ParticleEmitter *pCtrl = partEmitMgr_newEmitter(cnt);
+    particleEmitter_setModel(pCtrl, model_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_8039277C);
+    particleEmitter_setAngularVelocityRange(pCtrl,
+        100.0f, 100.0f, 100.0f, 
+        250.0f, 250.0f, 250.0f
+    );
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_80392754);
+    particleEmitter_func_802EF9F8(pCtrl, 0.6f);
+    particleEmitter_func_802EFA18(pCtrl, 0);
+    particleEmitter_func_802EFA20(pCtrl, 1.0f, 1.3f);
+    particleEmitter_setSfx(pCtrl, SFX_7B_ICE_BREAKING_1, 8000);
+    particleEmitter_emitN(pCtrl, cnt);
+}
+
+void chXmasTreeIce_emitDust(f32 position[3], s32 cnt, enum asset_e sprite_id){
+    static ParticleScaleAndLifetimeRanges D_803927C4 = {{0.6f, 0.8f}, {1.0f, 1.4f}, {0.0f, 0.01f}, {1.2f, 1.8f}, 0.0f, 0.01f};
+    static ParticleSettingsVelocityAccelerationPosition D_803927EC = {
+        {{-200.0f,   0.0f, -200.0f}, {200.0f, 200.0f, 200.0f}}, /*position*/
+        {{   0.0f, -10.0f,    0.0f}, {  0.0f, -10.0f,   0.0f}}, /*velocitcy*/
+        {{ -50.0f,   0.0f,  -50.0f}, { 50.0f, 200.0f,  50.0f}}  /*acceleration*/
+    };
+    static s32 D_80392834[3] = {0xDC, 0xDC, 0xE6};
+    ParticleEmitter *pCtrl = partEmitMgr_newEmitter(cnt);
+    particleEmitter_setRGB(pCtrl, D_80392834);
+    particleEmitter_setSprite(pCtrl, sprite_id);
+    particleEmitter_setPosition(pCtrl, position);
+    particleEmitter_setVelocityAccelerationAndPositionRanges(pCtrl, &D_803927EC);
+    particleEmitter_setScaleAndLifetimeRanges(pCtrl, &D_803927C4);
+    particleEmitter_emitN(pCtrl, cnt);
+}
+
+void chXmasTreeIce_shatterIce(ActorMarker *marker){
+    Actor *this = marker_getActor(marker);
+    chXmasTreeIce_shatterEffect(this->position, 0xA, 0x4D3);
+    chXmasTreeIce_emitDust(this->position, 6, ASSET_700_SPRITE_DUST);
+    func_8030E6D4(SFX_B6_GLASS_BREAKING_1);
+    coMusicPlayer_playMusic(COMUSIC_2D_PUZZLE_SOLVED_FANFARE, 28000);
+    this->unk38_31 = 1;
+    // Anchor: broadcast the shatter; LEVEL_FLAG_29 stays local.
+    port_puzzleStep_orBits(ANCHOR_PUZZLE_FP_TREE_ICE, 0x1);
+}
+
+void chXmasTreeIce_returnCameraToBanjo(ActorMarker *marker){
+    Actor *this = marker_getActor(marker);
+    musicKeepsPlaying();
+    transitionToMap(MAP_27_FP_FREEZEEZY_PEAK, WARP_FP_D_TREE_STAR, 0);
+    marker_despawn(this->marker);
+}
+
+void chXmasTreeIce_initiateShatter(Actor *this){
+    func_80324E38(0.0f, 3);
+    timed_setStaticCameraToNode(0.0f, 0);
+    timedFunc_set_1(0.6f, (GenFunction_1)chXmasTreeIce_shatterIce, (uintptr_t)this->marker);
+    timedFunc_set_1(2.5f, (GenFunction_1)chXmasTreeIce_returnCameraToBanjo, (uintptr_t)this->marker);
+}
+
+void chXmasTreeIce_update(Actor *this) {
+    ActorLocal_XmasTreeIce *local = (ActorLocal_XmasTreeIce *)&this->local;
+
+    if (!EventSystem_Should(VB_XMAS_TREE_ICE_UPDATE, true, this)) {
+        return;
+    }
+
+    this->marker->propPtr->unk8_3 = true;
+    actor_collisionOff(this);
+
+    if (!this->volatile_initialized) {
+        this->volatile_initialized = true;
+
+        if (jiggyscore_isCollected(JIGGY_2F_FP_XMAS_TREE)) {
+            marker_despawn(this->marker);
+        }
+        else if (port_puzzleStep_get(ANCHOR_PUZZLE_FP_TREE_ICE) & 0x1) {
+            if (!levelSpecificFlags_get(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE)) {
+                levelSpecificFlags_set(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE, true);
+            }
+            marker_despawn(this->marker);
+        }
+        else if (levelSpecificFlags_get(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE)) {
+            local->initShatter = 1;
+            chXmasTreeIce_initiateShatter(this);
+        }
+    }
+    else if (!local->initShatter && this->unk38_31 == 0
+             && (port_puzzleStep_get(ANCHOR_PUZZLE_FP_TREE_ICE) & 0x1)) {
+        if (!levelSpecificFlags_get(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE)) {
+            levelSpecificFlags_set(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE, true);
+        }
+        chXmasTreeIce_shatterIce(this->marker);
+    }
+}

@@ -1,0 +1,77 @@
+// BanjoDecomp: code_7DB0.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+
+void func_8038E1A0(Actor *this);
+void func_8038E1A8(Actor *this);
+
+/* .data */
+ActorAnimationInfo D_80391340[] ={
+    {0x00, 0.0f},
+    {ASSET_F0_ANIM_MINI_SPHINX_EATING, 80000000.0f},
+    {ASSET_F0_ANIM_MINI_SPHINX_EATING, 1.6f},
+};
+
+// 0x121 - Big Jinxy Head, 0x3E6 - GV Jinxy Head 2
+ActorInfo D_80391358 = { 0xAE, 0x121, 0x3E6, 
+    0x1, D_80391340, 
+    func_8038E1A0, func_8038E1A8, actor_draw, 
+    2500, 0, 0.0f, 0
+};
+
+/* .code */
+void func_8038E1A0(Actor *this){}
+
+void func_8038E1A8(Actor *this){
+    Actor *sp24 = func_8032A7AC(this);
+    this->marker->propPtr->unk8_3 = true;
+
+    switch(this->state){
+        case 1:
+            break;
+        case 2:
+            if(actor_animationIsAt(this, 0.98f)){
+                if(sp24){
+                    sp24->velocity_y = 1.0f;
+                }
+                subaddie_set_state_with_direction(this, 1, 0.02f, 1);
+            }
+            else{
+                if(actor_animationIsAt(this, 0.2f))
+                    sfx_playFadeShorthandDefault(SFX_4C_LIP_SMACK, 1.0f, 32000, this->position, 1250, 2500);
+                
+                if(actor_animationIsAt(this, 0.4f))
+                    sfx_playFadeShorthandDefault(SFX_4C_LIP_SMACK, 1.0f, 26000, this->position, 1250, 2500);
+                
+                if(actor_animationIsAt(this, 0.6f))
+                    sfx_playFadeShorthandDefault(SFX_4C_LIP_SMACK, 1.0f, 20000, this->position, 1250, 2500);
+
+                if(actor_animationIsAt(this, 0.8f))
+                    sfx_playFadeShorthandDefault(SFX_97_BLUBBER_BURPS, 1.0f, 32000, this->position, 1250, 2500);
+            }
+            break;
+    }//L8038E2E8
+}
+
+void func_8038E2FC(ActorMarker *this_marker){
+    Actor *this = marker_getActor(this_marker);
+    Actor *other = func_8032A7AC(this);
+    if(other){
+        subaddie_set_state_with_direction(this, 2, 0.02f, 1);
+    }
+}
+
+int func_8038E344(ActorMarker *this_marker){
+    Actor *this = marker_getActor(this_marker);
+    Actor *other = func_8032A7AC(this);
+
+    if(other){
+        if(0.0f == other->velocity_y){
+            if(this->state != 2)
+                return 1;
+        }
+    }
+    return 0;
+}

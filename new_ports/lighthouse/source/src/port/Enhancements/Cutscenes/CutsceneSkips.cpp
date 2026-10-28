@@ -1,0 +1,95 @@
+// Cutscene Skip Enhancements
+//
+// Moves CVar checks for cutscene skipping out of decomp files and into
+// port-side event listeners.
+
+#include <libultraship/bridge.h>
+#include "port/UI/cvar_prefixes.h"
+#include "port/Enhancements/Events/Hooks/Events.h"
+#include "port/Romhack/RomhackConfig.h"
+#include "port/ShipInit.hpp"
+
+extern "C" {
+#include "enums.h"
+int getGameMode(void);
+enum level_e level_get(void);
+bool volatileFlag_get(enum volatile_flags_e index);
+int func_8028F070(void);
+void gcparade_beginFFParade(void);
+void baflag_clear(enum misc_flag_e arg0);
+void coMusicPlayer_playMusic(enum comusic_e track_id, s32 volume);
+}
+
+#define CVAR_SKIP_BOOT_LOGOS CVAR_ENHANCEMENT("Cutscenes.SkipBootLogos")
+#define CVAR_SKIP_INTRO CVAR_ENHANCEMENT("Cutscenes.StartSkipIntro")
+#define CVAR_SKIP_MISC_CUTSCENES CVAR_ENHANCEMENT("Cutscenes.SkipMiscCutscenes")
+#define CVAR_SKIP_CLUCKER_CUTSCENE CVAR_ENHANCEMENT("Cutscenes.SkipCluckerCutscene")
+#define CVAR_SKIP_NOTEDOOR_DANCE CVAR_ENHANCEMENT("Cutscenes.SkipNoteDoorDance")
+#define CVAR_TRIGGER_FF_PARADE CVAR_DEVELOPER_TOOLS("TriggerFFParade")
+
+void RegisterSkipBootLogos_Init() {
+    COND_VB_SHOULD(VB_PLAY_BOOT_LOGOS, EVENT_PRIORITY_NORMAL,
+                   CVarGetInteger(CVAR_SKIP_BOOT_LOGOS, 0) && !port_isRomhack(), { *should = false; });
+}
+
+void RegisterSkipIntroCutscene_Init() {
+    COND_VB_SHOULD(VB_PLAY_INTRO_CUTSCENE, EVENT_PRIORITY_NORMAL,
+                   CVarGetInteger(CVAR_SKIP_INTRO, 0) && !port_isRomhack(), { *should = false; });
+}
+
+void RegisterSkipMiscCutscenes_Init() {
+    COND_HOOK(OnMiscCutscenesCheck, EVENT_PRIORITY_NORMAL,
+              CVarGetInteger(CVAR_SKIP_MISC_CUTSCENES, 0) && !port_isRomhack(), [](IEvent* event) {
+                  auto* ev = reinterpret_cast<OnMiscCutscenesCheck*>(event);
+                  *ev->skipMiscCutscenes = true;
+              });
+}
+
+static bool sCluckerSkipForced = false;
+
+void RegisterSkipCluckerCutscene_Init() {
+    COND_HOOK(OnGetLevelSpecificFlag, EVENT_PRIORITY_NORMAL,
+              CVarGetInteger(CVAR_SKIP_CLUCKER_CUTSCENE, 0) || sCluckerSkipForced, [](IEvent* event) {
+                  auto* ev = reinterpret_cast<OnGetLevelSpecificFlag*>(event);
+                  if (ev->flagId == LEVEL_FLAG_14_TTC_UNKNOWN) {
+                      ev->result = 1;
+                      event->Cancelled = true;
+                  }
+              });
+}
+
+void CluckerCutscene_ForceSkip() {
+    sCluckerSkipForced = true;
+    RegisterSkipCluckerCutscene_Init();
+}
+
+void RegisterSkipNoteDoorDance_Init() {
+    COND_VB_SHOULD(VB_PLAY_NOTEDOOR_DANCE, EVENT_PRIORITY_NORMAL, CVarGetInteger(CVAR_SKIP_NOTEDOOR_DANCE, 0), {
+        // Clear the flag so the (per-frame) state check doesn't retrigger, and still play the
+        // opening fanfare so the door-opened cue is preserved, then skip the dance state.
+        baflag_clear(BA_FLAG_1A_OPEN_NOTEDOOR);
+        // coMusicPlayer_playMusic(COMUSIC_42_NOTEDOOR_OPENING_FANFARE, -1);
+        *should = false;
+    });
+}
+
+void RegisterTriggerFFParade_Init() {
+    COND_HOOK(GameFrameUpdate, EVENT_PRIORITY_NORMAL, CVarGetInteger(CVAR_TRIGGER_FF_PARADE, 0), [](IEvent* event) {
+        if (getGameMode() != GAME_MODE_3_NORMAL || level_get() <= 0 || !func_8028F070()) {
+            return;
+        }
+        if (volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE) ||
+            volatileFlag_get(VOLATILE_FLAG_20_BEGIN_CHARACTER_PARADE)) {
+            return;
+        }
+        gcparade_beginFFParade();
+    });
+}
+
+static RegisterShipInitFunc initBootLogosFunc(RegisterSkipBootLogos_Init, { CVAR_SKIP_BOOT_LOGOS });
+static RegisterShipInitFunc initSkipIntroFunc(RegisterSkipIntroCutscene_Init, { CVAR_SKIP_INTRO });
+static RegisterShipInitFunc initSkipMiscCutscenesFunc(RegisterSkipMiscCutscenes_Init, { CVAR_SKIP_MISC_CUTSCENES });
+static RegisterShipInitFunc initSkipCluckerCutsceneFunc(RegisterSkipCluckerCutscene_Init,
+                                                        { CVAR_SKIP_CLUCKER_CUTSCENE });
+static RegisterShipInitFunc initSkipNoteDoorDanceFunc(RegisterSkipNoteDoorDance_Init, { CVAR_SKIP_NOTEDOOR_DANCE });
+static RegisterShipInitFunc initTriggerFFParadeFunc(RegisterTriggerFFParade_Init, { CVAR_TRIGGER_FF_PARADE });

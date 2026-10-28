@@ -1,0 +1,251 @@
+name: GenerateBuilds
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_call:
+    outputs:
+      build-name:
+        description: CMake's name for this version
+        value: ${{ jobs.build-linux.outputs.build-name }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-port-o2r:
+    # Same-repo branches fire both push and pull_request; only build once.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: true
+    - name: Extract Project Version
+      id: extract_version
+      run: |
+        VERSION=$(grep -oP '^\s*project\s*\([^)]*VERSION\s+\K[0-9\.]+' CMakeLists.txt)
+        echo "Found version: $VERSION"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: Install dependencies
+      run: sudo apt-get install gcc g++ git cmake ninja-build lsb-release
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: ${{ runner.os }}-o2r-ccache-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-o2r-ccache-${{ github.ref }}
+          ${{ runner.os }}-o2r-ccache-
+    - name: Cache build folders
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}-o2r-build-${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-o2r-build-${{ github.ref }}
+          ${{ runner.os }}-o2r-build-
+        path: |
+          Torch/cmake-build-release
+    - name: Generate lighthouse.o2r
+      run: |
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        make -C Torch type=release -j3
+        cp -r ./libultraship/src/fast/shaders ./port
+        Torch/cmake-build-release/torch pack port lighthouse.o2r o2r -u ${{ steps.extract_version.outputs.version }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: lighthouse.o2r
+        path: lighthouse.o2r
+        retention-days: 1
+
+  build-windows:
+    needs: generate-port-o2r
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Build
+        run: |
+          cmake -S . -B "build/x64" -G "Visual Studio 17 2022" -T v143 -A x64
+          cmake --build ./build/x64 --config Release --parallel 10
+      - name: Download lighthouse.o2r
+        uses: actions/download-artifact@v8
+        with:
+          name: lighthouse.o2r
+          path: ./build/x64
+      - name: Create Package
+        run: |
+          mkdir lighthouse-release
+          mkdir lighthouse-release/debug
+          mv build/x64/Lighthouse.exe lighthouse-release/
+          mv build/x64/lighthouse.o2r lighthouse-release/
+          mv build/x64/*.pdb lighthouse-release/debug/
+          mv README.md lighthouse-release/readme.txt
+          mv config.yml lighthouse-release/
+          mv assets lighthouse-release/
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt" -OutFile "lighthouse-release/gamecontrollerdb.txt"
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: Lighthouse-windows
+          path: lighthouse-release
+
+  build-macos:
+    needs: generate-port-o2r
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: melusina-org/setup-macports@v1
+        with:
+          parameters: '.github/macports.yml'
+      - uses: hendrikmuhs/ccache-action@v1.2.23
+        with:
+          key: macos # ccache-macos
+      - name: Build
+        run: |
+          cmake -H. -Bbuild-cmake -GNinja -DCMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+          cmake --build build-cmake -j
+      - name: Download lighthouse.o2r
+        uses: actions/download-artifact@v8
+        with:
+          name: lighthouse.o2r
+          path: ./build-cmake
+      - name: Create Package
+        run: |
+          (cd build-cmake && cpack)
+          mv _packages/*.dmg Lighthouse.dmg
+          mv README.md readme.txt
+      - name: Publish packaged artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Lighthouse-mac
+          path: |
+            Lighthouse.dmg
+            readme.txt
+
+  build-linux:
+    needs: generate-port-o2r
+    runs-on: ubuntu-latest
+    outputs:
+      build-name: ${{ steps.build-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Update machine
+        run: sudo apt update
+      - name: Install dependencies
+        run: sudo apt-get install gcc g++ git cmake ninja-build lsb-release libsdl2-dev libpng-dev libsdl2-net-dev libzip-dev zipcmp zipmerge ziptool nlohmann-json3-dev libtinyxml2-dev libspdlog-dev libboost-dev libopengl-dev libogg-dev libvorbis-dev
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2.23
+        with:
+          key: linux-ccache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            linux-ccache-${{ github.ref }}
+            linux-ccache-
+      - name: Cache build folders
+        uses: actions/cache@v5
+        with:
+          key: linux-build-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            linux-build-${{ github.ref }}
+            linux-build-
+          path: |
+            SDL2-2.30.3
+            tinyxml2-10.0.0
+            libzip-1.10.1
+      - name: Install latest SDL
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          if [ ! -d "SDL2-2.30.3" ]; then
+            wget https://www.libsdl.org/release/SDL2-2.30.3.tar.gz
+            tar -xzf SDL2-2.30.3.tar.gz
+          fi
+          cd SDL2-2.30.3
+          ./configure --enable-hidapi-libusb
+          make -j 10
+          sudo make install
+          sudo cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
+      - name: Install latest tinyxml2
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          wget https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz
+          tar -xzf 10.0.0.tar.gz
+          cd tinyxml2-10.0.0
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          sudo make install
+      - name: Install libzip without crypto
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          if [ ! -d "libzip-1.10.1" ]; then
+            wget https://github.com/nih-at/libzip/releases/download/v1.10.1/libzip-1.10.1.tar.gz
+            tar -xzf libzip-1.10.1.tar.gz
+          fi
+          cd libzip-1.10.1
+          mkdir -p build
+          cd build
+          cmake .. -DENABLE_COMMONCRYPTO=OFF -DENABLE_GNUTLS=OFF -DENABLE_MBEDTLS=OFF -DENABLE_OPENSSL=OFF
+          make
+          sudo make install
+          sudo cp -av /usr/local/lib/libzip* /lib/x86_64-linux-gnu/
+      - name: Download lighthouse.o2r
+        uses: actions/download-artifact@v8
+        with:
+          name: lighthouse.o2r
+          path: ./build-cmake
+      - name: Build
+        run: |
+          cmake -H. -Bbuild-cmake -GNinja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-cmake --config Release -j3
+          (cd build-cmake && cpack -G External)
+          mv build-cmake/*.appimage lighthouse.appimage
+      - name: Read build name
+        id: build-name
+        run: echo "name=$(sed -n 's/^PROJECT_BUILD_NAME:STRING=//p' build-cmake/CMakeCache.txt)" >> "$GITHUB_OUTPUT"
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: Lighthouse-linux
+          path: lighthouse.appimage
+
+  build-switch:
+    if: false
+    needs: generate-port-o2r
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20241023
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+          sudo apt-get remove -y cmake
+          git -C libultraship remote add nx https://github.com/YoshiCrystal9/libultraship.git
+          git -C libultraship fetch nx
+          git -C libultraship checkout nx/main-nx
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+          cmake -H. -Bbuild-switch -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake
+          cmake --build build-switch --config Release -j3
+          wget -O gamecontrollerdb.txt https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/master/gamecontrollerdb.txt
+          mv README.md readme.txt
+          mv build-switch/*.nro Lighthouse.nro
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: Lighthouse-switch
+          path: |
+            Lighthouse.nro
+            config.yml
+            assets
+            gamecontrollerdb.txt

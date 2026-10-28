@@ -1,0 +1,647 @@
+#include "Engine.h"
+#include <algorithm>
+#include <filesystem>
+#include <fstream>
+#if defined(__linux__) || defined(__APPLE__)
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#endif
+#include "PR/libaudio.h"
+#include <libultraship/libultraship.h>
+
+#include <fast/Fast3dWindow.h>
+#include <fast/interpreter.h>
+#include "fast/resource/ResourceType.h"
+#include <fast/resource/factory/DisplayListFactory.h>
+#include <fast/resource/factory/TextureFactory.h>
+#include <fast/resource/factory/MatrixFactory.h>
+#include <fast/resource/factory/VertexFactory.h>
+#include <libultraship/bridge/gfxbridge.h>
+#include <libultraship/controller/controldeck/ControlDeck.h>
+#include <libultraship/libultra/AudioDmaRegistry.h>
+#include <SDL2/SDL.h>
+#include <ship/controller/controldevice/controller/mapping/ControllerDefaultMappings.h>
+#include <ship/resource/factory/BlobFactory.h>
+#include <ship/resource/type/Blob.h>
+#include <ship/utils/StringHelper.h>
+#include <ship/window/gui/Fonts.h>
+#include <ship/window/gui/resource/Font.h>
+
+#include "build.h"
+#include "Extractor/ExtractFlow.h"
+#include "Extractor/GameExtractor.h"
+#include "GameVersion/BaseGameVersion.h"
+#include "ship/window/gui/FileBrowserWindow.h"
+#include "Network/Anchor/Anchor.h"
+#include "port/Enhancements/Events/PortEnhancements.h"
+#include "port/Patches/Patches.h"
+#include "port/Save/SaveManager.h"
+#include "port/UI/cvar_prefixes.h"
+#include "ResourceHelpers.h"
+#include "Localization/Language.h"
+#include "Resource/Importers/AnimFactory.h"
+#include "Resource/Importers/DemoInputFactory.h"
+#include "Resource/Importers/DialogFactory.h"
+#include "Resource/Importers/MapFactory.h"
+#include "Resource/Importers/ModelFactory.h"
+#include "Resource/Importers/MusicFactory.h"
+#include "Resource/Importers/SoundFactory.h"
+#include "Resource/Importers/SpriteFactory.h"
+#include "src/port/Enhancements/Events/Hooks/Events.h"
+#include "UI/LighthouseGui.hpp"
+#include "UI/LighthouseModMenuWindow.h"
+#include "FrameHost.h"
+#include "LaunchArgs.h"
+
+#ifdef __SWITCH__
+#include <port/switch/SwitchImpl.h>
+#endif
+
+// Engine constants
+
+#define SAMPLES_PER_FRAME (560 * 2 * 2)
+
+const float imguiScaleOptionToValue[4] = { 0.75f, 1.0f, 1.5f, 2.0f };
+const uint32_t defaultImGuiScale = 1;
+
+// Engine globals
+
+namespace {
+constexpr int kDemoAudioHoldFrames = 2;
+
+// Attract-demo audio hold
+std::atomic<bool> sHoldAudio{ false };
+int sHoldFramesRemaining = 0;
+} // namespace
+
+std::shared_ptr<Fast::Fast3dWindow> lhFast3dWindow;
+bool portArchiveVersionMatch = false;
+std::string assets_path;
+std::shared_ptr<Ship::Archive> romArchive;
+
+int32_t previousImGuiScaleIndex = -1;
+float previousImGuiScale = defaultImGuiScale;
+
+namespace fs = std::filesystem;
+
+extern "C" {
+
+// Reset support
+extern s32 D_80275610;
+
+bool prevAltAssets = false;
+// bool gEnableGammaBoost = true;
+}
+
+std::vector<uint8_t*> MemoryPool;
+GameEngine* GameEngine::Instance;
+
+// Construction
+
+GameEngine::GameEngine() {
+    this->context = Ship::Context::CreateUninitializedInstance("Lighthouse", "bk", "lighthouse.cfg.json");
+
+#ifdef __SWITCH__
+    Ship::Switch::Init(Ship::PreInitPhase);
+    Ship::Switch::Init(Ship::PostInitPhase);
+#endif
+
+    this->context->InitConfiguration();
+    this->context->InitConsoleVariables();
+    assets_path = Ship::Context::LocateFileAcrossAppDirs("lighthouse.o2r");
+    portArchiveVersionMatch = std::filesystem::exists(assets_path); // TODO: port archive versioning
+
+    auto controlDeck = std::make_shared<LUS::ControlDeck>();
+
+    this->context->InitControlDeck(controlDeck);
+    this->context->InitResourceManager({ assets_path }, {}, 3, true);
+    this->context->InitConsole();
+
+    // Register console commands for menu buttons
+    Ship::Context::GetRawInstance()->GetConsole()->AddCommand(
+        "reset", { [](std::shared_ptr<Ship::Console>, const std::vector<std::string>&, std::string*) -> bool {
+                      auto host = Lighthouse::GetFrameHost();
+                      if (host == nullptr || !host->WantsFrame()) {
+                          RequestReset();
+                      }
+                      return 0;
+                  },
+                   "Reset the game." });
+    Ship::Context::GetRawInstance()->GetConsole()->AddCommand(
+        "quit", { [](std::shared_ptr<Ship::Console>, const std::vector<std::string>&, std::string*) -> bool {
+                     Quit();
+                     return 0;
+                 },
+                  "Quit the game." });
+
+    lhFast3dWindow = std::make_shared<Fast::Fast3dWindow>(std::vector<std::shared_ptr<Ship::GuiWindow>>({}));
+    this->context->InitWindow(lhFast3dWindow);
+    this->context->InitAudio({ .SampleRate = 22000, .SampleLength = 1024, .DesiredBuffered = 2208 });
+
+    LighthouseGui::SetupMenu();
+
+    if (portArchiveVersionMatch) {
+        fontMono = CreateFontWithSize(16.0f, "fonts/Inconsolata-Regular.ttf");
+        fontMonoLarger = CreateFontWithSize(20.0f, "fonts/Inconsolata-Regular.ttf");
+        fontMonoLargest = CreateFontWithSize(24.0f, "fonts/Inconsolata-Regular.ttf");
+        fontStandard = CreateFontWithSize(16.0f, "fonts/Montserrat-Regular.ttf");
+        fontStandardLarger = CreateFontWithSize(20.0f, "fonts/Montserrat-Regular.ttf");
+        fontStandardLargest = CreateFontWithSize(24.0f, "fonts/Montserrat-Regular.ttf");
+        ImGui::GetIO().FontDefault = fontStandardLarger;
+    }
+
+    previousImGuiScaleIndex = -1;
+    previousImGuiScale = defaultImGuiScale;
+    ScaleImGui();
+}
+
+void GameEngine::RequestReset() {
+    gPortResetPending = 1; // lets audio spin-waits exit immediately
+    setBootMap(getDefaultBootMap());
+    D_80275610 = 3 + 1; // deferred: mainLoop picks this up next frame
+    CALL_EVENT(OnReset);
+}
+
+// mainLoop unloads the game on its next tick
+void GameEngine::RequestStop() {
+    gPortResetPending = 1;
+    D_80275610 = 0 + 1;
+}
+
+void GameEngine::Quit() {
+    auto host = Lighthouse::GetFrameHost();
+    if (host == nullptr || !host->HoldQuit()) {
+        Ship::Context::GetRawInstance()->GetWindow()->Close();
+    }
+}
+
+// Startup
+
+static void RegisterResourceFactories(const std::shared_ptr<Ship::ResourceLoader>& loader) {
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinarySpriteV0>(),
+                                    RESOURCE_FORMAT_BINARY, "Sprite",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKSprite), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryModelV0>(), RESOURCE_FORMAT_BINARY,
+                                    "Model", static_cast<uint32_t>(Torch::ResourceType::BKModel), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKAnimationV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKAnimation",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKAnimation), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKDialogV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKDialog",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKDialog), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKQuizQuestionV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKQuizQuestion",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKQuizQuestion), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKGruntyQuestionV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKGruntyQuestion",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKGruntyQuestion), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKDemoInputV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKDemoInput",
+                                    static_cast<uint32_t>(Torch::ResourceType::BKDemoInput), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKMapV0>(), RESOURCE_FORMAT_BINARY,
+                                    "BKMap", static_cast<uint32_t>(Torch::ResourceType::BKMap), 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKSoundV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKSound", Factories::kBKSoundResourceType, 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKSoundBankV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKSoundBank", Factories::kBKSoundBankResourceType, 0);
+    loader->RegisterResourceFactory(std::make_shared<Factories::ResourceFactoryBinaryBKMusicV0>(),
+                                    RESOURCE_FORMAT_BINARY, "BKMusic", Factories::kBKMusicResourceType, 0);
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryTextureV0>(), RESOURCE_FORMAT_BINARY,
+                                    "Texture", static_cast<uint32_t>(Fast::ResourceType::Texture), 0);
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryTextureV1>(), RESOURCE_FORMAT_BINARY,
+                                    "Texture", static_cast<uint32_t>(Fast::ResourceType::Texture), 1);
+
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryVertexV0>(), RESOURCE_FORMAT_BINARY,
+                                    "Vertex", static_cast<uint32_t>(Fast::ResourceType::Vertex), 0);
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryXMLVertexV0>(), RESOURCE_FORMAT_XML, "Vertex",
+                                    static_cast<uint32_t>(Fast::ResourceType::Vertex), 0);
+
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryDisplayListV0>(),
+                                    RESOURCE_FORMAT_BINARY, "DisplayList",
+                                    static_cast<uint32_t>(Fast::ResourceType::DisplayList), 0);
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryXMLDisplayListV0>(), RESOURCE_FORMAT_XML,
+                                    "DisplayList", static_cast<uint32_t>(Fast::ResourceType::DisplayList), 0);
+
+    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryMatrixV0>(), RESOURCE_FORMAT_BINARY,
+                                    "Matrix", static_cast<uint32_t>(Fast::ResourceType::Matrix), 0);
+
+    loader->RegisterResourceFactory(std::make_shared<Ship::ResourceFactoryBinaryBlobV0>(), RESOURCE_FORMAT_BINARY,
+                                    "Blob", static_cast<uint32_t>(Ship::ResourceType::Blob), 0);
+}
+
+static void LoadLooseModDirectories(const std::string& patches_path) {
+    if (patches_path.empty() || !std::filesystem::is_directory(patches_path)) {
+        return;
+    }
+    for (const auto& p : std::filesystem::directory_iterator(patches_path)) {
+        if (!p.is_directory()) {
+            continue;
+        }
+        const std::string dirName = p.path().filename().generic_string();
+        if (dirName == "~romhacks" || dirName == "~shared" || dirName == "~lang" || IsScopedModFolderName(dirName)) {
+            continue;
+        }
+        SPDLOG_INFO("Found mod directory: {}", p.path().generic_string());
+        Ship::Context::GetRawInstance()->GetResourceManager()->GetArchiveManager()->AddArchive(
+            p.path().generic_string());
+    }
+}
+
+static void LoadLanguagePacks() {
+    const std::string lang_path = Ship::Context::GetPathRelativeToAppDirectory("mods/~lang");
+    if (lang_path.empty() || !std::filesystem::is_directory(lang_path)) {
+        return;
+    }
+    auto loadFrom = [](const std::filesystem::path& dir, const char* what) {
+        std::error_code ec;
+        if (!std::filesystem::is_directory(dir, ec)) {
+            return;
+        }
+        for (const auto& p : std::filesystem::directory_iterator(dir, ec)) {
+            if (p.is_regular_file() && p.path().extension() == ".o2r") {
+                // A pack with no portVersion is a custom one, built with Torch
+                if (Lighthouse::ReadArchiveStamp(p.path().generic_string()) == Lighthouse::ArchiveStamp::Outdated) {
+                    SPDLOG_WARN("Refusing {} language pack extracted by another version of Lighthouse: {}", what,
+                                p.path().generic_string());
+                    NoteOutdatedLanguagePack(p.path().filename().generic_string());
+                    continue;
+                }
+                SPDLOG_INFO("Loading {} language pack: {}", what, p.path().generic_string());
+                Ship::Context::GetRawInstance()->GetResourceManager()->GetArchiveManager()->AddArchive(
+                    p.path().generic_string());
+            }
+        }
+    };
+    loadFrom(lang_path, "base");
+    if (const std::string activeHack = GetActiveRomhackBasename(); !activeHack.empty()) {
+        loadFrom(std::filesystem::path(lang_path) / activeHack, activeHack.c_str());
+    }
+}
+
+void GameEngine::FinishInit() {
+    const bool hosted = Lighthouse::GetFrameHost() != nullptr;
+    for (const auto& archive : kRomArchives) {
+        std::string romPath = Ship::Context::LocateFileAcrossAppDirs(archive, "bk");
+        if (romArchive != nullptr && romArchive->GetPath() == romPath) {
+            context->GetResourceManager()->GetArchiveManager()->AddArchive(romArchive);
+        } else if (std::filesystem::exists(romPath)) {
+            context->GetResourceManager()->GetArchiveManager()->AddArchive(romPath);
+        }
+    }
+    romArchive = nullptr;
+
+    const std::string patches_path = Ship::Context::GetPathRelativeToAppDirectory("mods");
+    if (!patches_path.empty() && !std::filesystem::exists(patches_path)) {
+        std::filesystem::create_directories(patches_path);
+    }
+
+    if (!hosted) {
+        Lighthouse::ApplyLaunchHack();
+        UpdateModFiles(true);
+        LoadLooseModDirectories(patches_path);
+        LoadLanguagePacks();
+        ResourceHelpers_BuildOverlayRepoints();
+    }
+
+#if (_DEBUG)
+    auto defaultLogLevel = spdlog::level::debug;
+#else
+    auto defaultLogLevel = spdlog::level::info;
+#endif
+    auto logLevel =
+        static_cast<spdlog::level::level_enum>(CVarGetInteger(CVAR_DEVELOPER_TOOLS("LogLevel"), defaultLogLevel));
+    context->InitLogging(logLevel, logLevel);
+    Ship::Context::GetRawInstance()->GetLogger()->set_pattern("[%H:%M:%S.%e] [%s:%#] [%l] %v");
+    SPDLOG_INFO("Starting Lighthouse version {} (Branch: {} | Commit: {})", (char*)gBuildVersion, (char*)gGitBranch,
+                (char*)gGitCommitHash);
+    Lighthouse::FlushLaunchHackLog();
+
+    context->InitFileDropMgr();
+    context->InitCrashHandler();
+    context->InitEventSystem();
+
+    lhFast3dWindow->SetTargetFps(60);
+    lhFast3dWindow->SetMaximumFrameLatency(1);
+    lhFast3dWindow->SetRendererUCode(ucode_f3d);
+
+    // Opt-in to memoization and mipmaps
+    if (auto interpreter = lhFast3dWindow->GetInterpreterWeak().lock()) {
+        interpreter->SetResolvedResourceCacheEnabled(true);
+        interpreter->SetMipmapsEnabled(CVarGetInteger(CVAR_SETTING("Mipmaps"), 1));
+    }
+
+#ifdef USE_NETWORKING
+    SDLNet_Init();
+#endif
+
+    RegisterResourceFactories(context->GetResourceManager()->GetResourceLoader());
+    prevAltAssets = CVarGetInteger(CVAR_SETTING("Mods.AlternateAssets"), 1);
+    context->GetResourceManager()->SetAltAssetsEnabled(prevAltAssets);
+
+    Lighthouse::RescanLanguages();
+
+    LighthouseGui::SetupGuiElements();
+    if (!hosted) {
+        Lighthouse::RestoreModSelectionAfterLaunchHack();
+        MaybeShowModConflictPopup();
+        MaybeShowOutdatedArchivesPopup();
+    }
+    // Instance->LoadDictionary();
+    // Instance->LoadPlayerAnims();
+#if defined(__SWITCH__) || defined(__WIIU__)
+    CVarRegisterInteger(CVAR_IMGUI_CONTROLLER_NAV, 1); // always enable controller nav on switch/wii u
+#endif
+}
+
+// Fonts and ImGui scaling
+
+ImFont* GameEngine::CreateFontWithSize(float size, std::string fontPath) {
+    auto mImGuiIo = &ImGui::GetIO();
+    ImFont* font;
+    if (fontPath == "") {
+        ImFontConfig fontCfg = ImFontConfig();
+        fontCfg.OversampleH = fontCfg.OversampleV = 1;
+        fontCfg.PixelSnapH = true;
+        fontCfg.SizePixels = size;
+        font = mImGuiIo->Fonts->AddFontDefault(&fontCfg);
+    } else {
+        auto initData = std::make_shared<Ship::ResourceInitData>();
+        ImFontConfig config;
+        config.FontDataOwnedByAtlas = false;
+
+        initData->Format = RESOURCE_FORMAT_BINARY;
+        initData->Type = static_cast<uint32_t>(RESOURCE_TYPE_FONT);
+        initData->ResourceVersion = 0;
+        initData->Path = fontPath;
+        std::shared_ptr<Ship::Font> fontData = std::static_pointer_cast<Ship::Font>(
+            Ship::Context::GetRawInstance()->GetResourceManager()->LoadResource(fontPath, false, initData));
+        font =
+            mImGuiIo->Fonts->AddFontFromMemoryTTF(fontData->Data, static_cast<int>(fontData->DataSize), size, &config);
+    }
+    float iconFontSize = size * 2.0f / 3.0f;
+    static const ImWchar sIconsRanges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+    ImFontConfig iconsConfig;
+    iconsConfig.MergeMode = true;
+    iconsConfig.PixelSnapH = true;
+    iconsConfig.GlyphMinAdvanceX = iconFontSize;
+    mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
+                                                          &iconsConfig, sIconsRanges);
+
+    return font;
+}
+
+void GameEngine::ScaleImGui() {
+    int32_t imGuiScaleIndex = CVarGetInteger("gSettings.ImGuiScale", defaultImGuiScale);
+    if (imGuiScaleIndex == previousImGuiScaleIndex) {
+        return;
+    }
+
+    float scale = imguiScaleOptionToValue[imGuiScaleIndex];
+    float newScale = scale / previousImGuiScale;
+    ImGui::GetStyle().ScaleAllSizes(newScale);
+    ImGui::GetIO().FontGlobalScale = scale;
+    previousImGuiScale = scale;
+    previousImGuiScaleIndex = imGuiScaleIndex;
+}
+
+// Lifecycle
+
+void GameEngine::Create(int argc, char* argv[]) {
+    Lighthouse::ParseLaunchArgs(argc, argv);
+    const auto instance = Instance = new GameEngine();
+    // DisplayListPatch::Run();
+    // BK renders at 292x216, not the standard 320x240.
+    GfxSetNativeDimensions(292, 216);
+    instance->RunExtract(argc, argv);
+    instance->FinishInit();
+    PortEnhancements_Init();
+    Anchor::Init();
+    SaveManager_Init();
+    ShipInit::InitAll();
+    ShipInit::Init("BOOT");
+    atexit([]() {
+        if (Instance && Instance->context && Instance->context->GetControlDeck()) {
+            for (int i = 0; i < 4; i++) {
+                auto controller = Instance->context->GetControlDeck()->GetControllerByPort(i);
+                if (controller) {
+                    controller->GetRumble()->StopRumble();
+                }
+            }
+        }
+    });
+}
+
+extern void ResourceHelpers_ClearRefCache();
+void ReleaseSoundfonts();
+extern "C" void port_alBnkfFreeAll();
+
+void GameEngine::Destroy() {
+    if (Instance->context && Instance->context->GetControlDeck()) {
+        for (int i = 0; i < 4; i++) {
+            auto controller = Instance->context->GetControlDeck()->GetControllerByPort(i);
+            if (controller) {
+                controller->GetRumble()->StopRumble();
+            }
+        }
+    }
+
+    LighthouseGui::Destroy();
+    lhFast3dWindow = nullptr;
+    ResourceHelpers_ClearRefCache();
+    AudioDma_Clear();
+    ReleaseSoundfonts();
+    if (Instance->context && Instance->context->GetResourceManager()) {
+        Instance->context->GetResourceManager()->UnloadResources("*");
+    }
+    Instance->context = nullptr;
+    // PortEnhancements_Exit();
+    for (auto ptr : MemoryPool) {
+        free(ptr);
+    }
+    MemoryPool.clear();
+#ifdef __SWITCH__
+    Ship::Switch::Exit();
+#endif
+}
+
+void GameEngine::ArchivesChanged() {
+    if (auto interpreter = lhFast3dWindow->GetInterpreterWeak().lock()) {
+        interpreter->TextureCacheClear();
+    }
+    ResourceHelpers_ClearRefCache();
+    port_spriteDisplayCache_clear();
+}
+
+void GameEngine::StartFrame() const {
+    using Ship::KbScancode;
+    const int32_t dwScancode = this->context->GetWindow()->GetLastScancode();
+    this->context->GetWindow()->SetLastScancode(-1);
+
+    switch (dwScancode) {
+        case KbScancode::LUS_KB_TAB: {
+            // Toggle HD Assets
+            CVarSetInteger(CVAR_SETTING("Mods.AlternateAssets"),
+                           !CVarGetInteger(CVAR_SETTING("Mods.AlternateAssets"), 1));
+            break;
+        }
+        case KbScancode::LUS_KB_F4: {
+            // gNextGameState = GSTATE_BOOT;
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void GameEngine::RenderGuiFrame() const {
+    if (lhFast3dWindow == nullptr) {
+        return;
+    }
+    lhFast3dWindow->HandleEvents();
+    if (!lhFast3dWindow->IsFrameReady()) {
+        return;
+    }
+    auto gui = lhFast3dWindow->GetGui();
+    gui->StartDraw();
+    lhFast3dWindow->StartFrame();
+    lhFast3dWindow->RunGuiOnly();
+    gui->EndDraw();
+    lhFast3dWindow->EndFrame();
+}
+
+bool GameEngine::sRelaunchRequested = false;
+
+void GameEngine::RelaunchIfRequested(int argc, char* argv[]) {
+    if (!sRelaunchRequested) {
+        return;
+    }
+#ifdef _WIN32
+    wchar_t exePath[MAX_PATH];
+    if (GetModuleFileNameW(nullptr, exePath, MAX_PATH) > 0) {
+        STARTUPINFOW si{};
+        si.cb = sizeof(si);
+        PROCESS_INFORMATION pi{};
+        if (CreateProcessW(exePath, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+            CloseHandle(pi.hThread);
+            CloseHandle(pi.hProcess);
+        } else {
+            SPDLOG_ERROR("Relaunch failed: CreateProcess error {}", GetLastError());
+        }
+    }
+#elif defined(__linux__) || defined(__APPLE__)
+    execv(argv[0], argv);
+    SPDLOG_ERROR("Relaunch failed: execv error {}", strerror(errno));
+#endif
+}
+
+// Audio
+
+extern "C" uint32_t GameEngine_GetSamplesPerFrame() {
+    return SAMPLES_PER_FRAME;
+}
+
+extern "C" void port_beginDemoAudioHold(void) {
+    if (kDemoAudioHoldFrames <= 0) {
+        return;
+    }
+    sHoldFramesRemaining = kDemoAudioHoldFrames;
+    sHoldAudio.store(true);
+}
+
+extern "C" void port_tickDemoAudioHold(void) {
+    if (sHoldAudio.load() && --sHoldFramesRemaining <= 0) {
+        sHoldAudio.store(false);
+    }
+}
+
+extern "C" int port_audioHeld(void) {
+    return sHoldAudio.load() ? 1 : 0;
+}
+
+void ReleaseSoundfonts() {
+    port_alBnkfFreeAll();
+}
+
+extern "C" uint32_t GameEngine_GetSampleRate() {
+    auto player = Ship::Context::GetRawInstance()->GetAudio()->GetAudioPlayer();
+    if (player == nullptr) {
+        return 0;
+    }
+
+    if (!player->IsInitialized()) {
+        return 0;
+    }
+
+    return player->GetSampleRate();
+}
+
+// End
+
+// C ABI shims
+
+Fast::Interpreter* GameEngine_GetInterpreter() {
+    return std::dynamic_pointer_cast<Fast::Fast3dWindow>(Ship::Context::GetRawInstance()->GetWindow())
+        ->GetInterpreterWeak()
+        .lock()
+        .get();
+}
+
+extern "C" float GameEngine_GetAspectRatio() {
+    auto interpreter = GameEngine_GetInterpreter();
+    return interpreter->mCurDimensions.aspect_ratio;
+}
+
+extern "C" uint32_t GameEngine_GetGameVersion() {
+    return 0x00000001;
+}
+
+static float OTRDimensionFromEdge(float v, float aspectRatio, bool fromRight) {
+    auto interpreter = GameEngine_GetInterpreter();
+    const uint32_t nativeWidth = interpreter->mNativeDimensions.width;
+    const float aspect = (aspectRatio > 0) ? aspectRatio : interpreter->mCurDimensions.aspect_ratio;
+    const float halfSpan = (nativeWidth * 3.0f / 4.0f / 2.0f) * aspect;
+
+    return fromRight ? (nativeWidth / 2 + halfSpan - (nativeWidth - v)) : (nativeWidth / 2 - halfSpan + v);
+}
+
+extern "C" float OTRGetDimensionFromLeftEdge(float v) {
+    return OTRDimensionFromEdge(v, 0.0f, false);
+}
+
+extern "C" float OTRGetDimensionFromRightEdge(float v) {
+    return OTRDimensionFromEdge(v, 0.0f, true);
+}
+
+extern "C" uint32_t OTRGetGameRenderWidth() {
+    auto interpreter = GameEngine_GetInterpreter();
+    return interpreter->mCurDimensions.width;
+}
+
+extern "C" uint32_t OTRGetGameRenderHeight() {
+    auto interpreter = GameEngine_GetInterpreter();
+    return interpreter->mCurDimensions.height;
+}
+
+extern "C" int16_t OTRGetRectDimensionFromLeftEdge(float v) {
+    return ((int)floorf(OTRGetDimensionFromLeftEdge(v)));
+}
+
+extern "C" int16_t OTRGetRectDimensionFromRightEdge(float v) {
+    return ((int)ceilf(OTRGetDimensionFromRightEdge(v)));
+}
+
+extern "C" void* GameEngine_Malloc(size_t size) {
+    MemoryPool.push_back((uint8_t*)malloc(size));
+    return MemoryPool.back();
+}
+
+extern "C" void GameEngine_Free(void* ptr) {
+    for (auto it = MemoryPool.begin(); it != MemoryPool.end(); ++it) {
+        if (*it == ptr) {
+            free(ptr);
+            MemoryPool.erase(it);
+            break;
+        }
+    }
+}

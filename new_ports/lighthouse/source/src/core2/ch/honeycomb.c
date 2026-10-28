@@ -1,0 +1,187 @@
+// BanjoDecomp: core2/code_42CB0.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+
+
+typedef struct{
+    enum honeycomb_e uid;
+    s32 unk4;
+}ActorLocal_EmptyHoneycomb;
+
+void chHoneycomb_update(Actor *this);
+
+/* .data */
+ActorInfo chEmptyHoneycomb = {
+    MARKER_53_EMPTY_HONEYCOMB, ACTOR_47_EMPTY_HONEYCOMB, ASSET_361_MODEL_EMPTY_HONEYCOMB, 
+    0, NULL, 
+    chHoneycomb_update, actor_update_func_80326224, actor_draw, 
+    0, 0, 0.8f, 0
+};
+
+ActorInfo chHoneycomb = {
+    MARKER_55_HONEYCOMB, ACTOR_50_HONEYCOMB, ASSET_363_MODEL_HONEYCOMB, 
+    0, NULL, 
+    chHoneycomb_update, actor_update_func_80326224, actor_draw, 
+    0, 0, 0.8f, 0
+};
+
+/* .bss */
+enum honeycomb_e D_8037DDC0;
+FREE_LIST(ActorMarker *) *     D_8037DDC4;
+s32              D_8037DDC8;
+u32 D_8037DDCC;
+s32 D_8037DDD0;
+
+/* .code */
+enum honeycomb_e func_802C9C40(Actor *this){
+    s32 tmp_a0;
+    s32 sp18[3];
+
+    if(gsworld_getMap() == MAP_2_MM_MUMBOS_MOUNTAIN){
+        if (2500.0f < this->position_y) 
+            return HONEYCOMB_2_MM_JUJU;
+        else
+            return HONEYCOMB_1_MM_HILL;
+    }
+    
+    sp18[0] = (s32)this->position_x;
+    sp18[1] = (s32)this->position_y;
+    sp18[2] = (s32)this->position_z;
+
+    tmp_a0 = func_80307164(sp18);
+    if(tmp_a0 < 0)
+        return 0;
+
+    return func_80306DBC(tmp_a0) - 0x63;
+}
+
+void __chHoneycomb_free(Actor *this){
+    ActorLocal_EmptyHoneycomb *local = (ActorLocal_EmptyHoneycomb *)&this->local;
+
+    D_8037DDC8--;
+    freelist_freeElement(D_8037DDC4, local->uid);
+    D_8037DDCC &= ~(1 << local->uid);
+    if(D_8037DDC8 == 0){
+        freelist_free(D_8037DDC4);
+        D_8037DDC4 = NULL;
+    }
+}
+
+void func_802C9D80(void){
+    int i;
+    ActorMarker **i_marker_ptr;
+    ActorMarker *i_marker;
+    Actor *i_actor;
+    ActorLocal_EmptyHoneycomb *i_local;
+    u32 s2;
+    ActorMarker *s5;
+    s5 = NULL;
+    s2 = 0xFFFFFFFF;
+    for(i = 1; i < freelist_size(D_8037DDC4); i++){
+        if(D_8037DDCC & (1 << i)){
+            i_marker_ptr = (ActorMarker **)freelist_at(D_8037DDC4, i);
+            i_marker = *i_marker_ptr;
+            i_actor = marker_getActor(i_marker);
+            i_local = (ActorLocal_EmptyHoneycomb *)&i_actor->local;
+            if(i_local->unk4 < s2 && !i_actor->despawn_flag){
+                s2 = i_local->unk4;
+                s5 = i_marker;
+            }
+        }
+    }
+    fxSparkle_honeycomb(&s5->propPtr->position_x);
+    marker_despawn(s5);
+}
+
+void chHoneycomb_update(Actor *this){
+    ActorLocal_EmptyHoneycomb *local = (ActorLocal_EmptyHoneycomb *)&this->local;
+    ActorMarker **tmp_v0;
+    int i;
+
+    if(!this->initialized){
+        this->lifetime_value = (randf() < 0.5) ? 200.0 : -200.0;
+        this->initialized = true;
+        if( this->marker->id == MARKER_53_EMPTY_HONEYCOMB){
+            if(local->uid == 0)
+                local->uid = (!this->unk44_2)? D_8037DDC0 : func_802C9C40(this);
+//          if( honeycombscore_get(local->uid)
+            if( EventSystem_Should(VB_COLLECTABLE_ALREADY_HELD, honeycombscore_get(local->uid), this)
+                || volatileFlag_get(VOLATILE_FLAG_1)
+                || volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME)
+            ){
+                marker_despawn(this->marker);
+                return;
+            }
+        }
+    }//L802C9F9C
+
+    if(!this->volatile_initialized){
+        this->volatile_initialized = true;
+        if( this->marker->id == MARKER_55_HONEYCOMB
+            && !this->unk44_2
+        ){
+            marker_setFreeMethod(this->marker, __chHoneycomb_free);
+            D_8037DDC8++;
+            if(D_8037DDC4 == NULL){
+                D_8037DDC4 = (FREE_LIST(s32) *) freelist_new(sizeof(ActorMarker *), 10);
+            }
+            else if(D_8037DDC8 >= 11){
+                func_802C9D80();
+            }
+            tmp_v0 = (ActorMarker **)freelist_next(&D_8037DDC4, (s32*)&local->uid);
+            *tmp_v0 = this->marker;
+            D_8037DDCC |= 1 << local->uid;
+            local->unk4 = D_8037DDD0;
+            D_8037DDD0++;
+        }
+    }//L802CA098
+
+    if(gsworld_getMap() == MAP_27_FP_FREEZEEZY_PEAK){
+        if(maSlalom_isActive()){
+            this->unk58_0 = false;
+            actor_collisionOff(this);
+            return;
+        }
+        else{
+            this->unk58_0 = true;
+            actor_collisionOn(this);
+        }
+    }
+
+    this->yaw += time_getDelta()*this->lifetime_value;
+    if(360.0f <= this->yaw) this->yaw -= 360.0f;
+    if(this->yaw < 0.0f)    this->yaw += 360.0f;
+
+    for(i = 0; i < 4; i++){
+        if(randf() < 0.03){
+            commonParticle_add(this->marker, i+5, func_80329904);
+            commonParticle_new(8, this->marker->unk14_21);
+        }
+    }
+}
+
+enum honeycomb_e func_802CA1C4(Actor *this){
+    ActorLocal_EmptyHoneycomb *local = (ActorLocal_EmptyHoneycomb *)&this->local;
+    return local->uid;
+}
+
+void func_802CA1CC(enum honeycomb_e id){
+    D_8037DDC0 = id;
+}
+
+// [port] Anchor: spawn a teammate's dropped empty honeycomb locally. Spawned through the
+// same per-map bundle as the local drop so it gets the pickup drop physics.
+static void __chHoneycomb_netSpawnDrop(uintptr_t uid, uintptr_t bundle, uintptr_t x, uintptr_t y, uintptr_t z){
+    f32 pos[3];
+    pos[0] = reinterpret_cast(f32, x);
+    pos[1] = reinterpret_cast(f32, y);
+    pos[2] = reinterpret_cast(f32, z);
+    func_802CA1CC((enum honeycomb_e)uid);
+    bundle_spawn_f32((enum bundle_e)bundle, pos);
+}
+
+void chHoneycomb_netSpawnDropAt(s32 uid, s32 bundleId, f32 x, f32 y, f32 z){
+    __spawnQueue_add_5((GenFunction_5)__chHoneycomb_netSpawnDrop, (uintptr_t)uid, (uintptr_t)bundleId,
+        reinterpret_cast(s32, x), reinterpret_cast(s32, y), reinterpret_cast(s32, z));
+}

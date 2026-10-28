@@ -1,0 +1,689 @@
+// BanjoDecomp: cutscenes/cutscenesspawnqueue.c
+#include <ultra64.h>
+#include "functions.h"
+#include "variables.h"
+#include "actor.h"
+
+extern void func_802E07E0(Actor *);
+extern Actor* func_802E0738(ActorMarker *, Gfx **, Mtx**, Vtx **);
+
+extern ActorInfo D_80366CD0;
+extern ActorInfo D_8038E718;
+extern ActorInfo D_8038E7A0;
+extern ActorInfo D_8038E8A8;
+
+
+/* .data */
+ActorInfo D_8038DC90 = 
+{
+    MARKER_17_CONCERT_BANJO, ACTOR_8E_CONCERT_BANJO, ASSET_355_MODEL_CONCERT_BANJO,
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 5.0f, 0
+};
+
+ActorInfo D_8038DCB4 = 
+{
+    0x01A, 0x091, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DCD8 = 
+{
+    0x019, 0x090, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DCFC = 
+{
+    0x018, 0x08F, 0x3B1, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 5.0f, 0
+};
+
+ActorInfo D_8038DD20 = 
+{
+    MARKER_1B_CONCERT_TOOTY, ACTOR_92_CONCERT_TOOTY, ASSET_35A_MODEL_CONCERT_TOOTY, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 3.0f, 0
+};
+
+ActorInfo D_8038DD44 = 
+{
+    MARKER_1C_INTRO_N64_CUBE, ACTOR_93_INTRO_N64_CUBE, ASSET_3A6_MODEL_INTRO_N64_CUBE, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DD68 = 
+{
+    MARKER_1D_INTRO_RARE_LOGO, ACTOR_94_INTRO_RARE_LOGO, ASSET_3A7_MODEL_INTRO_RARE_LOGO, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DD8C = 
+{
+    0x01E, 0x095, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DDB0 = 
+{
+    0x01F, 0x096, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DDD4 = 
+{
+    0x020, 0x097, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DDF8 = 
+{
+    0x021, 0x098, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DE1C = 
+{
+    0x022, 0x099, 0x3AA, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DE40 = 
+{
+    0x023, 0x09A, 0x3AB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DE64 = 
+{
+    MARKER_24_CONCERT_BULL, ACTOR_9B_CONCERT_BULL, ASSET_354_MODEL_SMALL_BULL, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 3.0f, 0
+};
+
+ActorInfo D_8038DE88 = 
+{
+    MARKER_25_CONCERT_FROG, ACTOR_9C_CONCERT_FROG, ASSET_369_MODEL_CONCERT_FROG, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.4f, 0
+};
+
+ActorInfo D_8038DEAC = 
+{
+    MARKER_26_CONCERT_BIGBUTT, ACTOR_9D_CONCERT_BIGBUTT, ASSET_353_MODEL_BIGBUTT, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 4.0f, 0
+};
+
+ActorInfo D_8038DED0 = 
+{
+    0x027, 0x09E, ASSET_53D_MODEL_GRUNTILDA_FINAL_BOSS, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DEF4 = 
+{
+    0x06F, 0x09F, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DF18 = 
+{
+    0x070, 0x0A0, ASSET_34D_MODEL_BANJOKAZOOIE_LOW_POLY, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DF3C = 
+{
+    0x071, 0x0A1, 0x3AC, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DF60 = 
+{
+    0x073, 0x0A3, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DF84 = 
+{
+    0x074, 0x0A4, 0x433, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DFA8 = 
+{
+    0x075, 0x0A5, ASSET_3ED_MODEL_BUZZBOMB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038DFCC = 
+{
+    MARKER_76_CONCERT_ANT, ACTOR_A6_CONCERT_ANT, ASSET_398_MODEL_CONCERT_ANT, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.5f, 0
+};
+
+ActorInfo D_8038DFF0 = 
+{
+    MARKER_77_BBQ_MUMBO, ACTOR_A7_BBQ_MUMBO, ASSET_473_MODEL_BBQ_MUMBO, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E014 = 
+{
+    MARKER_78_BBQ_GRILL_AND_FISH, ACTOR_A8_BBQ_GRILL_AND_FISH, ASSET_474_MODEL_BBQ_GRILL_AND_FISH, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E038 = 
+{
+    MARKER_79_TOOTY_REFLECTION, ACTOR_A9_TOOTY_REFLECTION, ASSET_454_MODEL_TOOTY_REFLECTION, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E05C = 
+{
+    MARKER_7A_DINGPOT_TOP, ACTOR_AA_DINGPOT_TOP, ASSET_453_MODEL_DINGPOT_TOP, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E080 = 
+{
+    MARKER_7B_GRUNTILDA_ARMS, ACTOR_AB_GRUNTILDA_ARMS, ASSET_452_MODEL_GRUNTILDA_ARMS, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E0A4 = 
+{
+    0x07C, 0x0AC, ASSET_451_MODEL_GRUNTILDA, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E0C8 = 
+{
+    0x07D, 0x0AD, ASSET_3CA_MODEL_BAT, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E0EC = 
+{
+    0x07E, 0x0AE, ASSET_450_MODEL_DINGPOT, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E110 = 
+{
+    MARKER_7F_GREEN_FLOOR_MIST, ACTOR_AF_GREEN_FLOOR_MIST, ASSET_44F_MODEL_GREEN_FLOOR_MIST, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E134 = 
+{
+    0x080, 0x0B0, ASSET_387_MODEL_BOTTLES, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E158 = 
+{
+    0x081, 0x0B1, ASSET_388_MODEL_MOLEHILL, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E17C = 
+{
+    0x082, 0x0B2, ASSET_347_MODEL_MACHINE_ROOM_DOOR, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E1A0 = 
+{
+    0x084, 0x0B4, ASSET_35B_MODEL_TOOTY, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E1C4 = 
+{
+    0x085, 0x0B5, ASSET_456_MODEL_GRUNTILDAS_BROOMSTICK, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E1E8 = 
+{
+    0x086, 0x0B6, ASSET_457_MODEL_GRUNTILDA_RIDING_BROOMSTICK, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E20C = 
+{
+    0x087, 0x0B7, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E230 = 
+{
+    0x088, 0x0B8, ASSET_458_MODEL_BANJO_TOP_SLEEPING, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E254 = 
+{
+    0x089, 0x0B9, ASSET_459_MODEL_BANJOS_BED, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E278 = 
+{
+    0x08A, 0x0BA, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E29C = 
+{
+    0x08B, 0x0BB, ASSET_45B_MODEL_KAZOOIE_RACK, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E2C0 = 
+{
+    0x08E, 0x0BE, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E2E4 = 
+{
+    0x08F, 0x0BF, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E308 = 
+{
+    0x090, 0x0C0, ASSET_460_MODEL_KAZOOIE_RACK_FEATHERS, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E32C = 
+{
+    0x091, 0x0C1, ASSET_467_MODEL_TRANSITION_FALLING_JIGGIES, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E350 = 
+{
+    0x092, 0x0C2, ASSET_468_MODEL_SEXY_GRUNTILDA, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E374 = 
+{
+    0x093, 0x0C3, ASSET_469_MODEL_UGLY_TOOTY, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E398 = 
+{
+    0x136, 0x2ED, ASSET_340_BEAUTY_MACHINE, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E3BC = 
+{
+    0x137, 0x2EE, ASSET_46A_MODEL_KLUNGO, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E3E0 = 
+{
+    0x138, 0x2EF, ASSET_35B_MODEL_TOOTY, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E404 = 
+{
+    0x139, 0x2F0, ASSET_341_BEAUTY_MACHINE_CONSOLE, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E428 = 
+{
+    0x13A, 0x2F1, ASSET_46B_MODEL_BEAUTY_MACHINE_FORCE_FIELD, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E44C = 
+{
+    0x13B, 0x2F2, ASSET_340_BEAUTY_MACHINE, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E470 = 
+{
+    0x13C, 0x2F3, ASSET_46D_MODEL_LIGHTNING, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E494 = 
+{
+    0x143, 0x2FA, ASSET_46A_MODEL_KLUNGO, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E4B8 = 
+{
+    0x144, 0x2FB, ASSET_532_MODEL_BANJO_KAZOOIE_CUTSCENES, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E4DC = 
+{
+    0x145, 0x2FC, ASSET_3C6_MODEL_MUMBO, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E500 = 
+{
+    0x146, 0x2FD, ASSET_3B0_SNACKER, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E524 = 
+{
+    0x147, 0x2FE, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E548 = 
+{
+    MARKER_148_GREEN_FOG_OUTSIDE_TOWER, ACTOR_2FF_GREEN_FOG_OUTSIDE_TOWER, ASSET_461_MODEL_GREEN_FOG_OUTSIDE_TOWER, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E56C = 
+{
+    MARKER_149_BIKINI_GIRL, ACTOR_300_BIKINI_GIRL, ASSET_479_MODEL_BIKINI_GIRL, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E590 = 
+{
+    0x14A, 0x301, ASSET_370_MODEL_BLUBBER, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E5B4 = 
+{
+    0x14B, 0x302, ASSET_47B_MODEL_ROCK, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E5D8 = 
+{
+    0x14C, 0x303, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E5FC = 
+{
+    0x14D, 0x304, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E620 = 
+{
+    0x14E, 0x305, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E644 = 
+{
+    0x14F, 0x306, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E668 = 
+{
+    0x150, 0x307, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E68C = 
+{
+    0x151, 0x308, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E6B0 = 
+{
+    0x152, 0x309, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+ActorInfo D_8038E6D4 = 
+{
+    0x153, 0x30A, 0x3BB, 
+    1, NULL, 
+    NULL, func_802E07E0, func_802E0738, 
+    0, 0, 0.0f, 0
+};
+
+
+void cutscene_func_8038C4E0(void){
+    spawnableActorList_add(&D_8038DC90, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038DCFC, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038DCD8, actor_new, ACTOR_FLAG_UNKNOWN_13);
+    spawnableActorList_add(&D_8038DCB4, actor_new, ACTOR_FLAG_UNKNOWN_13);
+    spawnableActorList_add(&D_8038DD20, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038DD44, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038DD68, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038DD8C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DDB0, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DDD4, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DDF8, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DE1C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DE40, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DE64, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DE88, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DEAC, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DED0, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038DEF4, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DF18, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DF3C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DF60, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_13);
+    spawnableActorList_add(&D_8038DF84, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DFA8, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038DFCC, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038DFF0, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E014, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E038, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038E05C, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038E080, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038E0A4, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E0C8, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E0EC, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E110, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_12 | ACTOR_FLAG_UNKNOWN_13);
+    spawnableActorList_add(&D_8038E134, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E158, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E17C, actor_new, ACTOR_FLAG_UNKNOWN_12);
+    spawnableActorList_add(&D_8038E1A0, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E1C4, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038E1E8, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E20C, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E230, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E254, actor_new, ACTOR_FLAG_UNKNOWN_3);
+    spawnableActorList_add(&D_8038E278, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E29C, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E2C0, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E2E4, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E308, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E32C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E350, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E374, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E398, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_12);
+    spawnableActorList_add(&D_8038E3BC, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E3E0, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E404, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E428, actor_new, ACTOR_FLAG_UNKNOWN_12);
+    spawnableActorList_add(&D_8038E44C, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E470, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_12 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E494, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E4B8, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E4DC, actor_new, ACTOR_FLAG_UNKNOWN_6);
+    spawnableActorList_add(&D_8038E500, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E524, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&D_8038E548, actor_new, ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_12 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E56C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E590, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E5B4, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E5D8, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E5FC, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E620, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E644, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E668, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E68C, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E6B0, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E6D4, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_80366CD0, actor_new, ACTOR_FLAG_NONE);
+    spawnableActorList_add(&D_8038E718, actor_new, ACTOR_FLAG_UNKNOWN_1);
+    spawnableActorList_add(&D_8038E7A0, actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
+    spawnableActorList_add(&D_8038E8A8, actor_new, ACTOR_FLAG_UNKNOWN_1);
+}
