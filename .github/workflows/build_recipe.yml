@@ -24,6 +24,7 @@ on:
           - 'recipes/ports/soh/recipe.json'
           - 'recipes/ports/soh2/recipe.json'
           - 'recipes/ports/spaghettikart/recipe.json'
+          - 'recipes/ports/starship/recipe.json'
           - 'recipes/ports/stuntcarracer/recipe.json'
       sdl_version:
         description: 'Enter SDL Version required'
