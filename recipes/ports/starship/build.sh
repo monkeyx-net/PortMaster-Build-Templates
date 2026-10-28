@@ -50,6 +50,10 @@ cp "${CDIR}/recipes/ports/starship/torch/ZWrapper.h" "${CDIR}/recipes/ports/star
 # ExternalProject with no build type, i.e. unoptimised; build it as Release.
 sed -i 's|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/Torch|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/Torch -DCMAKE_BUILD_TYPE=Release|' CMakeLists.txt
 
+# v2.0.0 passes -mfpu=neon on aarch64, which is a 32-bit ARM option that aarch64 compilers
+# reject (NEON is always on there anyway). Fixed upstream after v2.0.0.
+sed -i 's|set(CPU_OPTION -mfpu=neon)|set(CPU_OPTION)|' CMakeLists.txt
+
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
