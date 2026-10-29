@@ -286,7 +286,6 @@ pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
 ./soh.elf.${DEVICE_ARCH} "${ROMS[@]}"
 status=$?
 
-# torch keeps the whole o2r in RAM after extracting (upstream leak), so the game can lock up or crash
 # in the same process; start it fresh if extraction just finished or that run died
 if [ ${#ROMS[@]} -gt 0 ]; then
     swap_off
