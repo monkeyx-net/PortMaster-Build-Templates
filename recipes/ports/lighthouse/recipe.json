@@ -3,11 +3,11 @@
   "name": "lighthouse.zip",
   "port_json": "new_ports/lighthouse/lighthouse/lighthouse/port.json",
   "source": {
-    "date_updated": "2026-10-28",
+    "date_updated": "2026-10-30",
     "port_exe": "Lighthouse",
     "port_build": "cmake",
-    "port_checksum": "a70d0676c5753ba3596d4d8f9d6dd849494d11f6f12443edcd481f483d69af1d",
+    "port_checksum": "ddd39cfc70553ca23e8e829cbdf7968961656cffc9af7c18f0604936e6b2dd0b",
     "port_url": "HarbourMasters/Lighthouse",
-    "port_version": "1.2.1"
+    "port_version": "1.2.2"
   }
 }
