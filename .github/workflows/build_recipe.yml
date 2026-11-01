@@ -17,6 +17,7 @@ on:
           - 'recipes/ports/defendguin/recipe.json'
           - 'recipes/ports/edgar/recipe.json'
           - 'recipes/ports/epiphany/recipe.json'
+          - 'recipes/ports/frozenbubble/recipe.json'
           - 'recipes/ports/harmonist/recipe.json'
           - 'recipes/ports/lighthouse/recipe.json'
           - 'recipes/ports/manicminer/recipe.json'

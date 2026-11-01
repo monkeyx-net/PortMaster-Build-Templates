@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "frozenbubble.zip",
+  "port_json": "new_ports/frozenbubble/frozenbubble/frozenbubble/port.json",
+  "source": {
+    "date_updated": "2026-11-01",
+    "port_exe": "frozen-bubble-sdl2",
+    "port_build": "cmake",
+    "port_checksum": "",
+    "port_url": "dchau360/frozen-bubble-sdl2",
+    "port_version": ""
+  }
+}

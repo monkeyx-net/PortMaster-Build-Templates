@@ -1,0 +1,94 @@
+diff --git a/src/gamesettings.cpp b/src/gamesettings.cpp
+index 4ca9eb4..f5c1dc4 100644
+--- a/src/gamesettings.cpp
++++ b/src/gamesettings.cpp
+@@ -194,6 +194,11 @@ void GameSettings::ReadSettings()
+ #ifndef __WASM_PORT__
+     const char* nick = iniparser_getstring(optDict, "Keys:Nickname", "");
+     if (nick) snprintf(savedNickname, sizeof(savedNickname), "%s", nick);
++
++    const char* host = iniparser_getstring(optDict, "Network:Host", "");
++    if (host) snprintf(savedHost, sizeof(savedHost), "%s", host);
++    savedPort = iniparser_getint(optDict, "Network:Port", 1511);
++    if (savedPort < 1 || savedPort > 65535) savedPort = 1511;
+ #endif
+ 
+     LoadDefaultKeys();
+diff --git a/src/gamesettings.h b/src/gamesettings.h
+index 6dcfb4e..d7609eb 100644
+--- a/src/gamesettings.h
++++ b/src/gamesettings.h
+@@ -88,6 +88,10 @@ public:
+ 
+     char savedNickname[32] = "";
+ 
++    // Preset network server (written by the PortMaster launcher, [Network] section)
++    char savedHost[256] = "";
++    int savedPort = 1511;
++
+     GameSettings(const GameSettings& obj) = delete;
+     void Dispose();
+     static GameSettings* Instance(){
+diff --git a/src/mainmenu.cpp b/src/mainmenu.cpp
+index 5b43c2c..6295a05 100644
+--- a/src/mainmenu.cpp
++++ b/src/mainmenu.cpp
+@@ -218,6 +218,11 @@ MainMenu::MainMenu(const SDL_Renderer *renderer)
+     {
+         const char* saved = GameSettings::Instance()->savedNickname;
+         if (saved[0] != '\0') snprintf(networkPreNick, sizeof(networkPreNick), "%s", saved);
++        const char* savedHost = GameSettings::Instance()->savedHost;
++        if (savedHost[0] != '\0') {
++            snprintf(networkHost, sizeof(networkHost), "%s", savedHost);
++            networkPort = GameSettings::Instance()->savedPort;
++        }
+     }
+ #endif
+ }
+@@ -1229,6 +1234,10 @@ void MainMenu::HandleInput(SDL_Event *e){
+                                 networkInputMode = 8;
+                                 networkFieldEditing = false;
+                                 networkManualFieldIndex = 0;
++#ifndef __WASM_PORT__
++                                // Host/port preset by the launcher: jump straight to Connect
++                                if (GameSettings::Instance()->savedHost[0] != '\0') networkManualFieldIndex = 2;
++#endif
+                                 SDL_StopTextInput();
+                                 break;
+                             }
+@@ -3273,7 +3282,12 @@ void MainMenu::StartLocalServer() {
+         snprintf(portStr, sizeof(portStr), "%d", networkPort);
+ 
+         // Try to find server binary
++        const char* envServer = getenv("FB_SERVER_BIN");
++        if (envServer && access(envServer, X_OK) == 0) {
++            execl(envServer, "fb-server", "-q", "-d", "-z", "-l", "-p", portStr, (char*)NULL);
++        }
+         const char* serverPaths[] = {
++            "./fb-server",                // Next to the game binary (PortMaster)
+             "server/fb-server",           // From build directory
+             "./server/fb-server",
+             "../server/fb-server",
+diff --git a/src/platform.cpp b/src/platform.cpp
+index 6ad0240..85d5fe0 100644
+--- a/src/platform.cpp
++++ b/src/platform.cpp
+@@ -24,6 +24,7 @@
+ #elif defined(__linux__)
+ #include <unistd.h>
+ #include <climits>
++#include <cstdlib>
+ #endif
+ 
+ std::string g_dataDir;
+@@ -95,6 +96,10 @@ void InitDataDir() {
+ #else // Desktop platforms
+ 
+ void InitDataDir() {
++    // PortMaster: allow the launcher script to point at the bundled assets
++    if (const char* envDir = getenv("FB_DATA_DIR")) {
++        if (envDir[0] != '\0') { g_dataDir = envDir; return; }
++    }
+ #if defined(_WIN32) || defined(__MINGW32__)
+     char exePath[MAX_PATH];
+     if (GetModuleFileNameA(nullptr, exePath, MAX_PATH)) {

@@ -1,0 +1,37 @@
+{
+  "version": 4,
+  "name": "frozenbubble.zip",
+  "items": [
+    "Frozen Bubble.sh",
+    "frozenbubble"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Frozen Bubble",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "C++/SDL2 rewrite of the classic Frozen Bubble 2: pop coloured bubbles in 100 single player levels, local 2-player battles, or 2-5 player network games over LAN or the internet. Includes a launcher to set your nickname, join or host a server and assign controllers.",
+    "desc_md": null,
+    "inst": "Ready to play. A setup screen opens first: choose Offline, Join a server or Host a server, then Play.",
+    "inst_md": null,
+    "genres": [
+      "puzzle",
+      "arcade"
+    ],
+    "image": null,
+    "rtr": true,
+    "exp": false,
+    "runtime": [
+      "love_11.5"
+    ],
+    "store": [],
+    "availability": "full",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}

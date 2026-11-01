@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./Frozen Bubble.sh</path>
+    <name>Frozen Bubble</name>
+    <desc>C++/SDL2 rewrite of the classic Frozen Bubble 2: pop coloured bubbles in 100 single player levels, local 2-player battles, or 2-5 player network games over LAN or the internet.</desc>
+    <releasedate>20260629T000000</releasedate>
+    <developer>The Frozen-Bubble Team, Huy Chau</developer>
+    <publisher>The Frozen-Bubble Team</publisher>
+    <genre>Puzzle</genre>
+    <image>./frozenbubble/cover.png</image>
+  </game>
+</gameList>
