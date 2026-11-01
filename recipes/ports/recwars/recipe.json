@@ -1,0 +1,13 @@
+{
+  "recipe_version": 1,
+  "name": "recwars.zip",
+  "port_json": "new_ports/recwars/recwars/recwars/port.json",
+  "source": {
+    "date_updated": "",
+    "port_exe": "recwars",
+    "port_build": "cargo build --release --locked",
+    "port_checksum": "",
+    "port_url": "martin-t/rec-wars",
+    "port_version": ""
+  }
+}

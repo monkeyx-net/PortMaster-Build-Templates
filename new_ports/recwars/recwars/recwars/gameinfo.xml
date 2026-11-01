@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./RecWars.sh</path>
+    <name>RecWars</name>
+    <desc>RecWars is a free and open source clone of RecWar, a top-down tank shooter. Control a tank, hovercraft or hummer and fight bots using an arsenal of eight distinct weapons.</desc>
+    <releasedate>20241228T000000</releasedate>
+    <developer>Martin Taibr</developer>
+    <publisher>Martin Taibr</publisher>
+    <genre>Action</genre>
+    <image>./recwars/cover.png</image>
+  </game>
+</gameList>

@@ -20,6 +20,7 @@ on:
           - 'recipes/ports/harmonist/recipe.json'
           - 'recipes/ports/lighthouse/recipe.json'
           - 'recipes/ports/manicminer/recipe.json'
+          - 'recipes/ports/recwars/recipe.json'
           - 'recipes/ports/shamogu/recipe.json'
           - 'recipes/ports/sip2/recipe.json'
           - 'recipes/ports/soh/recipe.json'

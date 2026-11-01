@@ -1,0 +1,36 @@
+{
+  "version": 4,
+  "name": "recwars.zip",
+  "items": [
+    "RecWars.sh",
+    "recwars"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "RecWars",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "RecWars is a free and open source clone of RecWar, a top-down tank shooter. Control a tank, hovercraft or hummer and fight bots using an arsenal of eight distinct weapons.",
+    "desc_md": null,
+    "inst": "Ready to play",
+    "inst_md": null,
+    "genres": [
+      "action"
+    ],
+    "image": null,
+    "rtr": true,
+    "exp": false,
+    "runtime": [
+      "weston_pkg_0.2.squashfs"
+    ],
+    "store": [],
+    "availability": "full",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}
