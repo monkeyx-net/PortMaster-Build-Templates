@@ -206,6 +206,26 @@ jobs:
           path: ${{ steps.parse-json.outputs.port_folder }}-linux-${{ matrix.arch }}.tar.gz
           retention-days: 7
 
+      - name: Capture screenshot
+        if: matrix.arch == 'x86_64'
+        continue-on-error: true
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e DEBIAN_FRONTEND=noninteractive \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.arch }}-latest \
+            recipes/templates/scripts/screenshot.sh "${{ github.event.inputs.recipe_file }}"
+
+      - name: Upload screenshot artifact
+        if: matrix.arch == 'x86_64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.parse-json.outputs.port_folder }}-linux-screenshot
+          path: ${{ steps.parse-json.outputs.port_folder }}-linux-screenshot.tar.gz
+          if-no-files-found: ignore
+          retention-days: 7
+
   package:
     name: Package ${{ needs.build.outputs.port_title }}
     runs-on: ubuntu-latest
@@ -221,6 +241,14 @@ jobs:
           pattern: ${{ needs.build.outputs.port_folder }}-linux-*
           merge-multiple: true
 
+      - name: Extract binaries to correct locations
+        run: |
+          PORT_EXE="${{ needs.build.outputs.port_exe }}"
+          PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
+          find artifacts -type f -name "*.tar.gz" | while read f; do
+            tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
+          done
+
       - name: Create missing screenshot/cover
         run: |
           PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
@@ -229,13 +257,9 @@ jobs:
           fi
           recipes/templates/scripts/make_images.sh "$PORT_DIR" "${{ needs.build.outputs.port_title }}"
 
-      - name: Extract binaries to correct locations
+      - name: Write version.json and zip
         run: |
-          PORT_EXE="${{ needs.build.outputs.port_exe }}"
           PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
-          find artifacts -type f -name "*.tar.gz" | while read f; do
-            tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
-          done
           RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
           jq '{name, version: .source.port_version}' "$RECIPE" > "$(dirname "$(jq -r .port_json "$RECIPE")")/version.json"
           cd new_ports/${PORT_FOLDER}/${PORT_FOLDER}/

@@ -10,7 +10,7 @@ recipes/
   ports/<port>/recipe.json      # source repo, build command, exe name, upstream version/checksum
   ports/<port>/build.sh         # runs inside the builder container (copied from templates/scripts/build.sh)
   templates/port_template/      # zz_port.sh launcher + zz_folder skeleton (port.json, gameinfo.xml, gptk, licenses)
-  templates/scripts/            # build.sh, check_updates.sh, fetch_source.sh, make_images.sh, update_recipe_list.sh
+  templates/scripts/            # build.sh, check_updates.sh, fetch_source.sh, make_images.sh, screenshot.sh, update_recipe_list.sh
 new_ports/<port>/
   source/ , source.tar.gz|zip   # upstream source (gitignored), from check_updates.sh / fetch_source.sh
   <port>/                       # exactly what goes in <port>.zip
@@ -27,7 +27,7 @@ The port folder name, the zip name (`<port>.zip`), the recipe folder and the `re
 
 ## Workflows
 
-- `build_recipe.yml` (manual dispatch, select port): builds the builder image if needed, runs `fetch_source.sh` and then `recipes/ports/<port>/build.sh` per arch, extracts the binaries into the port folder, creates missing `screenshot.png`/`cover.png` (`make_images.sh`), writes `version.json`, zips `new_ports/<port>/<port>/` to `<port>.zip` (without `.gitkeep` files), commits the port folder, and publishes the zip as GitHub release `<port>-<version>`.
+- `build_recipe.yml` (manual dispatch, select port): builds the builder image if needed, runs `fetch_source.sh` and then `recipes/ports/<port>/build.sh` per arch, captures a screenshot from the x86_64 build if the recipe has a `screenshot` config, extracts the binaries into the port folder, creates missing `screenshot.png`/`cover.png` (`make_images.sh`), writes `version.json`, zips `new_ports/<port>/<port>/` to `<port>.zip` (without `.gitkeep` files), commits the port folder, and publishes the zip as GitHub release `<port>-<version>`.
 - `check_recipe_updates.yml` (daily cron): runs `check_updates.sh`, which updates `port_version`/`port_checksum`/`port_download`/`date_updated` in the recipes, refreshes `new_ports/<port>/source` locally, seeds `new_ports/<port>/<port>/` from the published PortMaster zip only if that folder does not exist yet, and rewrites the Port Status table in README.md. Rolling tags such as `continuous` are compared by checksum and stored as `<tag>-<date>`.
 
 Upstream source is not committed. `fetch_source.sh <port>` downloads `port_download`, checks it against `port_checksum` and extracts it to `new_ports/<port>/source`. Branch-based ports are pinned to the commit (`archive/<sha>.zip`), so a checksum mismatch only happens when a tag is moved (e.g. `continuous`). Run Check Recipe Updates, then build. Patches to upstream code belong in the port's `build.sh`, never in `source/`.
@@ -65,7 +65,7 @@ Don't touch other ports' files while working on one port.
 - Don't guess `port.json` syntax. Copy it from existing ports or PortMaster-GUI. `name` is `<port>.zip`, `items` is `[ "<Port Name>.sh", "<port>" ]`.
 - `gameinfo.xml` must match the files on disk.
 - Use one flat `licenses/` folder with one `LICENSE.<component>.txt` per bundled component (game, libs, fonts, assets).
-- Screenshot is 640x480. If a port has no `screenshot.png`/`cover.png`, the build copies one to the other or generates a title-card placeholder and logs a warning. Replace placeholders with a real screenshot before submitting. No `.gitkeep` files or nested duplicate folders in the final zip.
+- Screenshot is 640x480. To have the build capture it, add a `screenshot` object to `recipe.json`; `screenshot.sh` runs the x86_64 binary under Xvfb in the builder image, presses the given keys and saves `screenshot.png` (replacing the existing one on every build). Example from frozenbubble: `"screenshot": {"delay": 8, "keys": "Return Return", "env": "FB_DATA_DIR=./share"}`. Not usable for ports that need user-supplied game data (soh, starship, lighthouse). If a port has no `screenshot.png`/`cover.png`, the build copies one to the other or generates a title-card placeholder and logs a warning. Replace placeholders with a real screenshot before submitting. No `.gitkeep` files or nested duplicate folders in the final zip.
 - Keep the original porter's credit when building on someone else's port. No DRM bypass or Steam emulators.
 
 ## Testing before submitting to PortMaster-New

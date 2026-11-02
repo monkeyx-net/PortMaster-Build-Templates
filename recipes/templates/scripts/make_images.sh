@@ -36,4 +36,4 @@ font=$(fc-match -f '%{file}' 'DejaVu Sans:bold' 2>/dev/null || true)
     -annotate +0+24 'PortMaster' \
     -alpha off -depth 8 "$shot"
 cp "$shot" "$cover"
-echo "::warning::$title: generated placeholder screenshot.png and cover.png -- replace with a real 640x480 screenshot"
+echo "::warning::$title: generated placeholder screenshot.png and cover.png -- replace with a real 640x480 screenshot or add a screenshot config to recipe.json"

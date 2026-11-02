@@ -10,5 +10,10 @@
     "port_url": "dchau360/frozen-bubble-sdl2",
     "port_version": "v2.4.22",
     "port_download": "https://github.com/dchau360/frozen-bubble-sdl2/archive/refs/tags/v2.4.22.tar.gz"
+  },
+  "screenshot": {
+    "delay": 8,
+    "keys": "Return Return",
+    "env": "FB_DATA_DIR=./share"
   }
 }
