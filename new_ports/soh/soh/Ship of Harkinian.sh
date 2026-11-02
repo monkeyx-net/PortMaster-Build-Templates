@@ -87,38 +87,17 @@ otr_check
 swap_on
 trap swap_off EXIT
 
-if [ -f "imgui.ini" ]; then
-    imgui_reset
-fi
-
 # torch writes the finished o2r to $TMPDIR before copying it here; /tmp is RAM (tmpfs) on most CFWs
 if [ ${#ROMS[@]} -gt 0 ]; then
     rm -rf "$GAMEDIR/tmp"
     mkdir -p "$GAMEDIR/tmp"
     export TMPDIR="$GAMEDIR/tmp"
-    pm_message "After extraction choose No at 'Run SoH?', the game restarts automatically"
 fi
 
 # Run the game
 $GPTOKEYB "soh.elf.${DEVICE_ARCH}" -c "soh.gptk" &
 pm_platform_helper "soh.elf.${DEVICE_ARCH}" >/dev/null
 ./soh.elf.${DEVICE_ARCH} "${ROMS[@]}"
-status=$?
-
-# in the same process; start it fresh if extraction just finished or that run died
-if [ ${#ROMS[@]} -gt 0 ]; then
-    swap_off
-    rm -rf "$GAMEDIR/tmp"
-    unset TMPDIR
-    newest=$(ls -t oot.o2r oot-mq.o2r 2>/dev/null | head -n 1)
-    if [ -n "$newest" ]; then
-        age=$(( $(date +%s) - $(date -r "$newest" +%s) ))
-        if [ $status -ne 0 ] || [ $age -lt 120 ]; then
-            echo "Restarting SoH after extraction (exit $status, $newest ${age}s old)"
-            ./soh.elf.${DEVICE_ARCH}
-        fi
-    fi
-fi
 
 # Cleanup
 swap_off
