@@ -46,11 +46,12 @@ $ESUDO mount "$controlfolder/libs/${weston_runtime}.squashfs" "${weston_dir}"
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 
-# "local" runs client and server in a single process (no separate launcher window).
+# Arguments are cvar/value pairs (v0.1.5 has no "local" mode; it starts a bot match directly).
 $ESUDO env CRUSTY_BLOCK_INPUT=1 WRAPPED_LIBRARY_PATH=$game_libs \
 $weston_dir/westonwrap.sh headless noop kiosk crusty_glx_gl4es \
 HOME=$CONFDIR XDG_DATA_HOME=$CONFDIR WAYLAND_DISPLAY= \
-$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} local
+RECWARS_WIDTH=$DISPLAY_WIDTH RECWARS_HEIGHT=$DISPLAY_HEIGHT \
+$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}
 
 $ESUDO $weston_dir/westonwrap.sh cleanup
 if [[ "$PM_CAN_MOUNT" != "N" ]]; then

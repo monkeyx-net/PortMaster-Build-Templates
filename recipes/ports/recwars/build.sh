@@ -33,6 +33,14 @@ if grep -rq 'Module::load("lib[A-Za-z0-9_-]*\.so")\s*$' "${MINIQUAD_SRC}"; then
   exit 1
 fi
 
+# The window size is hardcoded to 1600x900 and the game renders 1:1 to whatever size it gets
+# (HUD is anchored to the screen edges), so let the launcher pass the device resolution.
+perl -pi -e 's/window_width: 1600,/window_width: std::env::var("RECWARS_WIDTH").ok().and_then(|v| v.parse().ok()).unwrap_or(1600),/; s/window_height: 900,/window_height: std::env::var("RECWARS_HEIGHT").ok().and_then(|v| v.parse().ok()).unwrap_or(900),/' src/main.rs
+if [[ $(grep -c 'RECWARS_WIDTH\|RECWARS_HEIGHT' src/main.rs) -ne 2 ]]; then
+  echo "Error: failed to patch window size in src/main.rs"
+  exit 1
+fi
+
 ${PORT_BUILD}
 
 # Assets (data/, maps/) are embedded in the binary via include_bytes!,

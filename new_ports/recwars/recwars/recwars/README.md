@@ -3,7 +3,7 @@ Thanks to [Martin Taibr](https://github.com/martin-t) for creating RecWars, a FO
 
 [https://github.com/martin-t/rec-wars](https://github.com/martin-t/rec-wars)
 
-Runs under the Westonpack runtime (macroquad needs X11/OpenGL). The game starts directly in `local` mode against bots.
+Runs under the Westonpack runtime (macroquad needs X11/OpenGL). The game starts directly in a match against bots.
 
 ## Controls
 
