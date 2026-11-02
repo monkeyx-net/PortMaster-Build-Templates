@@ -8,24 +8,24 @@ _Last checked: 2026-11-02_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
-| -- | animalcrossing | 🟢 OK | commit:f7fc9a1 | 2026-04-23 | -- |
-| Defendguin | defendguin | 🟢 OK | commit:556ad68 | 2026-10-15 | 2026-02-14 |
-| -- | edgar | 🟢 OK | 1.38 | 2026-03-27 | -- |
-| -- | epiphany | 🟢 OK | commit:316b357 | 2026-10-15 | -- |
-| -- | frozenbubble | 🟢 OK | v2.4.22 | 2026-11-02 | -- |
-| Harmonist | harmonist | 🟢 OK | v1.0.3 | 2026-08-07 | 2026-01-07 |
-| -- | lighthouse | 🟢 OK | 1.2.2 | 2026-10-30 | -- |
-| Manic Miner | manicminer | 🟢 OK | 1.1.1 | 2026-03-01 | 2025-11-04 |
-| -- | recwars | 🟢 OK | v0.1.5 | 2026-11-02 | -- |
-| Shamogu | shamogu | 🟢 OK | v1.6.0 | 2026-09-25 | 2026-08-21 |
-| Space Invaders Part 2 | sip2 | 🟢 OK | commit:8ce398a | 2026-10-15 | 2026-03-17 |
-| Ship of Harkinian | soh | 🟢 OK | 9.3.1 | 2026-10-20 | 2026-03-16 |
-| Ship of Harkinian 2 | soh2 | 🟢 OK | 5.0.1 | 2026-08-26 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🟢 OK | 1.0.0 | 2026-03-14 | 2025-09-08 |
-| -- | starship | 🟢 OK | v2.0.0 | 2026-10-28 | -- |
-| Stunt Car Racer | stuntcarracer | 🟢 OK | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| -- | animalcrossing | 🟢 | commit:f7fc9a1 | 2026-04-23 | -- |
+| Defendguin | defendguin | 🟢 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
+| -- | edgar | 🟢 | 1.38 | 2026-03-27 | -- |
+| -- | epiphany | 🟢 | commit:316b357 | 2026-10-15 | -- |
+| -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
+| Harmonist | harmonist | 🟢 | v1.0.3 | 2026-08-07 | 2026-01-07 |
+| -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
+| Manic Miner | manicminer | 🟢 | 1.1.1 | 2026-03-01 | 2025-11-04 |
+| -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
+| Shamogu | shamogu | 🟢 | v1.6.0 | 2026-09-25 | 2026-08-21 |
+| Space Invaders Part 2 | sip2 | 🟢 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
+| Ship of Harkinian | soh | 🟢 | 9.3.1 | 2026-10-20 | 2026-03-16 |
+| Ship of Harkinian 2 | soh2 | 🟢 | 5.0.1 | 2026-08-26 | 2026-03-16 |
+| SpaghettiKart | spaghettikart | 🟢 | 1.0.0 | 2026-03-14 | 2025-09-08 |
+| -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
+| Stunt Car Racer | stuntcarracer | 🟢 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 16 &nbsp; OK: 16 &nbsp; Updates: 0 &nbsp; Errors: 0 &nbsp; Skipped: 0_
+_Checked: 16 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach

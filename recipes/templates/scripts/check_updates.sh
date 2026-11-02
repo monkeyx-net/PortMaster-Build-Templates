@@ -372,10 +372,10 @@ generate_report() {
         for row in "${REPORT_ROWS[@]}"; do
             IFS='|' read -r r_name r_status r_version r_date r_url r_zip <<< "$row"
             case "$r_status" in
-                OK)     r_badge="🟢 OK"     ;;
-                UPDATE) r_badge="🔵 UPDATE" ;;
-                SKIP)   r_badge="🟡 SKIP"   ;;
-                ERROR)  r_badge="🔴 ERROR"  ;;
+                OK)     r_badge="🟢" ;;
+                UPDATE) r_badge="🔵" ;;
+                SKIP)   r_badge="🟡" ;;
+                ERROR)  r_badge="🔴" ;;
                 *)      r_badge="$r_status" ;;
             esac
             local r_title="" r_pm_date=""
@@ -387,7 +387,7 @@ generate_report() {
                 "${r_title:---}" "$r_name" "$r_badge" "${r_version:---}" "${r_date:---}" "${r_pm_date:---}"
         done
         echo ""
-        echo "_Checked: $TOTAL &nbsp; OK: $OK &nbsp; Updates: $UPDATES &nbsp; Errors: $ERRORS &nbsp; Skipped: ${SKIPPED}_"
+        echo "_Checked: $TOTAL &nbsp; 🟢 OK: $OK &nbsp; 🔵 Updates: $UPDATES &nbsp; 🔴 Errors: $ERRORS &nbsp; 🟡 Skipped: ${SKIPPED}_"
     } > "$tmp_report"
 
     awk -v reportfile="$tmp_report" '

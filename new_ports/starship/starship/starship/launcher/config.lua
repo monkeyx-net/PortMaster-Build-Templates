@@ -62,11 +62,11 @@ function config.load(path)
             if n then v[k] = n end
         end
     end
-    -- values the launcher doesn't offer (e.g. 20 fps) snap to the nearest choice
+    -- a value set in game that the launcher doesn't offer (e.g. 45 fps) is kept as an extra choice
     for _, it in ipairs(config.items) do
         local ok = false
         for _, c in ipairs(it.choices) do if c[1] == v[it.id] then ok = true end end
-        if not ok then v[it.id] = (it.id == "gInterpolationFPS" and v[it.id] > 30) and 60 or it.choices[1][1] end
+        if not ok then table.insert(it.choices, { v[it.id], tostring(v[it.id]) .. " (set in game)" }) end
     end
     return v
 end
