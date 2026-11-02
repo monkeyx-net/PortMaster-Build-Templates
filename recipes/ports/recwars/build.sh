@@ -19,6 +19,20 @@ export PATH="${CARGO_HOME}/bin:${PATH}"
 cargo --version
 
 cd "new_ports/${PORT_FOLDER}/source"
+
+# miniquad dlopens "libX11.so" (and libXi/libGL/libEGL) before the versioned soname. On CFWs that
+# ship the unversioned dev symlink this loads the system libX11 alongside Westonpack's libX11.so.6
+# (used by crusty/SDL), two copies share one Display and the game segfaults
+# ("Xlib: request 55 length 16 would exceed buffer size"). Prefer the versioned names instead.
+cargo fetch --locked
+MINIQUAD_SRC=$(ls -d "${CARGO_HOME}"/registry/src/*/miniquad-*/src | head -n 1)
+grep -rlZ 'Module::load("lib' "${MINIQUAD_SRC}" | xargs -0 perl -0pi -e \
+  's/load\(\s*"(lib[\w-]+\.so)"\s*\)(\s*\.or_else\(\|_\|\s*[\w:]*load\(\s*)"(\1\.[\d.]+)"/load("$3")$2"$1"/g'
+if grep -rq 'Module::load("lib[A-Za-z0-9_-]*\.so")\s*$' "${MINIQUAD_SRC}"; then
+  echo "Error: failed to patch miniquad library names in ${MINIQUAD_SRC}"
+  exit 1
+fi
+
 ${PORT_BUILD}
 
 # Assets (data/, maps/) are embedded in the binary via include_bytes!,
