@@ -1,0 +1,39 @@
+name: Sync Recipe List
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'recipes/ports/*/recipe.json'
+      - 'recipes/templates/scripts/update_recipe_list.sh'
+  workflow_dispatch:
+
+jobs:
+  sync-recipe-list:
+    name: Sync Recipe List
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub rejects pushes to .github/workflows made with GITHUB_TOKEN, so
+      # BUILD_TOKEN needs workflow scope (classic) or Workflows read/write (fine-grained).
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BUILD_TOKEN }}
+
+      - name: Run update_recipe_list.sh
+        run: |
+          recipes/templates/scripts/update_recipe_list.sh
+
+      - name: Commit updated recipe list
+        run: |
+          git config --local user.email "tim@monkeyx.net"
+          git config --local user.name "monkeyx-net"
+          git add .github/workflows/build_recipe.yml
+          if git diff --staged --quiet; then
+            echo "No recipe list changes to commit"
+          else
+            git commit -m "Update build_recipe.yml recipe list [$(date +%Y-%m-%d)]"
+            git push
+          fi
