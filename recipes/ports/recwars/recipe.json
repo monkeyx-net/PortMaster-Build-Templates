@@ -3,11 +3,11 @@
   "name": "recwars.zip",
   "port_json": "new_ports/recwars/recwars/recwars/port.json",
   "source": {
-    "date_updated": "",
+    "date_updated": "2026-11-02",
     "port_exe": "recwars",
     "port_build": "cargo build --release --locked",
-    "port_checksum": "",
+    "port_checksum": "a332343751730e7d28c75e4626dc5625ce959649e9fe7f4035aca7ff1b004e11",
     "port_url": "martin-t/rec-wars",
-    "port_version": ""
+    "port_version": "v0.1.5"
   }
 }
