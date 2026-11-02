@@ -38,11 +38,8 @@ I prefer the OoT 3DS look along with a studio ghibli style skybox:
 ## Thanks
 - Nintendo for the game
 - beniamino for the updated build steps for develop to work on more devices
+- Monkeyx for taking over the ports from Jeod
 - Testers and Devs from the PortMaster Discord
 - HarbourMasters for the native pc port
 - AkerHasReawakened for the cover art
-- IanSantos for the ghibli skybox mod 
-
-
-
-
+- IanSantos for the ghibli skybox mod
