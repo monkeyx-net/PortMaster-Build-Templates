@@ -5,7 +5,7 @@
 local config = {
     title = "Starship",
     subtitle = "Star Fox 64 settings",
-    help = "Settings can also be changed in game from the menu bar.",
+    help = "In game: press Select, then X to access the menu bar.",
     items = {
         { id = "gInterpolationFPS", label = "Frame rate", kind = "choice",
           choices = { { 30, "30 (original)" }, { 60, "60" } },
