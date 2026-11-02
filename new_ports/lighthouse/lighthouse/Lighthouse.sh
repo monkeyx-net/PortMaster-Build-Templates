@@ -64,8 +64,8 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
-# Launcher (Love2D): Anchor player name / room ID; also closes the game menu and
-# enables controller navigation in lighthouse.cfg.json
+# Launcher (Love2D): Anchor player name / room ID, frame rate and N64 low-res mode;
+# also closes the game menu and enables controller navigation in lighthouse.cfg.json
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lighthouse.cfg.json" "$GAMEDIR/launch.cfg"
@@ -83,10 +83,6 @@ unzip_assets
 otr_check
 swap_on
 trap swap_off EXIT
-
-if [ -f "imgui.ini" ]; then
-    imgui_reset
-fi
 
 # torch writes the finished o2r to $TMPDIR before copying it here; /tmp is RAM (tmpfs) on most CFWs
 if [ ${#ROMS[@]} -gt 0 ]; then

@@ -101,13 +101,6 @@ trap swap_off EXIT
 extract_roms
 swap_off
 
-# Keep ImGui windows on screen (except the game view)
-if [ -f imgui.ini ]; then
-    awk '/^\[Window\]/ { skip = /\[Main Game\]|\[Main - Deck\]/ }
-         !skip && /^Pos=/  { $0 = "Pos=30,30" }
-         !skip && /^Size=/ { $0 = "Size=400,300" } 1' imgui.ini > imgui.tmp && mv imgui.tmp imgui.ini
-fi
-
 # Run the game
 $GPTOKEYB "Starship.${DEVICE_ARCH}" -c "starship.gptk" &
 pm_platform_helper "Starship.${DEVICE_ARCH}" >/dev/null

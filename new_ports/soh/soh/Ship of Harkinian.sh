@@ -67,8 +67,8 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
-# Launcher (Love2D): Anchor player name / room ID; also closes the game menu and
-# enables controller navigation in shipofharkinian.json
+# Launcher (Love2D): Anchor player name / room ID, frame rate and N64 low-res mode;
+# also closes the game menu and enables controller navigation in shipofharkinian.json
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/shipofharkinian.json" "$GAMEDIR/launch.cfg"
