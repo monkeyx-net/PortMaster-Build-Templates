@@ -1,3 +1,0 @@
-static int sChk_check_save_gen() {
-  return FALSE;
-}

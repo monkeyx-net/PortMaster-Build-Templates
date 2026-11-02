@@ -6,8 +6,9 @@
     "date_updated": "2026-10-15",
     "port_exe": "epiphany-game",
     "port_build": "",
-    "port_checksum": "d4358ef519217c18680064a466357e8278ad24f90b300b2f38b6e8c087f3f05b",
+    "port_checksum": "b218568e41c5fc9c12f783067ba3a2a23fbc80f2690eb0d3bb24b91c42b22696",
     "port_url": "monkeyx-net/Epiphany_4_PortMaster",
-    "port_version": "commit:316b357"
+    "port_version": "commit:316b357",
+    "port_download": "https://github.com/monkeyx-net/Epiphany_4_PortMaster/archive/316b35761ed3719f30b2d64fb7dc50f344e45d0e.zip"
   }
 }

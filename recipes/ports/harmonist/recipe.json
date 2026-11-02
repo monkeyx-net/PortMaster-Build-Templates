@@ -8,6 +8,7 @@
     "port_build": "go build --tags sdl",
     "port_checksum": "ba59405e942868b5d085ec9da36dba375c520bb2514eb87e1bc661b0d88bdc98",
     "port_url": "https://codeberg.org/anaseto/harmonist/archive/master.zip",
-    "port_version": "v1.0.3"
+    "port_version": "v1.0.3",
+    "port_download": "https://codeberg.org/anaseto/harmonist/archive/v1.0.3.zip"
   }
 }

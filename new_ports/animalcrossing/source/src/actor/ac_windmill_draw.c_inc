@@ -1,2 +1,0 @@
-static void aWIN_actor_draw(ACTOR* actor, GAME* game) {
-}

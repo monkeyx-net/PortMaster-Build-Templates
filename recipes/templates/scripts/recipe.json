@@ -8,6 +8,7 @@
     "port_build": "make",
     "port_checksum": "",
     "port_url": "monkeyx-net/space_invaders_part_ii",
+    "port_download": "",
     "port_version": ""
   }
 }

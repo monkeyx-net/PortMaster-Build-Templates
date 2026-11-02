@@ -8,6 +8,7 @@
     "port_build": "cmake",
     "port_checksum": "ddd39cfc70553ca23e8e829cbdf7968961656cffc9af7c18f0604936e6b2dd0b",
     "port_url": "HarbourMasters/Lighthouse",
-    "port_version": "1.2.2"
+    "port_version": "1.2.2",
+    "port_download": "https://github.com/HarbourMasters/Lighthouse/archive/refs/tags/1.2.2.tar.gz"
   }
 }

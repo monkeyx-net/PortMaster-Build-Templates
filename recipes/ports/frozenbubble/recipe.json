@@ -8,6 +8,7 @@
     "port_build": "cmake",
     "port_checksum": "65f33c1468130afbdc251c9a9936f5d841703b764192f6918fc1aa55c64feb59",
     "port_url": "dchau360/frozen-bubble-sdl2",
-    "port_version": "v2.4.22"
+    "port_version": "v2.4.22",
+    "port_download": "https://github.com/dchau360/frozen-bubble-sdl2/archive/refs/tags/v2.4.22.tar.gz"
   }
 }

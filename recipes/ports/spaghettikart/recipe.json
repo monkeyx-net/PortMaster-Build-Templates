@@ -8,6 +8,7 @@
     "port_build": "cmake",
     "port_checksum": "8000025feb798488432e7fb6024ac42ca9b281aa070b4e1e58d361efe0e5b10e",
     "port_url": "HarbourMasters/SpaghettiKart",
-    "port_version": "1.0.0"
+    "port_version": "1.0.0",
+    "port_download": "https://github.com/HarbourMasters/SpaghettiKart/archive/refs/tags/1.0.0.tar.gz"
   }
 }

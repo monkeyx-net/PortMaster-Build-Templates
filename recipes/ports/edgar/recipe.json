@@ -8,6 +8,7 @@
     "port_build": "make DATA_DIR=./ -j$(nproc)",
     "port_checksum": "23e57debc5e6995447bba3b64513e420e111ce24644a3a303237f4379ba3e710",
     "port_url": "riksweeney/edgar",
-    "port_version": "1.38"
+    "port_version": "1.38",
+    "port_download": "https://github.com/riksweeney/edgar/archive/refs/tags/1.38.tar.gz"
   }
 }

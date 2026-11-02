@@ -6,8 +6,9 @@
     "date_updated": "2026-10-15",
     "port_exe": "si",
     "port_build": "make",
-    "port_checksum": "24c642b9f412f4000bf86cd4f9d06aaac68ec4305dfe386321b0212447c954a6",
+    "port_checksum": "674fcd7e777ae499844b6392fbd1fcc5979e6f85ca1ffa9f42f86beb5cddb4ca",
     "port_url": "monkeyx-net/space_invaders_part_ii",
-    "port_version": "commit:8ce398a"
+    "port_version": "commit:8ce398a",
+    "port_download": "https://github.com/monkeyx-net/space_invaders_part_ii/archive/8ce398a1ffd278d5aaf1b520e0125be770f63b50.zip"
   }
 }

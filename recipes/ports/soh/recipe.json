@@ -8,6 +8,7 @@
     "port_build": "cmake",
     "port_checksum": "a887bb2e515e218025c965575aa1be9a1e0892881b54a049b3cb2b7a61a00290",
     "port_url": "HarbourMasters/Shipwright",
-    "port_version": "9.3.1"
+    "port_version": "9.3.1",
+    "port_download": "https://github.com/HarbourMasters/Shipwright/archive/refs/tags/9.3.1.tar.gz"
   }
 }

@@ -8,6 +8,7 @@
     "port_build": "make",
     "port_checksum": "35d1067bd8ee419e34c7ed28100d8888f860241e93fc00168eadc4a993e0f7a8",
     "port_url": "fawtytoo/ManicMiner",
-    "port_version": "1.1.1"
+    "port_version": "1.1.1",
+    "port_download": "https://github.com/fawtytoo/ManicMiner/archive/refs/tags/1.1.1.tar.gz"
   }
 }

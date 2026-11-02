@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITHUB_URL="https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/buildrecipe.yml"
+GITHUB_URL="https://github.com/monkeyx-net/PortMaster-Build-Templates/actions/workflows/build_recipe.yml"
 
 exit_nicely () {
   tput sgr0
@@ -53,6 +53,7 @@ jq -n \
       port_build: $port_build,
       port_checksum: $port_checksum,
       port_url: $port_url,
+      port_download: "",
       port_version: $port_version
     }
   }' > recipes/ports/${port_folder}/recipe.json

@@ -6,8 +6,9 @@
     "date_updated": "2026-04-23",
     "port_exe": "AnimalCrossing",
     "port_build": "./build_make.sh --gles",
-    "port_checksum": "0a88064cccebbe6a0cbee969b892fbac3f87072fd4aaebd6ed9d58eef92ee89b",
+    "port_checksum": "62ad64e39822a350e2e15b1f45300ef09e413a554605d29a4f372164d42f595c",
     "port_url": "https://github.com/Dia2809/ACGC-PC-Port/tree/arm64",
-    "port_version": "commit:f7fc9a1"
+    "port_version": "commit:f7fc9a1",
+    "port_download": "https://github.com/Dia2809/ACGC-PC-Port/archive/f7fc9a169c63288049eeb726965ee2a74c7c43c6.zip"
   }
 }

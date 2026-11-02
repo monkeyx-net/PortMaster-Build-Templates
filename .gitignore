@@ -1,0 +1,8 @@
+# Upstream source: downloaded by check_updates.sh / fetch_source.sh, pinned by recipe.json
+new_ports/*/source/
+new_ports/*/source.*
+# PortMaster release zips downloaded by check_updates.sh (contents are extracted and tracked)
+new_ports/*/*.zip
+new_ports/*/*/*.zip
+# Built packages (published as GitHub releases)
+/*.zip

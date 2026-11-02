@@ -55,16 +55,16 @@ gh_default_branch() {
         | jq -r '.default_branch // empty' 2>/dev/null || true
 }
 
-# Short SHA of the HEAD commit on a GitHub branch.
+# Full SHA of the HEAD commit on a GitHub branch.
 gh_branch_sha() {
     curl -sf "https://api.github.com/repos/$1/commits/$2" \
-        | jq -r '.sha // empty' 2>/dev/null | cut -c1-7 || true
+        | jq -r '.sha // empty' 2>/dev/null || true
 }
 
-# Short SHA of the HEAD commit on a Codeberg branch (Gitea API).
+# Full SHA of the HEAD commit on a Codeberg branch (Gitea API).
 cb_branch_sha() {                            # args: owner repo branch
     curl -sf "https://codeberg.org/api/v1/repos/$1/$2/branches/$3" \
-        | jq -r '.commit.id // empty' 2>/dev/null | cut -c1-7 || true
+        | jq -r '.commit.id // empty' 2>/dev/null || true
 }
 
 # Latest release tag for a Codeberg repo, empty string if none.
@@ -84,17 +84,20 @@ fetch() { wget -q -O "$2" "$1" 2>/dev/null; }
 
 # Look up a port zip name in the cached PortMaster ports.json, download it
 # to dest_dir using the source.url field, and print the result.
+# Only seeds a new port: an existing port folder is never overwritten.
 pm_zip_download() {
     local zip_name="$1" dest_dir="$2"
     local pm_url
+    if [[ -d "$dest_dir/$port_name" ]]; then
+        echo "         portmaster: $dest_dir/$port_name exists -- not replacing"
+        return
+    fi
     pm_url=$(jq -r --arg n "$zip_name" '.ports[$n].source.url // empty' "$PM_PORTS_JSON" 2>/dev/null)
     if [[ -z "$pm_url" ]]; then
         echo "         portmaster: $zip_name not found in ports.json"
         return
     fi
     if fetch "$pm_url" "$dest_dir/$zip_name"; then
-        echo "Removing previous port if exists"
-        rm -rf "$dest_dir/$port_name" "$port_name/$zip_name"
         echo "         portmaster: saved -> $dest_dir/$zip_name"
         mkdir -p "$dest_dir/$port_name"
         bsdtar -xf "$dest_dir/$zip_name" -C "$dest_dir/$port_name/"
@@ -141,8 +144,8 @@ check_port() {
 
         if [[ -n "$tag" && "$tag" != "null" ]]; then
             upstream_version="$tag"
-            fetch "https://github.com/${repo}/archive/refs/tags/${tag}.tar.gz" \
-                  "$tmpdir/source.tar.gz" \
+            upstream_url="https://github.com/${repo}/archive/refs/tags/${tag}.tar.gz"
+            fetch "$upstream_url" "$tmpdir/source.tar.gz" \
                 || { fetch_error=true; }
             [[ "$fetch_error" == false ]] \
                 && upstream_checksum=$(sha256sum "$tmpdir/source.tar.gz" | cut -d' ' -f1)
@@ -154,9 +157,10 @@ check_port() {
             else
                 local sha
                 sha=$(gh_branch_sha "$repo" "$branch")
-                [[ -n "$sha" ]] && upstream_version="commit:$sha"
-                fetch "https://github.com/${repo}/archive/refs/heads/${branch}.zip" \
-                      "$tmpdir/source.zip" \
+                # Pin the download to the commit so later pushes don't change it
+                [[ -n "$sha" ]] && upstream_version="commit:${sha:0:7}"
+                upstream_url="https://github.com/${repo}/archive/${sha:-refs/heads/$branch}.zip"
+                fetch "$upstream_url" "$tmpdir/source.zip" \
                     || { fetch_error=true; }
                 [[ "$fetch_error" == false ]] \
                     && upstream_checksum=$(sha256sum "$tmpdir/source.zip" | cut -d' ' -f1)
@@ -182,6 +186,7 @@ check_port() {
         [[ -n "$latest_tag" ]] && upstream_version="$latest_tag"
 
         # Verify checksum against the URL that's actually stored (not the latest)
+        upstream_url="$port_url"
         fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
@@ -195,9 +200,11 @@ check_port() {
 
         local sha
         sha=$(gh_branch_sha "$repo" "$branch")
-        [[ -n "$sha" ]] && upstream_version="commit:$sha"
+        [[ -n "$sha" ]] && upstream_version="commit:${sha:0:7}"
 
-        fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
+        upstream_url="$port_url"
+        [[ -n "$sha" ]] && upstream_url="https://github.com/${repo}/archive/${sha}.${ext}"
+        fetch "$upstream_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
 
@@ -209,10 +216,10 @@ check_port() {
 
         local sha
         sha=$(gh_branch_sha "$repo" "$branch")
-        [[ -n "$sha" ]] && upstream_version="commit:$sha"
+        [[ -n "$sha" ]] && upstream_version="commit:${sha:0:7}"
 
-        fetch "https://github.com/${repo}/archive/refs/heads/${branch}.zip" \
-              "$tmpdir/source.zip" || { fetch_error='true'; }
+        upstream_url="https://github.com/${repo}/archive/${sha:-refs/heads/$branch}.zip"
+        fetch "$upstream_url" "$tmpdir/source.zip" || { fetch_error='true'; }
         [[ "$fetch_error" == 'false' ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.zip" | cut -d' ' -f1)
 
@@ -235,8 +242,9 @@ check_port() {
         else
             local sha
             sha=$(cb_branch_sha "$cb_owner" "$cb_repo" "$cb_ref")
-            [[ -n "$sha" ]] && upstream_version="commit:$sha"
-            fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
+            [[ -n "$sha" ]] && upstream_version="commit:${sha:0:7}"
+            upstream_url="https://codeberg.org/${cb_owner}/${cb_repo}/archive/${sha:-$cb_ref}.${ext}"
+            fetch "$upstream_url" "$tmpdir/source.$ext" || { fetch_error=true; }
             [[ "$fetch_error" == false ]] \
                 && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
         fi
@@ -245,6 +253,7 @@ check_port() {
     else
         local clean_url="${port_url%%\?*}"
         local ext="${clean_url##*.}"
+        upstream_url="$port_url"
         fetch "$port_url" "$tmpdir/source.$ext" || { fetch_error=true; }
         [[ "$fetch_error" == false ]] \
             && upstream_checksum=$(sha256sum "$tmpdir/source.$ext" | cut -d' ' -f1)
@@ -254,9 +263,16 @@ check_port() {
     local version_diff=false  checksum_diff=false
     local version_unset=false checksum_unset=false
 
+    # Rolling release tags (e.g. "continuous") keep the same name, so compare
+    # them on checksum only and store the version as <tag>-<date>.
+    local rolling=false
+    [[ "$upstream_version" =~ ^(continuous|nightly|latest|rolling)$ ]] && rolling=true
+
     if [[ -n "$upstream_version" ]]; then
         if [[ -z "$stored_version" ]]; then
             version_unset=true
+        elif [[ "$rolling" == true && "$stored_version" == "$upstream_version"* ]]; then
+            :
         elif [[ "$upstream_version" != "$stored_version" ]]; then
             version_diff=true
         fi
@@ -304,20 +320,26 @@ check_port() {
         [[ -n "$port_zip" ]] && pm_zip_download "$port_zip" "$DOWNLOADS_DIR/$port_name"
         local today
         today=$(date '+%Y-%m-%d')
+        [[ "$rolling" == true ]] && upstream_version="${upstream_version}-${today}"
         jq --arg v "$upstream_version" \
            --arg c "$upstream_checksum" \
            --arg u "$upstream_url" \
            --arg d "$today" \
            '.source.port_version  = (if $v != "" then $v else .source.port_version  end) |
             .source.port_checksum = (if $c != "" then $c else .source.port_checksum end) |
+            .source.port_download = (if $u != "" then $u else .source.port_download end) |
             .source.date_updated  = $d' \
            "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
         echo "         recipe.json updated ($today)"
         REPORT_ROWS+=("${port_name}|UPDATE|${upstream_version:-$stored_version}|${today}|${port_url}|${port_zip}")
     else
         local detail=""
+        [[ "$rolling" == true ]] && upstream_version="$stored_version"
         [[ -n "$upstream_version" ]] && detail="  $upstream_version"
         echo "[OK]     $port_name$detail"
+        if [[ -n "$upstream_url" && "$(jq -r '.source.port_download // empty' "$recipe")" != "$upstream_url" ]]; then
+            jq --arg u "$upstream_url" '.source.port_download = $u' "$recipe" > "$recipe.tmp" && mv "$recipe.tmp" "$recipe"
+        fi
         REPORT_ROWS+=("${port_name}|OK|${upstream_version:-$stored_version}|${date_updated}|${port_url}|${port_zip}")
         OK=$((OK+1))
     fi

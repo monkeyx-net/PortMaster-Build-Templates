@@ -1,4 +1,0 @@
-
-static void aTM0_set_animation(ACTOR* actorx, GAME* game) {
-    NPC_CLIP->animation_init_proc(actorx, aNPC_ANIM_SANBASI1, FALSE);
-}

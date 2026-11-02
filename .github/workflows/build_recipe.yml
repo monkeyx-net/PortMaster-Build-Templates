@@ -136,6 +136,7 @@ jobs:
       port_title: ${{ steps.parse-json.outputs.port_title }}
       port_bash: ${{ steps.parse-json.outputs.port_bash }}
       port_folder: ${{ steps.parse-json.outputs.port_folder }}
+      port_version: ${{ steps.parse-json.outputs.port_version }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -176,6 +177,10 @@ jobs:
           echo "port_title=$PORT_TITLE" >> $GITHUB_OUTPUT
           echo "port_bash=$PORT_BASH" >> $GITHUB_OUTPUT
           echo "port_folder=$PORT_FOLDER" >> $GITHUB_OUTPUT
+          echo "port_version=$(jq -r '.source.port_version' "$RECIPE_JSON_PATH")" >> $GITHUB_OUTPUT
+
+      - name: Fetch source
+        run: recipes/templates/scripts/fetch_source.sh "${{ github.event.inputs.recipe_file }}"
 
       - name: Build in container (${{ matrix.arch }})
         run: |
@@ -216,17 +221,26 @@ jobs:
           pattern: ${{ needs.build.outputs.port_folder }}-linux-*
           merge-multiple: true
 
+      - name: Create missing screenshot/cover
+        run: |
+          PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
+          if [ ! -f "$PORT_DIR/screenshot.png" ] && [ ! -f "$PORT_DIR/cover.png" ] && ! command -v convert > /dev/null; then
+            sudo apt-get update && sudo apt-get install -y --no-install-recommends imagemagick fontconfig fonts-dejavu-core
+          fi
+          recipes/templates/scripts/make_images.sh "$PORT_DIR" "${{ needs.build.outputs.port_title }}"
+
       - name: Extract binaries to correct locations
         run: |
           PORT_EXE="${{ needs.build.outputs.port_exe }}"
           PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
-          ls -lha new_ports/${PORT_FOLDER}/source/
           find artifacts -type f -name "*.tar.gz" | while read f; do
             tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
           done
+          RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
+          jq '{name, version: .source.port_version}' "$RECIPE" > "$(dirname "$(jq -r .port_json "$RECIPE")")/version.json"
           cd new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
           # Reference CWD
-          zip -r "../../../${PORT_FOLDER}.zip" .
+          zip -r "../../../${PORT_FOLDER}.zip" . -x '*.gitkeep'
 
       - name: Commit post build changes
         run: |
@@ -239,6 +253,21 @@ jobs:
           else
             git commit -m "Add port ${{ needs.build.outputs.port_title }} [$(date +%Y-%m-%d)]"
             git push
+          fi
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
+          PORT_VERSION="${{ needs.build.outputs.port_version }}"
+          TAG="${PORT_FOLDER}-${PORT_VERSION//:/-}"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "${PORT_FOLDER}.zip" --clobber
+          else
+            gh release create "$TAG" "${PORT_FOLDER}.zip" \
+              --title "${{ needs.build.outputs.port_title }} ${PORT_VERSION}" \
+              --notes "Built from ${{ needs.build.outputs.port_url }} (${PORT_VERSION})"
           fi
 
       - name: Upload PortMaster package
