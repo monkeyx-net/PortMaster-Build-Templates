@@ -10,5 +10,8 @@
     "port_url": "monkeyx-net/space_invaders_part_ii",
     "port_download": "",
     "port_version": ""
+  },
+  "screenshot": {
+    "delay": 8
   }
 }

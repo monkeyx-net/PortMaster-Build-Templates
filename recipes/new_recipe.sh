@@ -31,6 +31,8 @@ local port_url="${2}"
 local port_build="${3}"
 local port_checksum="${4}"
 local port_exe="${5}"
+# Only ports not already in PortMaster get a build screenshot; existing ports keep PM's
+local new_port="${7:-}"
 mkdir -p "recipes/ports/${1}"
 
 jq -n \
@@ -43,6 +45,7 @@ jq -n \
   --arg port_checksum "${port_checksum}" \
   --arg port_exe "${port_exe}" \
   --arg port_version "${port_version}" \
+  --arg new_port "${new_port}" \
   '{
     recipe_version: ($recipe_version | tonumber),
     name: $port_name,
@@ -56,7 +59,7 @@ jq -n \
       port_download: "",
       port_version: $port_version
     }
-  }' > recipes/ports/${port_folder}/recipe.json
+  } + (if $new_port == "new" then { screenshot: { delay: 8 } } else {} end)' > recipes/ports/${port_folder}/recipe.json
 cp recipes/templates/scripts/build.sh recipes/ports/${port_folder}/
 
 }
@@ -123,7 +126,7 @@ create_new_port () {
   done
   # TODO separate build commands? shared libs?
   read_check 'Enter build command(s): ' port_build
-  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}" "${port_version}"
+  create_recipe "${port_folder}" "${port_url}" "${port_build}" "${port_checksum}" "${port_exe}" "${port_version}" new
   echo -e "\nCreated recipe for ${port_folder}/recipe.json\n"
   cat recipes/ports/${port_folder}/recipe.json | jq '.'
   echo -e "\nCreated files/folders for ${port_folder}\n"
