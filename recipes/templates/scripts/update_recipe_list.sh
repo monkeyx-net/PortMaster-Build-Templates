@@ -2,7 +2,7 @@
 # update_recipe_list.sh
 #
 # Regenerates the recipe_file dropdown in .github/workflows/build_recipe.yml
-# from recipes/ports/*/recipe.json. GitHub reads workflow_dispatch choice options
+# with the port folder names from recipes/ports/*/recipe.json. GitHub reads workflow_dispatch choice options
 # statically from the YAML, so the list has to be written into the file.
 #
 # Replaces the lines between the recipe-list-start and recipe-list-end markers.
@@ -37,7 +37,7 @@ awk -v start="$START_RE" -v end="$END_RE" '
 tmp_list=$(mktemp)
 trap 'rm -f "$tmp_list" "$WORKFLOW.tmp"' EXIT
 
-printf "          - '%s'\n" "${recipes[@]}" | sort > "$tmp_list"
+for r in "${recipes[@]}"; do d=${r%/recipe.json}; printf "          - '%s'\n" "${d##*/}"; done | sort > "$tmp_list"
 
 awk -v start="$START_RE" -v end="$END_RE" -v listfile="$tmp_list" '
     $0 ~ start {
