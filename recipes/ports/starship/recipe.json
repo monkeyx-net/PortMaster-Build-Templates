@@ -10,5 +10,8 @@
     "port_url": "HarbourMasters/Starship",
     "port_version": "v2.0.0",
     "port_download": "https://github.com/HarbourMasters/Starship/archive/refs/tags/v2.0.0.tar.gz"
-  }
+  },
+  "includes": [
+    "swap.txt"
+  ]
 }

@@ -10,6 +10,7 @@ recipes/
   ports/<port>/recipe.json      # source repo, build command, exe name, upstream version/checksum
   ports/<port>/build.sh         # runs inside the builder container (copied from templates/scripts/build.sh)
   templates/port_template/      # zz_port.sh launcher + zz_folder skeleton (port.json, gameinfo.xml, gptk, licenses)
+  templates/includes/           # shared launcher includes (e.g. swap.txt), copied into ports listed in recipe "includes"
   templates/scripts/            # build.sh, check_updates.sh, fetch_source.sh, make_images.sh, screenshot.sh, update_recipe_list.sh
 new_ports/<port>/
   source/ , source.tar.gz|zip   # upstream source (gitignored), from check_updates.sh / fetch_source.sh
@@ -27,7 +28,7 @@ The port folder name, the zip name (`<port>.zip`), the recipe folder and the `re
 
 ## Workflows
 
-- `build_recipe.yml` (manual dispatch, select port): builds the builder image if needed, runs `fetch_source.sh` and then `recipes/ports/<port>/build.sh` per arch, captures a screenshot from the x86_64 build if the recipe has a `screenshot` config, extracts the binaries into the port folder, creates missing `screenshot.png`/`cover.png` (`make_images.sh`), writes `version.json`, zips `new_ports/<port>/<port>/` to `<port>.zip` (without `.gitkeep` files), commits the port folder, and publishes the zip as GitHub release `<port>-<version>`.
+- `build_recipe.yml` (manual dispatch, select port): builds the builder image if needed, runs `fetch_source.sh` and then `recipes/ports/<port>/build.sh` per arch, captures a screenshot from the x86_64 build if the recipe has a `screenshot` config, extracts the binaries into the port folder, copies the recipe's `includes` from `recipes/templates/includes/` into the port folder, creates missing `screenshot.png`/`cover.png` (`make_images.sh`), writes `version.json`, zips `new_ports/<port>/<port>/` to `<port>.zip` (without `.gitkeep` files), commits the port folder, and publishes the zip as GitHub release `<port>-<version>`.
 - `check_recipe_updates.yml` (daily cron): runs `check_updates.sh`, which updates `port_version`/`port_checksum`/`port_download`/`date_updated` in the recipes, refreshes `new_ports/<port>/source` locally, seeds `new_ports/<port>/<port>/` from the published PortMaster zip only if that folder does not exist yet, and rewrites the Port Status table in README.md. Rolling tags such as `continuous` are compared by checksum and stored as `<tag>-<date>`.
 
 Upstream source is not committed. `fetch_source.sh <port>` downloads `port_download`, checks it against `port_checksum` and extracts it to `new_ports/<port>/source`. Branch-based ports are pinned to the commit (`archive/<sha>.zip`), so a checksum mismatch only happens when a tag is moved (e.g. `continuous`). Run Check Recipe Updates, then build. Patches to upstream code belong in the port's `build.sh`, never in `source/`.
@@ -51,6 +52,7 @@ Don't touch other ports' files while working on one port.
 - Use the helpers: `$ESUDO` (not `sudo`), `$controlfolder`, `get_controls`, `$GPTOKEYB`, `$DEVICE_ARCH`, `bind_directories`/`bind_files` for saves (not raw symlinks). End with `pm_finish`, with no `trap` or `pkill gptokeyb`.
 - Scripts must work on every CFW (AmberELEC, ArkOS/dArkOS, muOS, ROCKNIX libmali/panfrost, Knulli) and every resolution (640x480 up). No CFW-specific paths.
 - Don't set environment variables the default behaviour already covers.
+- Code shared by several launchers lives once in `recipes/templates/includes/` and is listed in the recipe (`"includes": ["swap.txt"]`); the launcher does `source "$GAMEDIR/swap.txt"`. Edit the master copy only; the build overwrites the per-port copies. `swap.txt` gives `swap_on`/`swap_off` (temporary zram/swapfile for ROM extraction on <=1GB devices) and is used by lighthouse, soh and starship.
 - X11/OpenGL-only games run under the Westonpack runtime (see `new_ports/recwars`). Runtimes listed in `attr.runtime` must exactly match keys in PortMaster's `runtimes.json`.
 
 ## Libraries and binaries

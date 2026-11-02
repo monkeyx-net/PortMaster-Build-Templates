@@ -249,6 +249,14 @@ jobs:
             tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
           done
 
+      - name: Copy shared includes
+        run: |
+          RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
+          PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
+          for inc in $(jq -r '.includes[]?' "$RECIPE"); do
+            cp "recipes/templates/includes/$inc" "$PORT_DIR/"
+          done
+
       - name: Create missing screenshot/cover
         run: |
           PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"

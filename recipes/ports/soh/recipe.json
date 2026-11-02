@@ -10,5 +10,8 @@
     "port_url": "HarbourMasters/Shipwright",
     "port_version": "9.3.1",
     "port_download": "https://github.com/HarbourMasters/Shipwright/archive/refs/tags/9.3.1.tar.gz"
-  }
+  },
+  "includes": [
+    "swap.txt"
+  ]
 }

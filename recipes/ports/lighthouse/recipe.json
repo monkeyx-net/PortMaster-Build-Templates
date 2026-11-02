@@ -10,5 +10,8 @@
     "port_url": "HarbourMasters/Lighthouse",
     "port_version": "1.2.2",
     "port_download": "https://github.com/HarbourMasters/Lighthouse/archive/refs/tags/1.2.2.tar.gz"
-  }
+  },
+  "includes": [
+    "swap.txt"
+  ]
 }
