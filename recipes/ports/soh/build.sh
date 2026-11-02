@@ -18,6 +18,7 @@ FILES=(
   "libspdlog.so.1"
   "libspdlog.so.1.12"
   "libzip.so.5"
+  "libtheoradec.so.1"
   "libtinyxml2.so.10"
   "libfmt.so.9"
   "libcrypto.so.1.1"
