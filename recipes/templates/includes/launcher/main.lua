@@ -1,6 +1,7 @@
 -- Generic PortMaster settings launcher. Shared copy: recipes/templates/includes/launcher/
 -- Each port supplies launcher/config.lua:
 --   config.title, config.subtitle, config.help   text shown on the screen
+--   config.notice (optional) warning drawn in a large bold font below the items
 --   config.items  { { id, label, kind = "text", maxlen, allowed } or
 --                   { id, label, kind = "choice", choices = { { value, label }, ... } } }
 --   config.load(path) -> table of values keyed by item id
@@ -238,6 +239,14 @@ local function drawMain()
                 vprint(v, fonts.normal, 300, y + 2, VW - 356, "right")
             end
             y = y + 32
+        end
+    end
+
+    if config.notice then
+        -- bold: printed twice, one screen pixel apart
+        love.graphics.setColor(colors.warn)
+        for dx = 0, 1 do
+            vprint(config.notice, fonts.big, 40 + dx / transform.scale, y + 4, VW - 80, "center")
         end
     end
 
