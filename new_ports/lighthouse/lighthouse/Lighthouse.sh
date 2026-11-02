@@ -103,9 +103,9 @@ rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lighthouse.cfg.json" "$GAMEDIR/launch.cfg"
 
-LH_LAUNCH=0
+LAUNCHER_PLAY=0
 [ -f "$GAMEDIR/launch.cfg" ] && source "$GAMEDIR/launch.cfg"
-if [ "$LH_LAUNCH" != "1" ]; then
+if [ "$LAUNCHER_PLAY" != "1" ]; then
   echo "Launcher exited without starting the game"
   pm_finish
   exit 0

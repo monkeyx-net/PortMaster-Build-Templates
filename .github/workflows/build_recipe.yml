@@ -254,7 +254,8 @@ jobs:
           RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
           PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
           for inc in $(jq -r '.includes[]?' "$RECIPE"); do
-            cp "recipes/templates/includes/$inc" "$PORT_DIR/"
+            mkdir -p "$PORT_DIR/$(dirname "$inc")"
+            cp "recipes/templates/includes/$inc" "$PORT_DIR/$inc"
           done
 
       - name: Create missing screenshot/cover

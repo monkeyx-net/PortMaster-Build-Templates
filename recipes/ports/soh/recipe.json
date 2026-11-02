@@ -12,6 +12,10 @@
     "port_download": "https://github.com/HarbourMasters/Shipwright/archive/refs/tags/9.3.1.tar.gz"
   },
   "includes": [
-    "swap.txt"
+    "swap.txt",
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua",
+    "launcher/anchor.lua"
   ]
 }

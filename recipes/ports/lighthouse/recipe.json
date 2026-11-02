@@ -12,6 +12,10 @@
     "port_download": "https://github.com/HarbourMasters/Lighthouse/archive/refs/tags/1.2.2.tar.gz"
   },
   "includes": [
-    "swap.txt"
+    "swap.txt",
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua",
+    "launcher/anchor.lua"
   ]
 }

@@ -1,8 +1,14 @@
--- Lighthouse - PortMaster launcher: Anchor (online co-op) player name and room
+-- Generic PortMaster settings launcher. Shared copy: recipes/templates/includes/launcher/
+-- Each port supplies launcher/config.lua:
+--   config.title, config.subtitle, config.help   text shown on the screen
+--   config.items  { { id, label, kind = "text", maxlen, allowed } or
+--                   { id, label, kind = "choice", choices = { { value, label }, ... } } }
+--   config.load(path) -> table of values keyed by item id
+--   config.save(path, values) -> ok, err
 --
--- usage: love launcher <config_json> <launch_file>
---   config_json  the game's lighthouse.cfg.json (edited on Play / Save)
---   launch_file  shell file written on exit, sourced by the port script
+-- usage: love launcher <game_config> <launch_file>
+--   game_config  the game's config file (edited on Play / Save)
+--   launch_file  shell file written on exit (LAUNCHER_PLAY=0/1), sourced by the port script
 
 local config = require("config")
 local osk = require("osk")
@@ -23,55 +29,70 @@ local colors = {
 
 local fonts = {}
 local paths = {}
-local cfg
+local values
 local sel = 1
 local keyboard = nil
 local toast, toastTime = nil, 0
 local transform = { scale = 1, ox = 0, oy = 0 }
 
-local ITEMS = {
-    { id = "play", label = "Play Lighthouse" },
-    { id = "name", label = "Player name" },
-    { id = "room", label = "Room ID" },
-    { id = "quit", label = "Save and exit" },
-}
+local items = { { id = "_play", label = "Play " .. config.title } }
+for _, it in ipairs(config.items) do items[#items + 1] = it end
+items[#items + 1] = { id = "_quit", label = "Save and exit" }
+
+local function choiceIndex(it)
+    for i, c in ipairs(it.choices) do
+        if c[1] == values[it.id] then return i end
+    end
+    return 1
+end
+
+local function valueLabel(it)
+    if it.kind == "choice" then return it.choices[choiceIndex(it)][2] end
+    return values[it.id]
+end
 
 local function finish(launch)
-    local ok, err = config.save(paths.config, cfg.name, cfg.room)
+    local ok, err = config.save(paths.config, values)
     if not ok then print("launcher: " .. tostring(err)) end
     local f = io.open(paths.launch, "w")
     if f then
-        f:write("# Written by the Lighthouse launcher\nLH_LAUNCH=" .. (launch and 1 or 0) .. "\n")
+        f:write("# Written by the " .. config.title .. " launcher\nLAUNCHER_PLAY=" .. (launch and 1 or 0) .. "\n")
         f:close()
     end
     love.event.quit(0)
 end
 
-local function edit(field, title)
-    keyboard = osk.new({ title = title, value = cfg[field], kind = "nick", maxlen = 20,
-                         allowed = "[%w_%-]" }, function(ok, value)
+local function editText(it)
+    keyboard = osk.new({ title = it.label, value = values[it.id], kind = "nick", maxlen = it.maxlen or 20,
+                         allowed = it.allowed or "[%w_%-]" }, function(ok, value)
         keyboard = nil
         if not ok then return end
         if value == "" then
-            toast, toastTime = title .. " cannot be empty", 2.5
+            toast, toastTime = it.label .. " cannot be empty", 2.5
         else
-            cfg[field] = value
+            values[it.id] = value
         end
     end)
 end
 
+local function cycle(it, dir)
+    local n = #it.choices
+    values[it.id] = it.choices[(choiceIndex(it) - 1 + dir) % n + 1][1]
+end
+
 local function handleAction(action)
     if keyboard then keyboard:action(action) return end
-    local it = ITEMS[sel]
-    if action == "up" then sel = (sel - 2) % #ITEMS + 1
-    elseif action == "down" then sel = sel % #ITEMS + 1
+    local it = items[sel]
+    if action == "up" then sel = (sel - 2) % #items + 1
+    elseif action == "down" then sel = sel % #items + 1
     elseif action == "start" then finish(true)
     elseif action == "back" then finish(false)
+    elseif it.kind == "choice" and (action == "left" or action == "right" or action == "a") then
+        cycle(it, action == "left" and -1 or 1)
     elseif action == "a" then
-        if it.id == "play" then finish(true)
-        elseif it.id == "quit" then finish(false)
-        elseif it.id == "name" then edit("name", "Player name")
-        elseif it.id == "room" then edit("room", "Room ID") end
+        if it.id == "_play" then finish(true)
+        elseif it.id == "_quit" then finish(false)
+        elseif it.kind == "text" then editText(it) end
     end
 end
 
@@ -149,14 +170,14 @@ local function updateTransform()
 end
 
 function love.load(args)
-    paths.config = args[1] or "lighthouse.cfg.json"
+    paths.config = args[1]
     paths.launch = args[2] or "launch.cfg"
     love.keyboard.setKeyRepeat(true)
     updateTransform()
     -- fonts are created at the final pixel size so they stay sharp when scaled
     local function f(px) return love.graphics.newFont(math.max(8, math.floor(px * transform.scale + 0.5))) end
     fonts.small, fonts.normal, fonts.big, fonts.title, fonts.logo = f(13), f(17), f(22), f(22), f(40)
-    cfg = config.load(paths.config)
+    values = config.load(paths.config)
 end
 
 function love.resize()
@@ -188,19 +209,19 @@ end
 
 local function drawMain()
     love.graphics.setColor(colors.text)
-    vprint("Lighthouse", fonts.logo, 0, 40, VW, "center")
+    vprint(config.title, fonts.logo, 0, 40, VW, "center")
     love.graphics.setColor(colors.dim)
-    vprint("Anchor online co-op setup", fonts.small, 0, 90, VW, "center")
+    vprint(config.subtitle or "", fonts.small, 0, 90, VW, "center")
 
-    local y = 140
-    for i, it in ipairs(ITEMS) do
+    local y = 130
+    for i, it in ipairs(items) do
         local s = (i == sel)
-        if it.id == "play" then
+        if it.id == "_play" then
             love.graphics.setColor(s and colors.accent or colors.row)
             love.graphics.rectangle("fill", 160, y - 4, VW - 320, 34, 17, 17)
             love.graphics.setColor(s and colors.bg or colors.text)
             vprint(it.label, fonts.big, 160, y + 1, VW - 320, "center")
-            y = y + 50
+            y = y + 48
         else
             if s then
                 love.graphics.setColor(colors.accent[1], colors.accent[2], colors.accent[3], 0.18)
@@ -210,22 +231,26 @@ local function drawMain()
             end
             love.graphics.setColor(s and colors.accent or colors.text)
             vprint(it.label, fonts.normal, 56, y + 2, 300, "left")
-            if cfg[it.id] then
+            local v = it.kind and valueLabel(it)
+            if v then
+                if it.kind == "choice" and s then v = "<  " .. v .. "  >" end
                 love.graphics.setColor(s and colors.text or colors.dim)
-                vprint(cfg[it.id], fonts.normal, 300, y + 2, VW - 356, "right")
+                vprint(v, fonts.normal, 300, y + 2, VW - 356, "right")
             end
-            y = y + 34
+            y = y + 32
         end
     end
 
+    local it = items[sel]
     love.graphics.setColor(colors.dim)
-    vprint("Players with the same Room ID play together. The name is what other players see.",
-           fonts.small, 40, VH - 80, VW - 80, "center")
+    vprint(it.help or config.help or "", fonts.small, 40, VH - 80, VW - 80, "center")
 
+    local hint = "A select   Up/Down move   Start play   Select exit"
+    if it.kind == "choice" then hint = "Left/Right change   Up/Down move   Start play   Select exit" end
     love.graphics.setColor(0, 0, 0, 0.35)
     love.graphics.rectangle("fill", 0, VH - 30, VW, 30)
     love.graphics.setColor(colors.dim)
-    vprint("A select   Up/Down move   Start play   Select exit", fonts.small, 0, VH - 23, VW, "center")
+    vprint(hint, fonts.small, 0, VH - 23, VW, "center")
 end
 
 function love.draw()

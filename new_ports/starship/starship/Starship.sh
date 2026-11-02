@@ -79,6 +79,20 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
+# Launcher (Love2D): frame rate, low-res mode, voices, invert Y; also closes the menu bar and
+# enables controller navigation in starship.cfg.json
+rm -f "$GAMEDIR/launch.cfg"
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/starship.cfg.json" "$GAMEDIR/launch.cfg"
+
+LAUNCHER_PLAY=0
+[ -f "$GAMEDIR/launch.cfg" ] && source "$GAMEDIR/launch.cfg"
+if [ "$LAUNCHER_PLAY" != "1" ]; then
+  echo "Launcher exited without starting the game"
+  pm_finish
+  exit 0
+fi
+
 # Perform functions
 unzip_assets
 find_roms
@@ -87,14 +101,12 @@ trap swap_off EXIT
 extract_roms
 swap_off
 
-# Keep ImGui windows on screen (except the game view), close the menu bar, force controller navigation
+# Keep ImGui windows on screen (except the game view)
 if [ -f imgui.ini ]; then
     awk '/^\[Window\]/ { skip = /\[Main Game\]|\[Main - Deck\]/ }
          !skip && /^Pos=/  { $0 = "Pos=30,30" }
          !skip && /^Size=/ { $0 = "Size=400,300" } 1' imgui.ini > imgui.tmp && mv imgui.tmp imgui.ini
 fi
-sed -i -E 's/"(gOpenMenuBar|Menu)":[[:space:]]*1/"\1": 0/; s/"gControlNav":[[:space:]]*[0-9]+/"gControlNav": 1/' starship.cfg.json
-grep -q '"gControlNav"' starship.cfg.json || sed -i '/"CVars":[[:space:]]*{/a\        "gControlNav": 1,' starship.cfg.json
 
 # Run the game
 $GPTOKEYB "Starship.${DEVICE_ARCH}" -c "starship.gptk" &

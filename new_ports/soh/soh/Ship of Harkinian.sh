@@ -100,6 +100,20 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
+# Launcher (Love2D): Anchor player name / room ID; also closes the game menu and
+# enables controller navigation in shipofharkinian.json
+rm -f "$GAMEDIR/launch.cfg"
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/shipofharkinian.json" "$GAMEDIR/launch.cfg"
+
+LAUNCHER_PLAY=0
+[ -f "$GAMEDIR/launch.cfg" ] && source "$GAMEDIR/launch.cfg"
+if [ "$LAUNCHER_PLAY" != "1" ]; then
+  echo "Launcher exited without starting the game"
+  pm_finish
+  exit 0
+fi
+
 # Perform functions
 unzip_assets
 otr_check

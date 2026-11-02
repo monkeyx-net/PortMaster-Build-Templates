@@ -1,9 +1,10 @@
+-- Shared copy: recipes/templates/includes/launcher/
 function love.conf(t)
-    t.identity = "lighthouse-launcher"
+    t.identity = "pm-launcher"
     t.version = "11.4"
     t.console = false
 
-    t.window.title = "Lighthouse - Setup"
+    t.window.title = "Setup"
     t.window.width = 640
     t.window.height = 480
     t.window.fullscreen = true
