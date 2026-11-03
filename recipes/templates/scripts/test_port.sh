@@ -59,10 +59,13 @@ keys=$(jq -r '.test.keys // ""' "$recipe")
 env=$(jq -r '.test.env // ""' "$recipe")
 needs_data=$(jq -r '.test.needs_data // false | if . == true then "?" elif . == false then "" else . end' "$recipe")
 out="new_ports/$port/test"
+rm -rf "$out"      # results of this run only
 mkdir -p "$out"
+built=""
+trap '[[ -n "$built" ]] && rm -f "$built"' EXIT     # the zip we packaged: installed already, results stay
 
 if [[ -z "$zip" ]]; then
-    zip="$out/$port.zip"
+    zip="$out/$port.zip" built="$zip"
     recipes/templates/scripts/package.sh "$port" "$zip" || { echo "package.sh failed: fix the errors above first"; exit 1; }
 fi
 
