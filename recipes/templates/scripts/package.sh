@@ -25,6 +25,8 @@ done
 
 jq '{name, version: .source.port_version}' "$recipe" > "$dir/version.json"
 
+"$scripts/make_controls.sh" "$port"
+
 "$scripts/check_port.sh" "$port"
 
 rm -f "$out"
