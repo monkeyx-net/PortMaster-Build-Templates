@@ -15,5 +15,9 @@
     "delay": 8,
     "keys": "Return Return",
     "env": "FB_DATA_DIR=./share"
+  },
+  "test": {
+    "delay": 10,
+    "keys": "start 8"
   }
 }

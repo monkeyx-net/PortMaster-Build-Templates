@@ -2,6 +2,7 @@
   "recipe_version": 1,
   "name": "soh.zip",
   "port_json": "new_ports/soh/soh/soh/port.json",
+  "controls": "launcher/controls.png",
   "source": {
     "date_updated": "2026-10-20",
     "port_exe": "soh",

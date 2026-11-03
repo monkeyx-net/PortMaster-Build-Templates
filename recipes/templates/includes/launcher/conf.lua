@@ -1,4 +1,8 @@
 -- Shared copy: recipes/templates/includes/launcher/
+
+-- Start the game after this many seconds unless a button is pressed (0 = off)
+LAUNCHER_AUTOSTART = 3
+
 function love.conf(t)
     t.identity = "pm-launcher"
     t.version = "11.4"
