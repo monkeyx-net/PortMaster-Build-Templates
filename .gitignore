@@ -6,3 +6,5 @@ new_ports/*/*.zip
 new_ports/*/*/*.zip
 # Built packages (published as GitHub releases)
 /*.zip
+# On-device test results from test_port.sh (report.md, screenshots, logs, test zip)
+new_ports/*/test/

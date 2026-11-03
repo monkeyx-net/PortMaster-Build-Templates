@@ -4,7 +4,8 @@
 # Creates screenshot.png and cover.png (640x480) in a port folder if they are
 # missing. If only one exists it is copied to the other; if both are missing a
 # title card is generated. Generated images are placeholders: replace them with
-# a real screenshot before submitting to PortMaster.
+# a real screenshot before submitting to PortMaster. They carry the PNG comment
+# "PortMaster placeholder", which check_port.sh looks for.
 #
 # Usage (from the repo root):
 #   recipes/templates/scripts/make_images.sh <port data folder> "<Port Title>"
@@ -34,6 +35,6 @@ font=$(fc-match -f '%{file}' 'DejaVu Sans:bold' 2>/dev/null || true)
     -gravity center -composite \
     -fill '#8a9bb0' ${font:+-font "$font"} -pointsize 20 -gravity south \
     -annotate +0+24 'PortMaster' \
-    -alpha off -depth 8 "$shot"
+    -set comment 'PortMaster placeholder' -alpha off -depth 8 "$shot"
 cp "$shot" "$cover"
 echo "::warning::$title: generated placeholder screenshot.png and cover.png -- replace with a real 640x480 screenshot or add a screenshot config to recipe.json"

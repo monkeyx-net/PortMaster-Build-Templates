@@ -249,15 +249,6 @@ jobs:
             tar -xzf "$f" -C new_ports/${PORT_FOLDER}/${PORT_FOLDER}/${PORT_FOLDER}/
           done
 
-      - name: Copy shared includes
-        run: |
-          RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
-          PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
-          for inc in $(jq -r '.includes[]?' "$RECIPE"); do
-            mkdir -p "$PORT_DIR/$(dirname "$inc")"
-            cp "recipes/templates/includes/$inc" "$PORT_DIR/$inc"
-          done
-
       - name: Create missing screenshot/cover
         run: |
           PORT_DIR="$(dirname "${{ needs.build.outputs.port_json }}")"
@@ -266,14 +257,9 @@ jobs:
           fi
           recipes/templates/scripts/make_images.sh "$PORT_DIR" "${{ needs.build.outputs.port_title }}"
 
-      - name: Write version.json and zip
-        run: |
-          PORT_FOLDER="${{ needs.build.outputs.port_folder }}"
-          RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
-          jq '{name, version: .source.port_version}' "$RECIPE" > "$(dirname "$(jq -r .port_json "$RECIPE")")/version.json"
-          cd new_ports/${PORT_FOLDER}/${PORT_FOLDER}/
-          # Reference CWD
-          zip -r "../../../${PORT_FOLDER}.zip" . -x '*.gitkeep'
+      # shared includes, version.json, check_port.sh (fails the build on errors), zip
+      - name: Check and package
+        run: recipes/templates/scripts/package.sh "${{ needs.build.outputs.port_folder }}"
 
       - name: Commit post build changes
         run: |
