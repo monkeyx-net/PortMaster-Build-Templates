@@ -43,6 +43,7 @@ RUN apt-get update && \
       libgles2-mesa-dev \
       libglm-dev \
       libogg-dev \
+      libtheora0 \
       libopengl-dev \
       libssl-dev \
       libopus-dev \
