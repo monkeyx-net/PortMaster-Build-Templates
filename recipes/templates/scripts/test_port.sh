@@ -17,6 +17,8 @@
 #     "delay": 15,                   seconds before the keys/screenshot (default 15)
 #     "keys": "a 3 start",           devhub input tokens: a b x y l1 r1 start select
 #                                    up down left right key:enter ...; a number waits
+#                                    (a b x y are positional: Nintendo-layout devices may
+#                                    swap them, so prefer start, the D-pad and key:)
 #     "env": "FOO=1",                extra environment for the launcher
 #     "needs_data": "oot.o2r baseroms/*.z64"   user-supplied files (globs in the port
 #                                    folder); without them only the launcher's error
@@ -122,7 +124,7 @@ for dev in "${devs[@]}"; do
         rows+=("$row_info| not tested (no lock) | | | |"); write_report; continue
     fi
     cur="$dev"
-    echo "=== $dev: installing $(basename "$zip")"
+    echo "=== $(date +%T) $dev: installing $(basename "$zip")"
     if ! "$DH" install "$dev" "$zip"; then
         rows+=("$row_info| FAIL: install | | | |"); cleanup; write_report; continue
     fi
@@ -142,14 +144,16 @@ for dev in "${devs[@]}"; do
         "$DH" input "$dev" open && cur_input=1
     fi
     "$DH" fps "$dev" start "$port test" > /dev/null
-    echo "=== $dev: starting $launcher, screenshot in ${delay}s"
-    cur_sid=$("$DH" run "$dev" -- "cd '$ports_dir' && setsid nohup env $env bash './$launcher' > /tmp/test_$port.log 2>&1 < /dev/null & echo \$!" | tail -n 1)
+    echo "=== $(date +%T) $dev: starting $launcher, screenshot in ${delay}s"
+    # cd separately: "cd && cmd &" backgrounds a subshell that keeps devhub run waiting for the game
+    cur_sid=$("$DH" run "$dev" -- "cd '$ports_dir' || exit 1; setsid nohup env $env bash './$launcher' > /tmp/test_$port.log 2>&1 < /dev/null & echo \$!" | tail -n 1)
     sleep "$delay"
     if [[ -n "$keys" ]]; then
         "$DH" input "$dev" $keys
         sleep 2
     fi
 
+    echo "=== $(date +%T) $dev: checking the game, screenshot"
     reasons=()
     alive=$("$DH" run "$dev" --ro -- "pgrep -f '$pat' > /dev/null && echo alive")
     [[ "$alive" == *alive* ]] || reasons+=("launcher exited")
@@ -185,7 +189,7 @@ for dev in "${devs[@]}"; do
         result="FAIL: $(printf '%s; ' "${reasons[@]}")"
         result="${result%; }"
     fi
-    echo "=== $dev: $result (avg ${avg:-?} fps, 1% low ${low:-?})"
+    echo "=== $(date +%T) $dev: $result (avg ${avg:-?} fps, 1% low ${low:-?})"
     rows+=("$row_info| $result | ${avg} | ${low} | [$dev.png]($dev.png) |")
     write_report
 
