@@ -21,9 +21,7 @@
     "image": {},
     "rtr": false,
     "exp": false,
-    "runtime": [
-      "love_11.5"
-    ],
+    "runtime": [],
     "store": [],
     "availability": "paid",
     "reqs": [],
