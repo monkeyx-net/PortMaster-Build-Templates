@@ -56,7 +56,8 @@ find_roms() {
         if [ ${#ROMS[@]} -eq 0 ]; then
             pm_message "Missing ROM! Place a Star Fox 64 US .z64 in baseroms/"
             sleep 5
-            exit 1
+            pm_finish
+            exit 0
         fi
     fi
 }
@@ -70,7 +71,8 @@ extract_roms() {
     if [ ! -f "sf64.o2r" ]; then
         pm_message "No sf64.o2r created! A Star Fox 64 US v1.0 or v1.1 rom is required."
         sleep 5
-        exit 1
+        pm_finish
+        exit 0
     fi
 }
 
@@ -85,10 +87,8 @@ rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/starship.cfg.json" "$GAMEDIR/launch.cfg"
 
-LAUNCHER_PLAY=0
-[ -f "$GAMEDIR/launch.cfg" ] && source "$GAMEDIR/launch.cfg"
-if [ "$LAUNCHER_PLAY" != "1" ]; then
-  echo "Launcher exited without starting the game"
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   pm_finish
   exit 0
 fi

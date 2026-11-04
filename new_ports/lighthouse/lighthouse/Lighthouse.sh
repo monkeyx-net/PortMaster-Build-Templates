@@ -39,7 +39,8 @@ unzip_assets() {
         else
             pm_message "Failed to unpack extractor.zip!"
             sleep 5
-            exit 1
+            pm_finish
+            exit 0
         fi
     fi
 }
@@ -54,7 +55,8 @@ otr_check() {
         if [ ${#ROMS[@]} -eq 0 ]; then
             pm_message "Missing ROM! Place a Banjo-Kazooie .z64 in baseroms/"
             sleep 5
-            exit 1
+            pm_finish
+            exit 0
         fi
     fi
 }
@@ -70,10 +72,8 @@ rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lighthouse.cfg.json" "$GAMEDIR/launch.cfg"
 
-LAUNCHER_PLAY=0
-[ -f "$GAMEDIR/launch.cfg" ] && source "$GAMEDIR/launch.cfg"
-if [ "$LAUNCHER_PLAY" != "1" ]; then
-  echo "Launcher exited without starting the game"
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   pm_finish
   exit 0
 fi
@@ -96,19 +96,6 @@ fi
 $GPTOKEYB "Lighthouse.${DEVICE_ARCH}" -c "lighthouse.gptk" &
 pm_platform_helper "Lighthouse.${DEVICE_ARCH}" >/dev/null
 ./Lighthouse.${DEVICE_ARCH} "${ROMS[@]}"
-status=$?
-
-# After extraction Lighthouse offers to run the game in the same process; start it fresh
-# instead if the user chose No (bk.o2r written under 2 minutes ago) or that run died
-if [ ${#ROMS[@]} -gt 0 ]; then
-    swap_off
-    rm -rf "$GAMEDIR/tmp"
-    unset TMPDIR
-    if [ -f bk.o2r ] && { [ $status -ne 0 ] || [ $(( $(date +%s) - $(date -r bk.o2r +%s) )) -lt 120 ]; }; then
-        echo "Restarting Lighthouse after extraction (exit $status)"
-        ./Lighthouse.${DEVICE_ARCH}
-    fi
-fi
 
 # Cleanup
 swap_off
