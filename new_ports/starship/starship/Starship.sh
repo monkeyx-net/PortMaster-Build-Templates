@@ -95,7 +95,7 @@ fi
 
 # Perform functions
 unzip_assets
-find_roms
+find_roms ||{ pm_finish; exit 0; }
 swap_on
 trap swap_off EXIT
 extract_roms
