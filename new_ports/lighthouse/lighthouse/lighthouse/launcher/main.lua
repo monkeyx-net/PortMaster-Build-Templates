@@ -1,6 +1,7 @@
 -- Generic PortMaster settings launcher. Shared copy: recipes/templates/includes/launcher/
 -- Each port supplies launcher/config.lua:
 --   config.title, config.subtitle, config.help   text shown on the screen
+--   config.notice (optional) warning drawn in a large bold font below the items
 --   config.items  { { id, label, kind = "text", maxlen, allowed } or
 --                   { id, label, kind = "choice", choices = { { value, label }, ... } } }
 --   config.load(path) -> table of values keyed by item id
@@ -34,10 +35,17 @@ local sel = 1
 local keyboard = nil
 local toast, toastTime = nil, 0
 local transform = { scale = 1, ox = 0, oy = 0 }
+-- seconds until the game starts by itself (LAUNCHER_AUTOSTART in conf.lua); nil once cancelled
+local autostart = (tonumber(LAUNCHER_AUTOSTART) or 0) > 0 and tonumber(LAUNCHER_AUTOSTART) or nil
 
 local items = { { id = "_play", label = "Play " .. config.title } }
 for _, it in ipairs(config.items) do items[#items + 1] = it end
-items[#items + 1] = { id = "_quit", label = "Save and exit" }
+-- launcher/controls.png comes from Controls4PM at build time ("controls" in recipe.json)
+if love.filesystem.getInfo("controls.png") then
+    items[#items + 1] = { id = "_controls", label = "Controls", help = "Show the button layout" }
+end
+items[#items + 1] = { id = "_quit", label = "Save and quit" }
+local controlsImage, showControls = nil, false
 
 local function choiceIndex(it)
     for i, c in ipairs(it.choices) do
@@ -81,6 +89,8 @@ local function cycle(it, dir)
 end
 
 local function handleAction(action)
+    autostart = nil
+    if showControls then showControls = false return end
     if keyboard then keyboard:action(action) return end
     local it = items[sel]
     if action == "up" then sel = (sel - 2) % #items + 1
@@ -92,6 +102,10 @@ local function handleAction(action)
     elseif action == "a" then
         if it.id == "_play" then finish(true)
         elseif it.id == "_quit" then finish(false)
+        elseif it.id == "_controls" then
+            -- string path, not ImageData: newImage(ImageData) crashes the Mali driver
+            controlsImage = controlsImage or love.graphics.newImage("controls.png")
+            showControls = true
         elseif it.kind == "text" then editText(it) end
     end
 end
@@ -185,6 +199,10 @@ function love.resize()
 end
 
 function love.update(dt)
+    if autostart then
+        autostart = autostart - dt
+        if autostart <= 0 then finish(true) return end
+    end
     if held.action then
         held.t = held.t - dt
         if held.t <= 0 then handleAction(held.action); held.t = REPEAT_RATE end
@@ -241,12 +259,21 @@ local function drawMain()
         end
     end
 
+    if config.notice then
+        -- bold: printed twice, one screen pixel apart
+        love.graphics.setColor(colors.warn)
+        for dx = 0, 1 do
+            vprint(config.notice, fonts.big, 40 + dx / transform.scale, y + 4, VW - 80, "center")
+        end
+    end
+
     local it = items[sel]
     love.graphics.setColor(colors.dim)
     vprint(it.help or config.help or "", fonts.small, 40, VH - 80, VW - 80, "center")
 
     local hint = "A select   Up/Down move   Start play   Select exit"
     if it.kind == "choice" then hint = "Left/Right change   Up/Down move   Start play   Select exit" end
+    if autostart then hint = ("Starting in %d...   press any button for settings"):format(math.ceil(autostart)) end
     love.graphics.setColor(0, 0, 0, 0.35)
     love.graphics.rectangle("fill", 0, VH - 30, VW, 30)
     love.graphics.setColor(colors.dim)
@@ -260,7 +287,16 @@ function love.draw()
     love.graphics.scale(transform.scale)
     love.graphics.setScissor(transform.ox, transform.oy, VW * transform.scale, VH * transform.scale)
 
-    drawMain()
+    if showControls then
+        local iw, ih = controlsImage:getDimensions()
+        local s = math.min(VW / iw, (VH - 30) / ih)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(controlsImage, (VW - iw * s) / 2, (VH - 30 - ih * s) / 2, 0, s, s)
+        love.graphics.setColor(colors.dim)
+        vprint("Press any button to return", fonts.small, 0, VH - 23, VW, "center")
+    else
+        drawMain()
+    end
 
     if keyboard then
         love.graphics.setColor(0, 0, 0, 0.6)

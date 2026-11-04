@@ -3,6 +3,8 @@
 -- Ship of Harkinian). A port's launcher/config.lua is just:
 --   return require("anchor")("Game Title", { fps = <original fps>, fpsDefault = <fps when unset> })
 -- fpsDefault is only needed when the game's unset default differs from fps.
+-- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
+-- yet, warn to answer No after the rom conversion and start the game again.
 --
 -- Edits the game's JSON config line by line; the game writes it pretty-printed
 -- (one key per line), so no JSON parser is needed:
@@ -79,7 +81,27 @@ return function(title, opts)
         for i, l in ipairs(lines) do if l:match(pattern) then return i end end
     end
 
+    -- RAM in GB, rounded like PortMaster's DEVICE_RAM
+    local function ramGB()
+        local f = io.open("/proc/meminfo", "r")
+        if not f then return nil end
+        local kb = tonumber(f:read("*a"):match("MemTotal:%s*(%d+)"))
+        f:close()
+        return kb and math.floor(kb / 1048576 + 0.5)
+    end
+
+    local function anyExists(dir, files)
+        for _, name in ipairs(files) do
+            local f = io.open(dir .. "/" .. name, "r")
+            if f then f:close() return true end
+        end
+        return false
+    end
+
     function config.load(path)
+        if opts.o2r and (ramGB() or 2) <= 1 and not anyExists(path:match("^(.*)/") or ".", opts.o2r) then
+            config.notice = "Select No after ROM conversion and start the game again to prevent memory issues"
+        end
         local v = { name = "Player", room = "PORTMASTER" }
         local lines = readLines(path) or {}
         eachLine(lines, "Anchor", function(l, inAnchor)

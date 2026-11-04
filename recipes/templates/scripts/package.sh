@@ -3,7 +3,7 @@
 #
 # Turns new_ports/<port>/<port>/ into <port>.zip, the same way in CI and locally:
 # copies the recipe's shared includes into the port folder, writes version.json
-# from the recipe, runs check_port.sh (errors stop here) and zips the folder
+# from the recipe, creates missing screenshot/cover placeholders, runs check_port.sh (errors stop here) and zips the folder
 # without .gitkeep files. The binaries must already be in the port folder
 # (CI extracts them from the build artifacts first).
 #
@@ -26,6 +26,9 @@ done
 jq '{name, version: .source.port_version}' "$recipe" > "$dir/version.json"
 
 "$scripts/make_controls.sh" "$port"
+
+# CI runs this before packaging; locally (test_port.sh) the images may still be missing
+"$scripts/make_images.sh" "$dir" "$(jq -r .attr.title "$dir/port.json")"
 
 "$scripts/check_port.sh" "$port"
 
