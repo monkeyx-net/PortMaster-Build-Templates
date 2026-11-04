@@ -14,19 +14,19 @@ Default Retro (N64) layout:
 
 | Button | Action |
 |--|--|
-| A | A (Jump) |
-| B | B (Attack) |
+| A | Jump |
+| B | Attack |
 | L1 | L |
-| L2 | Z (Crouch) |
-| R2 | R (Center camera) |
-| Right stick | C-buttons (Camera, first person) |
+| L2 | Crouch |
+| R2 | Camera |
+| Right stick | C-buttons |
 | D-pad | D-pad |
 | Start | Start |
 | Select | Menu |
 | L3 | Menu bar |
-| R3 | Toggle alternate assets |
+| R3 | Alt assets |
 
-X, Y and R1 are unused in this layout. The Modern (Xbox Live Arcade) and Pocket (D-pad friendly) layouts can be chosen under Control Scheme in the controls settings, and all buttons can be remapped there.
+L2 is the N64 Z button and R2 is R (center camera). X, Y and R1 are unused in this layout. The Modern (Xbox Live Arcade) and Pocket (D-pad friendly) layouts can be chosen under Control Scheme in the controls settings, and all buttons can be remapped there.
 
 ## Thanks
 - HarbourMasters for Lighthouse, the native PC port

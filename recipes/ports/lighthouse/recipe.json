@@ -17,5 +17,6 @@
     "launcher/osk.lua",
     "launcher/conf.lua",
     "launcher/anchor.lua"
-  ]
+  ],
+  "controls": "launcher/controls.png"
 }
