@@ -8,10 +8,16 @@ local config = {
         { id = "LIX_CURSOR_MIN_SCALE", label = "Mouse cursor size", kind = "choice",
           choices = { { 1, "Normal" }, { 2, "2x" }, { 3, "3x" }, { 4, "4x" } },
           help = "Minimum cursor scale. Bigger is easier to see on small screens." },
+        { id = "MOUSE_SCALE", label = "Mouse speed", kind = "choice",
+          choices = { { 8192, "Slow" }, { 6144, "Normal" }, { 4096, "Fast" }, { 3072, "Faster" } },
+          help = "How fast the left stick moves the cursor." },
+        { id = "SCREEN_MODE", label = "Fullscreen", kind = "choice",
+          choices = { { 2, "Hardware" }, { 1, "Software" } },
+          help = "Hardware runs at the device resolution. Try Software if the picture is wrong." },
     },
 }
 
-local DEFAULTS = { LIX_CURSOR_MIN_SCALE = 2 }
+local DEFAULTS = { LIX_CURSOR_MIN_SCALE = 2, MOUSE_SCALE = 6144, SCREEN_MODE = 2 }
 
 function config.load(path)
     local v = {}
@@ -30,7 +36,9 @@ end
 function config.save(path, v)
     local f, err = io.open(path, "w")
     if not f then return false, err end
-    for k in pairs(DEFAULTS) do f:write(k, "=", v[k], "\n") end
+    for _, it in ipairs(config.items) do
+        f:write(it.id, "=", v[it.id], "\n")
+    end
     f:close()
     return true
 end

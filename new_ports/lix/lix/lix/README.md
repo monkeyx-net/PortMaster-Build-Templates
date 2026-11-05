@@ -7,7 +7,7 @@ Thanks to Simon Naarmann and the Lix contributors: https://www.lixgame.com
 Built with Allegro 5 using its SDL2 + OpenGL ES 2 backend.
 
 ## Launcher
-A settings launcher opens before the game: mouse cursor size (Normal, 2x, 3x, 4x) and the controls image. Choose Play, or wait for it to start the game.
+A settings launcher opens before the game: mouse cursor size (Normal, 2x, 3x, 4x), mouse speed (Slow, Normal, Fast, Faster), hardware (default) or software fullscreen, and the controls image. Choose Play, or wait for it to start the game.
 
 ## Controls
 

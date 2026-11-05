@@ -33,7 +33,8 @@ fi
 export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
-# Launcher (Love2D): mouse cursor size, saved in lix.cfg, and the controls image
+# Launcher (Love2D): cursor size, mouse speed and fullscreen mode, saved in lix.cfg,
+# and the controls image
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
@@ -44,13 +45,20 @@ if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   exit 0
 fi
 
-# Minimum mouse cursor scale chosen in the launcher (Lix default is 1)
+# Launcher settings: minimum cursor scale (Lix default is 1), gptokeyb mouse_scale
+# (lower is faster) and hardware (2, default) or software (1) fullscreen
 source "$GAMEDIR/lix.cfg"
 export LIX_CURSOR_MIN_SCALE
+sed -i "s/^mouse_scale = .*/mouse_scale = $MOUSE_SCALE/" "$GAMEDIR/lix.gptk"
+if [ "$SCREEN_MODE" = "1" ]; then
+  FULLSCREEN="--fullscreen"
+else
+  FULLSCREEN="--hardfull=${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}"
+fi
 
 # Lix is mouse-driven: gptokeyb turns the left stick into a mouse
 $GPTOKEYB "lix.${DEVICE_ARCH}" -c "$GAMEDIR/lix.gptk" &
 pm_platform_helper "$GAMEDIR/lix.${DEVICE_ARCH}"
-./lix.${DEVICE_ARCH} --fullscreen
+./lix.${DEVICE_ARCH} "$FULLSCREEN"
 
 pm_finish
