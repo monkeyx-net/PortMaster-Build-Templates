@@ -15,6 +15,7 @@ _Last checked: 2026-11-05_
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | Harmonist | harmonist | 🟢 | v1.0.3 | 2026-08-07 | 2026-01-07 |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
+| -- | lix | 🟢 | v0.10.36 | 2026-11-05 | -- |
 | Manic Miner | manicminer | 🟢 | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
 | Shamogu | shamogu | 🟢 | v1.6.0 | 2026-09-25 | 2026-08-21 |
@@ -25,7 +26,7 @@ _Last checked: 2026-11-05_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🟢 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 16 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 17 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
