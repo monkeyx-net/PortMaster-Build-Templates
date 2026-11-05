@@ -1,0 +1,70 @@
+diff --git a/src/sdl/sdl_joystick.c b/src/sdl/sdl_joystick.c
+index 492292d..2f09bb7 100644
+--- a/src/sdl/sdl_joystick.c
++++ b/src/sdl/sdl_joystick.c
+@@ -47,16 +47,34 @@ static SDL_Joystick *get_sdl(ALLEGRO_JOYSTICK *allegro)
+    return joysticks[id].sdl;
+ }
+ 
++/* SDL events carry joystick instance IDs, not device indices. */
++static ALLEGRO_JOYSTICK *get_allegro(SDL_JoystickID which)
++{
++   int i;
++   for (i = 0; i < count; i++) {
++      if (SDL_JoystickInstanceID(joysticks[i].sdl) == which)
++         return &joysticks[i].allegro;
++   }
++   return NULL;
++}
++
+ void _al_sdl_joystick_event(SDL_Event *e)
+ {
+    ALLEGRO_EVENT event;
++   ALLEGRO_EVENT_SOURCE *es = al_get_joystick_event_source();
+    memset(&event, 0, sizeof event);
+ 
++   /* SDL delivers joystick events even if the app never called
++    * al_install_joystick(). Then there is no event source to emit to.
++    */
++   if (!es)
++      return;
++
+    event.joystick.timestamp = al_get_time();
+ 
+    if (e->type == SDL_JOYAXISMOTION) {
+       event.joystick.type = ALLEGRO_EVENT_JOYSTICK_AXIS;
+-      event.joystick.id = &joysticks[e->jaxis.which].allegro;
++      event.joystick.id = get_allegro(e->jaxis.which);
+       event.joystick.stick = e->jaxis.axis / 2;
+       event.joystick.axis = e->jaxis.axis % 2;
+       event.joystick.pos = e->jaxis.value / 32768.0;
+@@ -64,7 +82,7 @@ void _al_sdl_joystick_event(SDL_Event *e)
+    }
+    else if (e->type == SDL_JOYBUTTONDOWN) {
+       event.joystick.type = ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN;
+-      event.joystick.id = &joysticks[e->jbutton.which].allegro;
++      event.joystick.id = get_allegro(e->jbutton.which);
+       event.joystick.stick = 0;
+       event.joystick.axis = 0;
+       event.joystick.pos = 0;
+@@ -72,7 +90,7 @@ void _al_sdl_joystick_event(SDL_Event *e)
+    }
+    else if (e->type == SDL_JOYBUTTONUP) {
+       event.joystick.type = ALLEGRO_EVENT_JOYSTICK_BUTTON_UP;
+-      event.joystick.id = &joysticks[e->jbutton.which].allegro;
++      event.joystick.id = get_allegro(e->jbutton.which);
+       event.joystick.stick = 0;
+       event.joystick.axis = 0;
+       event.joystick.pos = 0;
+@@ -85,7 +103,10 @@ void _al_sdl_joystick_event(SDL_Event *e)
+       return;
+    }
+ 
+-   ALLEGRO_EVENT_SOURCE *es = al_get_joystick_event_source();
++   if (event.joystick.type != ALLEGRO_EVENT_JOYSTICK_CONFIGURATION
++         && !event.joystick.id)
++      return;
++
+    _al_event_source_lock(es);
+    _al_event_source_emit_event(es, &event);
+    _al_event_source_unlock(es);

@@ -1,0 +1,120 @@
+diff --git a/src/basics/resol.d b/src/basics/resol.d
+index b5f3859..a0d982f 100644
+--- a/src/basics/resol.d
++++ b/src/basics/resol.d
+@@ -35,6 +35,7 @@ void changeResolutionBasedOnCmdargsThenUserFile(const(Cmdargs) cmdargs)
+     gui.root.initialize(displayXl, displayYl);
+     graphic.internal.initialize(cmdargs.mode);
+     graphic.internal.initializeScale(gui.stretchFactor);
++    mouseCursor.chooseScale(gui.stretchFactor);
+     physics.physdraw.initialize();
+     hardware.mouse.initialize();
+ }
+diff --git a/src/graphic/cutbit.d b/src/graphic/cutbit.d
+index 508697c..d64952f 100644
+--- a/src/graphic/cutbit.d
++++ b/src/graphic/cutbit.d
+@@ -167,9 +167,10 @@ public:
+     }
+ 
+     // This should only be used by the mouse cursor, which draws even on top
+-    // of the gui torbit. Rotation, mirroring, and scaling is not offered.
++    // of the gui torbit. Rotation and mirroring are not offered. Scaling is
++    // by an integer factor only, so the pixel art stays crisp.
+     void drawToCurrentAlbitNotTorbit(in Point targetCorner,
+-        in int xf = 0, in int yf = 0) const
++        in int xf = 0, in int yf = 0, in int scale = 1) const
+     {
+         if (! bitmap || xf < 0 || xf >= _cutting.xfs
+                      || yf < 0 || yf >= _cutting.yfs
+@@ -177,15 +178,25 @@ public:
+             drawMissingFrameError(targetCorner, xf, yf);
+             return;
+         }
++        immutable int s = max(1, scale);
+         // usually, select only the correct frame. If we'd draw off the screen
+         // to the left or top, instead do extra cutting by passing > 0 to the
+-        // latter two args.
+-        Albit sprite = create_sub_bitmap_for_frame(xf, yf,
+-            max(-targetCorner.x, 0), max(-targetCorner.y, 0));
++        // latter two args. The cut is in unscaled source pixels.
++        immutable int xec = max(-targetCorner.x, 0) / s;
++        immutable int yec = max(-targetCorner.y, 0) / s;
++        Albit sprite = create_sub_bitmap_for_frame(xf, yf, xec, yec);
+         scope (exit)
+             albitDestroy(sprite);
+-        al_draw_bitmap(sprite, max(0, targetCorner.x),
+-                               max(0, targetCorner.y), 0);
++        if (s == 1) {
++            al_draw_bitmap(sprite, targetCorner.x + xec,
++                                   targetCorner.y + yec, 0);
++            return;
++        }
++        immutable int w = al_get_bitmap_width(sprite);
++        immutable int h = al_get_bitmap_height(sprite);
++        al_draw_scaled_bitmap(sprite, 0, 0, w, h,
++            targetCorner.x + xec * s, targetCorner.y + yec * s,
++            w * s, h * s, 0);
+     }
+ 
+ private:
+diff --git a/src/hardware/mousecur.d b/src/hardware/mousecur.d
+index 60f4530..a7696c9 100644
+--- a/src/hardware/mousecur.d
++++ b/src/hardware/mousecur.d
+@@ -23,6 +23,7 @@ private:
+     Shape _shape;
+     Arrows _arrows;
+     Sidekick _sidekick;
++    int _scale = 1;
+ 
+ public:
+     enum Shape : int {
+@@ -57,16 +58,42 @@ public:
+         want(Sidekick.none);
+     }
+ 
++    /*
++     * Integer magnification of the cursor graphics. Call after the GUI
++     * context exists, e.g., on resolution change. guiStretch is the GUI's
++     * stretch factor (screen height / 480). The environment variable
++     * LIX_CURSOR_MIN_SCALE, if set to a positive integer, is a lower bound:
++     * handhelds want a bigger cursor than the GUI scale alone would give.
++     */
++    void chooseScale(in float guiStretch)
++    {
++        import std.algorithm : max;
++        import std.conv : to;
++        import std.math : lround;
++        import std.process : environment;
++
++        _scale = max(1, cast(int) lround(guiStretch));
++        immutable env = environment.get("LIX_CURSOR_MIN_SCALE");
++        if (env.length) {
++            try
++                _scale = max(_scale, env.to!int);
++            catch (Exception)
++                log("Ignoring LIX_CURSOR_MIN_SCALE, not an integer: " ~ env);
++        }
++    }
++
+     void draw()
+     {
+         const(Cutbit) mainCursor = InternalImage.mouseMain.toCutbit;
+         const(Cutbit) sideCursor = InternalImage.mouseSidekick.toCutbit;
++        immutable s = _scale;
+         immutable mainP = Point(
+-            hardware.mouse.mouseX - mainCursor.xl/2 + 1,
+-            hardware.mouse.mouseY - mainCursor.yl/2 + 1);
+-        immutable sideP = mainP + mainCursor.len + Point(1, -sideCursor.yl);
+-        mainCursor.drawToCurrentAlbitNotTorbit(mainP, mainXf, mainYf);
+-        sideCursor.drawToCurrentAlbitNotTorbit(sideP, _sidekick, 0);
++            hardware.mouse.mouseX - mainCursor.xl * s / 2 + s,
++            hardware.mouse.mouseY - mainCursor.yl * s / 2 + s);
++        immutable sideP = mainP + mainCursor.len * s
++                        + Point(s, -sideCursor.yl * s);
++        mainCursor.drawToCurrentAlbitNotTorbit(mainP, mainXf, mainYf, s);
++        sideCursor.drawToCurrentAlbitNotTorbit(sideP, _sidekick, 0, s);
+     }
+ 
+ private:
