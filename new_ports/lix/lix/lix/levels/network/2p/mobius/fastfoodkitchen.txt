@@ -1,0 +1,88 @@
+$BUILT 2017-09-26 18:48:44
+$AUTHOR mobius
+$ENGLISH Hell's Kitchen
+
+#INTENDED_NUMBER_OF_PLAYERS 2
+#SIZE_X 1264
+#SIZE_Y 400
+
+#SECONDS 30
+#INITIAL 100
+#REQUIRED 50
+#SPAWN_INTERVAL 40
+
+#WALKER 40
+#RUNNER 20
+#EXPLODER2 20
+#BUILDER 60
+#PLATFORMER 10
+#BASHER 20
+#DIGGER 20
+#JUMPER 40
+#BATTER 30
+#CUBER 20
+
+:matt/underworld/Hatch.H: 72 184
+:matt/underworld/Hatch.H: 1128 184 r
+
+:matt/underworld/Goal.G: 720 144
+:matt/underworld/Goal.G: 480 144
+
+:proxima/flame.F: 536 352
+:proxima/flame.F: 568 352
+:proxima/flame.F: 656 352
+:proxima/flame.F: 688 352
+:matt/underworld/Lava.W: 96 352
+:matt/underworld/Lava.W: 144 352
+:matt/underworld/Lava.W: 192 352
+:matt/underworld/Lava.W: 240 352
+:matt/underworld/Lava.W: 288 352
+:matt/underworld/Lava.W: 336 352
+:matt/underworld/Lava.W: 384 352
+:matt/underworld/Lava.W: 432 352
+:matt/underworld/Lava.W: 0 352
+:matt/underworld/Lava.W: 48 352
+:matt/underworld/Lava.W: 928 352
+:matt/underworld/Lava.W: 976 352
+:matt/underworld/Lava.W: 1024 352
+:matt/underworld/Lava.W: 1072 352
+:matt/underworld/Lava.W: 1120 352
+:matt/underworld/Lava.W: 1168 352
+:matt/underworld/Lava.W: 1216 352
+:matt/underworld/Lava.W: 784 352
+:matt/underworld/Lava.W: 832 352
+:matt/underworld/Lava.W: 880 352
+
+:matt/underworld/08: 968 176
+:matt/underworld/02: 480 304
+:matt/underworld/02: 600 304
+:matt/underworld/02: 600 208
+:matt/underworld/01: 600 176
+:matt/underworld/02: 720 304
+:matt/underworld/02: 720 208
+:matt/underworld/05: 856 264
+:matt/underworld/05: 1056 264
+:matt/underworld/05: 944 272
+:matt/underworld/05: 1000 264
+:matt/underworld/02: 480 208 frr
+:matt/underworld/08: 172 176 frr
+:matt/underworld/05: 232 264 frr
+:matt/underworld/05: 32 264 frr
+:matt/underworld/05: 144 272 frr
+:matt/underworld/05: 88 264 frr
+:geoo/steel/16x16o.S: 504 208
+:geoo/steel/16x16o.S: 744 208
+:matt/underworld/04: 960 240 r
+:matt/underworld/04: 240 240 r
+:geoo/steel/32x16o.S: 1128 272
+:geoo/steel/32x16o.S: 1160 272
+:geoo/steel/32x16o.S: 72 272
+:geoo/steel/32x16o.S: 104 272
+:geoo/steel/32x16o.S: 480 208
+:geoo/steel/32x16o.S: 512 208
+:geoo/steel/32x16o.S: 720 208
+:geoo/steel/32x16o.S: 752 208
+:matt/underworld/02: 600 144
+:matt/underworld/02: 600 64 d
+:geoo/steel/32x16o.S: 104 256 d
+:geoo/steel/32x16o.S: 1128 256 d

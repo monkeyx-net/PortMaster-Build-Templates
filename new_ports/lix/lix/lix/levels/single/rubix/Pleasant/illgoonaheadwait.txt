@@ -1,0 +1,99 @@
+$BUILT 2017-06-14 18:03:52
+$AUTHOR Rubix
+$ENGLISH I'll go on ahead.  Wait here!
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 640
+#SIZE_Y 336
+#START_X 0
+#START_Y 0
+#BACKGROUND_RED 0
+#BACKGROUND_GREEN 48
+#BACKGROUND_BLUE 128
+
+#INITIAL 20
+#REQUIRED 17
+#SPAWN_INTERVAL 53
+
+#BUILDER 4
+#PLATFORMER 4
+#MINER 2
+#EXPLODER2 0
+
+:simon/oriental/hatch.H: 536 208 r
+
+:simon/oriental/goal.G: 496 32
+
+:matt/water.W: 152 288
+:matt/water.W: 216 288
+:matt/water.W: 248 288
+:matt/water.W: 152 304
+:matt/water.W: 216 304
+:matt/water.W: 248 304
+:matt/water.W: 184 288
+:matt/water.W: 184 304
+:matt/water.W: 600 288
+:matt/water.W: 600 304
+:matt/water.W: 632 288
+:matt/water.W: 632 304
+
+:simon/oriental/bridge1: 112 272
+:simon/oriental/bridge3: 248 264
+:simon/oriental/culm_d_half: 116 177
+:simon/oriental/culm_end: 124 159
+:simon/oriental/culm_end: 125 138 f
+:simon/oriental/culm_long: 125 42
+:simon/oriental/culm_long: 89 146
+:simon/oriental/culm_long: 88 58
+:simon/oriental/10: 96 192
+:simon/oriental/06: 192 128
+:simon/oriental/06: 144 128
+:simon/oriental/06: 528 128
+:simon/oriental/06: 480 128
+:simon/oriental/06: 432 128
+:simon/oriental/06: 384 128
+:simon/oriental/06: 336 128
+:simon/oriental/06: 288 128
+:simon/oriental/06: 240 128
+:simon/oriental/bonsai: -70 104
+:simon/oriental/bonsai: 512 64 frr
+:simon/oriental/06: 96 288
+:simon/oriental/gate: 224 48
+:simon/oriental/03: 160 112
+:simon/oriental/03: 192 112
+:simon/oriental/03: 224 112
+:simon/oriental/03: 256 112
+:simon/oriental/03: 288 112
+:simon/oriental/03: 320 112
+:simon/oriental/03: 352 112
+:simon/oriental/03: 384 112
+:simon/oriental/03: 416 112
+:simon/oriental/03: 448 112
+:simon/oriental/03: 480 112
+:simon/oriental/03: 512 112
+:simon/oriental/03: 544 112
+:simon/oriental/03: -13 32
+:simon/oriental/03: 32 32
+:simon/oriental/03: -59 32
+:simon/oriental/03: 413 66
+:simon/oriental/02: 384 66
+:simon/oriental/10: 96 162 frr
+:simon/oriental/10: 96 132
+:simon/oriental/10: 96 102 rrr
+:simon/oriental/10: 96 72
+:simon/oriental/10: 96 42 rrr
+:simon/oriental/06: 264 272
+:simon/oriental/06: 296 272
+:simon/oriental/06: 328 272
+:simon/oriental/06: 360 272
+:simon/oriental/06: 392 272
+:simon/oriental/06: 424 272
+:simon/oriental/06: 456 272
+:simon/oriental/06: 488 272
+:simon/oriental/06: 520 272
+:simon/oriental/06: 64 288
+:simon/oriental/06: 32 288
+:simon/oriental/06: 0 288
+:simon/oriental/06: -32 288
+:simon/oriental/bush6: 608 256 d
+:simon/oriental/06: 552 272

@@ -1,0 +1,98 @@
+$BUILT 2016-10-02 06:42:02
+$AUTHOR geoo
+$ENGLISH Downpour
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 480
+#SIZE_Y 256
+#TORUS_X 0
+#TORUS_Y 1
+#START_X 0
+#START_Y 92
+
+#INITIAL 120
+#REQUIRED 25
+#SPAWN_INTERVAL 1
+
+#EXPLODER2 3
+#JUMPER 3
+
+:geoo/construction/Hatch.H: 16 0
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+:geoo/construction/Hatch.H: 128 32
+:geoo/construction/Hatch.H: 192 32
+:geoo/construction/Hatch.H: 256 32
+
+:geoo/abstract/goal.G: 400 80
+:geoo/abstract/goal.G: 400 208
+
+:geoo/abstract/tbeam_down.T: 320 0
+:geoo/abstract/tbeam_down.T: 320 32
+:geoo/abstract/tbeam_down.T: 320 64
+:geoo/abstract/tbeam_down.T: 320 128
+:geoo/abstract/tbeam_down.T: 320 160
+:geoo/abstract/tbeam_down.T: 320 192
+:geoo/abstract/tbeam_right.T: 320 192
+:geoo/abstract/tbeam_right.T: 320 160
+:geoo/abstract/tbeam_right.T: 320 128
+:geoo/abstract/tbeam_right.T: 320 64
+:geoo/abstract/tbeam_right.T: 320 32
+:geoo/abstract/tbeam_right.T: 320 0
+:geoo/abstract/tbeam_up.T: 320 224
+:geoo/abstract/tbeam_right.T: 320 224
+:geoo/abstract/tbeam_up.T: 320 96
+:geoo/abstract/tbeam_right.T: 320 96
+
+:geoo/abstract/pipes/central5: 0 80
+:geoo/abstract/pipes/central5: 32 80
+:geoo/abstract/pipes/central5: 360 128
+:geoo/abstract/pipes/central5: 392 128
+:geoo/abstract/pipes/central5: 424 128
+:geoo/abstract/pipes/endr5: 352 128 frr
+:geoo/abstract/pipes/central5: 360 0
+:geoo/abstract/pipes/central5: 392 0
+:geoo/abstract/pipes/central5: 424 0
+:geoo/abstract/pipes/endr5: 352 0 frr
+:geoo/abstract/pipes/cshort5: 0 72 rrr
+:geoo/abstract/pipes/ends5: 0 66 r
+:geoo/abstract/pipes/cshort5: 56 72 rrr
+:geoo/abstract/pipes/ends5: 56 66 r
+:geoo/abstract/pipes/corner5: 0 80
+:geoo/abstract/pipes/corner5: 56 80 rrr
+:geoo/abstract/pipes/central5: 456 128
+:geoo/abstract/pipes/central5: 456 0

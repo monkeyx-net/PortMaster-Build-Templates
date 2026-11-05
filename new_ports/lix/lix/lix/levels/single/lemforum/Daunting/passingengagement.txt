@@ -1,0 +1,156 @@
+$BUILT 2017-08-09 00:50:09
+$AUTHOR mobius
+$ENGLISH Passing Engagement
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 1200
+#SIZE_Y 400
+
+#INITIAL 10
+#REQUIRED 10
+#SPAWN_INTERVAL 10
+
+#BLOCKER 1
+#PLATFORMER 1
+#BASHER 1
+#MINER 1
+#EXPLODER2 0
+
+:matt/earth/Hatch.H: 28 39
+
+:matt/earth/Goal.G: 1010 72
+
+:simon/water.W: 808 352
+:simon/water.W: 904 352
+:simon/water.W: 856 352
+
+:matt/earth/10: 110 128
+:matt/earth/04: 124 274
+:matt/earth/04: 209 293
+:matt/earth/16: 266 242 fr
+:matt/earth/10: 128 252 rr
+:matt/earth/10: 354 262
+:matt/earth/10: 280 312
+:matt/earth/09: 344 124
+:matt/earth/04: 454 278
+:matt/earth/04: 244 142
+:matt/earth/17: 36 146 fr
+:matt/earth/03: 204 129
+:matt/earth/10: 110 182
+:matt/earth/03: 80 146
+:matt/earth/26: 876 174
+:matt/earth/10: 976 306
+:matt/earth/10: 1098 280 rrr
+:matt/earth/25: 854 170
+:matt/earth/26: 842 160 frrr
+:matt/earth/18: 758 168
+:matt/earth/07: 748 282 frrr
+:matt/earth/18: 740 182
+:matt/earth/07b: 740 180
+:matt/earth/17: 750 330
+:matt/earth/00: 566 152
+:matt/earth/17: 570 120 fr
+:matt/earth/04: 528 194
+:matt/earth/18: 654 132
+:matt/earth/10: 434 182
+:matt/earth/00: 594 112
+:matt/earth/27: 900 192
+:matt/earth/25: 902 196
+:matt/earth/23: 798 34
+:matt/earth/25: 778 22
+:matt/earth/26: 860 50 frr
+:matt/earth/25: 810 42
+:matt/earth/28: 864 62
+:matt/earth/26: 850 44 fr
+:matt/earth/29: 870 -2
+:matt/earth/04: 782 -86 f
+:matt/earth/13: 940 130
+:matt/earth/14: 902 138
+:matt/earth/06: 874 154
+:matt/earth/09: 1126 184
+:matt/earth/10: 938 134
+:matt/earth/13: 1130 152
+:matt/earth/07: 1116 176
+:matt/earth/17: 1098 190
+:matt/earth/10: 980 158
+:matt/earth/17: 932 274 rr
+:matt/earth/17: 930 182
+:matt/earth/02: 878 158 r
+:matt/earth/10: 978 190
+:matt/earth/11: 986 202
+:matt/earth/07: 972 234 rrr
+:matt/earth/09: 892 164
+:matt/earth/17: 944 318
+:matt/earth/10: 962 238
+:matt/earth/00: 1164 226 frrd
+:matt/earth/09: 986 130 frr
+:matt/earth/08: 1070 138
+:matt/earth/07b: 1060 142
+:matt/earth/09: 1026 136
+:matt/earth/08: 962 132 frr
+:matt/earth/07b: 1102 158
+:matt/earth/07b: 1110 166
+:matt/earth/07b: 1122 170 frr
+:matt/earth/06: 1150 188 r
+:matt/earth/07b: 1134 176
+:matt/earth/07b: 1092 152
+:matt/earth/01: 766 -14
+:matt/earth/10: 608 320
+:matt/earth/00: 402 128
+:matt/earth/10: 310 132
+:matt/earth/03: 476 148
+:matt/earth/04: 512 282
+:matt/earth/07: 760 298
+$BEGIN_TILE_GROUP 0
+:matt/earth/04: 0 0
+:matt/earth/00: 82 30 rrrd
+$END_TILE_GROUP
+:Group-0: 672 192
+:matt/earth/10: 384 140
+:matt/earth/04: 588 174
+:matt/earth/08: 680 212 rrr
+:matt/earth/08: 782 324
+:matt/earth/10: 598 288
+:matt/earth/08: 758 278
+:matt/earth/00: 92 130
+:matt/earth/05: 4 190
+:matt/earth/00: 438 132
+:matt/earth/09: 257 124 frr
+:matt/earth/10: 316 182
+:matt/earth/00: 304 130
+:matt/earth/16: 4 294 frr
+:matt/earth/00: 20 150
+:matt/earth/09: 513 144
+:matt/earth/09: 418 124
+:matt/earth/09: 382 124 frr
+:matt/earth/04: 28 174
+:matt/earth/09: 180 124 frr
+:matt/earth/09: 162 122 frr
+:matt/earth/08: 484 126
+:matt/earth/07b: 588 118
+:matt/earth/08: 570 118 f
+:matt/earth/09: 596 110 frr
+:matt/earth/09: 612 110 frr
+:matt/earth/09: 110 124 frr
+:matt/earth/09: 66 142 frr
+:matt/earth/09: 42 142 frr
+:matt/earth/09: 200 128 frr
+:matt/earth/09: 316 126 frr
+:matt/earth/07b: 104 134
+:matt/earth/09: 128 122 frr
+:matt/earth/09: 446 126
+:matt/earth/09: 278 122 frr
+:matt/earth/09: 228 126 frr
+:matt/earth/04: 42 271
+:matt/earth/06: 932 142
+:matt/earth/18: 1026 108 d
+:matt/earth/06: 1044 206
+:matt/earth/09: 1000 230
+:matt/earth/09: 528 144 frr
+:matt/earth/08: 660 112
+:matt/earth/07: 698 186 rrr
+:matt/earth/08: 740 162 r
+:matt/earth/07b: 762 128 d
+:matt/earth/15: 770 160 rd
+:matt/earth/08: 744 146 rrrd
+:matt/earth/18: 824 166 d

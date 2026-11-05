@@ -1,0 +1,125 @@
+$BUILT 2017-09-22 07:58:55
+$AUTHOR geoo
+$ENGLISH Let's Block and Blow?
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 576
+#SIZE_Y 288
+#BACKGROUND_RED 8
+#BACKGROUND_GREEN 72
+#BACKGROUND_BLUE 0
+
+#INITIAL 20
+#REQUIRED 19
+#SPAWN_INTERVAL 12
+
+#EXPLODER2 1
+#BLOCKER 1
+
+:raymanni/lab/hatch.H: 144 48
+
+:raymanni/lab/goal.G: 192 144
+
+:raymanni/lab/shower.T: 472 144
+
+:simon/acid.W: 16 248
+:simon/acid.W: 64 248
+:simon/acid.W: 112 248
+:simon/acid.W: 160 248
+:simon/acid.W: 208 248
+:simon/acid.W: 256 248
+:simon/acid.W: 304 248
+:simon/acid.W: 352 248
+:simon/acid.W: 400 248
+:simon/acid.W: 448 248
+:simon/acid.W: 496 248
+:simon/acid.W: 544 248
+:simon/acid.W: -32 248
+:raymanni/lab/goo.W: 368 96
+:raymanni/lab/goo.W: 400 96
+:raymanni/lab/goo.W: 432 96
+:raymanni/lab/goo.W: 464 96
+:raymanni/lab/goo.W: 496 96
+
+:raymanni/lab/pipe_2: 406 178 rrr
+:raymanni/lab/pipe_2: 328 120 rrr
+:raymanni/lab/pipe_2: 72 120 rrr
+:raymanni/lab/pipe_2: 72 176
+:raymanni/lab/scen_8: 368 120
+:raymanni/lab/scen_4: 380 176
+:raymanni/lab/pipe_1: 428 144
+:raymanni/lab/pipe_1: 428 176
+:raymanni/lab/scen_6: 420 134
+:raymanni/lab/pipe_1: 352 96
+:raymanni/lab/pipe_1: 344 208 rrr
+:raymanni/lab/pipe_1: 408 208 rrr
+:raymanni/lab/scen_1: 448 162
+:raymanni/lab/pipe_1: 472 208 rrr
+:raymanni/lab/pipe_1: 64 232
+:raymanni/lab/pipe_1: 88 208 rrr
+:raymanni/lab/pipe_1: 120 208 rrr
+:raymanni/lab/pipe_1: 152 208 rrr
+:raymanni/lab/pipe_1: 184 208 rrr
+:raymanni/lab/pipe_1: 216 208 rrr
+:raymanni/lab/pipe_1: 248 208 rrr
+:raymanni/lab/pipe_1: 280 208 rrr
+:raymanni/lab/pipe_1: 312 208 rrr
+:raymanni/lab/pipe_1: 440 208 rrr
+:raymanni/lab/pipe_2: 520 232
+:raymanni/lab/block_2: 56 200
+:raymanni/lab/block_2: 504 200
+:raymanni/lab/block_2: 368 96 d
+$BEGIN_TILE_GROUP 0
+:raymanni/lab/block_4: 0 0
+:raymanni/lab/block_4: 0 2 d
+$END_TILE_GROUP
+:Group-0: 352 96
+:raymanni/lab/scen_2: 442 -2
+:raymanni/lab/scen_8: 468 -26
+:raymanni/lab/scen_7: 388 -8
+:raymanni/lab/pipe_1: 32 24 rrr
+:raymanni/lab/block_2: 56 16
+:raymanni/lab/pipe_2: 72 48
+:raymanni/lab/pipe_1: 0 24 rrr
+:raymanni/lab/pipe_1: 528 56 rrr
+:raymanni/lab/scen_5: 24 -40
+:raymanni/lab/scen_5: -8 -40
+:raymanni/lab/pipe_1: 376 208 rrr
+:raymanni/lab/pipe_2: 520 264
+:raymanni/lab/pipe_1: 64 264
+:raymanni/lab/pipe_2: 72 80
+:raymanni/lab/pipe_2: 72 112
+:raymanni/lab/pipe_2: 72 144
+:raymanni/lab/pipe_1: 64 -16
+:raymanni/lab/pipe_1: 352 128
+:raymanni/lab/pipe_1: 352 160
+:raymanni/lab/pipe_1: 384 128 rrr
+:raymanni/lab/pipe_1: 416 128 rrr
+:raymanni/lab/pipe_1: 448 128 rrr
+:raymanni/lab/pipe_1: 480 128 rrr
+:raymanni/lab/pipe_2: 296 120 rrr
+:raymanni/lab/pipe_2: 264 120 rrr
+:raymanni/lab/pipe_2: 232 120 rrr
+:raymanni/lab/pipe_2: 200 120 rrr
+:raymanni/lab/pipe_2: 168 120 rrr
+:raymanni/lab/pipe_2: 136 120 rrr
+:raymanni/lab/pipe_2: 104 120 rrr
+:raymanni/lab/pipe_2: 256 96 rrr
+:raymanni/lab/pipe_2: 224 96 rrr
+:raymanni/lab/pipe_2: 192 96 rrr
+:raymanni/lab/pipe_2: 160 96 rrr
+:raymanni/lab/pipe_2: 128 96 rrr
+:raymanni/lab/pipe_2: 320 96 rrr
+:raymanni/lab/pipe_2: 288 96 rrr
+:raymanni/lab/pipe_1: 512 168
+:raymanni/lab/pipe_1: 512 136
+:raymanni/lab/pipe_1: 512 104
+:raymanni/lab/pipe_1: 512 72
+:raymanni/lab/pipe_1: 512 40
+:raymanni/lab/pipe_1: 512 8
+:raymanni/lab/pipe_1: 512 -24
+:raymanni/lab/pipe_1: 560 56 rrr
+:raymanni/lab/pipe_junction: 352 184
+:raymanni/lab/pipe_junction: 360 128 frrr
+:raymanni/lab/pipe_junction: 488 128 rrr
+:raymanni/lab/pipe_junction: 520 56 frrr

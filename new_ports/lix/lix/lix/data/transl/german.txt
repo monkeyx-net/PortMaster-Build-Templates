@@ -1,0 +1,472 @@
+// See `english.txt' for instructions on how to translate the game.
+$mainNameOfLanguage Deutsch
+
+// English opening quote: “
+// English closing quote: ”
+// German opening quote: „
+// German closing quote: “ (this closing quote is the English opening quote)
+// File/shell output: " (ASCII double quote, both opening and closing)
+
+// Darstellung der aktuellen Version im Hauptmenü
+$versioningVersion Version
+$versioningForOperatingSystem für
+
+// Verschiedene Dialoge
+$commonOk Okay
+$commonCancel Abbrechen
+$commonBack Zurück
+$commonExit Beenden
+
+$mainMenuGetMusic Extrahiere die Musik im Lix-Ordner:
+
+// Browser
+$browserSingleTitle Einzelspieler|Vom Hauptmenü den Einzelspieler-Browser aufrufen.
+$browserNetworkTitle Netzwerk-Level wählen
+$browserPlay Spielen
+$browserEdit Bearbeiten
+$browserNewLevel Level erstellen
+$browserDelete Löschen
+$browserSearch Suchen
+$browserOpenRepForLev Replay laden
+$browserExportImage Bild exportieren
+$browserExportImageDone Liegt in:
+$browserMkdirTitle Ordner erstellen
+$browserMkdirPleaseEnter Name des neuen Ordners:
+
+$browserReplayTitle Replays|Vom Hauptmenü den Replay-Browser aufrufen.
+$browserReplayPointedTo Verwiesener Level
+$browserReplayVerifyDir Ordner verifizieren
+
+$winVerifyTitle Replay-Verifizierer
+$winVerifyOutputWrittenTo Ausgabe auch in „%s“. Klicke, um zurückzukehren.
+$verifyHeader Ergebnis,Replay,Level,Spieler,Gerettet,Ziel,Fähigkeiten,Ticks
+$verifyStatisticsFrom Statistiken über %d Replays:
+$verifyTrophiesUpdated %d Trophäen für %s aktualisiert.
+$verifyLevelsNoProof Diesen %d Levels fehlen Beweise:
+$verifyDirectoryCoverage Ordner-Abdeckung:
+$verifyAllLevelsCovered Alle %d Levels sind lösbar.
+$verifySomeLevelsCovered %d von %d Levels sind lösbar, %d sind ohne Beweis.
+$verifyStatusMultiplayer Replay ignoriert, es ist Mehrspieler.
+$verifyStatusNoPointer Replay hat keinen Leveldatei-Verweis.
+$verifyStatusMissingLevel Replay verweist auf fehlenden Level.
+$verifyStatusBadLevel Replay verweist auf unspielbaren Level.
+$verifyStatusFailed Replay löst den verwiesenen Level nicht.
+$verifyStatusMercyKilled Replay läuft über %d Minuten nach letzter Fähigkeits-Zuweisung.
+$verifyStatusSolved Replay löst den verwiesenen Level.
+
+$previewLevelAuthor von
+$previewLevelSingleGoal Ziel:
+$previewLevelSingleTrophySaved Rekord:
+$previewLevelSingleTrophySkills Fähigkeiten:
+$previewLevelMultiIntendedNumPlayers Spielerzahl:
+$previewReplayPlayer Spieler:
+$previewReplayFilenameOfReplay Replay:
+$previewReplayPointsTo ⟶
+$previewMissingTiles %d fehlende Stücke:
+$previewMissingTilesMoreSee und %d weitere, siehe „%s“
+
+$harvestYouSavedThisTime %d Lix gerettet!
+$harvestReplayAutoSaved Replay autogespeichert.
+$harvestReplaySaveManuallyAtAll Replay speichern
+$harvestReplaySaveManuallyToo Manuell speichern
+
+$winSearchTitle Levelsuche
+$winSearchPrompt Suche nach Titel, Autor oder Dateiname in %d Levels:
+
+$repForLevTitle Replay für „%s“ laden
+$repForLevFoundWhere Listet Replays aus Ordner:
+$repForLevFoundWhat deren Dateiname so beginnt:
+
+$outcomeRetryOldLevel Versuch es nochmal:
+$outcomeYouSolvedOldLevel Glückwunsch! Du hast gelöst:
+$outcomeAttemptNextLevel Nächster Level:
+$outcomeResolveNextLevel Nächster Level (gelöst):
+$outcomeAttemptNextUnsolvedLevel Nächster ungelöster Level:
+$outcomeExitToSingleBrowser Zurück zum Level-Browser
+
+$outcomeTrophyLixSaved Lix
+$outcomeTrophySkillsUsed Fähigkeiten
+$outcomeTrophyYourAttempt Dein Ergebnis
+$outcomeTrophyPreviousRecord Rekord
+
+// Lobby
+$winLobbyTitle Netzwerkspiel|Vom Hauptmenü die Netzwerk-Lobby aufrufen.
+$winLobbyDisconnect Trennen
+$winLobbyStartCentral Am zentralen Server spielen
+$winLobbyStartServer Selbst ein Spiel hosten
+$winLobbyStartCustom Zu jemand anderem verbinden
+$winLobbyTitleAddress Adresse
+$winLobbyTitlePort UDP-Port
+$winLobbyChat Chat:
+$winLobbySelectLevel Level wählen
+$winLobbyReady Bereit zum Start
+$winLobbyRoomNumber Raum Nr. %d
+$winLobbyRoomInhabitants %d Spieler
+$winLobbyRoomCreate Raum eröffnen
+$winLobbyRoomLeave Raum verlassen
+
+$handicapTitle Handicap
+$handicapPhilosophy1 Mit Handicap startest du mit einem Nachteil.
+$handicapPhilosophy2 Wenn ein starker Spieler mit einem schwächeren spielt, kann der starke
+$handicapPhilosophy3 ein Handicap wählen, um das Spiel für alle spannender zu gestalten.
+$handicapInitialLix Start-Lix|Deine Klappen starten mit weniger Lix.
+$handicapInitialLixNormal Normale Start-Lix
+$handicapInitialSkills Fähigkeiten|Deine Fähigkeitsleiste startet mit kleineren Zahlen.
+$handicapInitialSkillsNormal Normale Leiste
+$handicapSpawnDelay Verzögerung|Deine erste Lix erscheint später.
+$handicapSpawnDelayNormal Sofort
+$handicapScore Punktzahl|Deine Ziele geben weniger Punkte pro eintretender Lix.
+$handicapScoreNormal 1 Punkt pro Lix
+
+// Multiplayer interruption dialog
+$winAbortNetgameTitle Spielmenü|Das Menü während des Netzwerkspiels aufrufen,|um die Partie vorzeitig zu beenden. Das Menü pausiert das Spiel nicht.
+$winAbortNetgameContinuePlaying Weiterspielen
+$winAbortNetgameExitToLobby Beenden, zur Lobby
+
+// Help texts inside the game
+$gameForceLeft [%s] für Linksläufer.
+$gameForceRight [%s] für Rechtsläufer.
+$gamePriorityInvert [%s] für hintere Lix.
+$gameQueueBuilder Klicke zum Vormerken.
+$gameQueuePlatformer Klicke zum Vormerken.
+$gamePurelyInsert Füge eine Fähigkeit ins Replay ein.
+$gameReplaceFuture1 Ersetze 1 zukünftige Fähigkeit.
+$gameReplaceFutureN Ersetze %d zukünftige Fähigkeiten.
+$gameCancelReplay Replay läuft. Klicke, um von hier zu spielen.
+$gameFramestepOrQuit Gehe zurück (◀▮) oder beende mit [%s].
+$gameMaxTicksReached Maximale Anzahl Ticks (%s) erreicht. Spule zurück oder beende.
+$gamePause Pause.
+$gameShowSplatRuler Fallhöhen-Lineal anzeigen.
+$gameHighlightGoals Eigene Klappen und Ziele hervorheben.
+$gameStateSave Spielstand schnellspeichern.
+$gameStateLoad Schnellgespeicherten Spielstand laden.
+$gameShowTweaker Replay-Justierer anzeigen.
+$gameRewindPrevPly Deine letzte Fähigkeitszuweisung zurückspulen.
+$gameRewindOneTick %s spult 1 Tick zurück, %s spult 1 Sekunde zurück.
+$gameSkipOneTick %s geht 1 Tick vor, %s springt 10 Sekunden vor.
+$gameFastForward %s für schnellen Vorlauf, %s für Turbo.
+$gameRestart Level neu starten.
+$gameNuke Atombombe. Aktiviere per Doppelklick.
+$gameInfobarPlus1Lix + 1 Lix
+$gameInfobarPlusNLix + %d Lix
+
+$tweakerHeaderLixID Lix
+$tweakerHeaderTick Tick
+$tweakerLineNow Jetzt
+$tweakerEmptyListTitle Replay-Justierer
+$tweakerEmptyListDesc1 Klicke Lix an.
+$tweakerEmptyListDesc2 Justiere dann hier
+$tweakerEmptyListDesc3 den Spielverlauf.
+
+$skill=walker Walker|geht|Walker. Dreht um, beendet Blocker.
+$skill=jumper Jumper|springt|Jumper. Runner springen weiter.
+$skill=climber Climber|klettert|Climber. Klettert alle Wände hoch.
+$skill=floater Floater|schwebt|Floater. Überlebt jede Fallhöhe.
+$skill=runner Runner|rennt|Runner. Läuft doppelt so schnell.
+$skill=exploder Imploder|implodiert|Imploder. Zerstört Erde, beendet Blocker.
+$skill=exploder2 Exploder|explodiert|Exploder. Schleudert andere Lix.
+$skill=blocker Blocker|blockt|Blocker. Dreht andere Lix um.
+$skill=batter Batter|battet|Batter. Schleudert andere Lix.
+$skill=cuber Cuber|cubt|Cuber. Verwandelt sich in Erde.
+$skill=builder Builder|baut|Builder. Baut diagonale Treppen.
+$skill=platformer Platformer|platformt|Platformer. Baut horizontale Brücken.
+$skill=basher Basher|bohrt|Basher. Bohrt horizontale Tunnel.
+$skill=miner Miner|hackt|Miner. Hackt diagonale Tunnel.
+$skill=digger Digger|gräbt|Digger. Gräbt vertikale Löcher.
+
+$skill=faller Faller|fällt
+$skill=tumbler Tumbler|purzelt
+$skill=stunner Stunner|liegt
+$skill=lander Lander|landet
+$skill=ascender Ascender|steigt
+$skill=shrugger Shrugger|zuckt
+$skill=shrugger2 Shrugger|zuckt
+
+$tooltipHatch Klappe. Fall-Intervall %d.
+$tooltipGoalPuzzleZero Ziel. Rette %d/%d zur Lösung.
+$tooltipGoalPuzzleSome Ziel. Rette %d/%d. Du hast %d.
+$tooltipGoalYours Ziel. Jede Lix zählt für dich.
+$tooltipGoalOpponents Ziel. Dein Gegner bekommt Punkte.
+$tooltipFire Feuer. Jederzeit tödlich.
+$tooltipWater Wasser. Jederzeit tödlich.
+$tooltipMuncher Falle. Tötet in %d Ticks.
+$tooltipCatapult Katapult. Wirft %s%d, %s%d in %d Ticks.
+$tooltipSteam Dampf. Wirft alle Lix %s%d, %s%d.
+
+$editorHotkey Hotkey:
+$editorBarAt an
+$editorBarGroup -Stücke-Gruppe
+$editorBarHover Stücke werden markiert
+$editorBarSelection Stücke markiert
+
+$editorButtonFileNew Neu: Karte leeren und einen ganz neuen Level bauen.
+$editorButtonFileExit Beenden: Editor verlassen, auf Wunsch Änderungen speichern.
+$editorButtonFileSave Speichern:
+$editorButtonFileSaveAs Speichern unter: Level unter einem neuen Dateinamen abspeichern.
+$editorButtonGrid2 Raster 2: Objekte zukünftig in 2-Pixel-Schritten bewegen.
+$editorButtonGridCustom Benutzerdef. Raster: In den Hauptmenü-Optionen verstellbar.
+$editorButtonGrid16 Raster 16: Objekte zukünftig in 16-Pixel-Schritten bewegen.
+$editorButtonSelectAll Alles: Alle Objekte auf dem Bildschirm in die Auswahl setzen.
+$editorButtonSelectFrame Rahmen: Mehrfachauswahl von Objekten durch Rahmenziehen.
+$editorButtonSelectAdd Hinzufügen: Neue Objekte auswählen, ohne alte abzuwählen.
+$editorButtonUndo Rückgängig: Nimmt die jüngsten Änderungen am Level zurück.
+$editorButtonRedo Doch wieder: Zurückgenommene Änderungen wiederherstellen.
+$editorButtonGroup Gruppieren: Erzeugt ein Terrainstück aus den markierten Stücken.
+$editorButtonUngroup Degruppieren: Löst markierte Gruppen in ihre Einzelstücke auf.
+$editorButtonSelectCopy Kopieren: Ausgewählte Objekte klonen.
+$editorButtonSelectDelete Löschen: Ausgewählte Objekte löschen.
+$editorButtonBackground Hintergrund: Ausgewählte Teile hinter andere setzen.
+$editorButtonForeground Vordergrund: Ausgewählte Teile vor andere holen.
+$editorButtonMirrorHorizontally Spiegeln: Ausgewähltes Terrain horizontal spiegeln.
+$editorButtonFlipVertically Kopfüber: Ausgewähltes Terrain vertikal spiegeln.
+$editorButtonSelectRotate Drehen: Ausgewähltes Terrain um ein Viertel drehen.
+$editorButtonSelectDark Dunkel: Ausgewähltes Terrain im Spiel schwarz zeichnen.
+$editorButtonAddTerrain Terrain: Ein durchgrabbares Terrainstück platzieren.
+$editorButtonAddSteel Stahl: Ein nicht-durchgrabbares Stahlobjekt platzieren.
+$editorButtonAddHatch Klappe: Eine Lix-Eingangsklappe platzieren.
+$editorButtonAddGoal Ziel: Ein Ziel, also einen Lix-Ausgang platzieren.
+$editorButtonAddHazard Gefahr: Eine Falle, Wasser oder Feuer platzieren.
+$editorButtonMenuConstants Konstanten: Titel und wichtige Zahlen einstellen.
+$editorButtonMenuTopology Karte: Abmessungen ändern, Außenkanten verkleben.
+$editorButtonMenuSkills Fähigkeiten: Anzahl Lix-Fähigkeiten pro Spieler einstellen.
+
+$saveBrowserTitle Speichern unter
+$saveBrowserWhatToType Dateiname ohne Erweiterung:
+$saveBoxOverwriteTitle Überschreiben?
+$saveBoxOverwriteQuestion Diesen Level wirklich überschreiben?
+$saveBoxOverwrite Überschreiben
+$saveBoxTitleDelete Löschen?
+$saveBoxTitleSave Speichern?
+$saveBoxQuestionUnsavedChangedLevel Änderungen an diesem Level speichern?
+$saveBoxQuestionUnsavedNewLevel Neuen Level speichern?
+$saveBoxQuestionDeleteReplay Dieses Replay wirklich löschen?
+$saveBoxQuestionDeleteLevel Diesen Level wirklich löschen?
+$saveBoxDirectory Ordner:
+$saveBoxFileName Datei:
+$saveBoxLevelName Titel:
+$saveBoxYesSave Speichern
+$saveBoxNoDiscard Verwerfen
+$saveBoxNoCancel Abbrechen
+
+$addTerrain Terrain hinzufügen
+$addSteel Stahl hinzufügen
+$addHatch Klappe hinzufügen
+$addGoal Ziel hinzufügen
+$addHazard Gefahr hinzufügen
+
+$winTopologyTitle Karte
+$winTopologyL Links:
+$winTopologyR Rechts:
+$winTopologyU Oben:
+$winTopologyD Unten:
+$winTopologyTorusX Horizontal rundumgehend
+$winTopologyTorusY Vertikal rundumgehend
+$winTopologyWarnSize1 Ein so großer Level mit
+$winTopologyWarnSize2 Pixeln
+$winTopologyWarnSize3 stürzt auf einigen PCs ab.
+
+$winLooksTitle Aussehen
+$winLooksRed Hintergrund Rot
+$winLooksGreen Hintergrund Grün
+$winLooksBlue Hintergrund Blau
+
+$winConstantsTitle Konstanten
+$winConstantsAuthor Autor
+$winConstantsLevelName Leveltitel
+$winConstantsTooLongWarn Zu lang!
+$winConstantsTooLongDesc Der Levelbrowser zeigt das nur abgekürzt.
+$winConstantsPlayers Spieler
+$winConstantsInitial Lix zu Beginn
+$winConstantsRequired Lix zu retten
+$winConstantsSpawnint Fall-Intervall
+$winConstantsOvertime Nachspielzeit
+
+$winSkillsTitle Fähigkeiten
+$winSkillsUseExploder Exploder
+$winSkillsClear Alle auf null
+$winSkillsEightTo Klassische 8:
+$winSkillsAllTo Alle 14 auf:
+
+// Exporting a level into a file
+$exportSingleInitial Lix:
+$exportSingleRequired Rette:
+$exportSingleSpawnint SI:
+
+// Netzwerk-Chatnachrichten
+$netChatEnetDLLMissing Netzwerkmodus nicht benutzbar, da die enet-DLL fehlt:
+$netChatStartClient Verbinde zu
+$netChatStartCancel Verbindungsaufbau abgebrochen.
+$netChatYouLoggedOut Du hast das Netzwerk verlassen.
+$netChatYouCannotConnect Server nicht gefunden.
+$netChatYouLostConnection Verbindung zum Server verloren!
+$netChatPeerDisconnected %s hat das Netzwerk verlassen.
+$netChatVersionRoomRequires Du kannst nicht beitreten: Raum Nr. %d verlangt Lix-Version %s,
+$netChatVersionServerSuggests Du kannst nicht verbinden: Der Server empfiehlt Lix-Version %s,
+$netChatVersionYours aber du hast Lix %s.
+$netChatPleaseDownload Lade die neueste Version herunter:
+$netChatWeInRoom Du hast Raum Nr. %d betreten.
+$netChatWeInLobby Du bist in der Lobby.
+$netChatPlayerInRoom %s hat Raum Nr. %d betreten.
+$netChatPlayerInLobby %s hat die Lobby betreten.
+$netChatPlayerOutRoom %s wechselt in Raum Nr. %d.
+$netChatPlayerOutLobby %s hat den Raum verlassen.
+$netChatHandicapSet %s spielt mit Handicap: %s
+$netChatHandicapUnset %s spielt ohne Handicap.
+$netChatLevelChange %s hat „%s“ gewählt.
+$netGameHowToChat Du kannst mit [%s] chatten.
+$netGameFirstSpawnIn Los geht's in
+$netGameEndResult Spielergebnis:
+$netGameOvertimeNukeIn Die Nachspielzeit läuft! Atombombe in
+
+// Optionsfenster
+$optionTitle Optionen|Vom Hauptmenü das Optionsmenü aufrufen.
+$optionGroupGeneral Allgemein
+$optionGroupGraphics Grafik
+$optionGroupControls Steuerung
+$optionGroupGameControls Spielsteuerung
+$optionGroupGameKeys Spieltasten
+$optionGroupEditorKeys Editortasten
+$optionGroupMenuKeys Menütasten
+$optionUserName Spielername|Dein Name erscheint in Replays und im Netzwerkspiel.|Lix speichert Einstellungen in der Datei ./user/options.sdl.
+$optionLanguage Sprache/Language|Sprache der Lix-Benutzeroberfläche.
+$optionReplayAutoSolutions Level-Lösungen autospeichern|Replays all deiner Einzelspieler-Lösungen speichern.|Wenn ein Versuch nicht klappt, wird er auch nicht gespeichert.
+$optionReplayAutoMulti Im Mehrspieler autospeichern|Replays all deiner Mehrspieler-Partien automatisch speichern.|Dies speichert gewonnene und verlorene Partien.
+$optionSoundEnabled Ton|Ton einschalten.
+$optionMusicEnabled Musik|Musik einschalten.
+$optionSoundDecibels Tonverstärkung in dB|Tonlautstärke anpassen. 0 ist schon recht laut.|Erhöhe/senke um 10 dB, um die Tonlautstärke zu verdoppeln/halbieren.
+$optionMusicDecibels Musikverstärkung in dB|Musiklautstärke anpassen. −10 dB sollte laut genug sein.|Erhöhe/senke um 10 dB, um die Musiklautstärke zu verdoppeln/halbieren.
+
+$optionScreenWindowed Fenstermodus|Lix läuft in einem Fenster. Bestimme rechts die Fenstergröße.|Fensterwechsel (z.B. mit Alt+Tab) erfolgt schnell.
+$optionScreenSoftwareFullscreen Software-Vollbild|Dies erstellt ein randloses Fenster, das den Bildschirm komplett ausfüllt.|Fensterwechsel (z.B. mit Alt+Tab) erfolgt schnell.
+$optionScreenHardwareFullscreen Hardware-Vollbild|Hardware-Vollbild braucht einige Sekunden zum Einstieg und Verlassen.|Fensterwechsel (z.B. mit Alt+Tab) dauert einige Sekunden.
+$optionScreenWindowedRes Fenstergröße|Größe des Lix-Fensters im Fenstermodus.
+$optionScreenHardwareFullscreenRes Vollbild-Auflösung|Hardware-Vollbild nutzt diese Monitor-Auflösung.|Software-Vollbild nutzt dies nur, falls es die Desktop-Auflösung nicht erkennt.
+$optionAllowBlurryZoom Unscharfen Zoom erlauben|Unscharfe Zoom-Faktoren erlauben, die den Level an das Lix-Fenster anpassen.|Ohne Haken: Zoom ist immer scharf und ganzzahlig, also 1x, 2x, 3x, ...
+$optionPaintTorusSeams Torus-Nahtstellen anmalen|Torus-Nahtstellen in der Landschaft mit einer dünnen Linie kennzeichnen.|Dies hat keine Auswirkung auf die Physik; es dient zur Orientierung.
+$optionIngameTooltips Tooltips im Spiel|Buttons und Lix-wählende Hotkeys im Spiel erklären, z.B. nur Linksläufer.|Einige Buttons haben eine Linksklick- und eine Rechtsklick-Funktion.
+$optionShowFPS Ticks und FPS zählen|Anzahl Ticks (Physik-Updates) seit Spielbeginn anzeigen.|Im Editor und Spiel: Frames pro Sekunde anzeigen.
+$optionGuiColorRed Menü rot|Die Grafikoberfläche in Lix anders färben.
+$optionGuiColorGreen Menü grün|Die Grafikoberfläche in Lix anders färben.
+$optionGuiColorBlue Menü blau|Die Grafikoberfläche in Lix anders färben.
+
+$optionKeyZoomIn Zoom +|Level größer darstellen, dafür weniger auf einmal sehen.
+$optionKeyZoomOut Zoom −|Level kleiner darstellen, dafür mehr auf einmal sehen.
+$optionKeyScroll Halten zum Scrollen|Halte dies (Standard: rechte Maustaste ⟁) und bewege die Maus zum Scrollen.|Das ist einfacher, schneller und präziser als Scrollen am Bildschirmrand.
+$optionKeyPriorityInvert Priorität invertieren|Halte dies, um Fähigkeiten der Lix mit der niedrigsten Priorität zuzuweisen.|Halte dies im Editor, um das hinterste Element anstatt des vordersten zu wählen.
+$optionKeyScreenshot Screenshot|Screenshot (Bildschirmfoto) des gesamten Lix-Fensters speichern.|Screenshots werden gespeichert in ./export/ oder ~/.local/share/lix/export/.
+
+$optionSplatRulerDesign2Bars 2-Strich-Lineal|Das Fallhöhen-Lineal misst die maximale überlebbare Falldistanz.|Aktiviere das Fallhöhen-Lineal im Spiel mit einem Button, siehe Spieltasten.
+$optionSplatRulerDesign094 3-Strich-Lineal, hinter Terrain|Das Fallhöhen-Lineal misst die maximale überlebbare Falldistanz.|Aktiviere das Fallhöhen-Lineal im Spiel mit einem Button, siehe Spieltasten.
+$optionSplatRulerDesign3Bars 3-Strich-Lineal, groß|Das Fallhöhen-Lineal misst die maximale überlebbare Falldistanz.|Aktiviere das Fallhöhen-Lineal im Spiel mit einem Button, siehe Spieltasten.
+$optionSplatRulerSnapPixels Einrast-Distanz in Pixeln|Das Fallhöhen-Lineal rastet an Terrainkanten über/unter der Maus ein.|Setze dies auf 0, um nie einzurasten. Standard ist 126, die maximale überlebbare Falldistanz.
+
+$optionMouseSpeed Mausgeschwindigkeit|Geschwindigkeit des Mauszeigers im Spiel, im Editor und im Menü.
+$optionScrollSpeedEdge Scroll-Geschw. am Bildrand|Scroll-Geschwindigkeit, wenn die Maus am Rand des Bildschirms ist.
+$optionHoldToScrollSpeed Scroll-Geschw. mit Scrolltaste|Scroll-Geschwindigkeit bei Mausbewegung, während du die Scrolltaste hältst.|Die Standard-Scrolltaste ist die rechte Maustaste ⟁, änderbar links.
+$optionHoldToScrollInvert Halte-Scrollen invertieren|Entgegen der Mausbewegung scrollen, während du die Scrolltaste hältst.|Die Standard-Scrolltaste ist die rechte Maustaste ⟁, änderbar oben.
+$optionFastMovementFreesMouse Schnelle Beweg. befreit Maus|Die Maus verlässt das Lix-Fenster, wenn du sie ruckartig bewegst.|Ohne Haken: Befreie die Maus mit Alt+Tab.
+
+$optionRewindIsBrowse ◀▮ behält Zuweisungen|Wenn du Fähigkeitszuweisungen zurückspulst (mit ◀▮), bleiben sie im Replay|und werden später erneut abgespielt. Um sie zu löschen, klicke in die Luft.
+$optionRewindIsUndo ◀▮ löscht Zuweisungen|Zurückgespulte Fähigkeitszuweisungen werden sofort aus dem Replay gelöscht.|Durch ◀▮ wirst du somit nie in den Replaymodus kommen.
+$optionWhenTweakerHidden Ohne Justierer:|Wenn du ein Einzelspielerspiel beginnst, ist der Replay-Justierer aus.|Öffne/schließe den Justierer mit einem Button, siehe Spieltasten.
+$optionWhenTweakerShown Mit Justierer:|Diese Steuerungen gelten, während der Replay-Justierer sichtbar ist.|Öffne/schließe den Justierer mit einem Button, siehe Spieltasten.
+$optionAirClicksCut Luftklick unterbricht Replay|Klicke in die Luft, um alle zukünftigen Zuweisungen aus dem Replay zu löschen.|Ohne Haken: Luftklicks haben keine Wirkung. Lösche Zuweisungen im Justierer.
+$optionInsertAssignments Zuweisungen einfügen|Nach ◀▮ belassen neue Zuweisungen die Zukunft anderer Lix.|Ohne Haken: Neue Zuweisungen löschen die Zukunft aus dem Replay.
+$optionRewindToAssignmentPlusTicks ⬚◀◀ spult zu Tick daneben|Zu welchem Tick neben der vorherigen Zuweisung spult ⬚◀◀ (siehe Spieltasten)?|0: Fähigkeit ist schon aktiv. −1: Wenn du klicken würdest. −2: Bevor du klicken würdest.
+
+$optionKeyForceLeft Nur links|Halte gedrückt, um Fähigkeiten an Linksläufer zuzuweisen.|Das ist nützlich in dichten Ansammlungen von Lix.
+$optionKeyForceRight Nur rechts|Halte gedrückt, um Fähigkeiten an Rechtsläufer zuzuweisen.|Das ist nützlich in dichten Ansammlungen von Lix.
+$optionKeyPause Pause|Das Spiel pausieren.|Du kannst unten bestimmen, ob Fähigkeitszuweisungen die Pause beenden.
+$optionKeyRewindPrevPly ⬚◀◀|Deine letzte Fähigkeitszuweisung zurückspulen.|Klicke anschließend in die Luft, um die Zuweisung zu löschen.
+$optionKeyRewindOneSecond ◀▮ 1 Sek.|Das Spiel um 1 Sekunde zurückspulen.
+$optionKeyRewindOneTick ◀▮ 1 Tick|Das Spiel um 1 Physik-Update zurückspulen, also um ¹⁄₁₅ einer Sekunde.
+$optionKeySkipOneTick ▮▶ 1 Tick|Das Spiel um 1 Physik-Update vorspulen, also um ¹⁄₁₅ einer Sekunde.
+$optionKeySkipTenSeconds ▮▶ 10 Sek.|Das Spiel um 10 Sekunden vorspulen.
+$optionKeySpeedFast ▶▶|Schnellen Vorlauf an- und ausschalten.|Schneller Vorlauf ist 4-mal so schnell wie normales Spiel.
+$optionKeySpeedTurbo ▶▶▶|Turbo-Vorlauf an- und ausschalten.|Turbo-Vorlauf ist 36-mal so schnell wie normales Spiel.
+$optionKeyRestart Neustart|Den Level komplett von vorne starten, mit Replay deiner Aktionen.|Um das Replay abzubrechen, klicke in die Luft.
+$optionKeyStateLoad Stand laden|Zum schnellgespeicherten Spielstand zurückkehren.
+$optionKeyStateSave Stand speich.|Spielstand schnellspeichern.
+$optionKeyShowTweaker Rep.-Justierer|Den Replay-Justierer anzeigen, um Lösungsansätze auszubessern.|Du kannst Fähigkeitszuweisungen löschen und verschieben.
+$optionKeyChat Chat|Die Chat-Konsole während einer Mehrspieler-Partie öffnen.
+$optionKeyShowSplatRuler Fall-Lineal|Das Fallhöhen-Lineal anzeigen, um tödliche Falldistanzen zu messen.
+$optionKeyHighlightGoals Ziele hervorh.|Eigene Klappen und Ziele während eines Netzwerkspiels hervorheben.|Es ist dann leichter, sich zurechtzufinden.
+$optionKeyNuke Atombombe|Im Einzelspieler alle Lix sprengen, um den Level zu beenden.|Im Netzwerkspiel die Nachspielzeit starten, sofern mindestens 1 Lix gerettet ist.
+
+$optionAvoidBuilderQueuing Builder eher an Nicht-Builder|Builder vorrangig an Nicht-Builder zuweisen anstatt an bestehende Builder.|Halte „Priorität invertieren“ (Reiter „Steuerung“), um das jeweils andere zu tun.
+$optionAvoidBatterToExploder Batter eher an Nicht-Exploder|Batter vorrangig an normale Lix zuweisen anstatt an brennende Exploder.|Halte „Priorität invertieren“ (Reiter „Steuerung“), um das jeweils andere zu tun.
+$optionUnpauseOnAssign Pause aus bei Fähigk.-Zwsg.|Die Pause ausschalten, wenn du eine Fähigkeit zuweist.|Ohne Haken: Nur 1 Physik-Update weiter, wenn du eine Fähigkeit zuweist.
+
+$optionKeyMenuOkay Okay/ja|Den markierten Level spielen.|Dialog-Einstellungen übernehmen und Dialoge beenden.
+$optionKeyMenuEdit Bearbeiten|Den markierten Level mit dem Leveleditor öffnen.
+$optionKeyMenuNewLevel Erstellen|Einen neuen Level im Leveleditor erstellen.
+$optionKeyMenuRepForLev Replay laden|Im Einzelspieler-Browser ein Replay zum markierten Level laden.
+$optionKeyMenuExport Exportieren|Den markierten Level als Bilddatei exportieren.
+$optionKeyMenuDelete Löschen/nein|Die markierte Datei löschen.|Ungespeicherte Daten verwerfen, wenn der Editor zum Speichern fragt.
+$optionKeyMenuUpDir Ordner hoch|In den übergeordneten Ordner wechseln.|Du kannst zu anderen Levels, Replays oder Terrainstücken navigieren.
+$optionKeyMenuUpBy5 Rauf um 5|Die Markierung um 5 Dateien nach oben bewegen.|Hiermit kannst du Levels ohne die Maus auswählen.
+$optionKeyMenuUpBy1 Rauf um 1|Die Markierung um 1 Datei nach oben bewegen.|Hiermit kannst du Levels ohne die Maus auswählen.
+$optionKeyMenuDownBy1 Runter um 1|Die Markierung um 1 Datei nach unten bewegen.|Hiermit kannst du Levels ohne die Maus auswählen.
+$optionKeyMenuDownBy5 Runter um 5|Die Markierung um 5 Dateien nach unten bewegen.|Hiermit kannst du Levels ohne die Maus auswählen.
+$optionKeyMenuExit Zurück/abbr.|Einen Browser schließen.|Einen Dialog abbrechen, ohne zu speichern.
+
+$optionKeyOutcomeSaveReplay Replay speichern|Im Bildschirm nach einem Einzelspieler-Level:|Das Replay manuell speichern.
+$optionKeyOutcomeOldLevel Selber Level|Im Bildschirm nach einem Einzelspieler-Level:|Denselben Level nochmal spielen.
+$optionKeyOutcomeNextLevel Nächster Level|Im Bildschirm nach einem Einzelspieler-Level:|Den direkt nächsten Level spielen, egal ob schon gelöst oder nicht.
+$optionKeyOutcomeNextUnsolved Nächster ungelöster Level|Im Bildschirm nach einem Einzelspieler-Level:|Den nächsten ungelösten Level spielen.
+
+$optionEdLeft Nach links|Ausgewählte Stücke nach links bewegen.|Das Raster wird eingehalten. Halte die Taste zum schnellen Bewegen.
+$optionEdRight Nach rechts|Ausgewählte Stücke nach rechts bewegen.|Das Raster wird eingehalten. Halte die Taste zum schnellen Bewegen.
+$optionEdUp Nach oben|Ausgewählte Stücke nach oben bewegen.|Das Raster wird eingehalten. Halte die Taste zum schnellen Bewegen.
+$optionEdDown Nach unten|Ausgewählte Stücke nach unten bewegen.|Das Raster wird eingehalten. Halte die Taste zum schnellen Bewegen.
+$optionEdSave Speichern
+$optionEdSaveAs Speich. unter
+$optionEdGrid Raster
+$optionEdSelectAll Alles ausw.
+$optionEdSelectFrame Rahmen
+$optionEdSelectAdd Mehr ausw.
+$optionEdUndo Rückgängig
+$optionEdRedo Doch wieder
+$optionEdGroup Gruppieren
+$optionEdUngroup Degruppieren
+$optionEdCopy Kopieren
+$optionEdDelete Löschen
+$optionEdForeground Nach vorn
+$optionEdBackground Nach hinten
+$optionEdMirrorHorizontally Spiegeln
+$optionEdFlipVertically Kopfüber
+$optionEdRotate Drehen
+$optionEdDark Schwarz
+$optionEdAddTerrain Terrain hinzuf.
+$optionEdAddSteel Stahl hinzuf.
+$optionEdAddHatch Klappe hinzuf.
+$optionEdAddGoal Ziel hinzuf.
+$optionEdAddHazard Gefahr hinzuf.
+$optionEdGridCustom Benutzerdefinierte Rastergröße
+
+$keyboardKeyCapsLock ⇩
+$keyboardKeyLeftShift ⇧
+$keyboardKeyRightShift ⇧
+$keyboardKeyLeftCtrl Strg
+$keyboardKeyRightCtrl Strg
+$keyboardKeyLeftAlt Alt
+$keyboardKeyRightAlt AltGr
+$keyboardKeyLeftWin Win
+$keyboardKeyRightWin Win
+$keyboardKeyContextMenu Kontextmenü
+
+$keyboardKeyInsert Einfg
+$keyboardKeyDelete Entf
+$keyboardKeyHome Pos1
+$keyboardKeyEnd Ende
+$keyboardKeyPageUp Bild↑
+$keyboardKeyPageDown Bild↓
+$keyboardKeyPrint Druck
+$keyboardKeyScrollLock Rollen
+$keyboardKeyPause Pause
+$keyboardKeyNumLock Num
+
+// Neuen Spieler begruessen (Mini-Dialog)
+$windowAskNameTitle Lix
+$windowAskNameFirst Hallo und willkommen!
+$windowAskNameSecond Wie heißt du?

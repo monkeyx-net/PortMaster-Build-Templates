@@ -1,0 +1,124 @@
+$BUILT 2017-09-11 06:14:02
+$AUTHOR minimac
+$ENGLISH Across the Gap (2P)
+
+#INTENDED_NUMBER_OF_PLAYERS 2
+#SIZE_X 608
+#SIZE_Y 512
+#TORUS_X 0
+#TORUS_Y 1
+
+#SECONDS 60
+#INITIAL 100
+#REQUIRED 16
+#SPAWN_INTERVAL 24
+
+#CLIMBER 3
+#FLOATER 16
+#EXPLODER2 16
+#BLOCKER 3
+#BUILDER 3
+#PLATFORMER 16
+#BASHER 16
+#MINER 3
+#DIGGER 16
+#BATTER 3
+
+:matt/bricks/Hatch.H: 104 224
+:matt/bricks/Hatch.H: 440 224 r
+
+:matt/bricks/Goal.G: 544 248
+:matt/bricks/Goal.G: 0 248
+
+:geoo/steel/dark_32x16o.S: 0 296
+:geoo/steel/dark_32x16o.S: 32 296
+:geoo/steel/dark_32x16o.S: 64 296
+:geoo/steel/dark_32x16o.S: 96 296
+:geoo/steel/dark_32x16o.S: 128 296
+:geoo/steel/dark_32x16o.S: 160 296
+:geoo/steel/dark_32x16o.S: 416 296
+:geoo/steel/dark_32x16o.S: 448 296
+:geoo/steel/dark_32x16o.S: 480 296
+:geoo/steel/dark_32x16o.S: 512 296
+:geoo/steel/dark_32x16o.S: 544 296
+:geoo/steel/dark_32x16o.S: 576 296
+:proxima/tile/pink3s: 192 288
+:proxima/tile/pink3s: 224 288
+:proxima/tile/pink3s: 256 288
+:proxima/tile/pink3s: 192 320
+:proxima/tile/pink3s: 256 320
+:proxima/tile/pink3s: 192 352
+:proxima/tile/pink3s: 224 352
+:proxima/tile/pink3s: 256 352
+:proxima/tile/pink3s: 192 384
+:proxima/tile/pink3s: 256 384
+:proxima/tile/pink3s: 192 416
+:proxima/tile/pink3s: 224 416
+:proxima/tile/pink3s: 256 416
+:proxima/tile/pink3s: 192 448
+:proxima/tile/pink3s: 256 448
+:proxima/tile/pink3s: 192 480
+:proxima/tile/pink3s: 224 480
+:proxima/tile/pink3s: 256 480
+:proxima/tile/pink3s: 192 0
+:proxima/tile/pink3s: 256 0
+:proxima/tile/pink3s: 192 32
+:proxima/tile/pink3s: 224 32
+:proxima/tile/pink3s: 256 32
+:proxima/tile/pink3s: 192 64
+:proxima/tile/pink3s: 256 64
+:proxima/tile/pink3s: 192 96
+:proxima/tile/pink3s: 224 96
+:proxima/tile/pink3s: 256 96
+:proxima/tile/pink3s: 192 128
+:proxima/tile/pink3s: 256 128
+:proxima/tile/pink3s: 192 160
+:proxima/tile/pink3s: 224 160
+:proxima/tile/pink3s: 256 160
+:proxima/tile/pink3s: 192 192
+:proxima/tile/pink3s: 256 192
+:proxima/tile/pink3s: 192 224
+:proxima/tile/pink3s: 224 224
+:proxima/tile/pink3s: 256 224
+:proxima/tile/pink3s: 192 256
+:proxima/tile/pink3s: 256 256
+:proxima/tile/pink3s: 320 288
+:proxima/tile/pink3s: 352 288
+:proxima/tile/pink3s: 384 288
+:proxima/tile/pink3s: 320 320
+:proxima/tile/pink3s: 384 320
+:proxima/tile/pink3s: 320 352
+:proxima/tile/pink3s: 352 352
+:proxima/tile/pink3s: 384 352
+:proxima/tile/pink3s: 320 384
+:proxima/tile/pink3s: 384 384
+:proxima/tile/pink3s: 320 416
+:proxima/tile/pink3s: 352 416
+:proxima/tile/pink3s: 384 416
+:proxima/tile/pink3s: 320 448
+:proxima/tile/pink3s: 384 448
+:proxima/tile/pink3s: 320 480
+:proxima/tile/pink3s: 352 480
+:proxima/tile/pink3s: 384 480
+:proxima/tile/pink3s: 320 0
+:proxima/tile/pink3s: 384 0
+:proxima/tile/pink3s: 320 32
+:proxima/tile/pink3s: 352 32
+:proxima/tile/pink3s: 384 32
+:proxima/tile/pink3s: 320 64
+:proxima/tile/pink3s: 384 64
+:proxima/tile/pink3s: 320 96
+:proxima/tile/pink3s: 352 96
+:proxima/tile/pink3s: 384 96
+:proxima/tile/pink3s: 320 128
+:proxima/tile/pink3s: 384 128
+:proxima/tile/pink3s: 320 160
+:proxima/tile/pink3s: 352 160
+:proxima/tile/pink3s: 384 160
+:proxima/tile/pink3s: 320 192
+:proxima/tile/pink3s: 384 192
+:proxima/tile/pink3s: 320 224
+:proxima/tile/pink3s: 352 224
+:proxima/tile/pink3s: 384 224
+:proxima/tile/pink3s: 320 256
+:proxima/tile/pink3s: 384 256

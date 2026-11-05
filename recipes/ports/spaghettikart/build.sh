@@ -15,6 +15,7 @@ FILES=(
   "libvorbisfile.so.3"
   "libvorbisenc.so.2"
   "libcrypto.so.1.1"
+  "libtheoradec.so.1"
   "liblzma.so.5"
 )
 CDIR=$(pwd)

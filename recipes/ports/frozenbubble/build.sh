@@ -7,7 +7,8 @@ PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
 FILES=(
-  "libSDL2_ttf-2.0.so.0"
+    "libtheoradec.so.1"
+    "libSDL2_ttf-2.0.so.0"
 )
 # fb-server needs glib; most firmwares ship it, so these are only used as a
 # fallback (searched after the system libraries) to avoid clashing with the

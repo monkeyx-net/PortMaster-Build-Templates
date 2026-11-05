@@ -1,0 +1,25 @@
+{
+  "recipe_version": 1,
+  "name": "lix.zip",
+  "port_json": "new_ports/lix/lix/lix/port.json",
+  "source": {
+    "date_updated": "2026-11-05",
+    "port_exe": "lix",
+    "port_build": "portmaster/build.sh",
+    "port_checksum": "a11020e73eb0b0faf610a14f9512e4f52a2ed939a300f52966ecc710e707caa6",
+    "port_url": "https://github.com/monkeyx-net/LixD-4-PortMaster/tree/portmaster",
+    "port_download": "https://github.com/monkeyx-net/LixD-4-PortMaster/archive/f0a7eaf2167a6ef59f69a33141bdc3bdd01fe465.zip",
+    "port_version": "commit:f0a7eaf"
+  },
+  "screenshot": {
+    "delay": 8,
+    "args": "--fullscreen",
+    "keys": "P l a y e r Return"
+  },
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ],
+  "controls": "launcher/controls.png"
+}

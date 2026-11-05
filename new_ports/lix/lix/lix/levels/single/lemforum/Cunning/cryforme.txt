@@ -1,0 +1,131 @@
+$BUILT 2022-09-20 00:29:07
+$AUTHOR Isu
+$ENGLISH Cry for Me
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 640
+#SIZE_Y 400
+
+#INITIAL 30
+#REQUIRED 30
+#SPAWN_INTERVAL 15
+
+#CLIMBER 24
+#FLOATER 4
+#BUILDER 3
+#BASHER 2
+#MINER 1
+#EXPLODER2 0
+
+:geoo/construction/Hatch.H: 560 80
+:geoo/construction/Hatch.H: 48 272
+:geoo/construction/Hatch.H: 560 272
+
+:geoo/construction/Goal2.G: 32 64
+
+:matt/water.W: 32 368
+:matt/water.W: 64 368
+:matt/water.W: 96 368
+:matt/water.W: 128 368
+:matt/water.W: 160 368
+:matt/water.W: 192 368
+:matt/water.W: 224 368
+:matt/water.W: 256 368
+:matt/water.W: 352 368
+:matt/water.W: 384 368
+:matt/water.W: 416 368
+:matt/water.W: 448 368
+:matt/water.W: 480 368
+:matt/water.W: 512 368
+:matt/water.W: 544 368
+:matt/water.W: 576 368
+
+:matt/goldmine/planksupport2: 0 352
+:geoo/steel/32x64o.S: 0 336
+:geoo/steel/32x64o.S: 0 272
+:geoo/steel/32x64o.S: 0 208
+:geoo/steel/32x64o.S: 0 144
+:geoo/steel/32x64o.S: 0 80
+:geoo/steel/32x64o.S: 0 16
+:matt/goldmine/planksupport2: 576 352
+:geoo/steel/32x64o.S: 608 336
+:geoo/steel/32x64o.S: 608 272
+:geoo/steel/32x64o.S: 608 208
+:geoo/steel/32x64o.S: 608 144
+:geoo/steel/32x64o.S: 608 80
+:geoo/steel/32x64o.S: 608 16
+:geoo/steel/64x32o.S: 32 320
+:geoo/steel/64x32o.S: 96 320
+:geoo/steel/64x32o.S: 160 320
+:geoo/steel/64x32o.S: 224 320
+:geoo/steel/64x32o.S: 288 320
+:geoo/steel/64x32o.S: 352 320
+:geoo/steel/64x32o.S: 416 320
+:geoo/steel/64x32o.S: 480 320
+:geoo/steel/64x32o.S: 544 320
+:geoo/construction/concrete/064: 288 256
+:geoo/construction/concrete/064: 288 192
+:geoo/steel/64x32o.S: 32 128
+:geoo/steel/64x32o.S: 96 128
+:geoo/steel/64x32o.S: 160 128
+:geoo/steel/64x32o.S: 416 128
+:geoo/steel/64x32o.S: 480 128
+:geoo/steel/64x32o.S: 544 128
+:geoo/steel/64x32o.S: 288 160
+:geoo/steel/16x16o.S: 224 128
+:geoo/steel/16x16o.S: 400 128
+:geoo/steel/32x16o.S: 0 0
+:geoo/construction/concrete/064: 32 24
+:geoo/construction/concrete/064: 96 24
+:geoo/construction/concrete/064: 160 24
+:geoo/construction/concrete/064: 224 24
+:geoo/construction/concrete/064: 288 24
+:geoo/construction/concrete/064: 352 24
+:geoo/construction/concrete/064: 416 24
+:geoo/construction/concrete/032vb: 496 56
+:geoo/construction/concrete/032vb: 480 24
+:geoo/construction/concrete/016vc: 480 88
+:geoo/construction/concrete/032hb: 480 88 d
+:geoo/steel/32x16o.S: 608 0
+:geoo/construction/concrete/032c: 576 24
+:matt/goldmine/planksupport2: 256 352
+:matt/goldmine/planksupport2: 448 352
+:matt/goldmine/planksupport2: 128 352
+:matt/goldmine/planksupport2: 320 352
+:geoo/construction/concrete/064: 288 352
+:geoo/construction/rod_steel/straight32.S: 32 16
+:geoo/construction/rod_steel/straight32.S: 64 16
+:geoo/construction/rod_steel/straight32.S: 96 16
+:geoo/construction/rod_steel/straight32.S: 128 16
+:geoo/construction/rod_steel/straight32.S: 160 16
+:geoo/construction/rod_steel/straight32.S: 192 16
+:geoo/construction/rod_steel/straight32.S: 224 16
+:geoo/construction/rod_steel/straight32.S: 256 16
+:geoo/construction/rod_steel/straight32.S: 288 16
+:geoo/construction/rod_steel/straight32.S: 320 16
+:geoo/construction/rod_steel/straight32.S: 352 16
+:geoo/construction/rod_steel/straight32.S: 384 16
+:geoo/construction/rod_steel/straight32.S: 416 16
+:geoo/construction/rod_steel/straight32.S: 448 16
+:geoo/construction/rod_steel/straight32.S: 480 16
+:geoo/construction/rod_steel/straight32.S: 512 16
+:geoo/construction/rod_steel/straight32.S: 544 16
+:geoo/construction/rod_steel/straight32.S: 576 16
+:geoo/steel/32x16o.S: 32 0
+:geoo/steel/32x16o.S: 64 0
+:geoo/steel/32x16o.S: 96 0
+:geoo/steel/32x16o.S: 128 0
+:geoo/steel/32x16o.S: 160 0
+:geoo/steel/32x16o.S: 192 0
+:geoo/steel/32x16o.S: 224 0
+:geoo/steel/32x16o.S: 256 0
+:geoo/steel/32x16o.S: 288 0
+:geoo/steel/32x16o.S: 320 0
+:geoo/steel/32x16o.S: 352 0
+:geoo/steel/32x16o.S: 384 0
+:geoo/steel/32x16o.S: 416 0
+:geoo/steel/32x16o.S: 448 0
+:geoo/steel/32x16o.S: 480 0
+:geoo/steel/32x16o.S: 512 0
+:geoo/steel/32x16o.S: 544 0
+:geoo/steel/32x16o.S: 576 0

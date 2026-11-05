@@ -1,0 +1,79 @@
+$BUILT 2017-02-16 11:55:30
+$AUTHOR geoo
+$ENGLISH Time to Change the Road
+
+#INTENDED_NUMBER_OF_PLAYERS 1
+#SIZE_X 640
+#SIZE_Y 320
+#START_X -48
+#START_Y -48
+
+#INITIAL 26
+#REQUIRED 23
+#SPAWN_INTERVAL 24
+
+#DIGGER 1
+#CUBER 3
+#EXPLODER2 0
+
+:geoo/construction/Hatch.H: 128 16
+:geoo/construction/Hatch.H: 480 176 r
+
+:geoo/construction/Goal2.G: 96 176
+
+:geoo/shadow/wall/center: 128 80
+:geoo/shadow/wall/center: 160 80
+:geoo/shadow/wall/center: 192 80
+:geoo/shadow/wall/center: 224 80
+:geoo/shadow/wall/center: 256 80
+:geoo/shadow/wall/center: 352 80
+:geoo/shadow/wall/center: 384 80
+:geoo/shadow/wall/center: 416 80
+:geoo/shadow/wall/center: 448 80
+:geoo/shadow/wall/center: 480 80
+:geoo/shadow/wall/center: 128 112
+:geoo/shadow/wall/center: 160 112
+:geoo/shadow/wall/center: 192 112
+:geoo/shadow/wall/center: 224 112
+:geoo/shadow/wall/center: 256 112
+:geoo/shadow/wall/center: 352 112
+:geoo/shadow/wall/center: 384 112
+:geoo/shadow/wall/center: 416 112
+:geoo/shadow/wall/center: 448 112
+:geoo/shadow/wall/center: 480 112
+:geoo/shadow/wall/left: 96 80
+:geoo/shadow/wall/left: 96 112
+:geoo/shadow/wall/right: 512 80
+:geoo/shadow/wall/right: 512 112
+:geoo/shadow/wall/center: 128 240
+:geoo/shadow/wall/center: 160 240
+:geoo/shadow/wall/center: 192 240
+:geoo/shadow/wall/center: 224 240
+:geoo/shadow/wall/center: 256 240
+:geoo/shadow/wall/center: 352 240
+:geoo/shadow/wall/center: 384 240
+:geoo/shadow/wall/center: 416 240
+:geoo/shadow/wall/center: 448 240
+:geoo/shadow/wall/center: 480 240
+:geoo/shadow/wall/center: 128 272
+:geoo/shadow/wall/center: 160 272
+:geoo/shadow/wall/center: 192 272
+:geoo/shadow/wall/center: 224 272
+:geoo/shadow/wall/center: 256 272
+:geoo/shadow/wall/center: 352 272
+:geoo/shadow/wall/center: 384 272
+:geoo/shadow/wall/center: 416 272
+:geoo/shadow/wall/center: 448 272
+:geoo/shadow/wall/center: 480 272
+:geoo/shadow/wall/left: 96 240
+:geoo/shadow/wall/left: 96 272
+:geoo/shadow/wall/right: 512 240
+:geoo/shadow/wall/right: 512 272
+:geoo/shadow/wall/center: 288 80
+:geoo/shadow/wall/center: 320 80
+:geoo/shadow/wall/center: 288 112
+:geoo/shadow/wall/center: 320 112
+:geoo/shadow/wall/center: 288 240
+:geoo/shadow/wall/center: 320 240
+:geoo/shadow/wall/center: 288 272
+:geoo/shadow/wall/center: 320 272
