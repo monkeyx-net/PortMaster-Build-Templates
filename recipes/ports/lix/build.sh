@@ -8,6 +8,10 @@ PORT_EXE="$3"
 ARCH="$4"
 CDIR=$(pwd)
 
+FILES=(
+  "libtheoradec.so.1"
+)
+
 cd "new_ports/${PORT_FOLDER}/source"
 
 # The fork's build.sh builds Allegro 5 (SDL2 + GLES2 backend) and Lix, and
