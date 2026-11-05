@@ -118,3 +118,18 @@ index 60f4530..a7696c9 100644
      }
  
  private:
+diff --git a/src/hardware/music.d b/src/hardware/music.d
+index d2bbcf4..28b70a2 100644
+--- a/src/hardware/music.d
++++ b/src/hardware/music.d
+@@ -136,7 +136,9 @@ void playFromBeginning(in Filename next)
+         return;
+     assert (isAudioInitialized(), "we should land here only if we have"
+         ~ " already called sound.tryInitialize before and it succeeded");
+-    _music = al_load_audio_stream(next.stringForReading.toStringz, 3, 1024);
++    // Allegro's SDL audio driver pulls 4096 frames per callback: buffer more
++    // than that, or the music underruns and stutters.
++    _music = al_load_audio_stream(next.stringForReading.toStringz, 4, 2048);
+     if (_music) {
+         _current = next;
+         al_set_audio_stream_playmode(_music,
