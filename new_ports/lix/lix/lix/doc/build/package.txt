@@ -1,0 +1,143 @@
+Notes for package maintainers
+=============================
+
+1. tl;dr
+--------
+
+If Lix shall read from `${XDG_DATA_DIRS}/lix/', don't change the Lix D source.
+(This usually points to `/usr/share/lix' or `/usr/local/share/lix' and Lix
+will use these as fallbacks in case the variable is not set.)
+If you want a custom install path, replace in `src/file/filename/fhs.d':
+
+    enum customReadOnlyDir = "";
+
+with, e.g.,
+
+    enum customReadOnlyDir = "/usr/share/games";
+
+...and the source will auto-append `/lix/' to make `/usr/share/games/lix/'.
+Read-write dir will be `${XDG_DATA_HOME}/lix/', usually `~/.local/share/lix/'.
+Build Lix with:
+
+    dub build -f -b releaseXDG
+
+Please update when I bump minor version (y in x.y.z), to support netplay.
+Many thanks! <3 See section below for files to exclude from a binary package.
+
+Extract music into read-only dir: https://www.lixgame.com/dow/lix-music.zip
+Dektop icon: data/images/lix_logo.svg
+Manpage: doc/lix.6
+
+
+
+2. Suggested command line
+-------------------------
+
+For binary packages in Linux distributions, I recommend to build Lix with this
+dub command line:
+
+    dub build -f -b releaseXDG
+
+Explanation:
+
+*   `dub' is the D build tool and D source package manager.
+
+*   `build' is the dub command to build, but not execute.
+
+*   `-f` forces a re-build of all dependencies and Lix, even when the build
+    system believes they're up-to-date.
+
+*   `-b releaseXDG' builds with optimizations and inlining, without contracts
+    or unittests, and passes a flag to the compiler to let Lix look in
+    predefined directories for its data instead of in the working directory.
+
+For a self-contained build, use `-b release' instead of `-b releaseXDG'.
+Then, Lix will read and write only within its working directory.
+
+
+
+3. Directories
+--------------
+
+Lix will read from `${XDG_DATA_DIRS}/lix/', or, if that environment variable
+doesn't exist, from `/usr/local/share/lix' or from `/usr/share/lix'. The exact
+path can be configured at runtime with the environment variable XDG_DATA_DIRS
+according to the XDG Base Directory Specification. If the variable has several
+colon-separated paths, they will be tried in order per file from the leftmost
+to the rightmost, until a required file is found.
+
+If the source in `src/file/filename/fhs.d' defines `customReadOnlyDir' as a
+nonempty string, that string will override the user's XDG environment
+variable, and instead hardcode the path for the read-only files.
+E.g., on Debian, you might hardcode `/usr/share/games'.
+
+Lix will write data and configurations to to `${HOME}/.local/share/lix/'.
+The environment variable XDG_DATA_HOME can override this directory;
+then Lix will read and write from `${XDG_DATA_HOME}/lix/'.
+
+Read the entire `src/file/filename/fhs.d' if you would like to know all
+details, and ask questions on github or in IRC. Contact details are in the
+readme file in the project's root dir.
+
+See below for what files to exclude from a binary distribution.
+
+
+
+4. Runtime speed
+----------------
+
+With the suggested command line above, release binary should have reasonable
+runtime speed already. To optimize even more for speed, use LDC instead of the
+reference compiler DMD.
+
+
+
+5. Music
+--------
+
+Lix has music, but the music is not in version control. I encourage you to
+ship the music inside your package. To get the music, download:
+
+    https://www.lixgame.com/dow/lix-music.zip
+
+If you extract this in Lix's directory, you'll get a subdirectory `./music/'.
+This subdirectory `./music/' should be installed to the read-only directory.
+
+
+
+6. Files to exclude
+-------------------
+
+In a binary distribution, you don't have to ship these files that the Lix
+repository has, that the build system creates, or that the game creates.
+You should probable delete these before packaging the game:
+
+*   src/                              -- the source code
+*   .git/ and .gitignore              -- version control
+*   dub.json and .dub.selections.json -- build system control files
+*   .dub/                             -- build artifacts
+*   win-build.bat                     -- batch file to build Lix on Windows
+*   data/images/lix_logo.svg          -- app icon template (3.7 MB)
+*   doc/build/                        -- the build documentation
+*   doc/lix.6                         -- move this manpage to where man looks
+*   replays/                          -- auto-saved game replays
+*   export/                           -- exported level pics, screenshots
+*   user/                             -- user options, trophies, logs
+
+
+
+7. Minor version increments (y in x.y.z)
+----------------------------------------
+
+The networking game server rejects connection attempts from different minor
+versions (y in x.y.z) than the current stable. I'd appreciate if you keep
+your package up-to-date with the minor versions! Reasons:
+
+I try to release bugfixes early and often, bumping Lix's patch version number
+(z in x.y.z). Levels may change between patch versions. It's nice, but
+low-priority, to update on patch version bumps.
+
+In contrast, I wait with physics changes until I can release all planned
+physics changes in a reasonably-tested minor version bump (y in x.y.z).
+Examples: A skill behaves differently, the networking protocol gets a feature,
+terrain tiles change shape.
