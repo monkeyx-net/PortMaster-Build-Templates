@@ -11,11 +11,6 @@
     "port_download": "https://github.com/SimonN/LixD/archive/refs/tags/v0.10.36.tar.gz",
     "port_version": "v0.10.36"
   },
-  "screenshot": {
-    "delay": 8,
-    "args": "--fullscreen",
-    "keys": "P l a y e r Return"
-  },
   "includes": [
     "launcher/main.lua",
     "launcher/osk.lua",
