@@ -1,0 +1,45 @@
+--- a/extern/aurora/lib/gfx/render_worker.cpp
++++ b/extern/aurora/lib/gfx/render_worker.cpp
+@@ -1,6 +1,7 @@
+ #include "render_worker.hpp"
+ 
+ #include "../thread.hpp"
++#include "../webgpu/gpu.hpp"
+ 
+ #include <algorithm>
+ #include <atomic>
+@@ -191,6 +192,13 @@
+ }
+ 
+ void initialize() {
++  // EGL wrappers such as Westonpack's crusty keep one GL context current on the thread that
++  // created it and make eglMakeCurrent a no-op, so Dawn's GLES backend must not be used from
++  // another thread. Run the work inline and treat the calling thread as the worker.
++  if (webgpu::g_backendType == wgpu::BackendType::OpenGLES) {
++    g_workerThreadId = std::this_thread::get_id();
++    return;
++  }
+   if (g_running.exchange(true, std::memory_order_acq_rel)) {
+     return;
+   }
+@@ -205,6 +213,7 @@
+ 
+ void shutdown() {
+   if (!g_running.load(std::memory_order_acquire)) {
++    g_workerThreadId = {};
+     return;
+   }
+   enqueue({
+--- a/extern/aurora/lib/gfx/pipeline_cache.cpp
++++ b/extern/aurora/lib/gfx/pipeline_cache.cpp
+@@ -1142,7 +1142,9 @@
+   g_pipelineThreadEnd = false;
+   g_gpuCachePrunePending = false;
+ 
+-  if (webgpu::g_backendType == wgpu::BackendType::WebGPU) {
++  // OpenGLES: compile on the render thread too (see render_worker::initialize)
++  if (webgpu::g_backendType == wgpu::BackendType::WebGPU ||
++      webgpu::g_backendType == wgpu::BackendType::OpenGLES) {
+     g_hasPipelineThread = false;
+   } else {
+     g_hasPipelineThread = true;

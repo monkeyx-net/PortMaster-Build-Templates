@@ -40,6 +40,10 @@ grep -q AURORA_GLES_X11_DISPLAY extern/aurora/lib/webgpu/gpu.cpp || { echo "Erro
 # does not allow in the vertex stage (GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS = 0)
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-vertex-textures.patch" || true
 grep -q BufferTextureWidth extern/aurora/lib/gfx/resources.hpp || { echo "Error: Aurora texture patch not applied"; exit 1; }
+# Aurora: on GLES, render and compile pipelines on the main thread; crusty's eglMakeCurrent is a
+# no-op, so its GL context is never current on Aurora's worker threads
+patch -p1 -N -r - < "${RECIPE}/aurora-gles-single-thread.patch" || true
+grep -q 'BackendType::OpenGLES' extern/aurora/lib/gfx/render_worker.cpp || { echo "Error: Aurora single-thread patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).
@@ -85,7 +89,7 @@ if grep -q 'GET_PROC_WITH_NAME(CreatePlatformPixmapSurface' "${DAWN_EGL}"; then
   exit 1
 fi
 # crusty: eglChooseConfig returns the current context's config (fails once Dawn's context is current),
-# so cache the window config found first; and crusty hides the current context from EGL, so internal fences use GL syncs.
+# so cache the window config found first; and crusty stubs EGL syncs, so internal fences use GL syncs.
 patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-crusty-egl.patch" || true
 grep -q mGLSync build/_deps/dawn-src/src/dawn/native/opengl/UtilsEGL.cpp || { echo "Error: Dawn crusty EGL patch not applied"; exit 1; }
 
