@@ -84,6 +84,10 @@ if grep -q 'GET_PROC_WITH_NAME(CreatePlatformPixmapSurface' "${DAWN_EGL}"; then
   echo "Error: failed to patch the optional pixmap surface proc in ${DAWN_EGL}"
   exit 1
 fi
+# crusty's eglChooseConfig returns the current context's config, which fails once Dawn's context is
+# current: find the window config before that and reuse it.
+patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-egl-config-cache.patch" || true
+grep -q gConfigCache build/_deps/dawn-src/src/dawn/native/opengl/DisplayEGL.cpp || { echo "Error: Dawn EGL config patch not applied"; exit 1; }
 
 ${PORT_BUILD}
 

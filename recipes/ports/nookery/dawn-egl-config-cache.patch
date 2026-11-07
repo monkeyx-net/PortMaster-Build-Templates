@@ -1,0 +1,64 @@
+--- a/src/dawn/native/opengl/DisplayEGL.cpp
++++ b/src/dawn/native/opengl/DisplayEGL.cpp
+@@ -27,7 +27,10 @@
+ 
+ #include "src/dawn/native/opengl/DisplayEGL.h"
+ 
++#include <map>
++#include <mutex>
+ #include <string>
++#include <tuple>
+ #include <utility>
+ 
+ #include "absl/container/flat_hash_set.h"
+@@ -35,6 +38,15 @@
+ 
+ namespace dawn::native::opengl {
+ 
++namespace {
++// Some EGL wrappers (Westonpack's crusty) answer eglChooseConfig with the config of the current
++// context, which fails once Dawn's own context is current. Remember every config found so
++// later lookups (surface capabilities, swap chain, adapter re-creation) get the same answer.
++using ConfigKey = std::tuple<EGLDisplay, EGLint, wgpu::TextureFormat, wgpu::TextureFormat>;
++std::mutex gConfigCacheMutex;
++std::map<ConfigKey, EGLConfig> gConfigCache;
++}  // namespace
++
+ // static
+ ResultOrError<Ref<DisplayEGL>> DisplayEGL::CreateFromDynamicLoading(
+     wgpu::BackendType backend,
+@@ -127,6 +139,9 @@
+                         targetAPI, rawClientAPIs);
+     }
+ 
++    // Look up the window config now, before any Dawn context is current (see gConfigCache).
++    ChooseConfig(EGL_WINDOW_BIT, wgpu::TextureFormat::RGBA8Unorm);
++
+     return {};
+ }
+ 
+@@ -158,6 +173,15 @@
+ EGLConfig DisplayEGL::ChooseConfig(EGLint surfaceType,
+                                    wgpu::TextureFormat color,
+                                    wgpu::TextureFormat depthStencil) const {
++    const ConfigKey key{mDisplay, surfaceType, color, depthStencil};
++    {
++        std::lock_guard<std::mutex> lock(gConfigCacheMutex);
++        auto it = gConfigCache.find(key);
++        if (it != gConfigCache.end()) {
++            return it->second;
++        }
++    }
++
+     absl::InlinedVector<EGLint, 20> attribs;
+     auto AddAttrib = [&](EGLint attrib, EGLint value) {
+         attribs.push_back(attrib);
+@@ -228,6 +252,8 @@
+         return kNoConfig;
+     }
+ 
++    std::lock_guard<std::mutex> lock(gConfigCacheMutex);
++    gConfigCache[key] = config;
+     return config;
+ }
+ 
