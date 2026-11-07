@@ -1,0 +1,88 @@
+first_state = closed
+
+init {
+    get_mob_info x self x
+    get_mob_info y self y
+    get_mob_info z_closed self z
+    set_var z_open $z_closed
+    calculate z_open $z_open + 150
+    set_flying true
+    start_height_effect
+}
+
+global {
+    on_receive_message {
+        get_event_info msg message
+    }
+}
+
+script {
+    closed {
+        on_enter {
+            set_animation closed
+            play_sound thud
+            set_can_block_paths true
+            set_tangible true
+        }
+        on_receive_message {
+            if $msg > 0
+                set_state opening
+            end_if
+        }
+    }
+
+    opening {
+        on_enter {
+            set_animation rattling
+            set_can_block_paths true
+            set_tangible true
+            move_to_absolute $x $y $z_open
+            start_particles dust_falling 0 0 0
+            play_sound vine
+            play_sound rock
+        }
+        on_receive_message {
+            if $msg = 0
+                set_state closing
+            end_if
+        }
+        on_reach_destination {
+            set_state open
+        }
+    }
+
+    open {
+        on_enter {
+            set_animation open
+            set_can_block_paths false
+            set_tangible false
+            stop_particles
+        }
+        on_receive_message {
+            if $msg = 0
+                set_state closing
+            end_if
+        }
+    }
+
+    closing {
+        on_enter {
+            set_animation rattling
+            set_can_block_paths true
+            set_tangible true
+            move_to_absolute $x $y $z_closed
+            start_particles dust_falling 0 0 0
+            play_sound rock
+        }
+        on_receive_message {
+            if $msg > 0
+                set_state opening
+            end_if
+        }
+        on_reach_destination {
+            stop_particles
+            start_particles dust_explosion_gate 0 0 0
+            set_state closed
+        }
+    }
+}

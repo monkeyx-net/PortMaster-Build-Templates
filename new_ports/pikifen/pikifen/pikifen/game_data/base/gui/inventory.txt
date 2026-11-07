@@ -1,0 +1,70 @@
+name=Inventory
+description=GUI for the inventory pop-up that shows up when the player opens their inventory mid-game.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+hardcoded_items{
+	list{
+		center=50.0000 50.0000
+		size=32.0000 28.0000
+		description=List of items.
+	}
+	list_scroll{
+		center=50.0000 67.0000
+		size=32.0000 2.0000
+		description=Scrollbar for the list of items.
+	}
+	info{
+		center=57.0000 31.0000
+		size=18.0000 6.0000
+		description=Name of the currently focused item, along with spray ingredient progress if applicable.
+	}
+	close{
+		center=40.0000 31.0000
+		size=12.0000 6.0000
+		description=Button to close the inventory.
+	}
+	close_input{
+		center=34.0000 34.0000
+		size=4.0000 4.0000
+		description=Icon of the input bound to the back button.
+	}
+}
+custom_items{
+	background_vignette{
+		center=50.0000 50.0000
+		size=100.0000 100.0000
+		description=A vignette around the entire screen.
+		type=bitmap
+		color=0 0 64 64
+		draw_before_hardcoded=true
+		bitmap=gui/vignette
+	}
+	background_rectangle{
+		center=50.0000 48.0000
+		size=36.0000 44.0000
+		description=Rectangle background for the inventory.
+		type=filled_rectangle
+		color=24 64 60 200
+		draw_before_hardcoded=true
+		rectangle_rounding=0.0500
+	}
+	background_frame{
+		center=50.0000 48.0000
+		size=36.0000 44.0000
+		description=Frame behind the inventory.
+		type=9_slice
+		color=255 255 255
+		draw_before_hardcoded=true
+		bitmap=gui/frame_box
+	}
+	list_bg{
+		center=50.0000 50.0000
+		size=32.0000 28.0000
+		description=Rectangle background for the list.
+		type=filled_rectangle
+		color=24 64 60 200
+		draw_before_hardcoded=true
+		rectangle_rounding=0.0500
+	}
+}

@@ -1,0 +1,24 @@
+first_state = idling
+death_state = destroyed
+
+script{
+    idling {
+        on_enter {
+            set_animation idling
+        }
+        on_damage {
+            play_sound sticks
+        }
+    }
+    destroyed {
+        on_enter {
+            set_animation destroyed
+            spawn full_stick
+            start_particles dust_explosion_stick 64 0 260
+            play_sound obstacle_cleared
+        }
+        on_animation_end {
+            delete
+        }
+    }
+}

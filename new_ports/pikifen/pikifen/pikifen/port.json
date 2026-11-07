@@ -1,0 +1,34 @@
+{
+  "version": 4,
+  "name": "pikifen.zip",
+  "items": [
+    "Pikifen.sh",
+    "pikifen"
+  ],
+  "items_opt": null,
+  "attr": {
+    "title": "Pikifen",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "Fan-made engine and game inspired by Pikmin. Lead a squad of plant-like creatures to fight enemies, carry treasure and solve missions, or make your own areas with the included editors.",
+    "desc_md": null,
+    "inst": "Ready to run. Everything is included.",
+    "inst_md": null,
+    "genres": [
+      "strategy"
+    ],
+    "image": {},
+    "rtr": true,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "free",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}

@@ -1,0 +1,16 @@
+name = Poisoned
+description = Pikmin that are poisoned will start choking from the poison gas on their top, and will eventually suffocate and die. It can be saved by being whistled.
+
+affects = pikmin
+color = 128 16 112
+health_change_ratio = -0.3
+maturity_change_amount = -1
+particle_generator = gas
+particle_offset = 0 0 32
+removable_with_whistle = true
+speed_multiplier = 2.0
+state_change_type = panic
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

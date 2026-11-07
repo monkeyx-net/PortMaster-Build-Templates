@@ -1,0 +1,23 @@
+name=Paper bag handle animations
+description=Animations for the paper bag handle.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	idling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	idling{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 386.0000
+		file_size=76.0000 43.0000
+		angle=1.5708
+	}
+}
+body_parts

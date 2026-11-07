@@ -1,0 +1,11 @@
+name = A Boss-like Enemy!
+description = A frantic brass-heavy song about combat.
+
+tags = Combat; Energetic
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0
+notes = This song is an original creation for Pikifen.
+loop_start = 4.8
+
+main_track = others/a_boss-like_enemy

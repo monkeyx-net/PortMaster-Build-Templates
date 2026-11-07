@@ -1,0 +1,26 @@
+name = Gas pipe
+description = Some exposed pipe leaking out toxic gases.
+
+can_hurt = player
+custom_category_name = Obstacle, dangerous
+height = 23
+max_health = 150
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 24
+target_type = strong_plain_obstacle
+team = obstacle
+
+sounds {
+    gas {
+        sound = misc/gas
+        volume = 40
+        speed = 75
+        loop = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

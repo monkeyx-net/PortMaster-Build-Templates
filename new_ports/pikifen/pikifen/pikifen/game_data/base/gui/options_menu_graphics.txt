@@ -1,0 +1,54 @@
+name=Options menu -- graphics
+description=GUI for the graphics page of the options menu.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+hardcoded_items{
+	back{
+		center=12.0000 5.0000
+		size=20.0000 6.0000
+		description=Back button.
+	}
+	back_input{
+		center=3.0000 7.0000
+		size=4.0000 4.0000
+		description=Icon of the input bound to the back button.
+	}
+	fullscreen{
+		center=50.0000 25.0000
+		size=70.0000 10.0000
+		description=Fullscreen checkbox.
+	}
+	resolution{
+		center=50.0000 42.5000
+		size=70.0000 10.0000
+		description=Resolution picker.
+	}
+	cam_shake_mult{
+		center=50.0000 60.0000
+		size=70.0000 10.0000
+		description=Camera shake multiplier picker.
+	}
+	tooltip{
+		center=50.0000 96.0000
+		size=96.0000 4.0000
+		description=Tooltip of the focused menu item.
+	}
+	restart_warning{
+		center=50.0000 85.0000
+		size=70.0000 6.0000
+		description=Warning that tells the player they must restart the game to apply the graphical changes.
+	}
+}
+custom_items{
+	header{
+		center=50.0000 10.0000
+		size=50.0000 6.0000
+		description=Menu header.
+		type=text
+		color=255 255 255 128
+		text=GRAPHICS OPTIONS
+		font=area_name
+		text_alignment=1
+	}
+}

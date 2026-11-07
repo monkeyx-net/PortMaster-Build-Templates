@@ -1,0 +1,16 @@
+name = Billiards Ball
+description = Some sort of numbered ball with a shiny coating.
+
+can_walk_on_others = true
+height = 100
+max_carriers = 30
+points = 150
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 45
+weight = 20
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,13 @@
+name = Garden Wall
+description = A dark theme filled with unease.
+
+tags = Area; Mysterious; Eerie
+maker = Helodity
+version = 1.0.0
+engine_version = 1.0.0
+notes = This song is an original creation for Pikifen.
+
+main_track = areas/garden_wall
+mix_tracks {
+    enemy = areas/garden_wall_enemy
+}

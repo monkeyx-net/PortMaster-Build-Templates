@@ -1,0 +1,125 @@
+name = Adult Bulbmin
+description = It has the body of a small Red Bulborb, but is actually controlled by a parasitic Pikmin! Despite this, it will still eat other Pikmin, not counting the juvenile Bulbmin that are usually following around.
+
+acceleration = 100
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+has_group = true
+height = 90
+itch_damage = 30
+itch_time = 5
+max_carriers = 14
+max_health = 300
+move_speed = 60
+pikmin_seeds = 10
+points = 30
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 42
+rotation_speed = 114
+target_type = enemy
+terrain_radius = 64
+territory_radius = 300
+weight = 7
+
+children {
+    stem {
+        spawn = stem
+        parent_holds = true
+        hold_body_part = stem
+        hold_rotation_method = face_parent
+        handle_damage = false
+        handle_events = false
+        handle_statuses = false
+    }
+}
+
+reaches {
+    search = 175 180 20 360
+    chase = 175 2
+    close = 175 360
+    attack = 30 30
+}
+
+sounds {
+    growl {
+        sound = creature_vocals/bulborb_growl
+        volume = 40
+        speed_deviation = 5
+    }
+    dying {
+        sound = creature_vocals/bulborb_scream
+        volume = 50
+        speed = 90
+        speed_deviation = 5
+    }
+    groan {
+        sound = creature_vocals/bulborb_misc
+        volume = 40
+        speed_deviation = 5
+    }
+    step {
+        sound = misc/stomp_small
+        volume = 30
+        speed = 130
+        speed_deviation = 5
+    }
+    bite {
+        sound = creature_misc/bite
+        volume = 70
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 90
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 40
+        speed = 90
+        speed_deviation = 20
+    }
+    thud {
+        sound = misc/thump
+        speed = 130
+        volume = 80
+    }
+}
+
+spawns {
+    stem {
+        object = adult_bulbmin_stem
+        relative = true
+        coordinates = 0 0 0
+        angle = 0
+    }
+    young {
+        object = bulbmin
+        relative = true
+        coordinates = -50 0 0
+        angle = 0
+        link_spawn_to_object = true
+        link_object_to_spawn = true
+        vars = team = enemy_1; maturity = 0; follow_link_as_leader = true
+    }
+}
+
+vulnerabilities {
+    fire = 0
+    electricity_stunning = 0
+    electricity_fatal = 0
+    water = 0
+    water_bubble = 0
+    poison = 0
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

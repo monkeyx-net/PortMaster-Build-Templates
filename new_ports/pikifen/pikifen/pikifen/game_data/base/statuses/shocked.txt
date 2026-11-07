@@ -1,0 +1,15 @@
+name = Shocked
+description = A Pikmin that has been shocked will be unable to move as the current surges through its body. It can be saved by being whistled.
+
+affects = pikmin
+color = 255 255 128
+maturity_change_amount = -1
+overlay_anim_mob_scale = 1.5
+overlay_animation = sparks
+removable_with_whistle = true
+speed_multiplier = 0
+state_change_type = helpless
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

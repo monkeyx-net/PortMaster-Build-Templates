@@ -1,0 +1,22 @@
+name=Billiards Ball animations
+description=Animations for the Billiards Ball.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	idling{
+		frames{
+			idling{
+				duration=0.0000
+			}
+		}
+	}
+}
+sprites{
+	idling{
+		file=treasures/billiards_ball
+		file_pos=0.0000 0.0000
+		file_size=100.0000 100.0000
+	}
+}
+body_parts

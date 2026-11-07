@@ -1,0 +1,64 @@
+name = Cardboard box
+description = A large box made of cardboard. It can be pushed out of the way if there are enough Pikmin to do so.
+
+acceleration = 15
+area_editor_recommend_links_from = true
+area_editor_tips = Link this object to another object, so that the box moves to that location when it's pushed. A "Dummy" object works perfectly for this.
+contribution_method = push_strength
+custom_category_name = Obstacle, harmless
+first_row_p1 = -104 -90
+first_row_p2 = -104 90
+height = 64
+interval_between_rows = 8
+max_health = 50
+max_pikmin = 40
+move_speed = 10
+pikmin_per_row = 20
+power_goal = 10
+pushable = false
+pushes = true
+radius = 96
+rectangular_dimensions = 192 192
+rotation_speed = 30
+show_health = false
+speed_bonus = 2
+team = obstacle
+walkable = true
+worker_pikmin_pose = pushing
+
+children {
+    flap {
+        spawn = flap
+        parent_holds = true
+        hold_offset_distance = 1.47
+        hold_offset_vertical_distance = 0.02
+        hold_offset_angle = 0
+        hold_faces_parent = false
+        hold_rotation_method = copy_parent
+    }
+}
+
+sounds {
+    drag {
+        sound = misc/cardboard_drag
+        volume = 40
+        loop = true
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+spawns {
+    flap {
+        object = cardboard_box_flap
+        relative = true
+        coordinates = 140 0
+        angle = 0
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,2252 @@
+name=Queen Candypop Bud animations
+description=Animations for the Queen Candypop Bud.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	bumped_blue{
+		frames{
+			bumping_01_blue{
+				duration=0.1000
+				interpolate=true
+			}
+			bumping_02_blue{
+				duration=0.1000
+				interpolate=true
+				sound=bumped
+			}
+			bumping_01_blue{
+				duration=0.1000
+				interpolate=true
+			}
+			idling_01_blue{
+				duration=0.7000
+				interpolate=true
+			}
+		}
+	}
+	bumped_red{
+		frames{
+			bumping_01_red{
+				duration=0.1000
+				interpolate=true
+			}
+			bumping_02_red{
+				duration=0.1000
+				interpolate=true
+				sound=bumped
+			}
+			bumping_01_red{
+				duration=0.1000
+				interpolate=true
+			}
+			idling_01_red{
+				duration=0.7000
+				interpolate=true
+			}
+		}
+	}
+	bumped_rock{
+		frames{
+			bumping_01_rock{
+				duration=0.1000
+				interpolate=true
+			}
+			bumping_02_rock{
+				duration=0.1000
+				interpolate=true
+				sound=bumped
+			}
+			bumping_01_rock{
+				duration=0.1000
+				interpolate=true
+			}
+			idling_01_rock{
+				duration=0.7000
+				interpolate=true
+			}
+		}
+	}
+	bumped_winged{
+		frames{
+			bumping_01_winged{
+				duration=0.1000
+				interpolate=true
+			}
+			bumping_02_winged{
+				duration=0.1000
+				interpolate=true
+				sound=bumped
+			}
+			bumping_01_winged{
+				duration=0.1000
+				interpolate=true
+			}
+			idling_01_winged{
+				duration=0.7000
+				interpolate=true
+			}
+		}
+	}
+	bumped_yellow{
+		frames{
+			bumping_01_yellow{
+				duration=0.1000
+				interpolate=true
+			}
+			bumping_02_yellow{
+				duration=0.1000
+				interpolate=true
+				sound=bumped
+			}
+			bumping_01_yellow{
+				duration=0.1000
+				interpolate=true
+			}
+			idling_01_yellow{
+				duration=0.7000
+				interpolate=true
+			}
+		}
+	}
+	closing_blue{
+		frames{
+			closing_01_blue{
+				duration=0.1000
+			}
+			closing_02_blue{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_04_blue{
+				duration=0.1000
+			}
+			closing_05_blue{
+				duration=0.1000
+				interpolate=true
+			}
+			closed_blue{
+				duration=0.7000
+			}
+		}
+	}
+	closing_red{
+		frames{
+			closing_01_red{
+				duration=0.1000
+			}
+			closing_02_red{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_04_red{
+				duration=0.1000
+			}
+			closing_05_red{
+				duration=0.1000
+				interpolate=true
+			}
+			closed_red{
+				duration=0.7000
+			}
+		}
+	}
+	closing_rock{
+		frames{
+			closing_01_rock{
+				duration=0.1000
+			}
+			closing_02_rock{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_04_rock{
+				duration=0.1000
+			}
+			closing_05_rock{
+				duration=0.1000
+				interpolate=true
+			}
+			closed_rock{
+				duration=0.7000
+			}
+		}
+	}
+	closing_winged{
+		frames{
+			closing_01_winged{
+				duration=0.1000
+			}
+			closing_02_winged{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_04_winged{
+				duration=0.1000
+			}
+			closing_05_winged{
+				duration=0.1000
+				interpolate=true
+			}
+			closed_winged{
+				duration=0.7000
+			}
+		}
+	}
+	closing_yellow{
+		frames{
+			closing_01_yellow{
+				duration=0.1000
+			}
+			closing_02_yellow{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_04_yellow{
+				duration=0.1000
+			}
+			closing_05_yellow{
+				duration=0.1000
+				interpolate=true
+			}
+			closed_yellow{
+				duration=0.7000
+			}
+		}
+	}
+	dying_blue{
+		frames{
+			dying_01_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_blue{
+				duration=0.1500
+				interpolate=true
+				sound=dying
+			}
+			dying_03_blue{
+				duration=0.1500
+				interpolate=true
+				sound=rustling
+			}
+			dying_04_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_05_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_06_blue{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_07_blue{
+				duration=0.1500
+			}
+		}
+	}
+	dying_red{
+		frames{
+			dying_01_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_red{
+				duration=0.1500
+				interpolate=true
+				sound=dying
+			}
+			dying_03_red{
+				duration=0.1500
+				interpolate=true
+				sound=rustling
+			}
+			dying_04_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_05_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_06_red{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_07_red{
+				duration=0.1500
+			}
+		}
+	}
+	dying_rock{
+		frames{
+			dying_01_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_rock{
+				duration=0.1500
+				interpolate=true
+				sound=dying
+			}
+			dying_03_rock{
+				duration=0.1500
+				interpolate=true
+				sound=rustling
+			}
+			dying_04_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_05_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_06_rock{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_07_rock{
+				duration=0.1500
+			}
+		}
+	}
+	dying_winged{
+		frames{
+			dying_01_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_winged{
+				duration=0.1500
+				interpolate=true
+				sound=dying
+			}
+			dying_03_winged{
+				duration=0.1500
+				interpolate=true
+				sound=rustling
+			}
+			dying_04_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_05_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_06_winged{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_07_winged{
+				duration=0.1500
+			}
+		}
+	}
+	dying_yellow{
+		frames{
+			dying_01_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_01_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_02_yellow{
+				duration=0.1500
+				interpolate=true
+				sound=dying
+			}
+			dying_03_yellow{
+				duration=0.1500
+				interpolate=true
+				sound=rustling
+			}
+			dying_04_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_05_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_06_yellow{
+				duration=0.1500
+				interpolate=true
+			}
+			dying_07_yellow{
+				duration=0.1500
+			}
+		}
+	}
+	idling_blue{
+		frames{
+			idling_01_blue{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_02_blue{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_01_blue{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_03_blue{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	idling_red{
+		frames{
+			idling_01_red{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_02_red{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_01_red{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_03_red{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	idling_rock{
+		frames{
+			idling_01_rock{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_02_rock{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_01_rock{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_03_rock{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	idling_winged{
+		frames{
+			idling_01_winged{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_02_winged{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_01_winged{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_03_winged{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	idling_yellow{
+		frames{
+			idling_01_yellow{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_02_yellow{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_01_yellow{
+				duration=0.2500
+				interpolate=true
+			}
+			idling_03_yellow{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	opening_blue{
+		frames{
+			closing_04_blue{
+				duration=0.1000
+			}
+			closing_03_blue{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_02_blue{
+				duration=0.1000
+			}
+			closing_01_blue{
+				duration=0.1000
+			}
+			idling_big_blue{
+				duration=0.0500
+				interpolate=true
+			}
+			idling_01_blue{
+				duration=0.1000
+			}
+		}
+	}
+	opening_red{
+		frames{
+			closing_04_red{
+				duration=0.1000
+			}
+			closing_03_red{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_02_red{
+				duration=0.1000
+			}
+			closing_01_red{
+				duration=0.1000
+			}
+			idling_big_red{
+				duration=0.0500
+				interpolate=true
+			}
+			idling_01_red{
+				duration=0.1000
+			}
+		}
+	}
+	opening_rock{
+		frames{
+			closing_04_rock{
+				duration=0.1000
+			}
+			closing_03_rock{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_02_rock{
+				duration=0.1000
+			}
+			closing_01_rock{
+				duration=0.1000
+			}
+			idling_big_rock{
+				duration=0.0500
+				interpolate=true
+			}
+			idling_01_rock{
+				duration=0.1000
+			}
+		}
+	}
+	opening_winged{
+		frames{
+			closing_04_winged{
+				duration=0.1000
+			}
+			closing_03_winged{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_02_winged{
+				duration=0.1000
+			}
+			closing_01_winged{
+				duration=0.1000
+			}
+			idling_big_winged{
+				duration=0.0500
+				interpolate=true
+			}
+			idling_01_winged{
+				duration=0.1000
+			}
+		}
+	}
+	opening_yellow{
+		frames{
+			closing_04_yellow{
+				duration=0.1000
+			}
+			closing_03_yellow{
+				duration=0.1000
+				sound=rustling_short
+			}
+			closing_02_yellow{
+				duration=0.1000
+			}
+			closing_01_yellow{
+				duration=0.1000
+			}
+			idling_big_yellow{
+				duration=0.0500
+				interpolate=true
+			}
+			idling_01_yellow{
+				duration=0.1000
+			}
+		}
+	}
+	spitting_blue{
+		frames{
+			closing_05_blue{
+				duration=0.1000
+				interpolate=true
+			}
+			closing_04_blue{
+				duration=0.1000
+				sound=pop
+			}
+			closed_blue{
+				duration=0.3000
+			}
+		}
+	}
+	spitting_red{
+		frames{
+			closing_05_red{
+				duration=0.1000
+				interpolate=true
+			}
+			closing_04_red{
+				duration=0.1000
+				sound=pop
+			}
+			closed_red{
+				duration=0.3000
+			}
+		}
+	}
+	spitting_rock{
+		frames{
+			closing_05_rock{
+				duration=0.1000
+				interpolate=true
+			}
+			closing_04_rock{
+				duration=0.1000
+				sound=pop
+			}
+			closed_rock{
+				duration=0.3000
+			}
+		}
+	}
+	spitting_winged{
+		frames{
+			closing_05_winged{
+				duration=0.1000
+				interpolate=true
+			}
+			closing_04_winged{
+				duration=0.1000
+				sound=pop
+			}
+			closed_winged{
+				duration=0.3000
+			}
+		}
+	}
+	spitting_yellow{
+		frames{
+			closing_05_yellow{
+				duration=0.1000
+				interpolate=true
+			}
+			closing_04_yellow{
+				duration=0.1000
+				sound=pop
+			}
+			closed_yellow{
+				duration=0.3000
+			}
+		}
+	}
+}
+sprites{
+	bumping_01_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_01_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_01_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_01_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_01_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_02_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0524
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_02_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0524
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_02_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0524
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_02_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0524
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bumping_02_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0524
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	closed_blue{
+		file=candypop_buds/queen
+		file_pos=645.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closed_red{
+		file=candypop_buds/queen
+		file_pos=645.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closed_rock{
+		file=candypop_buds/queen
+		file_pos=645.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closed_winged{
+		file=candypop_buds/queen
+		file_pos=645.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closed_yellow{
+		file=candypop_buds/queen
+		file_pos=645.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_01_blue{
+		file=candypop_buds/queen
+		file_pos=171.0000 326.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_01_red{
+		file=candypop_buds/queen
+		file_pos=171.0000 0.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_01_rock{
+		file=candypop_buds/queen
+		file_pos=171.0000 489.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_01_winged{
+		file=candypop_buds/queen
+		file_pos=171.0000 652.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_01_yellow{
+		file=candypop_buds/queen
+		file_pos=171.0000 163.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_02_blue{
+		file=candypop_buds/queen
+		file_pos=316.0000 326.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_02_red{
+		file=candypop_buds/queen
+		file_pos=316.0000 0.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_02_rock{
+		file=candypop_buds/queen
+		file_pos=316.0000 489.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_02_winged{
+		file=candypop_buds/queen
+		file_pos=316.0000 652.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_02_yellow{
+		file=candypop_buds/queen
+		file_pos=316.0000 163.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_03_blue{
+		file=candypop_buds/queen
+		file_pos=439.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_03_red{
+		file=candypop_buds/queen
+		file_pos=439.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_03_rock{
+		file=candypop_buds/queen
+		file_pos=439.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_03_winged{
+		file=candypop_buds/queen
+		file_pos=439.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_03_yellow{
+		file=candypop_buds/queen
+		file_pos=439.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_04_blue{
+		file=candypop_buds/queen
+		file_pos=542.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_04_red{
+		file=candypop_buds/queen
+		file_pos=542.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_04_rock{
+		file=candypop_buds/queen
+		file_pos=542.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_04_winged{
+		file=candypop_buds/queen
+		file_pos=542.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_04_yellow{
+		file=candypop_buds/queen
+		file_pos=542.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_05_blue{
+		file=candypop_buds/queen
+		file_pos=645.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_05_red{
+		file=candypop_buds/queen
+		file_pos=645.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_05_rock{
+		file=candypop_buds/queen
+		file_pos=645.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_05_winged{
+		file=candypop_buds/queen
+		file_pos=645.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	closing_05_yellow{
+		file=candypop_buds/queen
+		file_pos=645.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01_blue{
+		file=candypop_buds/queen
+		file_pos=645.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01_red{
+		file=candypop_buds/queen
+		file_pos=645.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01_rock{
+		file=candypop_buds/queen
+		file_pos=645.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01_winged{
+		file=candypop_buds/queen
+		file_pos=645.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01_yellow{
+		file=candypop_buds/queen
+		file_pos=645.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=0.0175
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02_blue{
+		file=candypop_buds/queen
+		file_pos=645.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=6.2657
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02_red{
+		file=candypop_buds/queen
+		file_pos=645.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=6.2657
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02_rock{
+		file=candypop_buds/queen
+		file_pos=645.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=6.2657
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02_winged{
+		file=candypop_buds/queen
+		file_pos=645.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=6.2657
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02_yellow{
+		file=candypop_buds/queen
+		file_pos=645.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		angle=6.2657
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03_blue{
+		file=candypop_buds/queen
+		file_pos=542.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03_red{
+		file=candypop_buds/queen
+		file_pos=542.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03_rock{
+		file=candypop_buds/queen
+		file_pos=542.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03_winged{
+		file=candypop_buds/queen
+		file_pos=542.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03_yellow{
+		file=candypop_buds/queen
+		file_pos=542.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04_blue{
+		file=candypop_buds/queen
+		file_pos=439.0000 326.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -6.0000
+		scale=0.7500 0.7500
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04_red{
+		file=candypop_buds/queen
+		file_pos=439.0000 0.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -6.0000
+		scale=0.7500 0.7500
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04_rock{
+		file=candypop_buds/queen
+		file_pos=439.0000 489.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -6.0000
+		scale=0.7500 0.7500
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04_winged{
+		file=candypop_buds/queen
+		file_pos=439.0000 652.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -6.0000
+		scale=0.7500 0.7500
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04_yellow{
+		file=candypop_buds/queen
+		file_pos=439.0000 163.0000
+		file_size=102.0000 162.0000
+		offset=0.0000 -6.0000
+		scale=0.7500 0.7500
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05_blue{
+		file=candypop_buds/queen
+		file_pos=316.0000 326.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -4.0000
+		scale=0.5000 0.5000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05_red{
+		file=candypop_buds/queen
+		file_pos=316.0000 0.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -4.0000
+		scale=0.5000 0.5000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05_rock{
+		file=candypop_buds/queen
+		file_pos=316.0000 489.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -4.0000
+		scale=0.5000 0.5000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05_winged{
+		file=candypop_buds/queen
+		file_pos=316.0000 652.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -4.0000
+		scale=0.5000 0.5000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05_yellow{
+		file=candypop_buds/queen
+		file_pos=316.0000 163.0000
+		file_size=122.0000 162.0000
+		offset=0.0000 -4.0000
+		scale=0.5000 0.5000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06_blue{
+		file=candypop_buds/queen
+		file_pos=171.0000 326.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -2.5000
+		scale=0.3000 0.3000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06_red{
+		file=candypop_buds/queen
+		file_pos=171.0000 0.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -2.5000
+		scale=0.3000 0.3000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06_rock{
+		file=candypop_buds/queen
+		file_pos=171.0000 489.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -2.5000
+		scale=0.3000 0.3000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06_winged{
+		file=candypop_buds/queen
+		file_pos=171.0000 652.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -2.5000
+		scale=0.3000 0.3000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06_yellow{
+		file=candypop_buds/queen
+		file_pos=171.0000 163.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -2.5000
+		scale=0.3000 0.3000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07_blue{
+		file=candypop_buds/queen
+		file_pos=171.0000 326.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -0.8000
+		scale=0.1000 0.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07_red{
+		file=candypop_buds/queen
+		file_pos=171.0000 0.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -0.8000
+		scale=0.1000 0.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07_rock{
+		file=candypop_buds/queen
+		file_pos=171.0000 489.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -0.8000
+		scale=0.1000 0.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07_winged{
+		file=candypop_buds/queen
+		file_pos=171.0000 652.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -0.8000
+		scale=0.1000 0.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07_yellow{
+		file=candypop_buds/queen
+		file_pos=171.0000 163.0000
+		file_size=144.0000 162.0000
+		offset=0.0000 -0.8000
+		scale=0.1000 0.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_01_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_01_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_01_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_01_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_01_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_02_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_02_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_02_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_02_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_02_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_03_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_03_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_03_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_03_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_03_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_big_blue{
+		file=candypop_buds/queen
+		file_pos=0.0000 326.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_big_red{
+		file=candypop_buds/queen
+		file_pos=0.0000 0.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_big_rock{
+		file=candypop_buds/queen
+		file_pos=0.0000 489.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_big_winged{
+		file=candypop_buds/queen
+		file_pos=0.0000 652.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_big_yellow{
+		file=candypop_buds/queen
+		file_pos=0.0000 163.0000
+		file_size=170.0000 162.0000
+		offset=0.0000 -8.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			receptacle{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=40.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+}
+body_parts{
+	receptacle
+}

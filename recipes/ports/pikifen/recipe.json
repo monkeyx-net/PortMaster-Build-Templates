@@ -1,0 +1,20 @@
+{
+  "recipe_version": 1,
+  "name": "pikifen.zip",
+  "port_json": "new_ports/pikifen/pikifen/pikifen/port.json",
+  "source": {
+    "date_updated": "2026-11-07",
+    "port_exe": "pikifen",
+    "port_build": "make -f source/gnu_make/makefile release",
+    "port_checksum": "b325be08ff53918f016ce73a3a687dc5c71a0f7b915b6c636c11a85298505b0d",
+    "port_url": "Espyo/Pikifen",
+    "port_download": "https://github.com/Espyo/Pikifen/archive/refs/tags/1.1.1.tar.gz",
+    "port_version": "1.1.1"
+  },
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ],
+  "controls": "launcher/controls.png"
+}

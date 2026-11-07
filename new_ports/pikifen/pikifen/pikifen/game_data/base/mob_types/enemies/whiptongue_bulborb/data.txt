@@ -1,0 +1,90 @@
+name = Whiptongue Bulborb
+description = This species of Bulborb has a long tongue. It whips it about in order to capture Pikmin, which it then gobbles up.
+
+acceleration = 150
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+height = 128
+itch_damage = 100
+itch_time = 5
+max_carriers = 25
+max_health = 975
+move_speed = 70
+pikmin_seeds = 15
+points = 50
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 60
+rotation_speed = 96
+target_type = enemy
+terrain_radius = 110
+territory_radius = 300
+weight = 12
+
+reaches {
+    wake_up = 10 360
+    search = 250 180 30 360
+    chase = 250 20
+    close = 250 360
+    attack = 130 30
+}
+
+sounds {
+    growl {
+        sound = creature_vocals/bulborb_growl
+        volume = 40
+        speed = 120
+        speed_deviation = 5
+    }
+    dying {
+        sound = creature_vocals/bulborb_scream
+        volume = 50
+        speed = 110
+        speed_deviation = 5
+    }
+    groan {
+        sound = creature_vocals/bulborb_misc
+        volume = 40
+        speed = 120
+        speed_deviation = 5
+    }
+    step {
+        sound = misc/stomp_small
+        volume = 30
+        speed = 130
+        speed_deviation = 5
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 90
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    slurp {
+        sound = creature_misc/slurp
+        volume = 30
+        speed = 90
+        speed_deviation = 20
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 40
+        speed = 90
+        speed_deviation = 20
+    }
+    thud {
+        sound = misc/thump
+        speed = 130
+        volume = 80
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

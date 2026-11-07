@@ -1,0 +1,43 @@
+name = Flukeweed
+description = This plant's stem can be grabbed and tugged upward in order to unroot it. Only Winged Pikmin can lift the stem up.
+
+area_editor_tips = To make it capture other objects, simply place those objects and this one together such that they are all touching.
+casts_shadow = true
+contribution_method = normal
+custom_category_name = Useful
+first_row_p1 = -6 -10
+first_row_p2 = 6 -10
+flying_pikmin_only = true
+height = 32
+interval_between_rows = 4
+max_health = 100
+max_pikmin = 5
+pikmin_per_row = 3
+power_goal = 3
+pushable = false
+pushes = false
+radius = 16
+show_health = true
+spots_z = 35
+worker_pikmin_angle = 90
+worker_pikmin_pose = carrying
+
+sounds {
+    pulled {
+        sound = effects/stretch
+        volume = 25
+        speed = 110
+        speed_deviation = 30
+        stack_min_pos = 0.8
+        random_delay = 0.2
+    }
+    dying {
+        sound = effects/pluck
+        volume = 40
+        speed = 110
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,159 @@
+name=Paper bag animations
+description=Animations for the paper bag.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	crushing{
+		loop_frame=20
+		frames{
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+			}
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+			}
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+			}
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+				interpolate=true
+			}
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+				interpolate=true
+			}
+			down_01{
+				duration=0.0800
+			}
+		}
+	}
+	up{
+		frames{
+			up_01{
+				duration=0.0000
+			}
+		}
+	}
+}
+sprites{
+	down_01{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 193.0000
+		file_size=95.0000 192.0000
+		scale=0.9800 0.9800
+	}
+	down_02{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 193.0000
+		file_size=95.0000 192.0000
+		offset=1.0000 0.0000
+		scale=0.9800 0.9800
+	}
+	down_03{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 193.0000
+		file_size=95.0000 192.0000
+		offset=1.0000 1.0000
+		scale=0.9800 0.9800
+	}
+	down_04{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 193.0000
+		file_size=95.0000 192.0000
+		offset=-1.0000 0.0000
+		scale=0.9800 0.9800
+	}
+	up_01{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 0.0000
+		file_size=96.0000 192.0000
+		scale=1.0100 1.0100
+	}
+	up_02{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 0.0000
+		file_size=96.0000 192.0000
+		offset=1.0000 0.0000
+		scale=1.0100 1.0100
+	}
+	up_03{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 0.0000
+		file_size=96.0000 192.0000
+		offset=1.0000 1.0000
+		scale=1.0100 1.0100
+	}
+	up_04{
+		file=other_mobs/paper_bag
+		file_pos=0.0000 0.0000
+		file_size=96.0000 192.0000
+		offset=-1.0000 0.0000
+		scale=1.0100 1.0100
+	}
+}
+body_parts

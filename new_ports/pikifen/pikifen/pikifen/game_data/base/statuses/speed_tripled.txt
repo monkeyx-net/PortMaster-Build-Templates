@@ -1,0 +1,10 @@
+name = Triple speed
+description = Makes the affected object move at triple the speed.
+
+affects = enemies; leaders; pikmin; others
+color = 255 64 64
+speed_multiplier = 3
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

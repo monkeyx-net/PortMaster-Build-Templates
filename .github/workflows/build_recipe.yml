@@ -24,6 +24,7 @@ on:
           - 'lighthouse'
           - 'lix'
           - 'manicminer'
+          - 'pikifen'
           - 'recwars'
           - 'shamogu'
           - 'sip2'

@@ -1,0 +1,1610 @@
+name=Beady Long Legs animations
+description=Animations for the Beady Long Legs.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	dying_01{
+		frames{
+			tense_01{
+				duration=0.1000
+				interpolate=true
+			}
+			tense_02{
+				duration=0.7000
+				interpolate=true
+			}
+			tense_01{
+				duration=0.5000
+				interpolate=true
+			}
+			idling{
+				duration=0.3000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			idling{
+				duration=0.3000
+				interpolate=true
+			}
+			opening_01{
+				duration=0.1000
+				sound=open
+			}
+			opening_02{
+				duration=0.1000
+			}
+		}
+	}
+	dying_02{
+		loop_frame=5
+		frames{
+			opening_02{
+				duration=0.8000
+				interpolate=true
+			}
+			crumbling_01{
+				duration=0.8000
+				interpolate=true
+			}
+			crumbling_02{
+				duration=0.8000
+				interpolate=true
+			}
+			crumbling_03{
+				duration=0.8000
+				interpolate=true
+			}
+			crumbling_04{
+				duration=0.8000
+				interpolate=true
+			}
+			crumbling_05{
+				duration=0.8000
+			}
+		}
+	}
+	falling{
+		loop_frame=1
+		frames{
+			invisible{
+				duration=0.2000
+				interpolate=true
+			}
+			idling{
+				duration=0.2000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+	limb_dying{
+		loop_frame=5
+		frames{
+			limb{
+				duration=0.8000
+				interpolate=true
+			}
+			limb_crumbling_01{
+				duration=0.8000
+				interpolate=true
+			}
+			limb_crumbling_02{
+				duration=0.8000
+				interpolate=true
+			}
+			limb_crumbling_03{
+				duration=0.8000
+				interpolate=true
+			}
+			limb_crumbling_04{
+				duration=0.8000
+				interpolate=true
+			}
+			limb_crumbling_05{
+				duration=0.8000
+				interpolate=true
+			}
+		}
+	}
+	limb_idling{
+		frames{
+			limb{
+				duration=0.1000
+			}
+		}
+	}
+	pausing{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+	resting{
+		frames{
+			idling{
+				duration=0.3000
+				interpolate=true
+			}
+			resting_01{
+				duration=0.4000
+				interpolate=true
+			}
+			resting_02{
+				duration=0.4000
+				interpolate=true
+			}
+			resting_01{
+				duration=0.4000
+				interpolate=true
+			}
+			resting_02{
+				duration=0.4000
+				interpolate=true
+			}
+			resting_01{
+				duration=0.3000
+				interpolate=true
+			}
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+	shaking{
+		hit_rate=75
+		frames{
+			shaking_01{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_03{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_03{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_03{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_03{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_01{
+				duration=0.0500
+				interpolate=true
+				sound=shaking
+			}
+			shaking_05{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_06{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_07{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_06{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_05{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_08{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_09{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_10{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_11{
+				duration=0.1000
+				interpolate=true
+			}
+			shaking_10{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_09{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.0500
+				interpolate=true
+			}
+			shaking_01{
+				duration=0.5000
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	crumbling_01{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 143.0000
+		file_size=278.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	crumbling_02{
+		file=enemies/beady_long_legs
+		file_pos=279.0000 143.0000
+		file_size=278.0000 142.0000
+		tint=255 255 255 207
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	crumbling_03{
+		file=enemies/beady_long_legs
+		file_pos=558.0000 143.0000
+		file_size=210.0000 142.0000
+		tint=255 255 255 159
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	crumbling_04{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 286.0000
+		file_size=210.0000 142.0000
+		tint=255 255 255 111
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	crumbling_05{
+		file=enemies/beady_long_legs
+		file_pos=211.0000 286.0000
+		file_size=210.0000 142.0000
+		tint=255 255 255 63
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	invisible{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		tint=255 255 255 0
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	limb{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 429.0000
+		file_size=234.0000 24.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	limb_crumbling_01{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 454.0000
+		file_size=234.0000 24.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	limb_crumbling_02{
+		file=enemies/beady_long_legs
+		file_pos=235.0000 454.0000
+		file_size=234.0000 24.0000
+		tint=255 255 255 207
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	limb_crumbling_03{
+		file=enemies/beady_long_legs
+		file_pos=470.0000 454.0000
+		file_size=234.0000 24.0000
+		tint=255 255 255 159
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	limb_crumbling_04{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 479.0000
+		file_size=234.0000 24.0000
+		tint=255 255 255 111
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	limb_crumbling_05{
+		file=enemies/beady_long_legs
+		file_pos=235.0000 479.0000
+		file_size=234.0000 24.0000
+		tint=255 255 255 63
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=0.0000 0.0000 132.0000
+				height=8.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	opening_01{
+		file=enemies/beady_long_legs
+		file_pos=143.0000 0.0000
+		file_size=210.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	opening_02{
+		file=enemies/beady_long_legs
+		file_pos=354.0000 0.0000
+		file_size=278.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	resting_01{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		scale=0.8900 0.8900
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 -75.0000
+				height=140.0000
+				radius=64.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=2.5000 2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=2.5000 -2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-2.5000 2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-2.5000 -2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	resting_02{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		scale=0.8700 0.8700
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 -75.0000
+				height=140.0000
+				radius=64.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=2.5000 2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=2.5000 -2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-2.5000 2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-2.5000 -2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_01{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_02{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=6.1800
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=5.0100 2.9300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=3.0700 -5.0300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-3.1000 4.4900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-5.0400 -3.3200 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_03{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=5.9900
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=6.5800 2.5900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=2.9400 -5.9500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-2.3800 5.3900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-5.8800 -3.4300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_04{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=5.8899
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=6.5800 2.5900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=2.9400 -5.9500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-2.3800 5.3900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-5.8800 -3.4300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_05{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=0.3600
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=1
+				value=2.0000
+				knockback_outward=true
+				knockback=2.0000
+				wither_chance=50
+			}
+			front_right{
+				coords=2.8600 6.0900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=6.5900 -2.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-5.8800 2.3600 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-2.0000 -6.5400 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_06{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=0.6600
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=1
+				value=2.0000
+				knockback_outward=true
+				knockback=2.0000
+				wither_chance=50
+			}
+			front_right{
+				coords=2.0500 6.2500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=7.2300 -1.2000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-6.5300 2.2000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-1.0200 -5.7300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_07{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=0.9100
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=1
+				value=2.0000
+				knockback_outward=true
+				knockback=2.0000
+				wither_chance=50
+			}
+			front_right{
+				coords=-1.6400 7.1300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=5.4800 0.3500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-7.8900 0.3500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-1.2900 -5.7300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_08{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_09{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=5.9600
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=5.0100 2.9300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=3.0700 -5.0300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-3.1000 4.4900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-5.0400 -3.3200 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_10{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=5.7500
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=6.4100 1.0900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=2.1600 -6.3500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-1.1700 5.7900 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-6.7900 -2.2500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_11{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		angle=5.5500
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=71.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			front_right{
+				coords=6.1100 -0.1300 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=-0.4100 -6.3500 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=0.0400 6.4000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-6.6300 0.4800 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	tense_01{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		scale=1.0500 1.0500
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=74.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.0000 4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.0000 -4.0000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	tense_02{
+		file=enemies/beady_long_legs
+		file_pos=0.0000 0.0000
+		file_size=142.0000 142.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=140.0000
+				radius=78.0000
+				type=2
+				value=1.0000
+			}
+			front_right{
+				coords=4.5000 4.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			front_left{
+				coords=4.5000 -4.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_right{
+				coords=-4.5000 4.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+			back_left{
+				coords=-4.5000 -4.5000 132.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+	front_right
+	front_left
+	back_right
+	back_left
+}

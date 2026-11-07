@@ -1,0 +1,46 @@
+name=Sparks
+description=Electric sparks on top of a leader that just got hurt.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	main{
+		frames{
+			main_01{
+				duration=0.0600
+			}
+			main_02{
+				duration=0.0600
+			}
+			main_03{
+				duration=0.0600
+			}
+			main_04{
+				duration=0.0600
+			}
+		}
+	}
+}
+sprites{
+	main_01{
+		file=effects/sparks
+		file_pos=0.0000 0.0000
+		file_size=32.0000 32.0000
+	}
+	main_02{
+		file=effects/sparks
+		file_pos=33.0000 0.0000
+		file_size=32.0000 32.0000
+	}
+	main_03{
+		file=effects/sparks
+		file_pos=66.0000 0.0000
+		file_size=32.0000 32.0000
+	}
+	main_04{
+		file=effects/sparks
+		file_pos=99.0000 0.0000
+		file_size=32.0000 32.0000
+	}
+}
+body_parts

@@ -1,0 +1,17 @@
+name = Adult Bulbmin stem
+description = The stem and leaf stuck to the top of an adult Bulbmin.
+
+appears_in_area_editor = false
+can_block_paths = false
+casts_shadow = false
+custom_category_name = Aux
+height = 8
+pushable = false
+pushes = false
+radius = 5
+target_type = none
+team = none
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

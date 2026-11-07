@@ -1,0 +1,9 @@
+name = Crush
+description = The damage of being crushed under something heavy. Used, for instance, by a Yellow Wollyog's stomping attack.
+
+color = 0 0 0
+effects = crushed
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

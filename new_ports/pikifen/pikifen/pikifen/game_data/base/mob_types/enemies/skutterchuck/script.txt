@@ -1,0 +1,277 @@
+first_state = looking_for_nodule
+death_state = dying
+
+init {
+    set_var ignoring false
+    set_var has_nodule false
+    set_var throw_range 250
+}
+
+script {
+    looking_for_nodule {
+        on_enter {
+            set_var has_nodule false
+            receive_status speed_tripled
+            set_animation idling random_time_on_spawn
+            stop
+            set_near_reach nodule_search
+            set_timer 0.8
+        }
+        on_timer {
+            set_state searching_for_nodule
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_object_in_reach {
+            if $ignoring = false
+                get_mob_info t trigger mob_type
+                if $t = crystal_nodule
+                    focus trigger
+                    save_focused_mob_memory 1
+                    set_state chasing_nodule
+                end_if
+            end_if
+        }
+    }
+    
+    searching_for_nodule {
+        on_enter {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            set_animation walking normal true
+            get_random_float t 1.5 2.5
+            set_timer $t
+            set_near_reach nodule_search
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_reach_destination {
+            set_state looking_for_nodule
+        }
+        on_timer {
+            set_state looking_for_nodule
+        }
+        on_far_from_home {
+            set_state returning_without_nodule
+        }
+    }
+
+    returning_without_nodule {
+        on_enter {
+            move_to_target home
+            set_animation walking normal true
+            set_near_reach nodule_search
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_reach_destination {
+            set_state looking_for_nodule
+        }
+    }
+    
+    chasing_nodule {
+        on_enter {
+            set_animation walking normal true
+            move_to_target focused_mob
+            set_near_reach nodule_pick_up
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_object_in_reach {
+            get_mob_info t trigger mob_type
+            if $t = crystal_nodule
+                set_state picking_up
+            end_if
+        }
+        on_focus_off_reach {
+            set_state looking_for_nodule
+        }
+    }
+    
+    picking_up {
+        on_enter {
+            remove_status speed_tripled
+            set_animation picking_up
+            stop
+        }
+        on_frame_signal {
+            hold_focused_mob nodule
+            send_message_to_focus be_carried
+            set_var has_nodule true
+        }
+        on_focus_off_reach {
+            set_state stunned
+        }
+        on_animation_end {
+            set_state searching_for_target
+        }
+    }
+
+    looking_for_target {
+        on_enter {
+            stop
+            set_animation idling
+            set_near_reach target_search
+            set_timer 3
+        }
+        on_focus_off_reach {
+            set_state stunned
+        }
+        on_timer {
+            set_state searching_for_target
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                save_focused_mob_memory 2
+                load_focused_mob_memory 1
+                set_state preparing
+            end_if
+        }
+    }
+
+    searching_for_target {
+        on_enter {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            set_animation walking normal true
+            get_random_float t 1.5 2.5
+            set_timer $t
+            set_near_reach target_search
+        }
+        on_reach_destination {
+            set_state looking_for_target
+        }
+        on_timer {
+            set_state looking_for_target
+        }
+        on_focus_off_reach {
+            set_state stunned
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state returning_with_nodule
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                save_focused_mob_memory 2
+                load_focused_mob_memory 1
+                set_state preparing
+            end_if
+        }
+    }
+
+    returning_with_nodule {
+        on_enter {
+            move_to_target home
+            set_animation walking normal true
+            set_timer 2
+            set_near_reach target_search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state looking_for_target
+        }
+        on_focus_off_reach {
+            set_state stunned
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                save_focused_mob_memory 2
+                load_focused_mob_memory 1
+                set_state preparing
+            end_if
+        }
+    }
+
+    preparing {
+        on_enter {
+            stop
+            set_animation preparing
+            load_focused_mob_memory 2
+        }
+        on_tick {
+            get_mob_info target_x focus x
+            get_mob_info target_y focus y
+            get_mob_info target_z focus z		
+            get_mob_info self_x self x
+            get_mob_info self_y self y
+            get_distance dist $self_x $self_y $target_x $target_y				
+            if $dist > $throw_range	
+                set_state looking_for_target
+            end_if
+        }
+        on_animation_end {
+            set_state flinging
+        }
+        on_focus_off_reach {
+            set_state stunned
+        }
+    }
+
+    flinging {
+        on_enter {
+            set_animation flinging
+        }
+        on_frame_signal {
+            load_focused_mob_memory 1
+            throw_focused_mob $target_x $target_y $target_z 300
+            send_message_to_focus be_flung
+            set_var has_nodule false
+        }
+        on_animation_end {
+            set_state looking_for_nodule
+        }
+    }
+
+    shaking {
+        on_enter {
+            stop
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state looking_for_nodule
+        }
+    }
+
+    stunned {
+        on_enter {
+            stop
+            set_animation stunned
+            send_message_to_focus be_dropped
+            set_var has_nodule false
+        }
+        on_animation_end {
+            set_state looking_for_nodule
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            load_focused_mob_memory 1
+            finish_dying
+            if $has_nodule = true
+                send_message_to_focus be_dropped
+                throw_focused_mob 0 0 0 0
+            end_if
+        }
+    }
+    
+}

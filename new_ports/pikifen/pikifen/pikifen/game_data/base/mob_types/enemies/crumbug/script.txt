@@ -1,0 +1,128 @@
+first_state = exploring
+death_state = dying
+
+init {
+    set_var ignoring false
+}
+
+script {
+    exploring {
+        on_enter {
+            set_animation moving random_time_on_spawn true
+            get_random_float t 0.8 1.2
+            set_timer $t
+            set_near_reach search
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            get_random_float t 0.8 1.2
+            set_timer $t
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state chasing
+        }
+        on_far_from_home {
+            set_state returning
+        }
+        on_pikmin_land {
+            set_state dying
+        }
+    }
+    
+    chasing {
+        on_enter {
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state attacking
+        }
+        on_focus_off_reach {
+            set_state exploring
+        }
+        on_far_from_home {
+            set_state returning
+        }
+        on_pikmin_land {
+            set_state dying
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            start_chomping 1 mouth
+        }
+        on_animation_end {
+            stop_chomping
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state eating
+            else
+                set_state exploring
+            end_if
+        }
+    }
+    
+    eating {
+        on_enter {
+            set_animation eating
+        }
+        on_animation_end {
+            swallow_all
+            play_sound swallow
+            set_state exploring
+        }
+        on_pikmin_land {
+            set_state dying
+        }
+    }
+    
+    returning {
+        on_enter {
+            move_to_target home
+            set_timer 2
+            set_near_reach search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state exploring
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+        on_pikmin_land {
+            set_state dying
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

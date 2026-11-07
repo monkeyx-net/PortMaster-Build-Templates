@@ -1,0 +1,19 @@
+script {
+    idling {
+        on_damage {
+            play_sound wood_hit
+        }
+    }
+    creating_chunk {
+        on_enter {
+            start_particles bridge_dust_explosion 0 0 200
+            play_sound sticks
+        }
+    }
+    destroyed {
+        on_enter {
+            set_hiding true
+            play_sound obstacle_cleared
+        }
+    }
+}

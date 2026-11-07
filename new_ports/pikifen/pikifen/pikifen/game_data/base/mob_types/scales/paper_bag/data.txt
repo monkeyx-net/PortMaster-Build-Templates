@@ -1,0 +1,79 @@
+name = Paper bag
+description = A large overturned paper bag. It can be squashed down if enough weight is applied on top.
+
+can_block_paths = true
+custom_category_name = Obstacle, harmless
+goal_number = 20
+height = 200
+pushes = true
+radius = 41
+rectangular_dimensions = 82 192
+
+children {
+    lhandle {
+        spawn = handle
+        parent_holds = true
+        hold_offset_distance = 1.49
+        hold_offset_vertical_distance = 0
+        hold_offset_angle = 180
+        hold_rotation_method = face_parent
+    }
+    rhandle {
+        spawn = handle
+        parent_holds = true
+        hold_offset_distance = 1.49
+        hold_offset_vertical_distance = 0
+        hold_offset_angle = 0
+        hold_rotation_method = face_parent
+    }
+    barrier {
+        spawn = barrier
+        parent_holds = true
+        hold_offset_distance = 0
+        hold_offset_vertical_distance = 1
+        hold_offset_angle = 0
+        hold_rotation_method = copy_parent
+    }
+}
+
+sounds {
+    crumple {
+        sound = misc/paper_crumple
+        volume = 40
+        speed_deviation = 10
+    }
+    deflate {
+        sound = misc/paper_deflate
+        volume = 40
+        speed_deviation = 10
+    }
+    poof {
+        sound = effects/poof
+        volume = 60
+        speed = 120
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+spawns {
+    handle {
+        object = paper_bag_handle
+        relative = true
+        coordinates = 0 0
+        angle = 0
+    }
+    barrier {
+        object = paper_bag_barrier
+        relative = true
+        coordinates = 0 0
+        angle = 0
+        link_object_to_spawn = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

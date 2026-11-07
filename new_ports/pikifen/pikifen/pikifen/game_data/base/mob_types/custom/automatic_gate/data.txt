@@ -1,0 +1,35 @@
+name = Automatic gate
+description = A gate that lifts up on its own when it receives power from some source.
+
+area_editor_recommend_links_to = true
+can_block_paths = true
+custom_category_name = Gate
+height = 9999
+move_speed = 150
+pushable = false
+pushes = true
+radius = 32
+rectangular_dimensions = 40 192
+
+sounds {
+    vine {
+        sound = effects/stretch
+        volume = 40
+        speed_deviation = 10
+    }
+    rock {
+        sound = misc/rock_grind
+        volume = 30
+        speed_deviation = 5
+    }
+    thud {
+        sound = misc/stomp_big
+        volume = 70
+        speed = 80
+        speed_deviation = 5
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,81 @@
+first_state = growing
+death_state = destroying
+
+init {
+    set_var homing false
+    set_var has_target false
+}
+
+script {
+    growing {
+        on_enter {
+            move_to_relative 1000 0
+            set_animation growing
+            start_particles dust 0 0
+            set_near_reach homing
+            set_far_reach homing
+            play_sound rolling sound_id
+        }
+        on_touch_wall {
+            set_state destroying
+        }
+        on_animation_end {
+            set_state rolling
+        }
+    }
+    
+    rolling {
+        on_enter {
+            set_animation rolling
+            set_timer 10
+        }
+        on_tick {
+            if $has_target = false
+                move_to_relative 1000 0
+            end_if
+        }
+        on_touch_wall {
+            set_state destroying
+        }
+        on_touch_object {
+            get_mob_info t trigger mob_category
+            if $t != pikmin
+                if $t != decoration
+                    set_state destroying
+                end_if
+            end_if
+        }
+        on_timer {
+            set_state destroying
+        }
+        on_opponent_in_reach {
+            if $homing = true
+                get_mob_info t trigger mob_category
+                if $t = leader
+                    if $has_target = false
+                        focus trigger
+                        move_to_target focused_mob
+                        set_var has_target true
+                    end_if
+                end_if
+            end_if
+        }
+        on_focus_off_reach {
+            set_var has_target false
+        }
+    }
+    
+    destroying {
+        on_enter {
+            start_particles rock_explosion 0 0
+            stop_sound $sound_id
+            play_sound destroyed
+            shake_camera 30
+            set_animation destroyed
+        }
+        on_animation_end {
+            delete
+        }
+    }
+    
+}

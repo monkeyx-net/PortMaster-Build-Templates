@@ -1,0 +1,219 @@
+name=Rolling boulder animations
+description=Animations for the rolling boulder.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	destroyed{
+		frames{
+			destroyed{
+				duration=0.1000
+			}
+		}
+	}
+	growing{
+		frames{
+			growing_01{
+				duration=0.1000
+				interpolate=true
+			}
+			growing_02{
+				duration=0.1000
+				interpolate=true
+			}
+			growing_03{
+				duration=0.1000
+			}
+		}
+	}
+	rolling{
+		frames{
+			rolling_04{
+				duration=0.1000
+			}
+			rolling_05{
+				duration=0.1000
+			}
+			rolling_06{
+				duration=0.1000
+			}
+			rolling_01{
+				duration=0.1000
+			}
+			rolling_02{
+				duration=0.1000
+			}
+			rolling_03{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	destroyed{
+		file=other_mobs/boulder
+		file_pos=0.0000 0.0000
+		file_size=0.0000 0.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	growing_01{
+		file=other_mobs/boulder
+		file_pos=0.0000 0.0000
+		file_size=64.0000 64.0000
+		scale=0.3500 0.3500
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=12.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	growing_02{
+		file=other_mobs/boulder
+		file_pos=65.0000 0.0000
+		file_size=64.0000 64.0000
+		scale=0.6300 0.6300
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=40.0000
+				radius=20.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	growing_03{
+		file=other_mobs/boulder
+		file_pos=130.0000 0.0000
+		file_size=64.0000 64.0000
+		scale=0.8800 0.8800
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=56.0000
+				radius=28.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_01{
+		file=other_mobs/boulder
+		file_pos=0.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 -0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_02{
+		file=other_mobs/boulder
+		file_pos=65.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_03{
+		file=other_mobs/boulder
+		file_pos=130.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_04{
+		file=other_mobs/boulder
+		file_pos=195.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_05{
+		file=other_mobs/boulder
+		file_pos=260.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+	rolling_06{
+		file=other_mobs/boulder
+		file_pos=325.0000 0.0000
+		file_size=64.0000 64.0000
+		hitboxes{
+			rock{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=32.0000
+				type=1
+				value=35.0000
+				hazard=crush
+				knockback=2.0000
+			}
+		}
+	}
+}
+body_parts{
+	rock
+}

@@ -1,0 +1,55 @@
+name = Egg
+description = Contains nectar, though it can also contain a spray drop.
+
+can_walk_on_others = true
+custom_category_name = Useful
+height = 40
+max_health = 50
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 15
+show_health = false
+target_type = weak_plain_obstacle
+team = obstacle
+
+area_editor_properties {
+    Contents {
+        var = contents
+        type = list
+        list = random;nectar;nectar_2;spicy_drop;bitter_drop
+        tooltip = What contents this egg contains.
+    }
+}
+
+spawns {
+    nectar {
+        object = nectar
+        relative = true
+        coordinates = 0
+        momentum = 100
+    }
+    spicy_drop {
+        object = ultra-spicy_nectar
+        relative = true
+        coordinates = 0
+        momentum = 100
+    }
+    bitter_drop {
+        object = ultra-bitter_nectar
+        relative = true
+        coordinates = 0
+        momentum = 100
+    }
+}
+
+sounds {
+    crack {
+        sound = misc/egg_crack
+        speed_deviation = 10
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

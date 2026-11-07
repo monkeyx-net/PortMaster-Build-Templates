@@ -1,0 +1,39 @@
+name = Bomb rock
+description = If dropped by a Pikmin, or even just attacked, its fuse will start counting down. Once it reaches zero, it'll violently explode.
+
+can_be_hotswapped = true
+can_hurt = player; enemy; weak_plain_obstacle; strong_plain_obstacle; explodable; explodable_pikmin_obstacle; fragile
+can_walk_on_others = true
+custom_category_name = Useful
+dropped_when_pikmin_lands = true
+dropped_when_pikmin_lands_on_opponent = true
+height = 28
+icon = other_mobs/bomb_rock_icon
+max_health = 50
+move_speed = 0
+pikmin_returns_after_using = true
+pushable = true
+pushes = false
+radius = 14
+spike_damage = bomb_rock_explosion
+target_type = fragile
+
+spawns {
+    explosion {
+        object = explosion
+        relative = true
+        coordinates = 0 0 0
+    }
+}
+
+sounds {
+    wick {
+        sound = misc/wick
+        volume = 30
+        loop = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

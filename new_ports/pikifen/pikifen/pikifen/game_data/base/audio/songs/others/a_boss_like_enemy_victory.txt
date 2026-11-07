@@ -1,0 +1,10 @@
+name = A Boss-like Enemy! (victory)
+description = Victory fanfare for A Boss-Like Enemy!
+
+tags = Combat; Energetic; Specific
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0
+notes = This song is an original creation for Pikifen.
+
+main_track = others/a_boss-like_enemy_victory

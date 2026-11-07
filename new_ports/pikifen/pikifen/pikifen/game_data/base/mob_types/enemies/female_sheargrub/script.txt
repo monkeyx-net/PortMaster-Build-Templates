@@ -1,0 +1,99 @@
+first_state = hidden
+death_state = dying
+
+script {
+    hidden {
+        on_enter {
+            set_animation hidden
+            set_hiding true
+            set_near_reach chase
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state emerging
+        }
+        on_leave {
+            set_hiding false
+        }
+    }
+    
+    emerging {
+        on_enter {
+            set_animation emerging
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    examining {
+        on_enter {
+            set_animation examining
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state chasing
+        }
+        on_animation_end {
+            set_state going_home
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    burying {
+        on_enter {
+            set_animation burying
+        }
+        on_animation_end {
+            set_state hidden
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+        }
+        on_focus_off_reach {
+            set_state going_home
+        }
+        on_far_from_home {
+            set_state going_home
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    going_home {
+        on_enter {
+            set_animation moving normal true
+            move_to_target home
+        }
+        on_reach_destination {
+            set_state burying
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    crushed {
+        on_enter {
+            set_state dying
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

@@ -1,0 +1,189 @@
+name=White Spectralids animations
+description=Animations for the White Spectralids.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	dying{
+		loop_frame=3
+		frames{
+			closed{
+				duration=0.5000
+			}
+			dying_01{
+				duration=0.1000
+			}
+			dying_02{
+				duration=0.1000
+			}
+			dead{
+				duration=0.5000
+			}
+		}
+	}
+	flapping{
+		frames{
+			opened{
+				duration=0.1000
+			}
+			mid{
+				duration=0.1000
+				sound=wings
+			}
+			closed{
+				duration=0.1000
+			}
+			mid{
+				duration=0.1000
+			}
+		}
+	}
+	resting{
+		frames{
+			opened{
+				duration=0.3000
+				interpolate=true
+			}
+			resting_02{
+				duration=0.1000
+			}
+			resting_02{
+				duration=0.3000
+				interpolate=true
+			}
+			mid{
+				duration=0.4000
+				interpolate=true
+			}
+			resting_01{
+				duration=0.1000
+			}
+			resting_01{
+				duration=0.3000
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	closed{
+		file=enemies/white_spectralids
+		file_pos=0.0000 56.0000
+		file_size=25.0000 10.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	dead{
+		file=enemies/white_spectralids
+		file_pos=0.0000 103.0000
+		file_size=25.0000 17.0000
+		offset=0.0000 -4.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01{
+		file=enemies/white_spectralids
+		file_pos=0.0000 67.0000
+		file_size=25.0000 16.0000
+		offset=0.0000 -1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02{
+		file=enemies/white_spectralids
+		file_pos=0.0000 84.0000
+		file_size=25.0000 18.0000
+		offset=0.0000 -4.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	mid{
+		file=enemies/white_spectralids
+		file_pos=0.0000 33.0000
+		file_size=25.0000 22.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	opened{
+		file=enemies/white_spectralids
+		file_pos=0.0000 0.0000
+		file_size=25.0000 32.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	resting_01{
+		file=enemies/white_spectralids
+		file_pos=0.0000 33.0000
+		file_size=25.0000 22.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	resting_02{
+		file=enemies/white_spectralids
+		file_pos=0.0000 0.0000
+		file_size=25.0000 32.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+}

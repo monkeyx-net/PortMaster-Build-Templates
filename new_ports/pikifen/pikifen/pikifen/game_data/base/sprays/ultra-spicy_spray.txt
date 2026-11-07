@@ -1,0 +1,16 @@
+name = Ultra-Spicy Spray
+description = Spray one of these behind you, and every Pikmin in your group will become faster!
+
+angle = 180
+angle_range = 90
+color = 255 64 64
+distance_range = 128
+effects = spicy
+group = true
+group_pikmin_only = true
+icon = other_mobs/ultra-spicy_spray
+ingredients = 10
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

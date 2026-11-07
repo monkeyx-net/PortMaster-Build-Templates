@@ -1,0 +1,22 @@
+init {
+    start_particles geyser 0 0 16
+}
+
+script {
+    idling {
+        on_enter {
+            set_timer 1
+        }
+        on_timer {
+            play_sound fountain
+        }
+    }
+    bouncing {
+        on_enter {
+            play_sound steam sound_id
+        }
+        on_leave {
+            stop_sound $sound_id
+        }
+    }
+}

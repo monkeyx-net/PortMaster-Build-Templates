@@ -1,0 +1,101 @@
+name=Gas pipe animations
+description=Animations for the gas pipe.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	destroyed{
+		frames{
+			safe{
+				duration=0.0000
+			}
+		}
+	}
+	shooting{
+		frames{
+			shooting_01{
+				duration=0.0700
+				interpolate=true
+			}
+			shooting_02{
+				duration=0.0700
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	safe{
+		file=other_mobs/gas_pipe
+		file_pos=0.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			tube{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=48.0000
+				type=0
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=48.0000
+				type=2
+				value=0.0000
+				hazard=poison
+			}
+		}
+	}
+	shooting_01{
+		file=other_mobs/gas_pipe
+		file_pos=0.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			tube{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+				hazard=poison
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				hazard=poison
+			}
+		}
+	}
+	shooting_02{
+		file=other_mobs/gas_pipe
+		file_pos=0.0000 0.0000
+		file_size=48.0000 48.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			tube{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+				hazard=poison
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=64.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				hazard=poison
+			}
+		}
+	}
+}
+body_parts{
+	tube
+	gas
+}

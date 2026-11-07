@@ -1,0 +1,51 @@
+first_state = up
+
+init {
+    set_var goal_number 1
+    set_var weight 0
+}
+
+script {
+    up {
+        on_enter {
+            set_animation up
+            play_sound click_up
+            if $weight >= $goal_number
+                set_state down
+            end_if
+            send_message_to_links 0
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+            if $weight >= $goal_number
+                set_state down
+            end_if
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+        }
+    }
+    
+    down {
+        on_enter {
+            set_animation down
+            play_sound click_down
+            if $weight < $goal_number
+                start_particles dust_pressure_plate_click 0 0 16
+                set_state up
+            end_if
+            send_message_to_links $weight
+            start_particles dust_pressure_plate_click 0 0 16
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+            if $weight < $goal_number
+                start_particles dust_pressure_plate_click 0 0 16
+                set_state up
+            end_if
+        }
+    }
+}

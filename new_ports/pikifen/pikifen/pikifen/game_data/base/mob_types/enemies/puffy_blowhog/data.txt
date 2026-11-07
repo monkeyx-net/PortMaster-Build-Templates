@@ -1,0 +1,66 @@
+name = Puffy Blowhog
+description = Puffy Blowhogs are airborne, and can blow gusts of wind down below to scatter Pikmin about.
+
+acceleration = 50
+can_free_move = true
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, large and aggressive
+height = 128
+itch_damage = 70
+itch_time = 5
+max_carriers = 5
+max_health = 2000
+move_speed = 110
+pikmin_seeds = 8
+points = 40
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 75
+rotation_speed = 70
+target_type = enemy
+terrain_radius = 150
+territory_radius = 300
+weight = 2
+
+reaches {
+    search = 300 90 30 360
+    chase = 300 360
+}
+
+sounds {
+    wing {
+        sound = creature_misc/wing_deep_whoosh
+        speed = 120
+        volume = 20
+    }
+    inhaling {
+        sound = creature_vocals/inhaling
+        loop = true
+        volume = 30
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    exhaling {
+        sound = creature_vocals/exhaling
+        loop = true
+        volume = 50
+    }
+    thump {
+        sound = misc/stomp_mid
+        volume = 50
+    }
+    stretch {
+        sound = effects/stretch
+        volume = 50
+        speed = 160
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

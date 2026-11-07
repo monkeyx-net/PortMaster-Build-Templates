@@ -1,0 +1,21 @@
+name=Tutorial Meadow
+description=A tutorial area designed to teach you how to navigate through PNF-404!
+tags=Tutorial
+maker=Espyo
+version=1.1.0
+engine_version=1.0.0
+subtitle=Get the treasure
+difficulty=1
+bg_bmp=textures/space
+bg_color=0 0 0
+bg_dist=20.0000
+bg_zoom=19.0000
+song=areas/coastal_pavement_in_early_fall
+weather
+day_time_start=420
+day_time_speed=0.0000
+spray_amounts
+mission_goal=Collect treasures
+mission_goal_all_mobs=true
+mission_fail_conditions=128
+mission_grading_mode=1

@@ -1,0 +1,70 @@
+name = Crystal wall
+description = Wall made of crystal. Only Rock Pikmin or explosions can bring it down.
+
+can_block_paths = true
+casts_shadow = false
+custom_category_name = Gate
+default_vulnerability = 0
+height = 0
+max_health = 400
+pushable = false
+pushes = true
+radius = 32
+rectangular_dimensions = 16 192
+show_health = false
+target_type = explodable_pikmin_obstacle
+team = obstacle
+
+children {
+    left_pillar {
+        spawn = left_pillar
+        parent_holds = false
+    }
+    right_pillar {
+        spawn = right_pillar
+        parent_holds = false
+    }
+}
+
+spawns {
+    left_pillar {
+        object = crystal_wall_pillar
+        relative = true
+        coordinates = 0 -120
+        angle = 0
+    }
+    right_pillar {
+        object = crystal_wall_pillar
+        relative = true
+        coordinates = 0 120
+        angle = 180
+    }
+}
+
+sounds {
+    hit {
+        sound = nature/crystal_hit
+        speed = 110
+        volume = 20
+        speed_deviation = 8
+    }
+    destroyed {
+        sound = nature/crystal_smash
+        speed = 100
+        volume = 30
+        speed_deviation = 8
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+vulnerabilities {
+    explosion = 1000
+    rock = 100
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

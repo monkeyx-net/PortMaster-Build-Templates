@@ -1,0 +1,9 @@
+name = Fire
+description = Fire, and really, anything that burns. Typically makes a Pikmin's top catch on fire. Used, for instance, by a Fiery Blowhog's fire breath attack.
+
+color = 255 0 0
+effects = burned
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

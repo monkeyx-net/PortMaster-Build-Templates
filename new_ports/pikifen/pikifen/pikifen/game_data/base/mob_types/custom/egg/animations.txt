@@ -1,0 +1,97 @@
+name=Egg animations
+description=Animations for the egg.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	destroyed{
+		frames{
+			destroyed{
+				duration=0.1000
+			}
+		}
+	}
+	stage_1_idling{
+		frames{
+			stage_1_idling{
+				duration=0.1000
+			}
+		}
+	}
+	stage_2_idling{
+		frames{
+			stage_2_idling{
+				duration=0.1000
+			}
+		}
+	}
+	stage_3_idling{
+		frames{
+			stage_3_idling{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	destroyed{
+		file=other_mobs/egg
+		file_pos=50.0000 0.0000
+		file_size=24.0000 32.0000
+		scale=1.2000 1.2000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=18.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	stage_1_idling{
+		file=other_mobs/egg
+		file_pos=0.0000 0.0000
+		file_size=24.0000 32.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=18.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	stage_2_idling{
+		file=other_mobs/egg
+		file_pos=25.0000 0.0000
+		file_size=24.0000 32.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=18.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	stage_3_idling{
+		file=other_mobs/egg
+		file_pos=50.0000 0.0000
+		file_size=24.0000 32.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=18.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+}

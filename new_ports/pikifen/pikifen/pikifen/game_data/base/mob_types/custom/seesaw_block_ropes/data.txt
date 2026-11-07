@@ -1,0 +1,15 @@
+name = Seesaw block ropes
+description = Ropes attached above a seesaw block.
+
+appears_in_area_editor = false
+casts_shadow = false
+custom_category_name = Aux
+height = 500
+pushable = false
+pushes = false
+radius = 90
+target_type = none
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

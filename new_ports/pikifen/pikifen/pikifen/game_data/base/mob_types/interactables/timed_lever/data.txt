@@ -1,0 +1,45 @@
+name = Timed lever
+description = A lever that can be flipped by a leader or a thrown Pikmin. Sends power when in the "on" position, but will turn back off after a while!
+
+area_editor_tips = You can link an object to this so that when it receives power, it gets pressed just like a leader would.
+area_editor_recommend_links_from = true
+custom_category_name = Puzzle
+height = 16
+inactive_logic = ticks
+max_health = 1
+prompt_text = Flip lever
+pushable = false
+pushes = false
+radius = 16
+trigger_range = 64
+
+area_editor_properties {
+    Duration {
+        var = duration
+        type = float
+        def_value = 5
+        tooltip = How long it lasts in the "on" position.
+    }
+}
+
+sounds {
+    click_down {
+        sound = misc/stone_click
+        volume = 75
+        speed = 100
+    }
+    click_up {
+        sound = misc/stone_click
+        volume = 60
+        speed = 80
+    }
+    tension {
+        sound = effects/stretch
+        volume = 40
+        loop = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

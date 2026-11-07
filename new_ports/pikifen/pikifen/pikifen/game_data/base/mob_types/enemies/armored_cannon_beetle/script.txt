@@ -1,0 +1,244 @@
+first_state = idling
+death_state = prepare_to_die
+states_ignoring_death = closing; dying
+
+init {
+    set_var hot true
+    set_var time_open 0
+    set_var dead false
+    set_var is_open false
+    set_var idle_action 0
+}
+
+script {
+    idling {
+        on_enter {
+            stop
+            set_animation idling random_time_on_spawn
+            get_random_float t 1.5 2.5
+            set_timer $t
+            set_near_reach search
+        }
+        on_timer {
+            get_random_int idle_action 0 1
+            if $idle_action = 0
+                set_state bored
+            else_if $idle_action = 1
+                set_state exploring
+            end_if
+            
+            get_random_float t 1.5 2.5
+            set_timer $t
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state turning
+        }
+    }
+    
+    bored {
+        on_enter {
+            set_animation bored
+        }
+        on_animation_end {
+            set_state idling
+        }
+        on_opponent_in_reach {
+            set_state turning
+        }
+    }
+    
+    exploring {
+        on_enter {
+            set_animation moving normal true
+            get_random_float t 1.5 2.5
+            set_timer $t
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+        }
+        on_timer {
+            set_state idling
+        }
+        on_far_from_home {
+            set_state returning
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state turning
+        }
+    }
+    
+    returning {
+        on_enter {
+            set_animation moving normal true
+            move_to_target home
+        }
+        on_reach_destination {
+            set_state idling
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state turning
+        }
+    }
+    
+    turning {
+        on_enter {
+            stop
+            set_animation moving
+            turn_to_target focused_mob
+            set_near_reach attack
+            set_far_reach search
+        }
+        on_opponent_in_reach {
+            set_state inhaling
+        }
+        on_focus_off_reach {
+            set_state idling
+        }
+    }
+    
+    inhaling {
+        on_enter {
+            stop
+            set_animation inhaling
+            play_sound inhaling sound_id
+            start_particles armored_cannon_beetle_inhale 114 0 120
+            start_chomping 1 blowhole
+        }
+        on_leave {
+            stop_sound $sound_id
+            stop_particles
+        }
+        on_tick {
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state catching
+            end_if
+        }
+        on_animation_end {
+            set_state spitting
+        }
+        on_leave {
+            stop_chomping
+        }
+    }
+    
+    spitting {
+        on_enter {
+            stop
+            set_animation spitting
+        }
+        on_frame_signal {
+            start_particles dust_spit 180 0
+            spawn boulder
+        }
+        on_animation_end {
+            set_state idling
+        }
+    }
+    
+    catching {
+        on_enter {
+            set_animation catching
+        }
+        on_frame_signal {
+            play_sound steam sound_id
+        }
+        on_animation_end {
+            set_state moving_hot
+        }
+    }
+    
+    moving_hot {
+        on_enter {
+            set_var hot true
+            set_var open true
+            set_var time_open 0
+            set_animation moving_hot
+            set_timer 1
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            start_particles steam 0 0 101
+        }
+        on_timer {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            calculate time_open $time_open + 1
+            set_timer 1
+            if $time_open >= 5
+                set_state moving_cool
+            end_if
+        }
+        on_leave {
+            stop_particles
+        }
+    }
+    
+    moving_cool {
+        on_enter {
+            set_var hot false
+            set_animation moving_cool
+            set_timer 1
+            stop_particles
+            stop_sound $sound_id
+        }
+        on_timer {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            calculate time_open $time_open + 1
+            set_timer 1
+            if $time_open >= 10
+                set_state closing
+            end_if
+        }
+    }
+    
+    closing {
+        on_enter {
+            stop
+            if $hot = true
+                set_animation closing_hot
+                stop_sound $sound_id
+            else
+                set_animation closing_cool
+            end_if
+        }
+        on_frame_signal {
+            release
+        }
+        on_animation_end {
+            set_var open false
+            if $dead = true
+                set_state dying
+            else
+                set_state idling
+            end_if
+        }
+    }
+    
+    prepare_to_die {
+        on_enter {
+            if $open = false
+                set_state dying
+            else
+                set_var dead true
+                set_state closing
+            end_if
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+}

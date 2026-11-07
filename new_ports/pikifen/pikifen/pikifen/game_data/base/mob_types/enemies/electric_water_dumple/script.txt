@@ -1,0 +1,150 @@
+first_state = idling
+death_state = dying
+
+init {
+    set_var ignoring false
+    set_var next_eat false
+}
+
+script {
+    idling {
+        on_enter {
+            set_var ignoring false
+            set_animation idling random_time_on_spawn
+            stop
+            set_near_reach search
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            if $next_eat = true
+                set_var next_eat false
+                set_state attacking
+            else
+                set_var next_eat true
+                set_state zapping
+            end_if
+        }
+        on_focus_off_reach {
+            set_state returning
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state returning
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            start_chomping 2 mouth
+        }
+        on_animation_end {
+            stop_chomping
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state eating
+            else
+                set_state idling
+            end_if
+        }
+    }
+    
+    eating {
+        on_enter {
+            stop_chomping
+            set_animation eating
+        }
+        on_animation_end {
+            swallow_all
+            play_sound swallow
+            set_state idling
+        }
+    }
+    
+    zapping {
+        on_enter {
+            stop
+            set_animation zapping
+        }
+        on_frame_signal {
+            get_event_info signal frame_signal
+            if $signal = 0
+                play_sound electricity sound_id
+            else
+                stop_sound $sound_id
+            end_if
+        }
+        on_leave {
+            stop_sound $sound_id
+        }
+        on_animation_end {
+            set_state idling
+        }
+    }
+    
+    shaking {
+        on_enter {
+            stop
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state idling
+        }
+    }
+    
+    returning {
+        on_enter {
+            move_to_target home
+            set_animation moving normal true
+            set_timer 2
+            set_near_reach search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state idling
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

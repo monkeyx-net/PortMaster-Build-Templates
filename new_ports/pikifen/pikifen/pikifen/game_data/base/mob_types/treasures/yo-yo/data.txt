@@ -1,0 +1,16 @@
+name = Yo-yo
+description = Some sort of spinning object with a cord.
+
+can_walk_on_others = true
+height = 20
+max_carriers = 20
+points = 200
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 80
+weight = 12
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

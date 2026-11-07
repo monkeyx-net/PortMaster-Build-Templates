@@ -1,0 +1,39 @@
+name = Large crystal
+description = A large block of crystal. It is so large it can fit other things inside, and takes a few Rock Pikmin smacks to break.
+
+area_editor_tips = To make it capture another object, simply place both objects together such that they are touching.
+can_block_paths = true
+custom_category_name = Obstacle, harmless
+default_vulnerability = 0
+height = 200
+max_health = 160
+pushable = false
+pushes = true
+radius = 50
+show_health = false
+target_type = explodable_pikmin_obstacle
+team = none
+
+vulnerabilities {
+    explosion = 100
+    rock = 100
+}
+
+sounds {
+    hit {
+        sound = nature/crystal_hit
+        speed = 110
+        volume = 20
+        speed_deviation = 8
+    }
+    destroyed {
+        sound = nature/crystal_smash
+        speed = 100
+        volume = 30
+        speed_deviation = 8
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,200 @@
+first_state = hidden
+death_state = dying_1
+states_ignoring_death = dying_1; dying_2
+
+init {
+    set_var max_step_distance 100
+    set_var max_turn_angle 75
+    set_var min_turn_angle 20
+    set_var feet_normal_distance 175
+    set_var moves_left 0
+}
+
+global {
+    on_receive_message {
+        get_event_info msg message
+    }
+}
+
+script {
+    hidden {
+        on_enter {
+            set_animation idling
+            set_hiding true
+            set_near_reach ambush
+        }
+        on_opponent_in_reach {
+            set_state ambushing
+        }
+    }
+    
+    ambushing {
+        on_enter {
+            set_hiding false
+            start_height_effect
+            teleport_to_relative 0 0 1000
+            set_gravity 1
+            get_random_int moves_left 1 3
+            send_message_to_links ambush
+            set_animation falling
+        }
+        on_receive_message {
+            if $msg = landed
+                stop_height_effect
+                set_animation idling
+                set_state resting
+            end_if
+        }
+    }
+    
+    resting {
+        on_enter {
+            set_gravity 0
+            set_animation resting
+        }
+        on_animation_end {
+            set_state deciding
+        }
+        on_tick {
+            move_to_target linked_mob_average
+            stabilize_z highest 300
+            turn_to_target arachnorb_head_logic
+        }
+        on_far_from_home {
+            set_var must_turn_home true
+        }
+    }
+    
+    deciding {
+        on_enter {
+            set_animation pausing
+        }
+        on_far_from_home {
+            arachnorb_plan_logic home
+            set_state move_fr
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_animation_end {
+            if $moves_left > 0
+                calculate moves_left $moves_left - 1
+                get_random_int decision 1 3
+                if $decision = 1
+                    arachnorb_plan_logic forward
+                    set_state move_fr
+                else_if $decision = 2
+                    arachnorb_plan_logic cw_turn
+                    set_state move_fr
+                else_if $decision = 3
+                    arachnorb_plan_logic ccw_turn
+                    set_state move_fr
+                end_if
+            
+            else
+                get_random_int moves_left 1 3
+                set_state resting
+                
+            end_if
+        }
+    }
+    
+    move_fr {
+        on_enter {
+            set_animation idling
+            send_message_to_links move_fr
+        }
+        on_tick {
+            move_to_target linked_mob_average
+            turn_to_target arachnorb_head_logic
+        }
+        on_receive_message {
+            if $msg = landed
+                stabilize_z highest 300
+                set_state move_fl
+            end_if
+        }
+    }
+    
+    move_fl {
+        on_enter {
+            send_message_to_links move_fl
+            set_timer 1
+        }
+        on_tick {
+            move_to_target linked_mob_average
+            turn_to_target arachnorb_head_logic
+        }
+        on_receive_message {
+            if $msg = landed
+                stabilize_z highest 300
+                set_state move_br
+            end_if
+        }
+    }
+    
+    move_br {
+        on_enter {
+            send_message_to_links move_br
+            set_timer 1
+        }
+        on_tick {
+            move_to_target linked_mob_average
+            turn_to_target arachnorb_head_logic
+        }
+        on_receive_message {
+            if $msg = landed
+                stabilize_z highest 300
+                set_state move_bl
+            end_if
+        }
+    }
+    
+    move_bl {
+        on_enter {
+            send_message_to_links move_bl
+            set_timer 1
+        }
+        on_tick {
+            move_to_target linked_mob_average
+            turn_to_target arachnorb_head_logic
+        }
+        on_receive_message {
+            if $msg = landed
+                stabilize_z highest 300
+                set_state deciding
+            end_if
+        }
+    }
+    
+    shaking {
+        on_enter {
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state deciding
+        }
+    }
+    
+    dying_1 {
+        on_enter {
+            set_animation dying_01
+            start_dying
+        }
+        on_animation_end {
+            set_state dying_2
+        }
+    }
+    
+    dying_2 {
+        on_enter {
+            set_animation dying_02
+            start_particles beady_long_legs_crumbling 0 0
+            send_message_to_links die
+        }
+        on_animation_end {
+            finish_dying
+            delete
+        }
+    }
+}

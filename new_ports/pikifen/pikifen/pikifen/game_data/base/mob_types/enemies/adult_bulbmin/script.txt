@@ -1,0 +1,175 @@
+first_state = spawning_young
+death_state = dying
+
+init {
+    set_var ignoring false
+    get_mob_info home_x self x
+    get_mob_info home_y self y
+}
+
+script {
+    spawning_young {
+        on_enter {
+            set_timer 0.1
+        }
+        on_timer {
+            //We could spawn the young in the init block, but that would make
+            //the engine spawn the enemy and the young right away, taking up
+            //slots that may need to be used by the player's Pikmin. So let's
+            //wait with a timer, to make sure the player's Pikmin all spawn,
+            //and only then spawn the Bulbmin's young.
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            spawn young
+            set_state exploring
+        }
+    }
+
+    exploring {
+        on_enter {
+            set_animation moving random_time_on_spawn true
+            set_near_reach search
+            get_random_float r -600 600
+            calculate x $home_x + $r
+            get_random_float r -600 600
+            calculate y $home_y + $r
+            move_to_absolute $x $y
+            get_random_float r 3 6
+            set_timer $r
+        }
+        on_far_from_home {
+            move_to_absolute $home_x $home_y $home_z
+        }
+        on_timer {
+            set_state re_explore
+        }
+        on_reach_destination {
+            set_state re_explore
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state turning
+            end_if
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+
+    re_explore {
+        on_enter {
+            set_var ignoring false
+            set_state exploring
+        }
+    }
+    
+    turning {
+        on_enter {
+            set_animation moving
+            stop
+            turn_to_target focused_mob
+            set_near_reach chase
+            set_far_reach close
+        }
+        on_opponent_in_reach {
+            stop
+            focus trigger
+            set_state chasing
+        }
+        on_focus_off_reach {
+            set_state exploring
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state attacking
+        }
+        on_focus_off_reach {
+            set_state exploring
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state exploring
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            start_chomping 5 mouth
+        }
+        on_animation_end {
+            stop_chomping
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state eating
+            else
+                set_state failing
+            end_if
+        }
+    }
+    
+    eating {
+        on_enter {
+            stop_chomping
+            set_animation eating
+        }
+        on_animation_end {
+            swallow_all
+            play_sound swallow
+            set_state exploring
+        }
+    }
+    
+    failing {
+        on_enter {
+            set_animation failing
+        }
+        on_animation_end {
+            set_state exploring
+        }
+    }
+    
+    shaking {
+        on_enter {
+            stop
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state exploring
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

@@ -1,0 +1,39 @@
+name = Small crystal
+description = A small piece of crystal. It can be broken easily with Rock Pikmin, and sometimes holds things inside.
+
+area_editor_tips = To make it capture another object, simply place both objects together such that they are touching.
+can_block_paths = true
+custom_category_name = Obstacle, harmless
+default_vulnerability = 0
+height = 100
+max_health = 60
+pushable = false
+pushes = true
+radius = 25
+show_health = false
+target_type = explodable_pikmin_obstacle
+team = none
+
+vulnerabilities {
+    explosion = 100
+    rock = 100
+}
+
+sounds {
+    hit {
+        sound = nature/crystal_hit
+        speed = 110
+        volume = 20
+        speed_deviation = 8
+    }
+    destroyed {
+        sound = nature/crystal_smash
+        speed = 100
+        volume = 30
+        speed_deviation = 8
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

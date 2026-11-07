@@ -1,0 +1,68 @@
+name = Cloaking Burrow-nit
+description = Its carapace looks like its face, but it is actually its backside, and it is armored.
+
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+health_regen = 1
+height = 64
+itch_damage = 20
+itch_time = 2
+max_carriers = 16
+max_health = 300
+move_speed = 50
+pikmin_seeds = 10
+points = 30
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 30
+rotation_speed = 170
+target_type = enemy
+territory_radius = 200
+weight = 8
+
+reaches {
+    wake_up = 20 360
+    search = 150 90 30 360
+    attack = 40 20
+    chase = 150 360
+}
+
+sounds {
+    swish {
+        sound = effects/swish
+        volume = 50
+    }
+    walk {
+        sound = creature_vocals/squeak_1
+        volume = 10
+        speed = 120
+        speed_deviation = 10
+        stack_mode = never
+    }
+    squeak_1 {
+        sound = creature_vocals/squeak_1
+        volume = 30
+        speed_deviation = 10
+    }
+    squeak_2 {
+        sound = creature_vocals/squeak_2
+        volume = 30
+        speed_deviation = 10
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    burying {
+        sound = creature_misc/burying
+        speed_deviation = 20
+        volume = 30
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

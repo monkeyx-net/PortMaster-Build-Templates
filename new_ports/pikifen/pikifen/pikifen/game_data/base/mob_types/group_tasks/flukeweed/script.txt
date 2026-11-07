@@ -1,0 +1,85 @@
+first_state = capturing
+death_state = dying
+
+init {
+    set_var capturing true
+}
+
+global {
+    on_receive_message {
+        get_event_info msg message
+    }
+}
+
+script {
+    capturing {
+        on_enter {
+            set_timer 0.1
+        }
+        on_timer {
+            set_var capturing false
+            set_state idling
+        }
+        on_touch_object {
+            if $capturing = true
+                focus trigger
+                store_focus_inside
+            end_if
+        }
+    }
+
+    idling {
+        on_enter {
+            set_animation idling random_time_on_spawn
+        }
+        on_receive_message {
+            if $msg = goal_reached
+                set_state pulled
+            end_if
+        }
+    }
+
+    pulled {
+        on_enter {
+            set_animation pulled
+
+            get_mob_info p self group_task_power
+            if $p <= 3
+                set_timer 1.5
+            else_if $p = 4
+                set_timer 1.25
+            else
+                set_timer 1
+            end_if
+        }
+        on_timer {
+            add_health -20
+
+            get_mob_info p self group_task_power
+            if $p <= 3
+                set_timer 1.5
+            else_if $p = 4
+                set_timer 1.25
+            else
+                set_timer 1
+            end_if
+        }
+        on_receive_message {
+            if $msg = goal_lost
+                set_state idling
+            end_if
+        }
+    }
+
+    dying {
+        on_enter {
+            set_animation dying
+            release_stored_mobs
+            start_particles dust_explosion
+            set_shadow_visibility false
+        }
+        on_animation_end {
+            delete
+        }
+    }
+}

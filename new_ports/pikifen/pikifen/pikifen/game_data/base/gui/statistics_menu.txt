@@ -1,0 +1,44 @@
+name=Statistics menu
+description=GUI for the lifetime statistics menu.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+hardcoded_items{
+	back{
+		center=12.0000 5.0000
+		size=20.0000 6.0000
+		description=Back button.
+	}
+	back_input{
+		center=3.0000 7.0000
+		size=4.0000 4.0000
+		description=Icon of the input bound to the back button.
+	}
+	list{
+		center=50.0000 51.0000
+		size=76.0000 82.0000
+		description=List of statistics.
+	}
+	list_scroll{
+		center=91.0000 51.0000
+		size=2.0000 82.0000
+		description=Scrollbar for the list of statistics.
+	}
+	tooltip{
+		center=50.0000 96.0000
+		size=96.0000 4.0000
+		description=Tooltip of the focused menu item.
+	}
+}
+custom_items{
+	header{
+		center=50.0000 5.0000
+		size=50.0000 6.0000
+		description=Menu header.
+		type=text
+		color=255 255 255 128
+		text=STATISTICS
+		font=area_name
+		text_alignment=1
+	}
+}

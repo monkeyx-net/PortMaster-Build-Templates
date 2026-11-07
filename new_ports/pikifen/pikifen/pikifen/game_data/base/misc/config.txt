@@ -1,0 +1,77 @@
+aesthetic_general {
+    carrying_color_move = 255 255 255
+    carrying_color_stop = 96 192 192
+    gameplay_msg_char_interval = 0.03
+    mouse_cursor_spin_speed = 180
+    no_pikmin_color = 168 190 230
+}
+
+aesthetic_radar {
+    background_color = 32 24 0
+    edge_color = 32 24 0
+    highest_color = 200 200 180
+    lowest_color = 80 64 0
+}
+
+carrying {
+    speed_base_mult = 0.3
+    speed_max_mult = 0.8
+    speed_weight_mult = 0.0004
+}
+
+general {
+    game_name = 
+    game_version = 
+}
+
+gui_colors {
+    back = 255 210 186
+    bad = 226 112 112
+    focused_item = 87 200 208
+    gold = 255 242 0
+    good = 96 226 80
+    page_change = 188 230 230
+    pause_bg = 25 46 70 204
+    pause_vignette = 140 182 224 44
+    small_header = 188 230 230
+}
+
+leaders {
+    group_member_grab_range = 128
+    next_pluck_range = 200
+    onion_open_range = 24
+    order = olimar; louie; president; alph; brittany; charlie
+    pluck_range = 32
+    standard_height = 46
+    standard_radius = 16
+}
+
+misc {
+    day_minutes_end = 1140
+    day_minutes_start = 420
+    spray_order = ultra-bitter_spray; ultra-spicy_spray
+}
+
+pikmin {
+    chase_range = 200
+    idle_bump_delay = 5
+    idle_bump_range = 50
+    idle_task_range = 50
+    maturity_power_mult = 0.1
+    maturity_speed_mult = 0.1
+    order = red_pikmin; yellow_pikmin; blue_pikmin; purple_pikmin; white_pikmin; rock_pikmin; winged_pikmin; bulbmin
+    standard_height = 24
+    standard_radius = 5
+    swarm_task_range = 3
+}
+
+rules {
+    can_throw_leaders = true
+    leader_cursor_max_dist = 200
+    max_pikmin_in_field = 100
+    throw_max_dist = 200
+    whistle_growth_speed = 180
+    whistle_max_dist = 200
+    zoom_closest_reach = 295
+    zoom_farthest_reach = 1340
+}

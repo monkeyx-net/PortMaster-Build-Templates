@@ -1,0 +1,62 @@
+name = Crumbug
+description = This small creature resembles a loaf of bread. It just meanders about, but can bite Pikmin pretty quickly.
+
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+height = 24
+max_carriers = 3
+max_health = 5
+move_speed = 40
+pikmin_seeds = 2
+points = 15
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 16
+rotation_speed = 200
+target_type = enemy
+territory_radius = 200
+weight = 2
+
+reaches {
+    search = 50 360
+    attack = 2 40
+    chase = 60 360
+}
+
+sounds {
+    bite {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 150
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 20
+        speed = 140
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 20
+        speed = 140
+        speed_deviation = 20
+    }
+    thud {
+        sound = misc/thump
+        speed = 200
+        volume = 40
+    }
+    waddle {
+        sound = creature_misc/fat_slosh
+        speed = 120
+        speed_deviation = 20
+        volume = 10
+        volume_deviation = 5
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

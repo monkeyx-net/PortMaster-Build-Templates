@@ -1,0 +1,34 @@
+name = Spotcap
+description = Small mushrooms that are sometimes found in the way.
+
+can_block_paths = true
+custom_category_name = Obstacle, harmless
+height = 48
+max_health = 110
+pushable = false
+pushes = true
+radius = 25
+rotation_speed = 3000
+show_health = false
+target_type = explodable_pikmin_obstacle
+team = obstacle
+use_damage_squash_and_stretch = true
+
+sounds {
+    hit {
+        sound = nature/organic_hit
+        speed = 120
+        speed_deviation = 10
+        volume = 50
+    }
+    destroy {
+        sound = nature/organic_smash
+        speed = 120
+        speed_deviation = 5
+        volume = 50
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

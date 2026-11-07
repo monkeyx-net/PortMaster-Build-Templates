@@ -1,0 +1,120 @@
+first_state = up
+
+init {
+    set_var height 128
+    set_var pair_weight 0
+    set_var start_down false
+    set_var weight 0
+}
+
+global {
+    on_receive_message {
+        get_event_info pair_weight message
+    }
+}
+
+script {
+    up {
+        on_enter {
+            if $start_down = true
+                set_var start_down false
+                set_state down
+            end_if
+            set_var height 128
+            set_height 128
+            set_animation up
+            stop_particles
+            if $weight > $pair_weight
+                set_state lowering
+            end_if
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+            if $weight > $pair_weight
+                set_state lowering
+            end_if
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+        on_receive_message {
+            if $weight > $pair_weight
+                set_state lowering
+            end_if
+        }
+    }
+    
+    lowering {
+        on_enter {
+            set_animation lowering
+            start_particles dust_falling_seesaw 0 0 0
+        }
+        on_frame_signal {
+            calculate height $height - 20
+            set_height $height
+        }
+        on_animation_end {
+            set_state down
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+    }
+    
+    down {
+        on_enter {
+            set_var height 8
+            set_height 8
+            set_animation down
+            stop_particles
+            if $weight < $pair_weight
+                set_state rising
+            end_if
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+            if $weight < $pair_weight
+                set_state rising
+            end_if
+        }
+        on_receive_message {
+            if $weight < $pair_weight
+                set_state rising
+            end_if
+        }
+    }
+    
+    rising {
+        on_enter {
+            set_animation rising
+            start_particles dust_falling 0 0 0
+        }
+        on_frame_signal {
+            calculate height $height + 20
+            set_height $height
+        }
+        on_animation_end {
+            set_state up
+        }
+        on_weight_added {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+        on_weight_removed {
+            get_mob_info weight self weight
+            send_message_to_links $weight
+        }
+    }
+}

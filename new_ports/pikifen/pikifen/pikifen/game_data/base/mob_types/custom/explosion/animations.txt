@@ -1,0 +1,173 @@
+name=Explosion animations
+description=Animations for an explosion.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	exploding{
+		frames{
+			flash{
+				duration=0.0500
+			}
+			exploding_01{
+				duration=0.0800
+				interpolate=true
+				sound=explosion
+			}
+			exploding_02{
+				duration=0.0010
+			}
+			exploding_03{
+				duration=0.0800
+				interpolate=true
+			}
+			exploding_04{
+				duration=0.0010
+			}
+			exploding_05{
+				duration=0.0800
+				interpolate=true
+			}
+			exploding_06{
+				duration=0.0010
+			}
+		}
+	}
+}
+sprites{
+	exploding_01{
+		file=effects/explosion
+		file_pos=0.0000 0.0000
+		file_size=42.0000 42.0000
+		scale=2.0000 2.0000
+		angle=0.0873
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -20.0000
+				height=70.0000
+				radius=34.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	exploding_02{
+		file=effects/explosion
+		file_pos=0.0000 0.0000
+		file_size=42.0000 42.0000
+		scale=4.0000 4.0000
+		angle=0.0873
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -40.0000
+				height=140.0000
+				radius=68.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	exploding_03{
+		file=effects/explosion
+		file_pos=43.0000 0.0000
+		file_size=78.0000 78.0000
+		scale=1.9000 1.9000
+		angle=0.1745
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -40.0000
+				height=140.0000
+				radius=68.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	exploding_04{
+		file=effects/explosion
+		file_pos=43.0000 0.0000
+		file_size=78.0000 78.0000
+		scale=2.4000 2.4000
+		angle=0.1745
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -40.0000
+				height=140.0000
+				radius=68.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	exploding_05{
+		file=effects/explosion
+		file_pos=122.0000 0.0000
+		file_size=78.0000 78.0000
+		scale=2.4000 2.4000
+		angle=0.2618
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -40.0000
+				height=140.0000
+				radius=68.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	exploding_06{
+		file=effects/explosion
+		file_pos=122.0000 0.0000
+		file_size=78.0000 78.0000
+		scale=2.6000 2.6000
+		angle=0.2618
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -40.0000
+				height=140.0000
+				radius=68.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+	flash{
+		file=effects/smack
+		file_pos=0.0000 0.0000
+		file_size=64.0000 64.0000
+		scale=4.0000 4.0000
+		hitboxes{
+			explosion{
+				coords=0.0000 0.0000 -10.0000
+				height=40.0000
+				radius=26.0000
+				type=1
+				value=600.0000
+				hazard=explosion
+				knockback_outward=true
+				knockback=3.0000
+			}
+		}
+	}
+}
+body_parts{
+	explosion
+}

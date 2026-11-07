@@ -1,0 +1,302 @@
+name=Seesaw block animations
+description=Animations for the seesaw block.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	down{
+		frames{
+			down_01{
+				duration=0.1000
+			}
+		}
+	}
+	lowering{
+		loop_frame=15
+		frames{
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+				sound=stretch
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+			}
+		}
+	}
+	rising{
+		loop_frame=15
+		frames{
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+				sound=stretch
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			down_01{
+				duration=0.0800
+				interpolate=true
+			}
+			down_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			down_03{
+				duration=0.0800
+				interpolate=true
+			}
+			down_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			up_01{
+				duration=0.0800
+				interpolate=true
+			}
+			up_02{
+				duration=0.0800
+				interpolate=true
+			}
+			up_03{
+				duration=0.0800
+				interpolate=true
+			}
+			up_04{
+				duration=0.0800
+			}
+		}
+	}
+	up{
+		frames{
+			up_01{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	down_01{
+		file=other_mobs/seesaw_block
+		file_pos=221.0000 0.0000
+		file_size=220.0000 180.0000
+		scale=0.9800 0.9800
+		hitboxes{
+			ropes{
+				coords=0.0000 0.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	down_02{
+		file=other_mobs/seesaw_block
+		file_pos=221.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=1.0000 0.0000
+		scale=0.9800 0.9800
+		hitboxes{
+			ropes{
+				coords=1.0000 0.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	down_03{
+		file=other_mobs/seesaw_block
+		file_pos=221.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=-1.0000 1.0000
+		scale=0.9800 0.9800
+		hitboxes{
+			ropes{
+				coords=-1.0000 1.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	down_04{
+		file=other_mobs/seesaw_block
+		file_pos=221.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=-1.0000 -1.0000
+		scale=0.9800 0.9800
+		hitboxes{
+			ropes{
+				coords=-1.0000 -1.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	up_01{
+		file=other_mobs/seesaw_block
+		file_pos=0.0000 0.0000
+		file_size=220.0000 180.0000
+		scale=1.0100 1.0100
+		hitboxes{
+			ropes{
+				coords=0.0000 0.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	up_02{
+		file=other_mobs/seesaw_block
+		file_pos=0.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=1.0000 0.0000
+		scale=1.0100 1.0100
+		hitboxes{
+			ropes{
+				coords=1.0000 0.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	up_03{
+		file=other_mobs/seesaw_block
+		file_pos=0.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=-1.0000 1.0000
+		scale=1.0100 1.0100
+		hitboxes{
+			ropes{
+				coords=-1.0000 1.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	up_04{
+		file=other_mobs/seesaw_block
+		file_pos=0.0000 0.0000
+		file_size=220.0000 180.0000
+		offset=-1.0000 -1.0000
+		scale=1.0100 1.0100
+		hitboxes{
+			ropes{
+				coords=-1.0000 -1.0000 0.0000
+				height=20.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	ropes
+}

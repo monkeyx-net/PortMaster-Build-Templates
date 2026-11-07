@@ -1,0 +1,17 @@
+name = Electrocuted
+description = Pikmin that are electrocuted will stay there for a bit, flashing from the powerful electricity, and will shortly after die.
+
+affects = pikmin
+color = 255 255 128
+health_change_ratio = -1.5
+overlay_anim_mob_scale = 2.0
+overlay_animation = electrocution
+speed_multiplier = 0
+state_change_type = helpless
+tint = 0 0 0 0
+turns_inedible = true
+turns_invisible = true
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

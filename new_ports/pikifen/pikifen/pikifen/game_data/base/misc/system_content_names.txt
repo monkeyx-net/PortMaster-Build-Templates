@@ -1,0 +1,120 @@
+graphics {
+    arrow_down = gui/arrow_down
+    arrow_left = gui/arrow_left
+    arrow_right = gui/arrow_right
+    arrow_up = gui/arrow_up
+    bright_circle = effects/bright_circle
+    bright_ring = effects/bright_ring
+    bubble_box = gui/bubble_box
+    button_box = gui/button_box
+    checkbox_check = gui/checkbox_check
+    checkbox_no_check = gui/checkbox_no_check
+    difficulty = gui/difficulty
+    discord_icon = gui/discord_icon
+    editor_icons = gui/editor_icons
+    enemy_soul = effects/enemy_soul
+    focus_box = gui/focus_box
+    frame_box = gui/frame_box
+    github_icon = gui/github_icon
+    hard_bubble = gui/hard_bubble
+    icon = gui/icon
+    idle_glow = effects/idle_glow
+    key_box = gui/key_box
+    leader_cursor = gui/leader_cursor
+    leader_prompt = gui/leader_prompt
+    leader_silhouette_side = gui/leader_silhouette_side
+    leader_silhouette_top = gui/leader_silhouette_top
+    low_health_ring = gui/low_health_ring
+    medal_bronze = gui/medal_bronze
+    medal_gold = gui/medal_gold
+    medal_got_it = gui/medal_got_it
+    medal_none = gui/medal_none
+    medal_platinum = gui/medal_platinum
+    medal_silver = gui/medal_silver
+    menu_icons = gui/menu_icons
+    mission_clear = gui/mission_clear
+    mission_fail = gui/mission_fail
+    more = gui/more
+    mouse_cursor = gui/mouse_cursor
+    napsack = gui/napsack
+    pikmin_soul = effects/pikmin_soul
+    player_input_icons = gui/player_input_icons
+    random = gui/random
+    rock = effects/rock
+    shadow = effects/shadow
+    shadow_square = effects/shadow_square
+    smack = effects/smack
+    smoke = effects/smoke
+    sparkle = effects/sparkle
+    spotlight = effects/spotlight
+    swarm_arrow = gui/swarm_arrow
+    throw_invalid = gui/throw_invalid
+    throw_preview = gui/throw_preview
+    throw_preview_dashed = gui/throw_preview_dashed
+    title_screen_bg = gui/title_screen_bg
+    warning = gui/warning
+    wave_ring = effects/wave_ring
+}
+
+fonts {
+    area_name = fonts/area_name
+    counter = fonts/counter
+    editor_header = fonts/editor_header
+    editor_monospace = fonts/editor_monospace
+    editor_standard = fonts/editor_standard
+    leader_cursor_counter = fonts/leader_cursor_counter
+    slim = fonts/slim
+    standard = fonts/standard
+    value = fonts/value
+}
+
+sounds {
+    attack = effects/attack
+    camera = gui/camera
+    countdown_tick = gui/countdown_tick
+    ding = effects/ding
+    enemy_soul = effects/enemy_soul
+    gameplay_message_char = gui/gameplay_message_char
+    go = gui/go
+    medal_got_it = gui/medal_got_it
+    menu_activate = gui/menu_activate
+    menu_back = gui/menu_back
+    menu_fail = gui/menu_fail
+    menu_select = gui/menu_select
+    mission_clear = gui/mission_clear
+    mission_failed = gui/mission_failed
+    ready = gui/ready
+    switch_pikmin = gui/switch_pikmin
+}
+
+songs {
+    boss = others/a_boss_like_enemy
+    boss_victory = others/a_boss_like_enemy_victory
+    editors = others/makes_you_think
+    menus = others/pikifen
+    results = others/makes_you_think
+}
+
+animations {
+    sparks = sparks
+}
+
+particle_generators {
+    converter_insertion = converter_insertion
+    ding = ding
+    enemy_defeat = enemy_defeat
+    leader_heal = leader_heal
+    leader_land = leader_land
+    onion_generating_inside = onion_gen_inside
+    onion_insertion = onion_insertion
+    pikmin_pluck_dirt = pikmin_pluck_dirt
+    pikmin_seed = pikmin_seed
+    pikmin_seed_landed = pikmin_seed_landed
+    smack = smack
+    spray = spray
+    sprout_evolution = sprout_evolution
+    sprout_regression = sprout_regression
+    throw_trail = throw_trail
+    treasure = treasure
+    wave_ring = wave_ring
+}

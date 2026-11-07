@@ -1,0 +1,32 @@
+name = Bridge (ceramic, red)
+description = A red ceramic bridge. Pikmin can piece red fragments together to form the bridge.
+
+area_editor_recommend_links_from = true
+area_editor_recommend_links_to = true
+can_walk_on_others = true
+casts_shadow = false
+custom_category_name = Bridge
+left_rail_texture = textures/ceramic_bridge_rail_red_left
+main_texture = textures/ceramic_bridge_red
+max_health = 30
+radius = 32
+rail_width = 40
+right_rail_texture = textures/ceramic_bridge_rail_red_right
+show_health = false
+target_type = none
+
+sounds {
+    click {
+        sound = misc/ceramic
+        speed_deviation = 10
+        volume = 50
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

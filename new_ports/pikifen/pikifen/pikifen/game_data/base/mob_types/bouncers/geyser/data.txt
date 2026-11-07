@@ -1,0 +1,29 @@
+name = Geyser
+description = A geyser of hot water that throws leaders elsewhere. Pikmin don't like the sensation, so they don't use it.
+
+area_editor_recommend_links_from = true
+custom_category_name = Useful
+height = 8
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 24
+riders = leaders
+
+sounds {
+    steam {
+        sound = misc/steam
+        loop = true
+        volume = 35
+    }
+    fountain {
+        sound = nature/fountain
+        type = ambiance_pos
+        loop = true
+        volume = 5
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

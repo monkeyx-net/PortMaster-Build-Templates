@@ -1,0 +1,51 @@
+first_state = idling
+
+global {
+    on_receive_message {
+        get_event_info msg message
+    }
+}
+
+script {
+    idling {
+        on_enter {
+            set_animation idling
+            stop
+            stop_particles
+            stop_sound $sound_id
+        }
+        on_receive_message {
+            if $msg = goal_reached
+                set_state moving
+            end_if
+        }
+    }
+    
+    moving {
+        on_enter {
+            focus link
+            move_to_target focused_mob
+            start_particles cardboard_box_dust -104 0 0
+            play_sound drag sound_id
+        }
+        on_receive_message {
+            if $msg = goal_lost
+                set_state idling
+            end_if
+        }
+        on_reach_destination {
+            set_health 0
+            set_state done
+        }
+    }
+    
+    done {
+        on_enter {
+            stop
+            stop_particles
+            stop_sound $sound_id
+            play_sound obstacle_cleared
+            send_message_to_links obstacle_in_place
+        }
+    }
+}

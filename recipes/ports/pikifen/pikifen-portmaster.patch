@@ -1,0 +1,259 @@
+diff --git a/game_data/base/mob_types/custom/plasm_blob/data.txt b/game_data/base/mob_types/custom/plasm_blob/data.txt
+index 8161a67..3891aa5 100644
+--- a/game_data/base/mob_types/custom/plasm_blob/data.txt
++++ b/game_data/base/mob_types/custom/plasm_blob/data.txt
+@@ -13,7 +13,7 @@ acceleration = 500
+ rotation_speed = 7000
+ can_free_move = true
+ target_type = weak_plain_obstacle
+-team = enemy
++team = enemy_1
+ 
+ vulnerabilities {
+     rock = 300
+diff --git a/source/gnu_make/makefile b/source/gnu_make/makefile
+index 89437e4..485f15b 100644
+--- a/source/gnu_make/makefile
++++ b/source/gnu_make/makefile
+@@ -7,7 +7,7 @@ CXX          := g++
+ SRCS         := $(shell find source/source -name '*.cpp')
+ OBJS         := $(SRCS:.cpp=.o)
+ DEPS         := $(OBJS:.o=.d)
+-ALLEGRO_PKGS := allegro-5 allegro_main-5 allegro_acodec-5 allegro_audio-5 allegro_color-5 allegro_dialog-5 allegro_font-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5
++ALLEGRO_PKGS := allegro-5 allegro_main-5 allegro_acodec-5 allegro_audio-5 allegro_color-5 allegro_font-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5
+ CXXFLAGS     := -std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0 -MMD $(shell pkg-config --cflags $(ALLEGRO_PKGS))
+ LDFLAGS      += -lm $(shell pkg-config --libs $(ALLEGRO_PKGS))
+ DEBUGFLAGS   := -g -ggdb -Wall -Wno-unknown-pragmas -O0
+diff --git a/source/source/core/shaders_source.cpp b/source/source/core/shaders_source.cpp
+index db0847e..26193b8 100644
+--- a/source/source/core/shaders_source.cpp
++++ b/source/source/core/shaders_source.cpp
+@@ -18,13 +18,13 @@ namespace SHADER_SOURCES {
+ //Allegro default vertex shader.
+ const char* DEFAULT_VERT_SHADER = R"(
+ 
+-#version 130
+-in vec4 al_pos;
+-in vec4 al_color;
+-in vec2 al_texcoord;
++#version 100
++attribute vec4 al_pos;
++attribute vec4 al_color;
++attribute vec2 al_texcoord;
+ uniform mat4 al_projview_matrix;
+-out vec4 varying_color;
+-out vec2 varying_texcoord;
++varying vec4 varying_color;
++varying vec2 varying_texcoord;
+ 
+ void main()
+ {
+@@ -42,7 +42,12 @@ gl_Position = al_projview_matrix * al_pos;
+ //Fragment shader for the colorizer.
+ const char* COLORIZER_FRAG_SHADER = R"(
+ 
+-#version 130
++#version 100
++#ifdef GL_FRAGMENT_PRECISION_HIGH
++precision highp float;
++#else
++precision mediump float;
++#endif
+ 
+ uniform sampler2D al_tex;
+ uniform bool al_use_tex;
+@@ -58,7 +63,7 @@ bool alpha_test_func(float x, int op, float compare);
+ void main() {
+   //Setup.
+   float colorizer_weight = colorizer_color.a;
+-  float texture_weight = 1 - colorizer_weight;
++  float texture_weight = 1.0 - colorizer_weight;
+   vec4 result;
+ 
+   //Standard vertex tinting.
+@@ -107,19 +112,18 @@ const char* LIQUID_FRAG_SHADER = R"(
+  * ========================
+  */
+ 
+-#version 130
+-#ifdef GL_ES
++#version 100
++#ifdef GL_FRAGMENT_PRECISION_HIGH
++precision highp float;
++#else
+ precision mediump float;
+ #endif
+ 
+ //Fragment shader input for texture coordinates.
+-in vec2 varying_texcoord;
++varying vec2 varying_texcoord;
+ 
+ //Fragment shader input for the tint.
+-in vec4 varying_color;
+-
+-//Fragment shader output for the final color of the fragment.
+-out vec4 frag_color;
++varying vec4 varying_color;
+ 
+ 
+ /*
+@@ -282,7 +286,7 @@ float noise(vec3 v) {
+ float color(vec2 xy, float time_scale) { return noise(vec3(1.5*xy, time_scale * area_time)); }
+ 
+ float simplex_noise(vec2 xy, float noise_scale, vec2 step, float time_scale) {
+-    float x = 0;
++    float x = 0.0;
+     x += 0.5 * color(xy * 2.0 * noise_scale - step, time_scale);
+     x += 0.25 * color(xy * 4.0 * noise_scale - 2.0 * step, time_scale);
+     x += 0.125 * color(xy * 8.0 * noise_scale - 4.0 * step, time_scale);
+@@ -355,7 +359,7 @@ void main() {
+     vec2 target_tex_coords = world_to_tex_coords(final_noise_value);
+ 
+     //Get our base texture, and tint it with the sector's tint.
+-    vec4 final_pixel = texture(al_tex, target_tex_coords);
++    vec4 final_pixel = texture2D(al_tex, target_tex_coords);
+     final_pixel.r *= varying_color.r;
+     final_pixel.g *= varying_color.g;
+     final_pixel.b *= varying_color.b;
+@@ -375,14 +379,14 @@ void main() {
+ 
+     //This value has a range of [-1 - 1]. Let's convert it to [0 - 1].
+     float shine_scale = raw_noise_value;
+-    shine_scale += 1;
+-    shine_scale /= 2;
++    shine_scale += 1.0;
++    shine_scale /= 2.0;
+ 
+     //Scale this range to be 0 whenever shine_scale is below shine_min_threshold, 
+     //and 1 whenever it is above shine_max_threshold.
+     //This formula was made through too much desmos tinkering.
+     shine_scale = 
+-        (1 / (shine_max_threshold - shine_min_threshold)) * 
++        (1.0 / (shine_max_threshold - shine_min_threshold)) * 
+         min(max(shine_min_threshold, shine_scale) - shine_min_threshold, shine_max_threshold - shine_min_threshold);
+ 
+     //Anything below `shine_amount` will be below 0, resulting in it not showing.
+@@ -392,7 +396,7 @@ void main() {
+     //Now that we're below the threshold, multiply it to return it to a [0 - 1] scale.
+     //Multiply by the reciprocal to bring it back to [0 - 1].
+     //Add a min value of 0.1 to prevent divide by 0 errors.
+-    shine_scale *= (1 / max(0.1, shine_min_threshold));
++    shine_scale *= (1.0 / max(0.1, shine_min_threshold));
+ 
+     //Do this again, but for the max threshold.
+     shine_scale += max(0.0, min(shine_max_threshold, 1.0));
+@@ -413,7 +417,7 @@ void main() {
+     final_pixel.b = final_pixel.b + (shine_color.b - final_pixel.b) * shine_scale;
+ 
+     // TODO: remove these two lines when edge foam becomes shader-side.
+-    frag_color = final_pixel;
++    gl_FragColor = final_pixel;
+ }
+ 
+     )";
+@@ -429,19 +433,18 @@ const char* ONION_FRAG_SHADER = R"(
+  * ========================
+  */
+ 
+-#version 130
+-#ifdef GL_ES
++#version 100
++#ifdef GL_FRAGMENT_PRECISION_HIGH
++precision highp float;
++#else
+ precision mediump float;
+ #endif
+ 
+ //Fragment shader input for texture coordinates.
+-in vec2 varying_texcoord;
++varying vec2 varying_texcoord;
+ 
+ //Fragment shader input for the tint.
+-in vec4 varying_color;
+-
+-//Fragment shader output for the final color of the fragment.
+-out vec4 frag_color;
++varying vec4 varying_color;
+ 
+ 
+ /*
+@@ -577,7 +580,7 @@ float noise(vec3 v) {
+ float color(vec2 xy, float time_scale) { return noise(vec3(1.5*xy, time_scale * area_time)); }
+ 
+ float simplex_noise(vec2 xy, float noise_scale, vec2 step, float time_scale) {
+-    float x = 0;
++    float x = 0.0;
+     x += 0.5 * color(xy * 2.0 * noise_scale - step, time_scale);
+     x += 0.25 * color(xy * 4.0 * noise_scale - 2.0 * step, time_scale);
+     x += 0.125 * color(xy * 8.0 * noise_scale - 4.0 * step, time_scale);
+@@ -603,12 +606,12 @@ void main() {
+     //Calculate simplex noise effects.
+     float raw_noise_value = simplex_noise(varying_texcoord, noise_func_scale, noise_func_step, 0.02);
+     raw_noise_value = simplex_noise(varying_texcoord + raw_noise_value, noise_func_scale, noise_func_step, 0.02);
+-    vec4 final_pixel = texture(colormap, vec2((raw_noise_value + 0.2) * 2.5, 0));
++    vec4 final_pixel = texture2D(colormap, vec2((raw_noise_value + 0.2) * 2.5, 0.0));
+     final_pixel.a = opacity;
+     final_pixel.r *= brightness;
+     final_pixel.g *= brightness;
+     final_pixel.b *= brightness;
+-    frag_color = final_pixel;
++    gl_FragColor = final_pixel;
+ 
+ }
+ 
+diff --git a/source/source/util/allegro_utils.cpp b/source/source/util/allegro_utils.cpp
+index 7232212..c0f8ba5 100644
+--- a/source/source/util/allegro_utils.cpp
++++ b/source/source/util/allegro_utils.cpp
+@@ -441,29 +441,9 @@ vector<string> promptFileDialog(
+     const string& initialPath, const string& title,
+     const string& patterns, int mode, ALLEGRO_DISPLAY* display
+ ) {
+-    ALLEGRO_FILECHOOSER* dialog =
+-        al_create_native_file_dialog(
+-            initialPath.c_str(), title.c_str(),
+-            patterns.c_str(), mode
+-        );
+-    al_show_native_file_dialog(display, dialog);
+-    
+-    //Reset the locale, which gets set by Allegro's native dialogs...
+-    //and breaks s2f().
+-    setlocale(LC_ALL, "C");
+-    
+-    vector<string> result;
+-    size_t nChoices = al_get_native_file_dialog_count(dialog);
+-    for(size_t c = 0; c < nChoices; c++) {
+-        result.push_back(
+-            standardizePath(
+-                al_get_native_file_dialog_path(dialog, c)
+-            )
+-        );
+-    }
+-    
+-    al_destroy_native_file_dialog(dialog);
+-    return result;
++    //PortMaster: no native dialogs (GTK) on handhelds.
++    fprintf(stderr, "File dialog not available: %s\n", title.c_str());
++    return vector<string>();
+ }
+ 
+ 
+@@ -621,15 +601,9 @@ int showSystemMessageBox(
+     ALLEGRO_DISPLAY* display, char const* title, char const* heading,
+     char const* text, char const* buttons, int flags
+ ) {
+-    int ret =
+-        al_show_native_message_box(
+-            display, title, heading, text, buttons, flags
+-        );
+-    //Reset the locale, which gets set by Allegro's native dialogs...
+-    //and breaks s2f().
+-    setlocale(LC_ALL, "C");
+-    
+-    return ret;
++    //PortMaster: no native dialogs (GTK) on handhelds, log the text instead.
++    fprintf(stderr, "%s: %s\n%s\n", title, heading, text);
++    return 0;
+ }
+ 
+ 

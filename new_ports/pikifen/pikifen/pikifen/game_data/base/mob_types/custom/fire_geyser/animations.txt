@@ -1,0 +1,224 @@
+name=Fire geyser animations
+description=Animations for the fire geyser.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	destroyed{
+		frames{
+			destroyed{
+				duration=0.0000
+			}
+		}
+	}
+	safe{
+		frames{
+			safe{
+				duration=0.0000
+			}
+		}
+	}
+	shooting{
+		frames{
+			shooting_01{
+				duration=0.1000
+				interpolate=true
+			}
+			shooting_02{
+				duration=0.1000
+				interpolate=true
+			}
+			shooting_03{
+				duration=0.1000
+				interpolate=true
+			}
+			shooting_04{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+	starting{
+		frames{
+			low{
+				duration=0.1000
+			}
+			shooting_04{
+				duration=0.1000
+			}
+		}
+	}
+	stopping{
+		frames{
+			low{
+				duration=0.1000
+			}
+			safe{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	destroyed{
+		file=other_mobs/fire_geyser
+		file_pos=294.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=2
+				value=1.0000
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	low{
+		file=other_mobs/fire_geyser
+		file_pos=49.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=20.0000
+				hazard=fire
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	safe{
+		file=other_mobs/fire_geyser
+		file_pos=0.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	shooting_01{
+		file=other_mobs/fire_geyser
+		file_pos=98.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=32.0000
+				type=1
+				value=20.0000
+				hazard=fire
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	shooting_02{
+		file=other_mobs/fire_geyser
+		file_pos=147.0000 0.0000
+		file_size=48.0000 48.0000
+		scale=1.0500 1.0500
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=32.0000
+				type=1
+				value=20.0000
+				hazard=fire
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+				hazard=fire
+			}
+		}
+	}
+	shooting_03{
+		file=other_mobs/fire_geyser
+		file_pos=196.0000 0.0000
+		file_size=48.0000 48.0000
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=32.0000
+				type=1
+				value=20.0000
+				hazard=fire
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+				hazard=fire
+			}
+		}
+	}
+	shooting_04{
+		file=other_mobs/fire_geyser
+		file_pos=245.0000 0.0000
+		file_size=48.0000 48.0000
+		scale=0.9500 0.9500
+		hitboxes{
+			fire{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=32.0000
+				type=1
+				value=20.0000
+				hazard=fire
+			}
+			hit{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=24.0000
+				type=0
+				value=1.0000
+				hazard=fire
+			}
+		}
+	}
+}
+body_parts{
+	fire
+	hit
+}

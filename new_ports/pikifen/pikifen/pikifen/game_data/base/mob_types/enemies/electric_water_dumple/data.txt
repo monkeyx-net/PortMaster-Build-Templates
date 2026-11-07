@@ -1,0 +1,82 @@
+name = Electric Water Dumple
+description = This large Water Dumple can produce electricity from its whiskers in order to stun Pikmin before eating them.
+notes = Original enemy, concept by CraftedPBody on Pikmin Fanon.
+
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+height = 56
+itch_damage = 100
+itch_time = 5
+max_carriers = 15
+max_health = 400
+move_speed = 55
+pikmin_seeds = 7
+points = 40
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 50
+rotation_speed = 120
+target_type = enemy
+terrain_radius = 70
+territory_radius = 300
+weight = 7
+
+reaches {
+    search = 250 120 30 360
+    attack = 60 30
+    chase = 250 360
+    
+}
+
+sounds {
+    growl {
+        sound = creature_vocals/water_dumple_growl
+        volume = 60
+        speed = 80
+        speed_deviation = 5
+    }
+    scream {
+        sound = creature_vocals/water_dumple_scream
+        volume = 60
+        speed = 80
+        speed_deviation = 5
+    }
+    waddle {
+        sound = creature_vocals/water_dumple_waddle
+        volume = 20
+        speed = 80
+        speed_deviation = 5
+    }
+    bite {
+        sound = creature_misc/bite
+        volume = 70
+        speed = 80
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 70
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    electricity {
+        sound = misc/electricity
+        loop = true
+        volume = 80
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 40
+        speed = 70
+        speed_deviation = 20
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

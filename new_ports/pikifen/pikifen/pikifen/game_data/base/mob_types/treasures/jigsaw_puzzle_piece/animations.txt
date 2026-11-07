@@ -1,0 +1,23 @@
+name=Jigsaw Puzzle Piece animations
+description=Animations for the Jigsaw Puzzle Piece.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	idling{
+		frames{
+			idling{
+				duration=0.0000
+			}
+		}
+	}
+}
+sprites{
+	idling{
+		file=treasures/jigsaw_puzzle_piece
+		file_pos=0.0000 0.0000
+		file_size=64.0000 64.0000
+		scale=1.0 1.0
+	}
+}
+body_parts

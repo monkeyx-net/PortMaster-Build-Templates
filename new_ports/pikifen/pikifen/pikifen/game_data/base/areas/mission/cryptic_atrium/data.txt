@@ -1,0 +1,24 @@
+name=Cryptic Atrium
+description=Three pressure plates, three markers on the floor... How should you go about pressing them to escape this room?
+tags=Puzzle; Short and sweet; Tiles
+maker=Espyo
+version=1.2.0
+engine_version=1.0.0
+subtitle
+difficulty=3
+bg_bmp
+bg_color=0 0 0
+bg_dist=2.0000
+bg_zoom=1.0000
+song=areas/rising_tide
+weather=cave_normal
+day_time_start=420
+day_time_speed=120.0000
+spray_amounts
+mission_goal=Get to the exit
+mission_goal_all_mobs=true
+mission_goal_exit_center=-544.0000 -544.0000
+mission_goal_exit_size=320.0000 192.0000
+mission_fail_conditions=136
+mission_fail_pik_killed=1
+mission_grading_mode=1

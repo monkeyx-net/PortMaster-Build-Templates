@@ -1,0 +1,51 @@
+name = Electrical wire
+description = An exposed wire. It'll occasionally create an arc of electricity with a nearby wire.
+
+area_editor_tips = The object in the area editor represents the center between the two wires, which appear to the relative left and right.
+can_hurt = player; fragile
+custom_category_name = Obstacle, dangerous
+height = 24
+max_health = 150
+pushable = false
+pushes = false
+radius = 16
+target_type = strong_plain_obstacle
+team = obstacle
+
+children {
+    second {
+        spawn = second
+        handle_damage = false
+        relay_damage = true
+        handle_statuses = false
+        relay_statuses = true
+    }
+}
+
+sounds {
+    electricity {
+        sound = misc/electricity
+        loop = true
+        volume = 80
+    }
+    sparks {
+        sound = misc/electric_sparks
+        loop = true
+        volume = 80
+    }
+}
+
+spawns {
+    second {
+        object = electrical_wire_2
+        relative = true
+        coordinates = 0 80
+        angle = 0
+        link_object_to_spawn = true
+        link_spawn_to_object = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

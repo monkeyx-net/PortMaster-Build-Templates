@@ -1,0 +1,971 @@
+name=Skutterchuck animations
+description=Animations for the Skutterchuck.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	dying{
+		loop_frame=17
+		frames{
+			dying_01{
+				duration=0.1000
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+				sound=squeak
+			}
+			dying_03{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_03{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_03{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+				sound=squeak
+			}
+			dying_03{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1200
+				interpolate=true
+			}
+			dying_03{
+				duration=0.1200
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1400
+				interpolate=true
+			}
+			dying_03{
+				duration=0.1400
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1600
+				interpolate=true
+			}
+			dying_03{
+				duration=0.2400
+			}
+			dying_04{
+				duration=0.2000
+			}
+			dying_05{
+				duration=0.0500
+				interpolate=true
+				sound=thud
+			}
+			dying_06{
+				duration=0.5000
+			}
+		}
+	}
+	flinging{
+		frames{
+			flinging_01{
+				duration=0.0500
+			}
+			flinging_02{
+				duration=0.0500
+				signal=0
+				sound=woosh
+			}
+			flinging_03{
+				duration=0.5000
+			}
+			flinging_04{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.6000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling_01{
+				duration=0.1200
+			}
+			idling_02{
+				duration=0.1200
+			}
+			idling_03{
+				duration=0.1200
+			}
+			idling_02{
+				duration=0.1200
+			}
+		}
+	}
+	picking_up{
+		frames{
+			idling_01{
+				duration=0.1000
+			}
+			idling_03{
+				duration=0.1000
+			}
+			picking_up_01{
+				duration=0.1000
+				signal=0
+			}
+			picking_up_02{
+				duration=0.1000
+				sound=pick_up
+			}
+			idling_03{
+				duration=0.1000
+			}
+		}
+	}
+	preparing{
+		frames{
+			idling_01{
+				duration=0.0700
+			}
+			preparing_01{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_02{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_01{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_02{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_01{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_02{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_01{
+				duration=0.0700
+			}
+			idling_01{
+				duration=0.0700
+			}
+			preparing_02{
+				duration=0.0700
+			}
+		}
+	}
+	shaking{
+		hit_rate=90
+		frames{
+			shaking_01{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+				interpolate=true
+			}
+			shaking_01{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+				interpolate=true
+			}
+			shaking_01{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+				interpolate=true
+			}
+			shaking_02{
+				duration=0.0900
+				interpolate=true
+			}
+			idling_01{
+				duration=0.0900
+			}
+			shaking_03{
+				duration=0.0500
+			}
+			shaking_04{
+				duration=0.0500
+				sound=woosh
+			}
+			flinging_03{
+				duration=0.5000
+			}
+			flinging_04{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.4000
+			}
+		}
+	}
+	stunned{
+		frames{
+			flinging_04{
+				duration=0.0700
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+				sound=squeak
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_01{
+				duration=0.0700
+				interpolate=true
+			}
+			stunned_02{
+				duration=0.3000
+			}
+			flinging_04{
+				duration=0.1500
+			}
+			idling_01{
+				duration=0.7000
+			}
+		}
+	}
+	walking{
+		frames{
+			idling_01{
+				duration=0.1000
+			}
+			walking_01{
+				duration=0.1000
+			}
+			walking_02{
+				duration=0.1000
+			}
+			walking_01{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			walking_03{
+				duration=0.1000
+			}
+			walking_04{
+				duration=0.1000
+			}
+			walking_03{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	dying_01{
+		file=enemies/skutterchuck
+		file_pos=164.0000 172.0000
+		file_size=64.0000 56.0000
+		offset=3.0000 0.0000
+		hitboxes{
+			body{
+				coords=5.0000 0.0000 0.0000
+				height=32.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=5.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02{
+		file=enemies/skutterchuck
+		file_pos=129.0000 172.0000
+		file_size=34.0000 56.0000
+		offset=-4.0000 1.0000
+		angle=0.0349
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=25.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=-20.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03{
+		file=enemies/skutterchuck
+		file_pos=129.0000 172.0000
+		file_size=34.0000 56.0000
+		offset=-4.0000 -1.0000
+		angle=6.2483
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=25.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=-20.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04{
+		file=enemies/skutterchuck
+		file_pos=0.0000 229.0000
+		file_size=64.0000 56.0000
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=25.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=-25.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05{
+		file=enemies/skutterchuck
+		file_pos=65.0000 229.0000
+		file_size=102.0000 56.0000
+		offset=-0.7820 0.1013
+		scale=1.0500 1.0500
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=25.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=-48.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06{
+		file=enemies/skutterchuck
+		file_pos=65.0000 229.0000
+		file_size=102.0000 56.0000
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=25.0000
+				type=2
+				value=1.0000
+			}
+			nodule{
+				coords=-48.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	flinging_01{
+		file=enemies/skutterchuck
+		file_pos=0.0000 172.0000
+		file_size=74.0000 56.0000
+		offset=3.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=32.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=0.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	flinging_02{
+		file=enemies/skutterchuck
+		file_pos=75.0000 172.0000
+		file_size=53.0000 56.0000
+		offset=-7.5000 0.0000
+		hitboxes{
+			body{
+				coords=-14.0000 0.0000 0.0000
+				height=32.0000
+				radius=30.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=-30.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	flinging_03{
+		file=enemies/skutterchuck
+		file_pos=129.0000 172.0000
+		file_size=34.0000 56.0000
+		offset=-17.0000 0.0000
+		hitboxes{
+			body{
+				coords=-14.0000 0.0000 0.0000
+				height=32.0000
+				radius=30.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=-30.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	flinging_04{
+		file=enemies/skutterchuck
+		file_pos=164.0000 172.0000
+		file_size=64.0000 56.0000
+		offset=-2.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=32.0000
+				radius=32.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=0.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_01{
+		file=enemies/skutterchuck
+		file_pos=0.0000 0.0000
+		file_size=86.0000 56.0000
+		offset=9.0000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=7.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_02{
+		file=enemies/skutterchuck
+		file_pos=87.0000 0.0000
+		file_size=88.0000 56.0000
+		offset=10.0000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=9.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_03{
+		file=enemies/skutterchuck
+		file_pos=176.0000 0.0000
+		file_size=89.0000 56.0000
+		offset=10.5000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=10.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	picking_up_01{
+		file=enemies/skutterchuck
+		file_pos=0.0000 115.0000
+		file_size=94.0000 56.0000
+		offset=19.0000 0.0000
+		hitboxes{
+			body{
+				coords=25.0000 0.0000 0.0000
+				height=32.0000
+				radius=30.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=68.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	picking_up_02{
+		file=enemies/skutterchuck
+		file_pos=0.0000 115.0000
+		file_size=94.0000 56.0000
+		offset=19.0000 0.0000
+		hitboxes{
+			body{
+				coords=25.0000 0.0000 0.0000
+				height=32.0000
+				radius=30.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=45.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	preparing_01{
+		file=enemies/skutterchuck
+		file_pos=95.0000 115.0000
+		file_size=86.0000 56.0000
+		offset=9.0000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=8.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	preparing_02{
+		file=enemies/skutterchuck
+		file_pos=182.0000 115.0000
+		file_size=85.0000 56.0000
+		offset=8.5000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=9.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_01{
+		file=enemies/skutterchuck
+		file_pos=0.0000 0.0000
+		file_size=86.0000 56.0000
+		offset=9.0000 1.0000
+		angle=0.0698
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=7.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_02{
+		file=enemies/skutterchuck
+		file_pos=0.0000 0.0000
+		file_size=86.0000 56.0000
+		offset=9.0000 -1.0000
+		angle=6.2134
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=7.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_03{
+		file=enemies/skutterchuck
+		file_pos=0.0000 172.0000
+		file_size=74.0000 56.0000
+		offset=3.0000 0.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=1
+				value=2.0000
+				knockback_angle=3.1416
+				knockback=5.0000
+				wither_chance=30
+			}
+			nodule{
+				coords=0.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_04{
+		file=enemies/skutterchuck
+		file_pos=75.0000 172.0000
+		file_size=53.0000 56.0000
+		offset=-7.5000 0.0000
+		hitboxes{
+			body{
+				coords=-14.0000 0.0000 0.0000
+				height=32.0000
+				radius=38.0000
+				type=1
+				value=2.0000
+				knockback_angle=3.1416
+				knockback=5.0000
+				wither_chance=30
+			}
+			nodule{
+				coords=-30.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	stunned_01{
+		file=enemies/skutterchuck
+		file_pos=129.0000 172.0000
+		file_size=34.0000 56.0000
+		offset=-17.0000 1.0000
+		angle=0.0349
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=-30.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	stunned_02{
+		file=enemies/skutterchuck
+		file_pos=129.0000 172.0000
+		file_size=34.0000 56.0000
+		offset=-17.0000 -1.0000
+		angle=6.2483
+		hitboxes{
+			body{
+				coords=-3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=-30.0000 0.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	walking_01{
+		file=enemies/skutterchuck
+		file_pos=0.0000 57.0000
+		file_size=91.0000 56.0000
+		offset=8.0000 1.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=8.0000 1.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	walking_02{
+		file=enemies/skutterchuck
+		file_pos=92.0000 57.0000
+		file_size=95.0000 57.0000
+		offset=6.0000 3.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=8.0000 2.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	walking_03{
+		file=enemies/skutterchuck
+		file_pos=0.0000 57.0000
+		file_size=91.0000 56.0000
+		offset=8.0000 -1.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=8.0000 -1.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	walking_04{
+		file=enemies/skutterchuck
+		file_pos=92.0000 57.0000
+		file_size=95.0000 56.0000
+		offset=6.0000 -3.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			body{
+				coords=3.0000 0.0000 0.0000
+				height=32.0000
+				radius=35.0000
+				type=0
+				value=1.0000
+			}
+			nodule{
+				coords=8.0000 -2.0000 33.0000
+				height=8.0000
+				radius=4.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+	nodule
+}

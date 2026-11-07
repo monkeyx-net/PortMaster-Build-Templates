@@ -1,0 +1,193 @@
+first_state = sleeping
+death_state = dying
+
+init {
+    set_var ignoring false
+}
+
+script {
+    sleeping {
+        on_enter {
+            set_var ignoring false
+            set_animation sleeping random_time_on_spawn
+            set_near_reach wake_up
+        }
+        on_opponent_in_reach {
+            set_state waking_up
+        }
+        on_damage {
+            set_state waking_up
+        }
+        on_touch_opponent {
+            set_state waking_up
+        }
+        on_frame_signal {
+            start_particles bulborb_sleep 76 0 200
+        }
+    }
+    
+    waking_up {
+        on_enter {
+            set_animation waking_up
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    examining {
+        on_enter {
+            set_animation looking
+            stop
+            set_near_reach search
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state turning
+            end_if
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_animation_end {
+            set_state returning
+        }
+    }
+    
+    turning {
+        on_enter {
+            set_animation moving
+            stop
+            turn_to_target focused_mob
+            set_near_reach chase
+            set_far_reach close
+        }
+        on_opponent_in_reach {
+            stop
+            focus trigger
+            set_state chasing
+        }
+        on_focus_off_reach {
+            set_state examining
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state attacking
+        }
+        on_focus_off_reach {
+            set_state examining
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state examining
+        }
+        on_itch {
+            set_state shaking
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            start_chomping 5 mouth
+        }
+        on_animation_end {
+            stop_chomping
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state eating
+            else
+                set_state failing
+            end_if
+        }
+    }
+    
+    eating {
+        on_enter {
+            stop_chomping
+            set_animation eating
+        }
+        on_animation_end {
+            swallow_all
+            play_sound swallow
+            set_state examining
+        }
+    }
+    
+    failing {
+        on_enter {
+            set_animation failing
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    shaking {
+        on_enter {
+            stop
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    returning {
+        on_enter {
+            move_to_target home
+            set_animation moving normal true
+            set_timer 2
+            set_near_reach search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state falling_asleep
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state turning
+            end_if
+        }
+    }
+    
+    falling_asleep {
+        on_enter {
+            stop
+            set_animation falling_asleep
+        }
+        on_animation_end {
+            set_state sleeping
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

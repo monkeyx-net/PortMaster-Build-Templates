@@ -1,0 +1,1663 @@
+name=Electric gate animations
+description=Animations for the electric gate.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	destroyed{
+		frames{
+			destroyed{
+				duration=0.0000
+			}
+		}
+	}
+	stage_1_idling{
+		frames{
+			stage_1_idling_01{
+				duration=0.0800
+			}
+			stage_1_idling_02{
+				duration=0.0800
+			}
+			stage_1_idling_03{
+				duration=0.0800
+			}
+		}
+	}
+	stage_1_shaking{
+		frames{
+			stage_1_shaking_01{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_1_shaking_02{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_1_idling_03{
+				duration=0.0600
+				interpolate=true
+			}
+		}
+	}
+	stage_2_idling{
+		frames{
+			stage_2_idling_01{
+				duration=0.0800
+			}
+			stage_2_idling_02{
+				duration=0.0800
+			}
+			stage_2_idling_03{
+				duration=0.0800
+			}
+		}
+	}
+	stage_2_shaking{
+		frames{
+			stage_2_shaking_01{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_2_shaking_02{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_2_idling_03{
+				duration=0.0600
+				interpolate=true
+			}
+		}
+	}
+	stage_3_idling{
+		frames{
+			stage_3_idling_01{
+				duration=0.0800
+			}
+			stage_3_idling_02{
+				duration=0.0800
+			}
+			stage_3_idling_03{
+				duration=0.0800
+			}
+		}
+	}
+	stage_3_shaking{
+		frames{
+			stage_3_shaking_01{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_3_shaking_02{
+				duration=0.0600
+				interpolate=true
+			}
+			stage_3_idling_03{
+				duration=0.0600
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	destroyed{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 579.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=2
+				value=0.0000
+				hazard=electricity_stunning
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=0.0000
+				hazard=electricity_stunning
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=0.0000
+				hazard=electricity_stunning
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=0.0000
+				hazard=electricity_stunning
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=2
+				value=0.0000
+				hazard=electricity_stunning
+			}
+		}
+	}
+	stage_1_idling_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 0.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_1_idling_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 0.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_1_idling_03{
+		file=other_mobs/electric_gate
+		file_pos=98.0000 0.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_1_shaking_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 0.0000
+		file_size=48.0000 192.0000
+		offset=0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_1_shaking_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 0.0000
+		file_size=48.0000 192.0000
+		offset=-0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_2_idling_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 193.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_2_idling_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 193.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_2_idling_03{
+		file=other_mobs/electric_gate
+		file_pos=98.0000 193.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_2_shaking_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 193.0000
+		file_size=48.0000 192.0000
+		offset=0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_2_shaking_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 193.0000
+		file_size=48.0000 192.0000
+		offset=-0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_3_idling_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 386.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_3_idling_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 386.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_3_idling_03{
+		file=other_mobs/electric_gate
+		file_pos=98.0000 386.0000
+		file_size=48.0000 192.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_3_shaking_01{
+		file=other_mobs/electric_gate
+		file_pos=0.0000 386.0000
+		file_size=48.0000 192.0000
+		offset=0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+	stage_3_shaking_02{
+		file=other_mobs/electric_gate
+		file_pos=49.0000 386.0000
+		file_size=48.0000 192.0000
+		offset=-0.7000 0.0000
+		hitboxes{
+			center{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			center_zap{
+				coords=0.0000 0.0000 0.0000
+				height=0.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_left{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_left_zap{
+				coords=0.0000 -35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			near_right{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			near_right_zap{
+				coords=0.0000 35.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_left{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_left_zap{
+				coords=0.0000 -70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+			far_right{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=0
+				value=1.0000
+				hazard=electricity_stunning
+			}
+			far_right_zap{
+				coords=0.0000 70.0000 0.0000
+				height=128.0000
+				radius=28.0000
+				type=1
+				value=2.0000
+				hazard=electricity_stunning
+				knockback_outward=true
+				knockback=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	center
+	center_zap
+	near_left
+	near_left_zap
+	near_right
+	near_right_zap
+	far_left
+	far_left_zap
+	far_right
+	far_right_zap
+}

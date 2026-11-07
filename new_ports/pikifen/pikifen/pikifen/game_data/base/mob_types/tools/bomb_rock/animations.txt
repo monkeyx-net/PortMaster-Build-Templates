@@ -1,0 +1,602 @@
+name=Bomb rock animations
+description=Animations for the bomb rock.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	held{
+		frames{
+			idling_no_hit_01{
+				duration=0.2000
+			}
+			idling_no_hit_02{
+				duration=0.2000
+			}
+			idling_no_hit_03{
+				duration=0.2000
+			}
+			idling_no_hit_04{
+				duration=0.2000
+			}
+			idling_no_hit_05{
+				duration=0.2000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling_01{
+				duration=0.2000
+			}
+			idling_02{
+				duration=0.2000
+			}
+			idling_03{
+				duration=0.2000
+			}
+			idling_04{
+				duration=0.2000
+			}
+			idling_05{
+				duration=0.2000
+			}
+		}
+	}
+	primed{
+		loop_frame=38
+		frames{
+			primed_01{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_02{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_01{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_02{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_01{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_02{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_01{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_02{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_01{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_02{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_03{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_04{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_03{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_04{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_03{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_04{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_03{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_04{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_03{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_04{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_05{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_06{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_05{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_06{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_05{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_06{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_05{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_06{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_05{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_06{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_07{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_08{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_07{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_08{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_07{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_08{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_07{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_08{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_07{
+				duration=0.1000
+				interpolate=true
+			}
+			primed_08{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	idling_01{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_02{
+		file=other_mobs/bomb_rock
+		file_pos=29.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_03{
+		file=other_mobs/bomb_rock
+		file_pos=58.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_04{
+		file=other_mobs/bomb_rock
+		file_pos=87.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_05{
+		file=other_mobs/bomb_rock
+		file_pos=116.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_no_hit_01{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_no_hit_02{
+		file=other_mobs/bomb_rock
+		file_pos=29.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_no_hit_03{
+		file=other_mobs/bomb_rock
+		file_pos=58.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_no_hit_04{
+		file=other_mobs/bomb_rock
+		file_pos=87.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_no_hit_05{
+		file=other_mobs/bomb_rock
+		file_pos=116.0000 0.0000
+		file_size=28.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_01{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 29.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_02{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 29.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_03{
+		file=other_mobs/bomb_rock
+		file_pos=69.0000 29.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_04{
+		file=other_mobs/bomb_rock
+		file_pos=69.0000 29.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_05{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 98.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_06{
+		file=other_mobs/bomb_rock
+		file_pos=0.0000 98.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_07{
+		file=other_mobs/bomb_rock
+		file_pos=69.0000 98.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	primed_08{
+		file=other_mobs/bomb_rock
+		file_pos=69.0000 98.0000
+		file_size=68.0000 68.0000
+		offset=2.0000 1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=0
+				value=1.0000
+			}
+			explosion{
+				coords=0.0000 0.0000 0.0000
+				height=24.0000
+				radius=14.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+	explosion
+}

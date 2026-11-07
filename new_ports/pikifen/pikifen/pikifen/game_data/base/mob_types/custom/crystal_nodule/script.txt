@@ -1,0 +1,56 @@
+first_state = idling
+death_state = destroying
+
+script {
+    idling {
+        on_enter {
+            set_animation idling
+        }
+        on_damage {
+            play_sound hit
+        }
+        on_receive_message {
+            get_event_info msg message
+            if $msg = be_carried
+                set_tangible false
+            else_if $msg = be_flung
+                set_tangible true
+                set_state flung
+            else_if $msg = be_dropped
+                set_tangible true
+            end_if
+        }
+    }
+
+    flung {
+        on_enter {
+            set_animation flung
+        }
+        on_land {
+            set_state landing
+        }
+    }
+
+    landing {
+        on_enter {
+            stop
+            set_animation landing
+            start_particles dust_explosion
+            shake_camera 25
+        }
+        on_animation_end {
+            set_state idling
+        }
+    }
+
+    destroying {
+        on_enter {
+            start_particles crystal_explosion_small 0 0 40
+            set_animation destroyed
+            play_sound destroyed
+        }
+        on_animation_end {
+            delete
+        }
+    }
+}

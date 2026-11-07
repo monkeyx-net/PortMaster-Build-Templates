@@ -1,0 +1,365 @@
+Pikifen asset credits and licenses (from the Pikifen manual, credits page)
+
+The project's code is licensed under the MIT License (MIT), described in the included license.txt.
+Some game content was made by other contributors. Their credits can be found in the respective data file's maker property. These are still licensed under the MIT license.
+The source code and game content includes some commits made by contributors. These can be found in the git repository. These commits are still licensed under the MIT license.
+Various assets may have their own licenses, which are detailed below.
+Assets whose license and credit are not listed are made by Espyo, and licensed under the MIT License.
+
+Engine
+
+- Inspiration
+
+- Nintendo
+
+- Support and beta-testing
+
+- My friends at Pikipedia and Pikmin Fanon
+
+- Special shoutout to Scruffy
+
+- My friends at Brawl Snapshots
+
+- Special shoutout to Gaming98, Deku, FATBEN
+
+- Folks at the Pikifen Discord server (https://discord.gg/qbhz4u3)
+
+- Special shoutout to Neo, Helodity, Soprano
+
+- Everyone credited in the changelog and in the git commits
+
+- Everything else
+
+- André 'Espyo' Silva
+
+- Tools used
+
+- Allegro (https://liballeg.github.io/)
+
+- Audacity (https://www.audacityteam.org/)
+
+- Dear ImGui (https://github.com/ocornut/imgui)
+
+- Codelite (https://codelite.org/)
+
+- Visual Studio Code (https://code.visualstudio.com/)
+
+- GIMP (https://www.gimp.org/)
+
+- Git (https://git-scm.com/)
+
+- Inkscape (https://inkscape.org/)
+
+- LMMS (https://lmms.io/)
+
+- Notepad++ (https://notepad-plus-plus.org)
+
+- Paint.NET (https://www.getpaint.net/)
+
+- Visual Studio (https://visualstudio.microsoft.com/)
+
+- Special thanks
+
+- Pikipedia, Pikcord, and Pikmin Fanon users interested in the project
+
+- The developers of all the tools I used
+
+- The Allegro forums and the users within
+
+- id Software for Doom
+
+- The developers of Doom Builder
+
+- Stackoverflow and other such websites
+
+- http://www.dummies.com/education/science/physics/how-to-calculate-the-maximum-height-of-a-projectile/ (http://www.dummies.com/education/science/physics/how-to-calculate-the-maximum-height-of-a-projectile/)
+
+- Some other pages for help with code functions; check the source code for thanks!
+
+Base content
+
+- Graphics
+
+- Brick texture: PxHere - License: CC 0 - Link (https://pxhere.com/en/photo/1341160)
+
+- Concrete texture: andreas160578 - License: Public domain - Link (https://pixabay.com/pt/steinplatte-preto-1331975/)
+
+- Dead leaves texture: qubodup - License: CC 0 - Link (https://opengameart.org/node/8013)
+
+- Dirt (soft) texture: Lamoot - License: CC BY-SA 3.0 - Link (https://opengameart.org/node/7803)
+
+- Dirt texture: tatyana - License: CC BY-SA 4.0 - Link (https://sftextures.com/2014/08/15/dry-cracked-orange-desert-ground-with-yellow-sun-burnt-grass-texture/)
+
+- Grass (dark) texture: tatyana - License: CC BY-SA 4.0 - Link (https://sftextures.com/2015/09/04/grass-texture-seamless-green-fresh-summer-lawn/)
+
+- Grass (light) texture: SilasCarmago - License: Public domain - Link (https://pixabay.com/pt/grama-textura-fundo-grama-verde-1089984/)
+
+- Metal (rusted) texture: tatyana - License: CC BY-SA 4.0 - Link (https://sftextures.com/2014/08/19/rusty-grungy-metal-material-old-weathered-brown-white-grey-painted-surface-texture/)
+
+- Stone texture: Bart K. - License: CC BY-SA 3.0 - Link (http://opengameart.org/content/stone-texture)
+
+- Stone 2 texture: West - License: CC 0 - Link (https://opengameart.org/content/wall-grass-rock-stone-wood-and-dirt-480)
+
+- Snow (clean) texture: Outworldz.com - License: CC 0 - Link (https://outworldz.com/cgi/free-seamless-textures.plx?c=Snow%20and%20Ice)
+
+- Snow (icy) texture: ManyTextures.com - License: CC BY 4.0 - Link (https://www.manytextures.com/texture/254/ice-and-snow-ground/)
+
+- Snow (perlin) texture: Helodity - License: MIT
+
+- Wood (bark) texture: Daniel Smith - License: Public domain - Link (http://www.publicdomainpictures.net/view-image.php?image=70997&picture=tree-bark-texture-14)
+
+- Wood (stump) texture: Caroline Steinhauer - License: Public domain - Link (http://www.publicdomainpictures.net/view-image.php?image=14748&picture=slice-of-oak-tree)
+
+- Wood bridge rail texture: Titus Tscharntke - License: Public domain - Link (https://commons.wikimedia.org/wiki/File:Sticks_wood.jpg)
+
+- Wood bridge texture: PublicDomainPictures - License: Public domain - Link (https://pixabay.com/pt/abstract-%C3%A1sia-fundo-bambu-cacho-71516/)
+
+- Pikmin idle glow texture: hc - License: CC BY-SA 3.0 - Source (http://opengameart.org/node/8279)
+
+- Smoke texture: Crack.com - License: CC 0 - Source (http://opengameart.org/node/7691)
+
+- Title screen background: Helen Marshall - License: CC 0 - Source (http://www.publicdomainpictures.net/view-image.php?image=1255)
+
+- Leaf shadows: Titus Tscharntke - License: Public domain - Source 1 (https://commons.wikimedia.org/wiki/File:Leaf_branch_texture.jpg) Source 2 (https://commons.wikimedia.org/wiki/File:Leaf_leaves_white_background.jpg) Source 3 (https://commons.wikimedia.org/wiki/File:Leaf_leaves_texture.jpg) Source 4 (https://commons.wikimedia.org/wiki/File:Leaf_leaves_branch_birch_alpha.jpg)
+
+- Pikmin standby icons: CraftedPBody (for making the basis)
+
+- Fonts
+
+- Area name font
+
+- Original font inspiration: Nintendo
+
+- Fan clone: Adorable Oshawott - License: Fair use with permission - Link (http://theadorableoshawott.deviantart.com/art/Pikmin-font-526210650)
+
+- Bubble style: The Sneaky Spy
+
+- Editor header font: Bai Jamjuree Bold - License: SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 - Link (https://fonts.google.com/specimen/Bai+Jamjuree)
+
+- Editor monospace font: Sono Regular - License: SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 - Link (https://fonts.google.com/specimen/Sono)
+
+- Editor standard font: FunnelSans Regular - License: SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 - Link (https://fonts.google.com/specimen/Funnel+Sans)
+
+- Slim font: Urbanist - License: SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007 - Link (https://github.com/coreyhu/Urbanist)
+
+- Sounds
+
+- Design help: Scruffy
+
+- Creature misc.
+
+- Bite: artisticdude - License: CC 0 - Source (https://opengameart.org/content/rpg-sound-pack)
+
+- Burying: Nox_Sound - License: CC 0 - Source (https://freesound.org/people/Nox_Sound/sounds/564893/)
+
+- Fat slosh (slosh): TheScarlettWitch89 - License: CC BY 3.0 - Source (https://freesound.org/people/TheScarlettWitch89/sounds/415538/)
+
+- Fat slosh (puddle): Garuda1982 - License: CC BY 4.0 - Source (https://freesound.org/people/Garuda1982/sounds/540886/)
+
+- Page flip: cameronpride - License: CC 0 - Source (https://freesound.org/people/cameronpride/sounds/676674/)
+
+- Shaking, leaf: Antoinemax - License: CC BY 4.0 - Source (https://opengameart.org/content/nature-sounds-pack)
+
+- Shaking, leather: toefur - License: CC 0 - Source (https://freesound.org/people/toefur/sounds/336718/)
+
+- Slurp: hnieminen - License: CC BY 4.0 - Source (https://freesound.org/people/hnieminen/sounds/663307/)
+
+- Swallow: miacx - License: CC 0 - Source (https://freesound.org/people/miacx/sounds/614488/)
+
+- Wing, deep whoosh: creator_GT - License: CC 0 - Source (https://freesound.org/people/creator_GT/sounds/733937/)
+
+- Wing, small whoosh: anebulafont - License: CC 0 - Source (https://freesound.org/people/anebulafont/sounds/651753/)
+
+- Creature vocals
+
+- Bulborb growl: YUXUANZHAO - License: CC 0 - Source (https://freesound.org/people/YUXUANZHAO/sounds/625279/)
+
+- Bulborb misc: Dienamyte - License: CC 0 - Source (https://freesound.org/people/Dienamyte/sounds/548467/)
+
+- Chick: basedMedia - License: CC 0 - Source (https://freesound.org/people/basedMedia/sounds/548096/)
+
+- Dweevil: soundofsong - License: CC 0 - Source (https://freesound.org/people/soundofsong/sounds/640718/)
+
+- Frog croak: clif_creates - License: CC 0 - Source (https://freesound.org/people/clif_creates/sounds/802737/)
+
+- Oink: MattRuthSound - License: CC BY 4.0 - Source (https://freesound.org/people/MattRuthSound/sounds/561577/)
+
+- Snoring: studiogreenhill - License: CC 0 - Source (https://freesound.org/people/studiogreenhill/sounds/774670/)
+
+- Squeak (1 and 2): 150128 - License: CC BY-NC 3.0 - Source (https://freesound.org/people/150128/sounds/326661/)
+
+- Water Dumple: cmp1 - License: CC 0 - Source (https://freesound.org/people/cmp1/sounds/759858/)
+
+- Water Dumple waddle: JarredGibb - License: CC 0 - Source (https://freesound.org/people/JarredGibb/sounds/217330/)
+
+- Effects
+
+- Attack: Scruffy
+
+- Boing, low 1 (Candypop Bud): stevielematt - License: CC 0 - Source (https://freesound.org/people/stevielematt/sounds/538066/)
+
+- Boing, mid: juskiddink - License: CC BY 4.0 - Source (https://freesound.org/people/juskiddink/sounds/140867/)
+
+- Ding: NoisyRedFox - License: CC 0 - Source (https://freesound.org/people/NoisyRedFox/sounds/734239/)
+
+- Explosion: Artninja - License: CC BY 4.0 - Source (https://freesound.org/people/Artninja/sounds/750822/)
+
+- Pick up: BenDrain - License: CC 0 - Source (https://freesound.org/people/BenDrain/sounds/488002/)
+
+- Pluck: dreeke - License: CC BY-NC 3.0 - Source (https://freesound.org/people/dreeke/sounds/140705/)
+
+- Poof: qubodup - License: CC 0 - Source (https://freesound.org/people/qubodup/sounds/714257/)
+
+- Pop: Breviceps - License: CC 0 - Source (https://freesound.org/people/Breviceps/sounds/447910/)
+
+- Snap: ronoble - License: CC 0 - Source (https://freesound.org/people/ronoble/sounds/276889/)
+
+- Sparkles: MPTSound - License: CC 0 - Source (https://freesound.org/people/MPTSound/sounds/552458/)
+
+- Stretch: EugeneEverett - License: CC 0 - Source (https://freesound.org/people/EugeneEverett/sounds/596513/)
+
+- Swish: CGEffex - License: CC BY 4.0 - Source (https://freesound.org/people/CGEffex/sounds/93081/)
+
+- Throw: sophiehall3535 - License: CC 0 - Source (https://freesound.org/people/sophiehall3535/sounds/245933/)
+
+- Woosh: djlprojects - License: CC BY 4.0 - Source (https://freesound.org/people/djlprojects/sounds/413145/)
+
+- GUI
+
+- Countdown tick: zmastafa102 - License: CC 0 - Source (https://freesound.org/people/zmastafa102/sounds/509714/)
+
+- Gameplay message character: dscull199 - License: CC 0 - Source (https://freesound.org/people/dscull199/sounds/681920/)
+
+- Menu items (bloop): Blender Foundation - License: CC BY 3.0 - Source (https://opengameart.org/content/ambient-water-drips)
+
+- Menu items (boing): NEUTRi - License: CC BY 3.0 - Source (https://freesound.org/people/NEUTRi/sounds/25834/)
+
+- Menu items (snap): OwlishMedia - License: CC 0 - Source (https://opengameart.org/content/87-clickety-clips)
+
+- Medal "got it!" (twinkles): Alexia205 - License: CC 0 - Source (https://freesound.org/people/Alexia205/sounds/787357/)
+
+- Medal "got it!" (blade): bajko - License: CC 0 - Source (https://freesound.org/people/bajko/sounds/244258/)
+
+- Whistle (big messages): strongbot - License: CC 0 - Source (https://freesound.org/people/strongbot/sounds/568995/)
+
+- Leaders
+
+- Footsteps: Fantozzi - License: CC 0 - Source (https://opengameart.org/content/fantozzis-footsteps-grasssand-stone)
+
+- Louie's whistle: timgormly - License: CC 0 - Source (https://freesound.org/people/timgormly/sounds/162803/)
+
+- Olimar's whistle: Pablo-F - License: CC BY 3.0 - Source (https://freesound.org/people/Pablo-F/sounds/90743/)
+
+- President's whistle: han1 - License: CC BY 3.0 - Source (https://freesound.org/people/han1/sounds/19026/)
+
+- Misc.
+
+- Cardboard drag: RuonVNiekerk - License: CC BY 3.0 - Source (https://freesound.org/people/RuonVNiekerk/sounds/327909/)
+
+- Ceramic: bbrocer - License: CC 0 - Source (https://freesound.org/people/bbrocer/sounds/382643/)
+
+- Ceramic hit: Anthousai - License: CC 0 - Source (https://freesound.org/people/Anthousai/sounds/447848/)
+
+- Egg crack: klankbeeld - License: CC BY 4.0 - Source (https://freesound.org/people/klankbeeld/sounds/249767/)
+
+- Electric sparks: kev_durr - License: CC 0 - Source (https://freesound.org/people/kev_durr/sounds/396470/)
+
+- Electricity: michael_grinnell - License: CC 0 - Source (https://freesound.org/people/michael_grinnell/sounds/512471/)
+
+- Paper crumple: esperri - License: CC 0 - Source (https://freesound.org/people/esperri/sounds/119142/)
+
+- Paper deflate: tim.kahn - License: CC BY-NC 4.0 - Source (https://freesound.org/people/tim.kahn/sounds/470058/)
+
+- Pellet Posy squeak: Breviceps - License: CC 0 - Source (https://freesound.org/people/Breviceps/sounds/445958/)
+
+- Rock breaking: jjchubby - License: CC 0 - Source (https://freesound.org/people/jjchubby/sounds/754182/)
+
+- Rock grind: Mediaman57 - License: CC 0 - Source (https://freesound.org/people/Mediaman57/sounds/347149/)
+
+- Rock hit: bolkmar - License: CC BY 3.0 - Source (https://freesound.org/people/bolkmar/sounds/539177/)
+
+- Rolling boulder (rumble): DWOBoyle - License: CC BY 4.0 - Source (https://freesound.org/people/DWOBoyle/sounds/145705/)
+
+- Rolling boulder (stones): newlocknew - License: CC BY NC 4.0 - Source (https://freesound.org/people/newlocknew/sounds/708996/)
+
+- Slurp, straw: dreamstobecome - License: CC 0 - Source (https://freesound.org/people/dreamstobecome/sounds/529295/)
+
+- Spray: davidou - License: CC 0 - Source (https://freesound.org/people/davidou/sounds/88461/)
+
+- Squelch, small: SoundDesignForYou - License: CC 0 - Source (https://freesound.org/people/SoundDesignForYou/sounds/649974/)
+
+- Steam: KBarbie - License: CC BY 3.0 - Source (https://freesound.org/people/KBarbie/sounds/118952/)
+
+- Stomp, big: pauliuw - License: CC 0 - Source (https://opengameart.org/content/explosion-somewhere-far)
+
+- Stomp, medium: Yoyamen1212 - License: CC 0 - Source (https://freesound.org/people/Yoyamen1212/sounds/812538/)
+
+- Stomp, small: MasterSuite - License: CC 0 - Source (https://freesound.org/people/MasterSuite/sounds/667391/)
+
+- Stone click: jackthemurray - License: CC 0 - Source (https://freesound.org/people/jackthemurray/sounds/429402/)
+
+- Thump: Reitanna - License: CC 0 - Source (https://freesound.org/people/Reitanna/sounds/332670/)
+
+- Wick: ScouseMouseJB - License: CC BY 4.0 - Source (https://freesound.org/people/ScouseMouseJB/sounds/329045/)
+
+- Nature
+
+- Bamboo: PrimeJunt - License: CC BY 4.0 - Source (https://freesound.org/people/PrimeJunt/sounds/135627/)
+
+- Crystal hit: JustInvoke - License: CC BY 4.0 - Source (https://freesound.org/people/JustInvoke/sounds/446140/)
+
+- Crystal smash (long byte): MysteryPancake - License: CC BY 4.0 - Source (https://freesound.org/people/MysteryPancake/sounds/434438/)
+
+- Crystal smash (short bytes): zxaudiocraft - License: CC 0 - Source (https://freesound.org/people/zxaudiocraft/sounds/521343/)
+
+- Drain: adamatsu - License: CC BY NC 4.0 - Source (https://freesound.org/people/adamatsu/sounds/544471/)
+
+- Foliage: Antoinemax - License: CC BY 4.0 - Source (https://opengameart.org/content/nature-sounds-pack)
+
+- Fountain: arnaud coutancier - License: CC BY NC 3.0 - Source (https://freesound.org/people/arnaud%20coutancier/sounds/56776/)
+
+- Organic hit: qubodup - License: CC 0 - Source (https://opengameart.org/content/impact)
+
+- Organic smash (thud): AntumDeluge - License: CC 0 - Source (https://opengameart.org/content/thwack-sounds)
+
+- Slosh: Razzvio - License: CC BY 3.0 - Source (https://freesound.org/people/Razzvio/sounds/79145/)
+
+- Sticks: Shamewap - License: CC 0 - Source (https://freesound.org/people/Shamewap/sounds/389679/)
+
+- Wet splat: newagesoup - License: CC 0 - Source (https://freesound.org/people/newagesoup/sounds/703678/)
+
+- Wood hit 1: worthahep88 - License: CC 0 - Source (https://freesound.org/people/worthahep88/sounds/319213/)
+
+- Wood hit 2: altfuture - License: CC 0 - Source (https://freesound.org/people/altfuture/sounds/174633/)
+
+- Wood smash (1): InspectorJ - License: CC BY 4.0 - Source (https://freesound.org/people/InspectorJ/sounds/352204/)
+
+- Wood smash (2): egomassive - License: CC 0 - Source (https://freesound.org/people/egomassive/sounds/536777/)
+
+- Pikmin
+
+- Footstep: fuckdazeshit - License: CC 0 - Source (https://freesound.org/people/fuckdazeshit/sounds/788636/)
+
+- Pikmin latch (highs): chewiesmissus - License: CC 0 - Source (https://freesound.org/people/chewiesmissus/sounds/244243/)
+
+- Pikmin latch (lows): studiobonk - License: CC BY 4.0 - Source (https://freesound.org/people/studiobonk/sounds/649121/)
+
+- Pikmin seed landing (highs): LittleRobotSoundFactory - License: CC BY 4.0 - Source (https://freesound.org/people/LittleRobotSoundFactory/sounds/270417/)
+
+- Pikmin seed landing (lows): egomassive - License: CC 0 - Source (https://freesound.org/people/egomassive/sounds/536766/)
+
+- Seed pop: ross_sinc - License: CC BY 3.0 - Source (https://freesound.org/people/ross_sinc/sounds/538937/)
+
+- Music instruments
+
+- Chaos Bank V2 Soundfont
+
+- DSK Music (https://www.dskmusic.com)'s VSTs
+
+- Accordion (https://plugins4free.com/plugin/302/) VST by Safwan Matni
+
+- Sound Magic (https://neovst.com/elementor-13775/)'s Strings One VST
+
+- Everything else
+
+- André 'Espyo' Silva

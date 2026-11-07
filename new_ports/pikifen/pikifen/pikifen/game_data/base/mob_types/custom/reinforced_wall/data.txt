@@ -1,0 +1,61 @@
+name = Reinforced wall
+description = A wall made of a reinforced material so strong that normal Pikmin attacks can't break it. Explosive force can, however.
+
+can_block_paths = true
+custom_category_name = Gate
+default_vulnerability = 0
+height = 0
+max_health = 1800
+pushable = false
+pushes = true
+radius = 32
+rectangular_dimensions = 40 192
+show_health = false
+target_type = explodable_pikmin_obstacle
+team = obstacle
+
+children {
+    left_pillar {
+        spawn = left_pillar
+        parent_holds = false
+    }
+    right_pillar {
+        spawn = right_pillar
+        parent_holds = false
+    }
+}
+
+spawns {
+    left_pillar {
+        object = reinforced_wall_pillar
+        relative = true
+        coordinates = 0 -119
+        angle = 0
+    }
+    right_pillar {
+        object = reinforced_wall_pillar
+        relative = true
+        coordinates = 0 119
+        angle = 180
+    }
+}
+
+sounds {
+    rock_breaking {
+        sound = misc/rock_breaking
+        volume = 75
+        speed = 90
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+vulnerabilities {
+    explosion = 100
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

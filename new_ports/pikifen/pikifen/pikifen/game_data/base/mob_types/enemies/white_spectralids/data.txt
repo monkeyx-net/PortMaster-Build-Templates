@@ -1,0 +1,36 @@
+name = White Spectralids
+description = A simple, gentle flying creature. It's hard to hit, but likes to stop and rest at home periodically.
+
+can_hunt = player; enemy
+can_walk_on_others = true
+custom_category_name = Enemy, small and peaceful
+height = 32
+max_carriers = 1
+max_health = 1
+move_speed = 90
+pikmin_seeds = 1
+points = 5
+pushable = false
+pushes = false
+radius = 16
+rotation_speed = 170
+target_type = enemy
+territory_radius = 600
+weight = 1
+
+reaches {
+    fear = 40 360
+}
+
+sounds {
+    wings {
+        sound = creature_misc/wing_small_woosh
+        volume = 10
+        speed = 150
+        speed_deviation = 60
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

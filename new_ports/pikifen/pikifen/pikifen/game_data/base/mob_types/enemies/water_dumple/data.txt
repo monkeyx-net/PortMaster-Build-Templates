@@ -1,0 +1,76 @@
+name = Water Dumple
+description = Water Dumples are typically found near or in water. They have a strong appetite, and don't go down without a fight.
+
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+height = 32
+itch_damage = 50
+itch_time = 4
+max_carriers = 10
+max_health = 200
+move_speed = 50
+pikmin_seeds = 5
+points = 30
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 30
+rotation_speed = 114
+target_type = enemy
+terrain_radius = 45
+territory_radius = 200
+weight = 5
+
+reaches {
+    search = 100 90 30 360
+    attack = 25 30
+    chase = 100 360
+}
+
+sounds {
+    growl {
+        sound = creature_vocals/water_dumple_growl
+        volume = 60
+        speed_deviation = 5
+    }
+    scream {
+        sound = creature_vocals/water_dumple_scream
+        volume = 60
+        speed_deviation = 5
+    }
+    waddle {
+        sound = creature_vocals/water_dumple_waddle
+        volume = 20
+        speed_deviation = 5
+    }
+    bite {
+        sound = creature_misc/bite
+        volume = 70
+        speed = 90
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 80
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 60
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 40
+        speed = 80
+        speed_deviation = 20
+    }
+}
+
+status_vulnerabilities {
+    muddy = 50
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

@@ -1,0 +1,12 @@
+first_state = idling
+
+script {
+    idling {
+        on_receive_message {
+            get_event_info msg message
+            if $msg = obstacle_in_place
+                delete
+            end_if
+        }
+    }
+}

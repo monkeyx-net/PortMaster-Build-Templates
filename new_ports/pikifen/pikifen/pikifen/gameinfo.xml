@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./Pikifen.sh</path>
+    <name>Pikifen</name>
+    <desc>Fan-made engine and game inspired by Pikmin. Lead a squad of plant-like creatures to fight enemies, carry treasure and solve missions, or make your own areas with the included editors.</desc>
+    <developer>André 'Espyo' Silva</developer>
+    <publisher>André 'Espyo' Silva</publisher>
+    <genre>Strategy</genre>
+    <image>./pikifen/cover.png</image>
+  </game>
+</gameList>

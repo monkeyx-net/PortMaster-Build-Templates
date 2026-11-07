@@ -1,0 +1,1032 @@
+name=Munge Dweevil animations
+description=Animations for the Munge Dweevil.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	attacking{
+		frames{
+			attacking_gas_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_gas_02{
+				duration=0.1000
+				interpolate=true
+				sound=gas
+			}
+			attacking_gas_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_gas_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.1500
+				interpolate=true
+			}
+			attacking_safe_02{
+				duration=0.2000
+				interpolate=true
+			}
+			attacking_safe_01{
+				duration=0.2500
+				interpolate=true
+			}
+		}
+	}
+	dying{
+		loop_frame=13
+		frames{
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+				sound=squeak_dying
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+			}
+			dying_03{
+				duration=0.1000
+			}
+			dying_04{
+				duration=0.1000
+			}
+			dying_05{
+				duration=0.1000
+			}
+			dying_06{
+				duration=0.1000
+			}
+			dying_07{
+				duration=0.1000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling_01{
+				duration=0.1000
+			}
+			idling_02{
+				duration=0.1000
+				sound=squeak_rare
+			}
+			idling_01{
+				duration=0.1000
+			}
+			idling_03{
+				duration=0.1000
+			}
+		}
+	}
+	moving{
+		frames{
+			moving_01{
+				duration=0.1000
+			}
+			moving_02{
+				duration=0.1000
+				sound=squeak_rare
+			}
+			moving_03{
+				duration=0.1000
+			}
+			moving_04{
+				duration=0.1000
+			}
+			moving_05{
+				duration=0.1000
+			}
+			moving_06{
+				duration=0.1000
+			}
+		}
+	}
+	picking_up{
+		frames{
+			picking_up_01{
+				duration=0.1000
+				interpolate=true
+			}
+			picking_up_02{
+				duration=0.1000
+				sound=squeak_short
+			}
+			picking_up_02{
+				duration=0.1000
+				interpolate=true
+			}
+			picking_up_01{
+				duration=0.1000
+				sound=pick_up
+			}
+			picking_up_03{
+				duration=0.1000
+				signal=0
+			}
+		}
+	}
+	releasing{
+		frames{
+			moving_03{
+				duration=0.1000
+			}
+			shaking_02{
+				duration=0.1000
+				sound=snap
+			}
+			idling_01{
+				duration=0.5000
+				sound=squeak_short
+			}
+		}
+	}
+	shaking{
+		hit_rate=75
+		frames{
+			shaking_01{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+				sound=squeak_long
+			}
+			shaking_02{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			shaking_01{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			shaking_02{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+				sound=shaking
+			}
+			shaking_01{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			shaking_02{
+				duration=0.1000
+			}
+			shaking_kb{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	attacking_gas_01{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 -32.0000
+				height=108.0000
+				radius=70.0000
+				type=1
+				value=0.0000
+				hazard=poison
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_gas_02{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 -32.0000
+				height=108.0000
+				radius=70.0000
+				type=1
+				value=0.0000
+				hazard=poison
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_safe_01{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_safe_02{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_01{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		offset=4.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		offset=4.0000 0.0000
+		scale=1.1000 1.1000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03{
+		file=enemies/munge_dweevil
+		file_pos=95.0000 121.0000
+		file_size=76.0000 52.0000
+		offset=13.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04{
+		file=enemies/munge_dweevil
+		file_pos=172.0000 121.0000
+		file_size=103.0000 90.0000
+		offset=-1.0000 28.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 -8.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05{
+		file=enemies/munge_dweevil
+		file_pos=276.0000 136.0000
+		file_size=81.0000 74.0000
+		offset=7.0000 24.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 -15.0000 24.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06{
+		file=enemies/munge_dweevil
+		file_pos=358.0000 136.0000
+		file_size=70.0000 54.0000
+		offset=8.0000 12.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 24.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07{
+		file=enemies/munge_dweevil
+		file_pos=429.0000 144.0000
+		file_size=60.0000 52.0000
+		offset=6.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 0.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_01{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 0.0000
+		file_size=118.0000 120.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_02{
+		file=enemies/munge_dweevil
+		file_pos=119.0000 0.0000
+		file_size=118.0000 120.0000
+		hitboxes{
+			body{
+				coords=-1.0000 1.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=-2.0000 2.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=0
+				value=1.0000
+			}
+		}
+	}
+	idling_03{
+		file=enemies/munge_dweevil
+		file_pos=238.0000 0.0000
+		file_size=118.0000 120.0000
+		hitboxes{
+			body{
+				coords=1.0000 -1.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=2.0000 -2.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_01{
+		file=enemies/munge_dweevil
+		file_pos=357.0000 0.0000
+		file_size=129.0000 135.0000
+		offset=0.0000 3.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_02{
+		file=enemies/munge_dweevil
+		file_pos=487.0000 0.0000
+		file_size=137.0000 143.0000
+		offset=2.0000 5.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_03{
+		file=enemies/munge_dweevil
+		file_pos=625.0000 0.0000
+		file_size=151.0000 147.0000
+		offset=-4.0000 8.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_04{
+		file=enemies/munge_dweevil
+		file_pos=777.0000 0.0000
+		file_size=147.0000 138.0000
+		offset=-1.0000 11.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_05{
+		file=enemies/munge_dweevil
+		file_pos=925.0000 0.0000
+		file_size=127.0000 128.0000
+		offset=1.0000 13.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	moving_06{
+		file=enemies/munge_dweevil
+		file_pos=1053.0000 0.0000
+		file_size=114.0000 121.0000
+		offset=3.0000 1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	picking_up_01{
+		file=enemies/munge_dweevil
+		file_pos=487.0000 0.0000
+		file_size=137.0000 143.0000
+		offset=2.0000 5.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	picking_up_02{
+		file=enemies/munge_dweevil
+		file_pos=487.0000 0.0000
+		file_size=137.0000 143.0000
+		offset=2.0000 5.0000
+		scale=0.9000 0.9000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	picking_up_03{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 121.0000
+		file_size=94.0000 88.0000
+		offset=4.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=36.0000 0.0000 24.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_01{
+		file=enemies/munge_dweevil
+		file_pos=490.0000 144.0000
+		file_size=113.0000 116.0000
+		offset=-1.0000 -1.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_02{
+		file=enemies/munge_dweevil
+		file_pos=604.0000 148.0000
+		file_size=113.0000 115.0000
+		offset=-1.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			gas{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=32.0000
+				type=2
+				value=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_kb{
+		file=enemies/munge_dweevil
+		file_pos=0.0000 0.0000
+		file_size=118.0000 120.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=48.0000
+				radius=16.0000
+				type=2
+				value=1.0000
+			}
+			gas{
+				coords=0.0000 0.0000 -32.0000
+				height=108.0000
+				radius=32.0000
+				type=1
+				value=2.0000
+				knockback_outward=true
+				knockback=1.0000
+			}
+			treasure{
+				coords=0.0000 0.0000 48.0000
+				height=8.0000
+				radius=8.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+	gas
+	treasure
+}

@@ -1,0 +1,100 @@
+name=Geyser animations
+description=Animations for the geyser.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	bouncing{
+		frames{
+			spraying_01{
+				duration=0.1000
+			}
+			spraying_02{
+				duration=0.1000
+			}
+			spraying_03{
+				duration=0.1000
+			}
+			spraying_04{
+				duration=0.1000
+			}
+			spraying_01{
+				duration=0.1000
+			}
+			spraying_02{
+				duration=0.1000
+			}
+			spraying_03{
+				duration=0.1000
+			}
+			spraying_04{
+				duration=0.1000
+			}
+			spraying_01{
+				duration=0.1000
+			}
+			spraying_02{
+				duration=0.1000
+			}
+			spraying_03{
+				duration=0.1000
+			}
+			spraying_04{
+				duration=0.1000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling_01{
+				duration=0.1000
+			}
+			idling_02{
+				duration=0.1000
+			}
+			idling_03{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	idling_01{
+		file=other_mobs/geyser
+		file_pos=0.0000 0.0000
+		file_size=48.0000 48.0000
+	}
+	idling_02{
+		file=other_mobs/geyser
+		file_pos=49.0000 0.0000
+		file_size=48.0000 48.0000
+	}
+	idling_03{
+		file=other_mobs/geyser
+		file_pos=98.0000 0.0000
+		file_size=48.0000 48.0000
+	}
+	spraying_01{
+		file=other_mobs/geyser
+		file_pos=147.0000 0.0000
+		file_size=48.0000 48.0000
+	}
+	spraying_02{
+		file=other_mobs/geyser
+		file_pos=196.0000 0.0000
+		file_size=48.0000 48.0000
+		scale=1.0500 1.0500
+	}
+	spraying_03{
+		file=other_mobs/geyser
+		file_pos=245.0000 0.0000
+		file_size=48.0000 48.0000
+	}
+	spraying_04{
+		file=other_mobs/geyser
+		file_pos=294.0000 0.0000
+		file_size=48.0000 48.0000
+		scale=0.9500 0.9500
+	}
+}
+body_parts

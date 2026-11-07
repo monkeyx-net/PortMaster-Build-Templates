@@ -1,0 +1,1695 @@
+name=Armored Cannon Beetle animations
+description=Animations for the Armored Cannon Beetle.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	bored{
+		frames{
+			idling{
+				duration=0.2000
+				sound=stomp
+			}
+			bored_01{
+				duration=0.2000
+			}
+			idling{
+				duration=0.2000
+				sound=stomp
+			}
+			bored_02{
+				duration=0.2000
+			}
+		}
+	}
+	catching{
+		frames{
+			opening_01{
+				duration=0.1000
+			}
+			inhale_01{
+				duration=0.1000
+				sound=stomp
+			}
+			idling{
+				duration=0.8000
+			}
+			opening_01{
+				duration=0.1000
+			}
+			opening_02{
+				duration=0.1000
+				sound=wings
+			}
+			idling_hot{
+				duration=0.3000
+				signal=0
+			}
+		}
+	}
+	closing_cool{
+		frames{
+			moving_cool_01{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+				sound=shaking
+			}
+			moving_cool_03{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+			moving_cool_01{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+			moving_cool_03{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+			moving_cool_01{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+			closing_cool_01{
+				duration=0.1000
+				signal=0
+				sound=wings
+			}
+			closing_cool_02{
+				duration=0.1000
+			}
+			inhale_01{
+				duration=0.1000
+			}
+			idling{
+				duration=1.0000
+			}
+		}
+	}
+	closing_hot{
+		frames{
+			moving_hot_01{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+				sound=shaking
+			}
+			moving_hot_03{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+			}
+			moving_hot_01{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+			}
+			moving_hot_03{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+			}
+			moving_hot_01{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+			}
+			closing_hot_01{
+				duration=0.1000
+				signal=0
+				sound=wings
+			}
+			closing_hot_02{
+				duration=0.1000
+			}
+			inhale_01{
+				duration=0.1000
+			}
+			idling{
+				duration=1.0000
+			}
+		}
+	}
+	dying{
+		loop_frame=4
+		frames{
+			idling{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_03{
+				duration=0.1000
+				interpolate=true
+				sound=dying
+			}
+			dying_04{
+				duration=1.0000
+				interpolate=true
+			}
+		}
+	}
+	idling{
+		frames{
+			idling{
+				duration=0.0000
+			}
+		}
+	}
+	inhaling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+			inhale_01{
+				duration=0.1000
+			}
+			inhale_02{
+				duration=0.1000
+			}
+			inhale_03{
+				duration=0.1000
+			}
+			inhale_04{
+				duration=0.1000
+			}
+			inhale_05{
+				duration=0.1000
+			}
+			inhale_02{
+				duration=0.1000
+			}
+			inhale_03{
+				duration=0.1000
+			}
+			inhale_04{
+				duration=0.1000
+			}
+			inhale_05{
+				duration=0.1000
+			}
+			inhale_02{
+				duration=0.1000
+			}
+			inhale_03{
+				duration=0.1000
+			}
+			inhale_04{
+				duration=0.1000
+			}
+			inhale_05{
+				duration=0.1000
+			}
+			inhale_02{
+				duration=0.1000
+			}
+			inhale_03{
+				duration=0.1000
+			}
+			inhale_01{
+				duration=0.1000
+			}
+		}
+	}
+	moving{
+		frames{
+			idling{
+				duration=0.1000
+			}
+			moving_01{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_02{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_01{
+				duration=0.1000
+			}
+			idling{
+				duration=0.1000
+			}
+			moving_03{
+				duration=0.1000
+				sound=stomp
+			}
+			moving4{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_03{
+				duration=0.1000
+			}
+		}
+	}
+	moving_cool{
+		loop_frame=1
+		frames{
+			cooling{
+				duration=0.1000
+			}
+			moving_cool_01{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_cool_02{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_cool_01{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+			moving_cool_03{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_cool_04{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_cool_03{
+				duration=0.1000
+			}
+			idling_cool{
+				duration=0.1000
+			}
+		}
+	}
+	moving_hot{
+		frames{
+			idling_hot{
+				duration=0.1000
+			}
+			moving_hot_01{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_hot_02{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_hot_01{
+				duration=0.1000
+			}
+			idling_hot{
+				duration=0.1000
+			}
+			moving_hot_03{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_hot_04{
+				duration=0.1000
+				sound=stomp
+			}
+			moving_hot_03{
+				duration=0.1000
+			}
+		}
+	}
+	spitting{
+		frames{
+			inhale_01{
+				duration=0.1000
+			}
+			spitting_02{
+				duration=0.1000
+				signal=0
+				sound=spit
+			}
+			spitting_01{
+				duration=0.1000
+			}
+			idling{
+				duration=0.8000
+			}
+		}
+	}
+}
+sprites{
+	bored_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=855.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 6.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 6.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 6.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 6.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	bored_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=855.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 0.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 -6.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 -6.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 -6.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 -6.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	closing_cool_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 1161.0000
+		file_size=285.0000 386.0000
+		offset=35.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			hot_flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=41.8400 0.0000 0.0000
+				height=100.0000
+				radius=140.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+		}
+	}
+	closing_cool_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=1141.0000 1161.0000
+		file_size=285.0000 386.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			hot_flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=-4.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+		}
+	}
+	closing_hot_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 774.0000
+		file_size=303.0000 386.0000
+		offset=26.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			hot_flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=41.8400 0.0000 0.0000
+				height=100.0000
+				radius=140.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+		}
+	}
+	closing_hot_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=1422.0000 387.0000
+		file_size=285.0000 386.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			hot_flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=-4.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=0.0000
+				knockback_outward=true
+				knockback_angle=3.1400
+				knockback=1.0000
+			}
+		}
+	}
+	cooling{
+		file=enemies/armored_cannon_beetle
+		file_pos=1246.0000 774.0000
+		file_size=312.0000 386.0000
+		offset=22.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 0.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	dying_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 1548.0000
+		file_size=287.0000 326.0000
+		offset=32.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=70.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=0.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=2
+				value=0.0000
+			}
+		}
+	}
+	dying_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=288.0000 1548.0000
+		file_size=264.0000 338.0000
+		offset=26.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=-60.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=0.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=2
+				value=0.0000
+			}
+		}
+	}
+	dying_03{
+		file=enemies/armored_cannon_beetle
+		file_pos=553.0000 1548.0000
+		file_size=281.0000 232.0000
+		offset=-25.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=-70.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=0.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=2
+				value=0.0000
+			}
+		}
+	}
+	dying_04{
+		file=enemies/armored_cannon_beetle
+		file_pos=835.0000 1548.0000
+		file_size=283.0000 234.0000
+		offset=-36.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=-120.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=-5.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=2
+				value=0.0000
+			}
+		}
+	}
+	idling{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_cool{
+		file=enemies/armored_cannon_beetle
+		file_pos=286.0000 1161.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 0.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	idling_hot{
+		file=enemies/armored_cannon_beetle
+		file_pos=304.0000 774.0000
+		file_size=312.0000 386.0000
+		offset=22.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=0.0000 0.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 0.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	inhale_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=1139.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=32.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=0.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	inhale_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=1423.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-26.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=0.0000
+			}
+			hot_flesh{
+				coords=-26.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=0.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=1
+				value=0.0000
+			}
+			shell{
+				coords=-4.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	inhale_03{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 387.0000
+		file_size=284.0000 386.0000
+		offset=26.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-30.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-30.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=112.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=1
+				value=0.0000
+			}
+			shell{
+				coords=-8.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	inhale_04{
+		file=enemies/armored_cannon_beetle
+		file_pos=285.0000 387.0000
+		file_size=283.0000 386.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-26.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-26.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=1
+				value=0.0000
+			}
+			shell{
+				coords=-4.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	inhale_05{
+		file=enemies/armored_cannon_beetle
+		file_pos=569.0000 387.0000
+		file_size=284.0000 386.0000
+		offset=26.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-30.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-30.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=112.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=1
+				value=0.0000
+			}
+			shell{
+				coords=-8.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving4{
+		file=enemies/armored_cannon_beetle
+		file_pos=568.0000 0.0000
+		file_size=286.0000 386.0000
+		offset=37.0000 -4.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 -4.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 -4.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 -4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 -4.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=284.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 2.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 2.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 2.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 2.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=568.0000 0.0000
+		file_size=286.0000 386.0000
+		offset=37.0000 4.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 4.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 4.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 4.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_03{
+		file=enemies/armored_cannon_beetle
+		file_pos=284.0000 0.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 -2.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=-18.0000 -2.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-18.0000 -2.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=120.0000 -2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=5.0000 -2.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_cool_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=570.0000 1161.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 2.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 2.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_cool_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=854.0000 1161.0000
+		file_size=286.0000 386.0000
+		offset=37.0000 4.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 4.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_cool_03{
+		file=enemies/armored_cannon_beetle
+		file_pos=570.0000 1161.0000
+		file_size=283.0000 386.0000
+		offset=36.0000 -2.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 -2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 -2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 -2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 -2.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_cool_04{
+		file=enemies/armored_cannon_beetle
+		file_pos=854.0000 1161.0000
+		file_size=286.0000 386.0000
+		offset=37.0000 -4.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 -4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			hot_flesh{
+				coords=0.0000 -4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			blowhole{
+				coords=116.0000 -4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 -4.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_hot_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=617.0000 774.0000
+		file_size=312.0000 386.0000
+		offset=22.0000 2.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=0.0000 2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 2.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_hot_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=930.0000 774.0000
+		file_size=315.0000 386.0000
+		offset=23.0000 4.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=0.0000 4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 4.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_hot_03{
+		file=enemies/armored_cannon_beetle
+		file_pos=617.0000 774.0000
+		file_size=312.0000 386.0000
+		offset=22.0000 -2.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 -2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=0.0000 -2.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 -2.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 -2.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	moving_hot_04{
+		file=enemies/armored_cannon_beetle
+		file_pos=930.0000 774.0000
+		file_size=315.0000 386.0000
+		offset=23.0000 -4.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			flesh{
+				coords=0.0000 -4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=0.0000 -4.0000 50.0000
+				height=100.0000
+				radius=110.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 -4.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=90.0000 -4.0000 0.0000
+				height=300.0000
+				radius=90.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	opening_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=1422.0000 387.0000
+		file_size=285.0000 386.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-22.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=-4.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	opening_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=0.0000 774.0000
+		file_size=303.0000 386.0000
+		offset=26.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+				hazard=fire
+			}
+			hot_flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=5.0000
+				hazard=fire
+			}
+			blowhole{
+				coords=116.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=0.0000
+			}
+			shell{
+				coords=41.8400 0.0000 0.0000
+				height=100.0000
+				radius=140.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	spitting_01{
+		file=enemies/armored_cannon_beetle
+		file_pos=854.0000 387.0000
+		file_size=283.0000 386.0000
+		offset=40.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-14.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-14.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=124.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=9.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+	spitting_02{
+		file=enemies/armored_cannon_beetle
+		file_pos=1138.0000 387.0000
+		file_size=283.0000 386.0000
+		offset=44.0000 0.0000
+		hitboxes{
+			flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			hot_flesh{
+				coords=-10.0000 0.0000 50.0000
+				height=100.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			blowhole{
+				coords=128.0000 0.0000 50.0000
+				height=300.0000
+				radius=18.0000
+				type=2
+				value=1.0000
+			}
+			shell{
+				coords=13.0000 0.0000 0.0000
+				height=100.0000
+				radius=110.0000
+				type=0
+				value=0.0000
+			}
+		}
+	}
+}
+body_parts{
+	flesh
+	hot_flesh
+	blowhole
+	shell
+}

@@ -1,0 +1,21 @@
+first_state = shooting
+death_state = destroyed
+
+script{
+    shooting {
+        on_enter {
+            set_animation shooting
+            start_particles gas_pipe 0 0 24
+            play_sound gas sound_id
+        }
+    }
+    destroyed {
+        on_enter {
+            set_animation destroyed
+            stop_particles
+            start_particles enemy_defeat 0 0 150
+            stop_sound $sound_id
+            start_dying
+        }
+    }
+}

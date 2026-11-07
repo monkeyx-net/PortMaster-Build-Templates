@@ -1,0 +1,2183 @@
+name=Puffy Blowhog animations
+description=Animations for the Puffy Blowhog.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	blowing{
+		loop_frame=3
+		frames{
+			attacking_02{
+				duration=0.1000
+			}
+			attacking_01{
+				duration=0.1000
+			}
+			attacking_06{
+				duration=0.1000
+				signal=0
+			}
+			attacking_07{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_08{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+	blowing_end{
+		frames{
+			attacking_06{
+				duration=0.2000
+			}
+			attacking_01{
+				duration=0.2000
+				sound=wing
+			}
+			idling_01{
+				duration=0.3000
+			}
+		}
+	}
+	dying{
+		loop_frame=42
+		frames{
+			attacking_03{
+				duration=0.1000
+			}
+			attacking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_05{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_05{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_05{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_05{
+				duration=0.3000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			dying_pre{
+				duration=0.1000
+			}
+			dying_01{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_02{
+				duration=0.0800
+				interpolate=true
+				signal=0
+			}
+			dying_03{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_04{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_05{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_06{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_07{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_08{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_09{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_10{
+				duration=0.0700
+				interpolate=true
+			}
+			dying_11{
+				duration=0.0700
+				interpolate=true
+			}
+			dying_12{
+				duration=0.0700
+				interpolate=true
+			}
+			dying_13{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_14{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_15{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_16{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_17{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_18{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_19{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_20{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_21{
+				duration=0.0600
+				interpolate=true
+			}
+			dying_22{
+				duration=0.0700
+				interpolate=true
+			}
+			dying_23{
+				duration=0.0700
+				interpolate=true
+			}
+			dying_24{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_25{
+				duration=0.0010
+			}
+			dying_26{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_27{
+				duration=0.0800
+				interpolate=true
+			}
+			dying_28{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_29{
+				duration=0.1000
+				interpolate=true
+			}
+			dying_30{
+				duration=0.1000
+				interpolate=true
+				signal=1
+			}
+			dying_31{
+				duration=0.2000
+				interpolate=true
+			}
+			dying_32{
+				duration=0.6000
+			}
+		}
+	}
+	falling{
+		frames{
+			falling_01{
+				duration=0.0800
+				interpolate=true
+			}
+			falling_02{
+				duration=0.0800
+				interpolate=true
+			}
+		}
+	}
+	getting_up{
+		frames{
+			grounded_01{
+				duration=0.0100
+				interpolate=true
+			}
+			grounded_01{
+				duration=0.3000
+				interpolate=true
+				sound=stretch
+			}
+			grounded_stretch{
+				duration=0.2000
+			}
+			attacking_04{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.3000
+			}
+			shaking_01{
+				duration=0.1000
+				sound=shaking
+			}
+			shaking_02{
+				duration=0.1000
+			}
+			shaking_03{
+				duration=0.1000
+			}
+			shaking_04{
+				duration=0.1000
+			}
+			shaking_03{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.3000
+			}
+		}
+	}
+	grounded{
+		loop_frame=2
+		frames{
+			grounded_landing{
+				duration=0.0800
+				interpolate=true
+			}
+			grounded_01{
+				duration=0.0100
+				interpolate=true
+				sound=thump
+			}
+			grounded_01{
+				duration=0.3000
+				interpolate=true
+			}
+			grounded_02{
+				duration=0.3000
+				interpolate=true
+			}
+			grounded_01{
+				duration=0.3000
+				interpolate=true
+			}
+			grounded_03{
+				duration=0.3000
+				interpolate=true
+			}
+		}
+	}
+	idling{
+		frames{
+			idling_01{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_02{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_03{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_02{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_01{
+				duration=0.1200
+				interpolate=true
+				sound=wing
+			}
+			idling_04{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_05{
+				duration=0.1200
+				interpolate=true
+			}
+			idling_04{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+	inhaling{
+		loop_frame=3
+		frames{
+			attacking_01{
+				duration=0.1000
+			}
+			attacking_02{
+				duration=0.1600
+			}
+			attacking_03{
+				duration=0.1600
+			}
+			attacking_04{
+				duration=0.1000
+				interpolate=true
+			}
+			attacking_05{
+				duration=0.1000
+				interpolate=true
+			}
+		}
+	}
+	shaking{
+		frames{
+			shaking_01{
+				duration=0.2000
+			}
+			idling_01{
+				duration=0.1300
+			}
+			shaking_03{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.1000
+			}
+			shaking_01{
+				duration=0.1000
+				sound=shaking
+			}
+			shaking_02{
+				duration=0.1000
+			}
+			shaking_01{
+				duration=0.1000
+			}
+			shaking_03{
+				duration=0.1000
+			}
+			shaking_04{
+				duration=0.1000
+			}
+			shaking_03{
+				duration=0.1000
+			}
+			idling_01{
+				duration=0.4000
+			}
+		}
+	}
+}
+sprites{
+	attacking_01{
+		file=enemies/puffy_blowhog
+		file_pos=0.0000 231.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_02{
+		file=enemies/puffy_blowhog
+		file_pos=361.0000 231.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_03{
+		file=enemies/puffy_blowhog
+		file_pos=722.0000 231.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=74.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_04{
+		file=enemies/puffy_blowhog
+		file_pos=1083.0000 231.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-12.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=48.0000 0.4339 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_05{
+		file=enemies/puffy_blowhog
+		file_pos=1083.0000 231.0000
+		file_size=360.0000 230.0000
+		offset=37.0000 0.0000
+		scale=1.0100 1.0000
+		hitboxes{
+			body{
+				coords=-12.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=48.0000 0.4339 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_06{
+		file=enemies/puffy_blowhog
+		file_pos=1444.0000 231.0000
+		file_size=374.0000 230.0000
+		offset=40.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=97.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	attacking_07{
+		file=enemies/puffy_blowhog
+		file_pos=1819.0000 231.0000
+		file_size=387.0000 230.0000
+		offset=48.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=80.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=110.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=2.0000
+				hazard=wind
+				knockback_outward=true
+				knockback=5.0000
+			}
+		}
+	}
+	attacking_08{
+		file=enemies/puffy_blowhog
+		file_pos=1819.0000 231.0000
+		file_size=387.0000 230.0000
+		offset=49.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=80.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=110.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=1
+				value=2.0000
+				hazard=wind
+				knockback_outward=true
+				knockback=5.0000
+			}
+		}
+	}
+	dying_01{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=93.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_02{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=41.0622 -2.4886
+		angle=0.1075
+		hitboxes{
+			body{
+				coords=-62.8761 -15.7574 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=33.3221 -2.4886 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_03{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-32.6539 -21.5815
+		angle=0.4660
+		hitboxes{
+			body{
+				coords=-123.6051 -65.0799 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-24.7451 -21.5815 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_04{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-171.0579 -185.0300
+		scale=0.9000 0.9000
+		angle=0.9849
+		hitboxes{
+			body{
+				coords=-219.3174 -259.7347 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-157.8765 -170.5304 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_05{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-203.7457 -446.7411
+		scale=0.9000 0.9000
+		angle=1.6077
+		hitboxes{
+			body{
+				coords=-197.4528 -534.1622 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-203.6451 -408.7670 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_06{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=42.4971 -697.8225
+		scale=0.9000 0.9000
+		angle=2.5435
+		hitboxes{
+			body{
+				coords=105.1520 -747.9464 0.0000
+				height=128.0000
+				radius=76.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=4.9042 -670.2543 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_07{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=451.0068 -657.7234
+		scale=0.8000 0.8000
+		angle=3.3809
+		hitboxes{
+			body{
+				coords=532.2621 -640.4998 0.0000
+				height=128.0000
+				radius=63.9088
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=438.0670 -659.2361 0.0000
+				height=128.0000
+				radius=45.2503
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_08{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=679.0705 -377.0297
+		scale=0.8000 0.8000
+		angle=4.3560
+		hitboxes{
+			body{
+				coords=707.6049 -298.0058 0.0000
+				height=128.0000
+				radius=58.9410
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=673.7863 -387.8667 0.0000
+				height=128.0000
+				radius=43.0443
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_09{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=667.4161 14.5023
+		scale=0.8000 0.8000
+		angle=4.8975
+		hitboxes{
+			body{
+				coords=650.3928 101.5101 0.0000
+				height=128.0000
+				radius=58.9410
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=671.1990 6.9365 0.0000
+				height=128.0000
+				radius=43.0443
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_10{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=566.1327 446.4530
+		scale=0.7000 0.7000
+		angle=5.1005
+		hitboxes{
+			body{
+				coords=540.2928 509.7990 0.0000
+				height=128.0000
+				radius=58.9410
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=571.9049 431.9141 0.0000
+				height=128.0000
+				radius=37.3104
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_11{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=261.8260 760.3694
+		scale=0.7000 0.7000
+		angle=5.5723
+		hitboxes{
+			body{
+				coords=205.7320 806.7787 0.0000
+				height=128.0000
+				radius=53.2223
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=265.8112 749.9775 0.0000
+				height=128.0000
+				radius=34.2166
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_12{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-161.0000 907.7177
+		scale=0.7000 0.7000
+		angle=6.0143
+		hitboxes{
+			body{
+				coords=-232.3638 926.0442 0.0000
+				height=128.0000
+				radius=53.8535
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-150.2763 904.5145 0.0000
+				height=128.0000
+				radius=34.5486
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_13{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-500.5421 744.3530
+		scale=0.6000 0.6000
+		angle=0.4181
+		hitboxes{
+			body{
+				coords=-555.4783 718.4893 0.0000
+				height=128.0000
+				radius=48.4126
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-497.4290 744.2524 0.0000
+				height=128.0000
+				radius=32.4999
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_14{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-761.4789 410.5073
+		scale=0.5000 0.5000
+		angle=1.0792
+		hitboxes{
+			body{
+				coords=-787.0690 364.3975 0.0000
+				height=128.0000
+				radius=37.1939
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-757.5079 415.2178 0.0000
+				height=128.0000
+				radius=26.4226
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_15{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-873.6282 3.6401
+		scale=0.5000 0.5000
+		angle=1.5453
+		hitboxes{
+			body{
+				coords=-875.8550 -44.9558 0.0000
+				height=128.0000
+				radius=39.2049
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-874.5690 18.5379 0.0000
+				height=128.0000
+				radius=28.4424
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_16{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-850.1550 -447.5653
+		scale=0.4000 0.4000
+		angle=1.7390
+		hitboxes{
+			body{
+				coords=-843.4907 -489.7693 0.0000
+				height=128.0000
+				radius=28.4723
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-851.2488 -450.6676 0.0000
+				height=128.0000
+				radius=23.5483
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_17{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-647.7220 -797.6241
+		scale=0.4000 0.4000
+		angle=2.2276
+		hitboxes{
+			body{
+				coords=-624.5192 -831.0948 0.0000
+				height=128.0000
+				radius=30.5906
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-649.8270 -794.8053 0.0000
+				height=128.0000
+				radius=22.3978
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_18{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=-358.5078 -942.2322
+		scale=0.4000 0.4000
+		angle=2.8035
+		hitboxes{
+			body{
+				coords=-321.7135 -955.8836 0.0000
+				height=128.0000
+				radius=31.5912
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=-367.7377 -941.1898 0.0000
+				height=128.0000
+				radius=25.9897
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_19{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=47.8860 -999.5762
+		scale=0.3000 0.3000
+		angle=3.2544
+		hitboxes{
+			body{
+				coords=78.5064 -995.2435 0.0000
+				height=128.0000
+				radius=21.3416
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=50.6547 -1000.7772 0.0000
+				height=128.0000
+				radius=14.1549
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_20{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=386.9631 -874.9155
+		scale=0.3000 0.3000
+		angle=3.7425
+		hitboxes{
+			body{
+				coords=412.8706 -858.8918 0.0000
+				height=128.0000
+				radius=23.3310
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=385.6909 -878.2574 0.0000
+				height=128.0000
+				radius=18.0243
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_21{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=651.2438 -690.4167
+		scale=0.3000 0.3000
+		angle=4.1367
+		hitboxes{
+			body{
+				coords=668.3839 -663.0332 0.0000
+				height=128.0000
+				radius=19.5964
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=652.3847 -689.5392 0.0000
+				height=128.0000
+				radius=14.8803
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_22{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=798.3434 -428.6292
+		scale=0.2000 0.2000
+		angle=4.6780
+		hitboxes{
+			body{
+				coords=797.3098 -407.9017 0.0000
+				height=128.0000
+				radius=15.4616
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=797.9174 -432.8158 0.0000
+				height=128.0000
+				radius=9.8983
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_23{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=716.9882 -261.1346
+		scale=0.2000 0.2000
+		angle=5.1227
+		hitboxes{
+			body{
+				coords=709.1982 -241.7058 0.0000
+				height=128.0000
+				radius=16.8641
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=718.3131 -262.3663 0.0000
+				height=128.0000
+				radius=12.5197
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_24{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=614.0165 -167.5739
+		scale=0.2000 0.2000
+		angle=5.5437
+		hitboxes{
+			body{
+				coords=600.1223 -155.7220 0.0000
+				height=128.0000
+				radius=17.3984
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=616.2253 -168.7867 0.0000
+				height=128.0000
+				radius=11.4356
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_25{
+		file=enemies/puffy_blowhog
+		file_pos=1442.0000 462.0000
+		file_size=474.0000 230.0000
+		offset=429.6636 -86.7465
+		scale=0.2000 0.2000
+		angle=5.9345
+		hitboxes{
+			body{
+				coords=415.0883 -82.4987 0.0000
+				height=128.0000
+				radius=17.8748
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=440.0023 -89.4868 0.0000
+				height=128.0000
+				radius=14.7037
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_26{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=429.6636 -86.7465
+		angle=5.9345
+		hitboxes{
+			body{
+				coords=415.0883 -82.4987 0.0000
+				height=128.0000
+				radius=17.8748
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=440.0023 -89.4868 0.0000
+				height=128.0000
+				radius=14.7037
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_27{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=286.6436 -44.9266
+		angle=6.1791
+		hitboxes{
+			body{
+				coords=270.1605 -43.9122 0.0000
+				height=128.0000
+				radius=15.7466
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=297.5052 -45.7352 0.0000
+				height=128.0000
+				radius=13.7741
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_28{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=150.7975 -19.5009
+		angle=6.2264
+		hitboxes{
+			body{
+				coords=132.5611 -18.2266 0.0000
+				height=128.0000
+				radius=13.8637
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=155.6165 -18.9114 0.0000
+				height=128.0000
+				radius=9.0973
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_29{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=87.2329 -4.2454
+		angle=6.2791
+		hitboxes{
+			body{
+				coords=69.1693 -3.2881 0.0000
+				height=128.0000
+				radius=15.2439
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=93.5229 -3.6311 0.0000
+				height=128.0000
+				radius=9.7923
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_30{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=25.4846 0.4765
+		angle=6.2791
+		hitboxes{
+			body{
+				coords=8.0000 0.0000 0.0000
+				height=128.0000
+				radius=15.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=32.0000 0.0000 0.0000
+				height=128.0000
+				radius=12.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_31{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=13.0000 0.0000
+		hitboxes{
+			body{
+				coords=-5.0000 0.0000 0.0000
+				height=128.0000
+				radius=15.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=20.0000 0.0000 0.0000
+				height=128.0000
+				radius=12.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_32{
+		file=enemies/puffy_blowhog
+		file_pos=1917.0000 462.0000
+		file_size=73.0000 32.0000
+		offset=7.0000 0.0000
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=15.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=14.0000 0.0000 0.0000
+				height=128.0000
+				radius=12.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	dying_pre{
+		file=enemies/puffy_blowhog
+		file_pos=1819.0000 231.0000
+		file_size=387.0000 230.0000
+		offset=49.0000 0.0000
+		hitboxes{
+			body{
+				coords=0.0000 0.0000 0.0000
+				height=128.0000
+				radius=80.0000
+				type=2
+				value=1.0000
+			}
+			head{
+				coords=110.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=2
+				value=1.0000
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+				hazard=wind
+			}
+		}
+	}
+	falling_01{
+		file=enemies/puffy_blowhog
+		file_pos=735.0000 462.0000
+		file_size=345.0000 230.0000
+		offset=28.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	falling_02{
+		file=enemies/puffy_blowhog
+		file_pos=735.0000 462.0000
+		file_size=345.0000 230.0000
+		offset=28.0000 0.0000
+		scale=1.0100 1.0100
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	grounded_01{
+		file=enemies/puffy_blowhog
+		file_pos=1081.0000 462.0000
+		file_size=360.0000 208.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=90.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	grounded_02{
+		file=enemies/puffy_blowhog
+		file_pos=1081.0000 462.0000
+		file_size=360.0000 208.0000
+		offset=36.0000 0.0000
+		scale=1.0000 1.0300
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=90.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	grounded_03{
+		file=enemies/puffy_blowhog
+		file_pos=1081.0000 462.0000
+		file_size=360.0000 208.0000
+		offset=36.0000 0.0000
+		scale=1.0000 0.9700
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=90.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	grounded_landing{
+		file=enemies/puffy_blowhog
+		file_pos=1081.0000 462.0000
+		file_size=360.0000 208.0000
+		offset=36.0000 0.0000
+		scale=1.2000 1.2000
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=90.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	grounded_stretch{
+		file=enemies/puffy_blowhog
+		file_pos=1081.0000 462.0000
+		file_size=360.0000 208.0000
+		offset=49.0000 0.0000
+		scale=1.1000 1.0000
+		hitboxes{
+			body{
+				coords=-10.0000 0.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=90.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_01{
+		file=enemies/puffy_blowhog
+		file_pos=0.0000 0.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_02{
+		file=enemies/puffy_blowhog
+		file_pos=361.0000 0.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		scale=0.9900 1.0100
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_03{
+		file=enemies/puffy_blowhog
+		file_pos=722.0000 0.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		scale=0.9800 1.0200
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_04{
+		file=enemies/puffy_blowhog
+		file_pos=1083.0000 0.0000
+		file_size=360.0000 230.0000
+		offset=36.0000 0.0000
+		scale=1.0100 0.9900
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	idling_05{
+		file=enemies/puffy_blowhog
+		file_pos=1444.0000 0.0000
+		file_size=358.0000 230.0000
+		offset=36.0000 0.0000
+		scale=1.0200 0.9800
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=86.0000 0.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_01{
+		file=enemies/puffy_blowhog
+		file_pos=0.0000 462.0000
+		file_size=370.0000 224.0000
+		offset=38.0000 0.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=91.0000 5.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_02{
+		file=enemies/puffy_blowhog
+		file_pos=371.0000 461.0000
+		file_size=363.0000 220.0000
+		offset=31.0000 -1.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=86.0000
+				type=1
+				value=5.0000
+				knockback_outward=true
+				knockback=3.0000
+				wither_chance=10
+			}
+			head{
+				coords=103.0000 15.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=1
+				value=5.0000
+				knockback_outward=true
+				knockback=3.0000
+				wither_chance=10
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_03{
+		file=enemies/puffy_blowhog
+		file_pos=0.0000 462.0000
+		file_size=370.0000 224.0000
+		offset=38.0000 0.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=76.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			head{
+				coords=91.0000 -5.0000 0.0000
+				height=128.0000
+				radius=60.0000
+				type=0
+				value=1.0000
+				can_pikmin_latch=true
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+	shaking_04{
+		file=enemies/puffy_blowhog
+		file_pos=371.0000 461.0000
+		file_size=363.0000 220.0000
+		offset=31.0000 1.0000
+		scale=1.0000 -1.0000
+		hitboxes{
+			body{
+				coords=-4.0000 0.0000 0.0000
+				height=128.0000
+				radius=86.0000
+				type=1
+				value=5.0000
+				knockback_outward=true
+				knockback=3.0000
+				wither_chance=10
+			}
+			head{
+				coords=103.0000 -15.0000 0.0000
+				height=128.0000
+				radius=70.0000
+				type=1
+				value=5.0000
+				knockback_outward=true
+				knockback=3.0000
+				wither_chance=10
+			}
+			wind{
+				coords=400.0000 0.0000 -100.0000
+				height=100.0000
+				radius=100.0000
+				type=2
+				value=1.0000
+			}
+		}
+	}
+}
+body_parts{
+	body
+	head
+	wind
+}

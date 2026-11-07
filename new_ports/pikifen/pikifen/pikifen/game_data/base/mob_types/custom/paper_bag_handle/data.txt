@@ -1,0 +1,15 @@
+name = Paper bag handle
+description = Handle placed at ground level on the sides of a paper bag.
+
+appears_in_area_editor = false
+casts_shadow = false
+custom_category_name = Aux
+height = 1
+pushable = false
+pushes = false
+radius = 20
+target_type = none
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

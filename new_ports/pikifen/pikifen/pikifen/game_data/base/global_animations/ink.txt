@@ -1,0 +1,53 @@
+name=Ink
+description=Ink on top of a Pikmin that's been inked.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	main{
+		frames{
+			main_01{
+				duration=0.0800
+				interpolate=true
+			}
+			main_02{
+				duration=0.0800
+				interpolate=true
+			}
+			main_03{
+				duration=0.0800
+				interpolate=true
+			}
+			main_04{
+				duration=0.0800
+				interpolate=true
+			}
+		}
+	}
+}
+sprites{
+	main_01{
+		file=effects/ink
+		file_pos=0.0000 0.0000
+		file_size=32.0000 32.0000
+	}
+	main_02{
+		file=effects/ink
+		file_pos=0.0000 0.0000
+		file_size=32.0000 32.0000
+		angle=1.5708
+	}
+	main_03{
+		file=effects/ink
+		file_pos=0.0000 0.0000
+		file_size=32.0000 32.0000
+		angle=3.1416
+	}
+	main_04{
+		file=effects/ink
+		file_pos=0.0000 0.0000
+		file_size=32.0000 32.0000
+		angle=4.7124
+	}
+}
+body_parts

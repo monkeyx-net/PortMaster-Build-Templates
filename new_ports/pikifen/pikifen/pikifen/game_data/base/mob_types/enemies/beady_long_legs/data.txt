@@ -1,0 +1,136 @@
+name = Beady Long Legs
+description = A massive spider-like beast that stomps around. Every time it takes a step, it can crush Pikmin under its foot. Only its bulbous head is vulnerable.
+
+acceleration = 1000
+allow_ground_attacks = false
+area_editor_tips = Make sure there is enough room for it to spawn its feet too!
+can_free_move = true
+can_hunt = player; enemy
+can_hurt = player; enemy; weak_plain_obstacle; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, large and aggressive
+health_regen = 0.4
+height = 140
+itch_damage = 200
+itch_time = 8
+max_health = 2000
+move_speed = 1000
+points = 100
+radius = 71
+rotation_speed = 30
+target_type = enemy
+territory_radius = 300
+
+children {
+    foot_fr {
+        spawn = foot_fr
+        handle_damage = false
+        relay_damage = true
+        handle_statuses = false
+        relay_statuses = true
+        limb_animation = limb_idling
+        limb_parent_body_part = front_right
+        limb_parent_offset = 4
+        limb_child_offset = -60
+        limb_thickness = 22
+        limb_draw_method = above_both
+    }
+    foot_fl {
+        spawn = foot_fl
+        handle_damage = false
+        relay_damage = true
+        handle_statuses = false
+        relay_statuses = true
+        limb_animation = limb_idling
+        limb_parent_body_part = front_left
+        limb_parent_offset = 4
+        limb_child_offset = -60
+        limb_thickness = 22
+        limb_draw_method = above_both
+    }
+    foot_br {
+        spawn = foot_br
+        handle_damage = false
+        relay_damage = true
+        handle_statuses = false
+        relay_statuses = true
+        limb_animation = limb_idling
+        limb_parent_body_part = back_right
+        limb_parent_offset = 4
+        limb_child_offset = -60
+        limb_thickness = 22
+        limb_draw_method = above_both
+    }
+    foot_bl {
+        spawn = foot_bl
+        handle_damage = false
+        relay_damage = true
+        handle_statuses = false
+        relay_statuses = true
+        limb_animation = limb_idling
+        limb_parent_body_part = back_left
+        limb_parent_offset = 4
+        limb_child_offset = -60
+        limb_thickness = 22
+        limb_draw_method = above_both
+    }
+}
+
+reaches {
+    ambush = 300 360
+}
+
+sounds {
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 80
+        speed = 80
+    }
+    open {
+        sound = effects/snap
+        volume = 40
+    }
+}
+
+spawns {
+    foot_fr {
+        object = beady_long_legs_foot
+        relative = true
+        coordinates = 120 120
+        angle = 225
+        vars = id=fr
+        link_object_to_spawn = true
+        link_spawn_to_object = true
+    }
+    foot_fl {
+        object = beady_long_legs_foot
+        relative = true
+        coordinates = 120 -120
+        angle = 135
+        vars = id=fl
+        link_object_to_spawn = true
+        link_spawn_to_object = true
+    }
+    foot_br {
+        object = beady_long_legs_foot
+        relative = true
+        coordinates = -120 120
+        angle = 315
+        vars = id=br
+        link_object_to_spawn = true
+        link_spawn_to_object = true
+    }
+    foot_bl {
+        object = beady_long_legs_foot
+        relative = true
+        coordinates = -120 -120
+        angle = 45
+        vars = id=bl
+        link_object_to_spawn = true
+        link_spawn_to_object = true
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

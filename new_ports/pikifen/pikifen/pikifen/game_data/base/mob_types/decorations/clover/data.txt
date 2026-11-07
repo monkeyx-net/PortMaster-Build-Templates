@@ -1,0 +1,23 @@
+name = Clover
+description = A cluster of small green three-leaved clovers.
+
+height = 120
+radius = 52
+random_animation_delay = true
+rotation_random_variation = 360
+scale_random_variation = 0.1
+tint_random_maximum = 159 255 159
+
+sounds {
+    bumped {
+        sound = nature/foliage_long
+        volume = 40
+        speed_deviation = 40
+        volume_deviation = 10
+        random_delay = 0.1
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

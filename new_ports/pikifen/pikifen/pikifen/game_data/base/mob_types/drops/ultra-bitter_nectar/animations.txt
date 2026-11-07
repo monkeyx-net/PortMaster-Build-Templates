@@ -1,0 +1,110 @@
+name=Ultra-bitter nectar animations
+description=Animations for the ultra-bitter nectar.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	bumped{
+		frames{
+			bumped_01{
+				duration=0.1400
+				interpolate=true
+			}
+			idling{
+				duration=0.1400
+				interpolate=true
+				sound=bumped
+			}
+			bumped_02{
+				duration=0.1400
+				interpolate=true
+			}
+			idling{
+				duration=0.1400
+				interpolate=true
+			}
+			bumped_01{
+				duration=0.1400
+				interpolate=true
+			}
+			idling{
+				duration=0.1400
+				interpolate=true
+			}
+			bumped_02{
+				duration=0.1400
+				interpolate=true
+			}
+			idling{
+				duration=0.5000
+				interpolate=true
+			}
+		}
+	}
+	falling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+	idling{
+		frames{
+			idling{
+				duration=0.0000
+			}
+		}
+	}
+	landing{
+		frames{
+			landing_01{
+				duration=0.1000
+			}
+			landing_02{
+				duration=0.1000
+				sound=splat
+			}
+			landing_03{
+				duration=0.1000
+			}
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	bumped_01{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=0.0000 0.0000
+		file_size=40.0000 40.0000
+		scale=0.9700 1.0300
+	}
+	bumped_02{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=0.0000 0.0000
+		file_size=40.0000 40.0000
+		scale=1.0300 0.9700
+	}
+	idling{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=0.0000 0.0000
+		file_size=40.0000 40.0000
+	}
+	landing_01{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=41.0000 0.0000
+		file_size=44.0000 40.0000
+	}
+	landing_02{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=86.0000 0.0000
+		file_size=48.0000 40.0000
+	}
+	landing_03{
+		file=other_mobs/ultra-bitter_nectar
+		file_pos=135.0000 0.0000
+		file_size=44.0000 40.0000
+	}
+}
+body_parts

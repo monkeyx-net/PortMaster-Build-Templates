@@ -1,0 +1,50 @@
+name = Golden Candypop Bud
+description = Converts any Pikmin thrown inside into Yellow Pikmin seeds.
+
+available_pikmin_types = yellow_pikmin
+buffer_size = 5
+custom_category_name = Candypop Bud
+height = 32
+pikmin_per_conversion = 1
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 48
+same_type_counts_for_output = false
+total_input_pikmin = 5
+
+sounds {
+    pop {
+        sound = pikmin/seed_pop
+        volume = 40
+        speed_deviation = 5
+    }
+    rustling_short {
+        sound = nature/foliage_short
+        volume = 20
+        speed = 75
+    }
+    rustling {
+        sound = nature/foliage_long
+        volume = 20
+        speed = 75
+    }
+    dying {
+        sound = misc/plant_dying
+        volume = 40
+    }
+    bumped {
+        sound = effects/boing_low_1
+        volume = 40
+        speed_deviation = 8
+    }
+    reception {
+        sound = effects/poof
+        volume = 40
+        speed_deviation = 15
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

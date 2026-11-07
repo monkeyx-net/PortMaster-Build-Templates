@@ -1,0 +1,113 @@
+name=Main menu -- top
+description=GUI for the main menu's top-level menu.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+hardcoded_items{
+	play{
+		center=42.0000 58.0000
+		size=44.0000 12.0000
+		description=Play button.
+	}
+	make{
+		center=58.0000 72.0000
+		size=44.0000 12.0000
+		description=Make button.
+	}
+	help{
+		center=24.0000 83.0000
+		size=24.0000 6.0000
+		description=Help button.
+	}
+	options{
+		center=50.0000 83.0000
+		size=24.0000 6.0000
+		description=Options button.
+	}
+	stats{
+		center=76.0000 83.0000
+		size=24.0000 6.0000
+		description=Statistics button.
+	}
+	discord{
+		center=74.0000 91.0000
+		size=4.0000 5.0000
+		description=Discord server invite button.
+	}
+	github{
+		center=80.0000 91.0000
+		size=4.0000 5.0000
+		description=GitHub page button.
+	}
+	exit{
+		center=91.0000 91.0000
+		size=14.0000 6.0000
+		description=Exit button.
+	}
+	exit_input{
+		center=97.0000 93.0000
+		size=4.0000 4.0000
+		description=Icon of the input bound to the back button.
+	}
+	tooltip{
+		center=50.0000 96.0000
+		size=96.0000 4.0000
+		description=Tooltip of the focused menu item.
+	}
+}
+logo{
+	min_window_limit=10 10
+	max_window_limit=90 40
+	pikmin_max_speed=0.80
+	pikmin_min_speed=0.60
+	pikmin_speed_smoothness=0.08
+	pikmin_sway_amount=3
+	pikmin_sway_max_speed=5.5
+	pikmin_sway_min_speed=2.5
+	pikmin_size=3.5 3.5
+	pikmin_types{
+		1=pikmin/white_flower_icon
+		2=pikmin/pink_flower_icon
+		3=pikmin/purple_flower_icon
+	}
+	map{
+		11111....222222..33....33..111111..333333..222222..1111....11
+		111111...222222..33...33...111111..333333..222222..1111....11
+		11...11....22....33..33......11....33......22......11.11...11
+		11...11....22....33.33.......11....33......22......11.11...11
+		111111.....22....3333........11....33333...22222...11..11..11
+		11111......22....3333........11....33333...22222...11..11..11
+		11.........22....33.33.......11....33......22......11...11.11
+		11.........22....33..33......11....33......22......11...11.11
+		11.......222222..33...33...111111..33......222222..11....1111
+		11.......222222..33....33..111111..33......222222..11....1111
+	}
+}
+icons_to_the_left{
+	play=true
+	make=false
+	help=true
+	options=true
+	statistics=true
+	quit=false
+}
+custom_items{
+	discord_bg{
+		center=74.0000 91.0000
+		size=4.0000 5.0000
+		description=Background for the Discord server invite button, so that the icon can be read better.
+		type=filled_square
+		color=128 128 128 128
+		draw_before_hardcoded=true
+		rectangle_rounding=0.1500
+	}
+	github_bg{
+		center=80.0000 91.0000
+		size=4.0000 5.0000
+		description=Background for the GitHub page button, so that the icon can be read better.
+		type=filled_square
+		color=192 192 192 128
+		draw_before_hardcoded=true
+		rectangle_rounding=0.1500
+	}
+}

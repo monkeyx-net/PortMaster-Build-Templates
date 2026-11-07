@@ -1,0 +1,152 @@
+first_state = examining
+death_state = dying
+
+init {
+    set_var ignoring false
+}
+
+script {
+    examining {
+        on_enter {
+            set_animation idling random_time_on_spawn
+            get_random_float t 5 7
+            set_timer $t
+            stop
+            set_near_reach search
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+        on_timer {
+            set_state exploring
+        }
+        on_itch {
+            set_state bucking
+        }
+    }
+    
+    exploring {
+        on_enter {
+            set_animation moving normal true
+            get_random_float t 2.5 3.5
+            set_timer $t
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            set_near_reach search
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+        on_timer {
+            set_state examining
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state returning
+        }
+        on_itch {
+            set_state bucking
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state attacking
+        }
+        on_focus_off_reach {
+            set_state examining
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state returning
+        }
+        on_itch {
+            set_state bucking
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            play_sound inhaling sound_id
+        }
+        on_frame_signal {
+            get_event_info signal frame_signal
+            stop_sound $sound_id
+            stop_sound $sound_id2
+            stop_particles
+            if $signal = 0
+                play_sound exhaling sound_id
+                play_sound flamethrower sound_id2
+                start_particles blowhog_fire 75 0 0
+            end_if
+        }
+        on_leave {
+            stop_sound $sound_id
+            stop_sound $sound_id2
+            stop_particles
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    bucking {
+        on_enter {
+            stop
+            set_animation bucking
+        }
+        on_animation_end {
+            set_state examining
+        }
+    }
+    
+    returning {
+        on_enter {
+            move_to_target home
+            set_animation moving normal true
+            set_timer 2
+            set_near_reach search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state examining
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state chasing
+            end_if
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

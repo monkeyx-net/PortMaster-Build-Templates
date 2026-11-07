@@ -1,0 +1,54 @@
+name = Seesaw block
+description = One in a pair of seesaw blocks. They are connected with a pulley system, so when one lowers, the other raises.
+
+area_editor_tips = Link this object to another seesaw block object, so they work in tandem. Remember to link the other back to this one, and remember that one of them should start in a "down" position! Raised height: 128. Lowered height: 8.
+casts_shadow = false
+custom_category_name = Obstacle, harmless
+height = 128
+pushes = true
+radius = 90
+rectangular_dimensions = 220 180
+walkable = true
+
+area_editor_properties {
+    Start down {
+        var = start_down
+        type = bool
+        def_value = false
+        tooltip = True if this block starts in the down position, false if it starts up.
+    }
+}
+
+children {
+    ropes {
+        spawn = ropes
+        parent_holds = true
+        hold_rotation_method = never
+        hold_body_part = ropes
+        hold_offset_distance = 0
+        hold_offset_vertical_distance = 1
+        hold_offset_angle = 0
+    }
+}
+
+spawns {
+    ropes {
+        object = seesaw_block_ropes
+        relative = true
+        coordinates = 0 0
+        angle = 0
+    }
+}
+
+sounds {
+    stretch {
+        sound = effects/stretch
+        speed = 60
+        speed_deviation = 5
+        volume = 50
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

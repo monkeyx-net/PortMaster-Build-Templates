@@ -1,0 +1,55 @@
+name=Bouncy Mushroom animations
+description=Animations for the Bouncy Mushroom.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	bouncing{
+		frames{
+			bouncing_01{
+				duration=0.0600
+				interpolate=true
+			}
+			idling{
+				duration=0.0600
+				interpolate=true
+				sound=boing
+			}
+			bouncing_02{
+				duration=0.0600
+				interpolate=true
+			}
+			idling{
+				duration=0.0600
+				interpolate=true
+			}
+		}
+	}
+	idling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	bouncing_01{
+		file=other_mobs/bouncy_mushroom
+		file_pos=0.0000 0.0000
+		file_size=128.0000 128.0000
+		scale=0.9500 1.0500
+	}
+	bouncing_02{
+		file=other_mobs/bouncy_mushroom
+		file_pos=0.0000 0.0000
+		file_size=128.0000 128.0000
+		scale=1.0500 0.9500
+	}
+	idling{
+		file=other_mobs/bouncy_mushroom
+		file_pos=0.0000 0.0000
+		file_size=128.0000 128.0000
+	}
+}
+body_parts

@@ -1,0 +1,27 @@
+name = Nectar
+description = Nectar that can be drunk by Pikmin to instantly mature them to the flower stage.
+
+can_walk_on_others = true
+consumer = pikmin
+effect = maturate
+increase_amount = 2
+radius = 20
+shrink_speed = 40
+total_doses = 10
+
+sounds {
+    bumped {
+        sound = effects/boing_low_2
+        volume = 40
+        speed_deviation = 8
+    }
+    splat {
+        sound = nature/wet_splat
+        volume = 40
+        speed_deviation = 8
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

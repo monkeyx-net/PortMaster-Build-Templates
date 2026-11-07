@@ -1,0 +1,81 @@
+name = Dwarf Red Bulborb
+description = These beasts wander around in search of food, and can hunt down after Pikmin with their stubbly legs.
+
+can_hunt = player; enemy
+can_hurt = player; enemy; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+height = 32
+itch_damage = 50
+itch_time = 4
+max_carriers = 6
+max_health = 200
+move_speed = 40
+pikmin_seeds = 4
+points = 15
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 20
+rotation_speed = 114
+target_type = enemy
+terrain_radius = 28
+territory_radius = 200
+weight = 3
+
+reaches {
+    search = 100 180 20 360
+    chase = 100 2
+    close = 100 360
+    attack = 15 30
+}
+
+sounds {
+    dying {
+        sound = creature_vocals/bulborb_scream
+        volume = 50
+        speed = 180
+        speed_deviation = 5
+    }
+    groan {
+        sound = creature_vocals/bulborb_misc
+        volume = 40
+        speed = 200
+        speed_deviation = 5
+    }
+    step {
+        sound = misc/stomp_small
+        volume = 15
+        speed = 160
+        speed_deviation = 5
+    }
+    bite {
+        sound = creature_misc/bite
+        volume = 40
+        speed = 120
+    }
+    chew {
+        sound = creature_misc/bite
+        volume = 20
+        speed = 110
+    }
+    shaking {
+        sound = creature_misc/shaking_leather
+        volume = 40
+    }
+    swallow {
+        sound = creature_misc/swallow
+        volume = 20
+        speed = 110
+        speed_deviation = 20
+    }
+    thud {
+        sound = misc/thump
+        speed = 160
+        volume = 50
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

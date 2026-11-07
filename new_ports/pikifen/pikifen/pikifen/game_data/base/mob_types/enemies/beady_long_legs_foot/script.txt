@@ -1,0 +1,157 @@
+first_state = hidden
+
+global {
+    on_receive_message {
+        get_event_info msg message
+    }
+}
+
+script {
+    hidden {
+        on_enter {
+            set_animation idling
+            set_hiding true
+        }
+        on_receive_message {
+            if $msg = ambush
+                set_hiding false
+                start_height_effect
+                teleport_to_relative 0 0 1000
+                set_gravity 1
+                focus parent
+                turn_to_target focused_mob
+                set_animation falling
+                set_state ambushing
+            end_if
+        }
+    }
+    
+    ambushing {
+        on_land {
+            send_message_to_links landed
+            stop
+            stop_height_effect
+            start_particles dust_explosion 0 0
+            play_sound stomp
+            shake_camera 15
+            set_state idling
+        }
+    }
+    
+    idling {
+        on_enter {
+            set_animation idling
+        }
+        on_receive_message {
+            if $id = fr
+                if $msg = move_fr
+                    move_to_target arachnorb_foot_logic
+                    set_state rising
+                end_if
+            else_if $id = fl
+                if $msg = move_fl
+                    move_to_target arachnorb_foot_logic
+                    set_state rising
+                end_if
+            else_if $id = br
+                if $msg = move_br
+                    move_to_target arachnorb_foot_logic
+                    set_state rising
+                end_if
+            else_if $id = bl
+                if $msg = move_bl
+                    move_to_target arachnorb_foot_logic
+                    set_state rising
+                end_if
+            end_if
+            
+            if $msg = die
+                set_state dying
+            end_if
+        }
+    }
+    
+    rising {
+        on_enter {
+            start_height_effect
+            set_gravity -1
+            set_timer 0.4
+        }
+        on_reach_destination {
+            stop
+        }
+        on_tick {
+            turn_to_target focused_mob
+        }
+        on_timer {
+            set_state floating
+        }
+        on_receive_message {
+            if $msg = die
+                set_state dying
+            end_if
+        }
+    }
+    
+    floating {
+        on_enter {
+            set_gravity 0
+            stop_vertically
+            set_timer 0.2
+        }
+        on_reach_destination {
+            stop
+        }
+        on_timer {
+            set_state falling
+        }
+        on_receive_message {
+            if $msg = die
+                set_state dying
+            end_if
+        }
+    }
+    
+    falling {
+        on_enter {
+            set_gravity 2
+            stop
+        }
+        on_land {
+            set_state landing
+        }
+        on_receive_message {
+            if $msg = die
+                set_state dying
+            end_if
+        }
+    }
+    
+    landing {
+        on_enter {
+            stop_height_effect
+            set_animation landing
+            send_message_to_links landed
+            start_particles dust_explosion 0 0
+            play_sound stomp
+            shake_camera 25
+        }
+        on_animation_end {
+            set_state idling
+        }
+        on_receive_message {
+            if $msg = die
+                set_state dying
+            end_if
+        }
+    }
+    
+    dying {
+        on_enter {
+            set_gravity 1
+            stop
+            set_animation dying
+            set_limb_animation limb_dying
+        }
+    }
+}

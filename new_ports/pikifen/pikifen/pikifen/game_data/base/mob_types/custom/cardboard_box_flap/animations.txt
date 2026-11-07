@@ -1,0 +1,22 @@
+name=Cardboard box flap animations
+description=Animations for the cardboard box flap.
+maker=Espyo
+version=1.0.0
+engine_version=1.0.0
+animations{
+	idling{
+		frames{
+			idling{
+				duration=0.1000
+			}
+		}
+	}
+}
+sprites{
+	idling{
+		file=other_mobs/cardboard_box
+		file_pos=193.0000 0.0000
+		file_size=101.0000 192.0000
+	}
+}
+body_parts

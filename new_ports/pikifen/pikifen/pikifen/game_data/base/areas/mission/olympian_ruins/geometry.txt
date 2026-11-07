@@ -1,0 +1,3631 @@
+vertexes{
+	v=-224.0000 -192.0000
+	v=304.0000 -80.0000
+	v=80.0000 272.0000
+	v=-192.0000 80.0000
+	v=-80.0000 -224.0000
+	v=96.0000 -208.0000
+	v=240.0000 -144.0000
+	v=320.0000 48.0000
+	v=272.0000 160.0000
+	v=-144.0000 256.0000
+	v=-176.0000 -64.0000
+	v=-144.0000 -272.0000
+	v=-211.5069 -158.6849
+	v=-272.0000 -128.0000
+	v=-352.0000 -144.0000
+	v=-432.0000 -208.0000
+	v=-448.0000 -304.0000
+	v=-432.0000 -432.0000
+	v=-336.0000 -480.0000
+	v=-224.0000 -480.0000
+	v=-160.0000 -432.0000
+	v=-128.0000 -336.0000
+	v=-96.0000 -448.0000
+	v=32.0000 -464.0000
+	v=160.0000 -416.0000
+	v=240.0000 -368.0000
+	v=288.0000 -288.0000
+	v=379.0000 -560.0000
+	v=522.0000 -374.0000
+	v=336.0000 -144.0000
+	v=288.0000 -160.0000
+	v=161.3196 -178.9691
+	v=160.0000 -256.0000
+	v=96.0000 -288.0000
+	v=16.0000 -288.0000
+	v=-80.0000 -304.0000
+	v=320.0000 -48.0000
+	v=416.0000 -32.0000
+	v=384.0000 -80.0000
+	v=528.0000 -16.0000
+	v=624.0000 -128.0000
+	v=592.0000 -272.0000
+	v=368.0000 -112.0000
+	v=-192.0000 32.0000
+	v=-224.0000 32.0000
+	v=-272.0000 -16.0000
+	v=-352.0000 -16.0000
+	v=-368.0000 -64.0000
+	v=-448.0000 -96.0000
+	v=-512.0000 -80.0000
+	v=-560.0000 0.0000
+	v=-560.0000 80.0000
+	v=-496.0000 128.0000
+	v=-420.0000 153.3333
+	v=-389.6124 120.3241
+	v=-336.5046 99.7746
+	v=-296.5046 113.1078
+	v=-260.0000 140.0000
+	v=-178.2722 112.9467
+	v=-433.3333 206.6667
+	v=-438.6667 230.6667
+	v=-385.3333 257.3333
+	v=-332.0000 257.3333
+	v=-260.0000 233.3333
+	v=-246.6667 180.0000
+	v=-414.7153 248.5255
+	v=-448.0000 256.0000
+	v=-492.0930 342.5757
+	v=-487.3199 438.0128
+	v=-436.5132 500.1855
+	v=-339.9503 518.2905
+	v=-275.9503 486.2905
+	v=-256.0000 432.0000
+	v=-176.0000 416.0000
+	v=-128.0000 512.0000
+	v=16.0000 528.0000
+	v=32.0000 464.0000
+	v=0.0000 368.0000
+	v=-48.0000 336.0000
+	v=-28.3331 264.2619
+	v=-112.1624 258.2741
+	v=-144.0000 304.0000
+	v=-208.0000 320.0000
+	v=-256.0000 320.0000
+	v=-310.0819 251.4889
+	v=-213.3340 561.9429
+	v=-245.3340 609.9429
+	v=-245.3340 689.9429
+	v=-197.3340 785.9429
+	v=-101.3339 833.9429
+	v=42.6660 881.9429
+	v=186.6660 881.9429
+	v=234.6660 849.9429
+	v=250.6660 801.9429
+	v=247.7950 745.1417
+	v=58.6660 673.9429
+	v=26.6661 609.9429
+	v=210.3212 195.9793
+	v=272.0000 288.0000
+	v=256.0000 352.0000
+	v=205.6932 422.9205
+	v=215.8432 509.1071
+	v=282.6660 545.9429
+	v=314.6660 545.9429
+	v=426.6660 529.9429
+	v=512.0000 512.0000
+	v=528.0000 416.0000
+	v=496.0000 320.0000
+	v=432.0000 272.0000
+	v=368.0000 272.0000
+	v=95.4175 386.2513
+	v=265.5263 740.6473
+	v=146.6418 692.3799
+	v=193.5262 754.3940
+	v=240.3121 623.5424
+	v=281.2950 590.2856
+	v=330.6660 609.9429
+	v=458.6660 625.9429
+	v=442.6660 721.9429
+	v=378.6660 737.9429
+	v=314.6660 721.9429
+	v=256.0000 -128.0000
+	v=-118.2019 -252.6514
+	v=-252.7411 -137.8075
+	v=-255.1998 -180.7942
+	v=-137.8243 -296.7028
+	v=-231.9474 -229.0527
+	v=-240.0000 -176.0000
+	v=353.5523 -64.7762
+	v=384.0000 0.0000
+	v=298.0000 -390.0000
+	v=-864.0000 -896.0000
+	v=272.0000 -1216.0000
+	v=1200.0000 -1040.0000
+	v=1696.0000 144.0000
+	v=1520.0000 912.0000
+	v=1008.0000 1664.0000
+	v=128.0000 1760.0000
+	v=-768.0000 1664.0000
+	v=-1280.0000 752.0000
+	v=-1472.0000 -224.0000
+	v=480.0000 -576.0000
+	v=586.0000 -470.0000
+	v=570.0000 -406.0000
+	v=544.0000 -544.0000
+	v=311.0000 -308.0000
+	v=528.0000 -336.0000
+	v=500.0000 -359.0000
+	v=426.0000 -273.0000
+	v=400.0000 -192.0000
+	v=368.0000 -224.0000
+	v=409.0000 -307.0000
+	v=-223.9751 128.0751
+	v=-127.8178 280.7587
+	v=-39.3789 304.5533
+	v=-242.4509 134.1909
+	v=-251.2271 4.7729
+	v=301.3647 194.2588
+	v=235.8916 234.1286
+	v=252.2404 258.5200
+	v=325.2536 222.1292
+	v=119.6393 534.2722
+	v=135.9870 634.2452
+	v=235.4198 605.3022
+	v=320.0000 480.0000
+	v=432.0000 432.0000
+	v=237.6233 538.1420
+	v=263.2108 451.0165
+	v=420.3999 331.3565
+	v=512.0000 368.0000
+	v=297.4560 601.6403
+	v=314.6660 657.9429
+	v=263.5702 731.3915
+	v=-101.3339 657.9429
+	v=-53.3340 721.9429
+	v=89.2542 692.2959
+	v=10.0456 764.3915
+	v=-16.1969 862.3219
+	v=116.9591 705.2866
+	v=75.6014 802.7972
+	v=192.0000 481.0326
+	v=247.9413 609.5893
+	v=352.0000 544.0000
+	v=-326.5117 -138.9023
+	v=-320.0000 -16.0000
+	v=-293.6768 -132.3354
+	v=-473.9095 -89.5226
+	v=-480.0000 -176.0000
+	v=-438.1990 -245.1939
+	v=-522.7922 -209.0135
+	v=196.5484 367.4848
+	v=314.0000 -486.0000
+	v=-96.0000 -416.0000
+	v=-112.0000 -400.0000
+	v=-101.3952 -371.5886
+	v=-80.7968 -366.4390
+	v=-71.1414 -392.5088
+	v=-133.2160 -390.5918
+	v=142.1514 -264.9243
+	v=507.8309 -426.7549
+	v=457.4056 -477.1324
+	v=362.0000 -470.0000
+	v=307.1070 -444.6418
+	v=310.0906 -462.5436
+	v=363.9423 -488.1755
+	v=459.8585 -496.0806
+	v=524.6808 -443.9065
+	v=540.5533 -386.3689
+	v=592.0000 -368.0000
+	v=672.0000 -352.0000
+	v=752.0000 -400.0000
+	v=848.0000 -432.0000
+	v=912.0000 -592.0000
+	v=896.0000 -704.0000
+	v=784.0000 -800.0000
+	v=656.0000 -784.0000
+	v=576.0000 -752.0000
+	v=416.0000 -752.0000
+	v=320.0000 -688.0000
+	v=272.0000 -608.0000
+	v=288.0000 -528.0000
+	v=272.0000 -512.0000
+	v=240.0000 -624.0000
+	v=304.0000 -720.0000
+	v=416.0000 -784.0000
+	v=576.0000 -800.0000
+	v=672.0000 -832.0000
+	v=816.0000 -848.0000
+	v=928.0000 -736.0000
+	v=944.0000 -592.0000
+	v=880.0000 -400.0000
+	v=768.0000 -368.0000
+	v=688.0000 -320.0000
+	v=576.0000 -336.0000
+	v=-240.0000 368.0000
+	v=736.0000 -208.0000
+	v=560.0000 112.0000
+	v=640.0000 144.0000
+	v=816.0000 -176.0000
+	v=720.0000 0.0000
+	v=704.0000 32.0000
+	v=704.0000 -16.0000
+	v=688.0000 0.0000
+	v=702.4999 -7.3191
+	v=715.0000 10.0058
+	v=752.0000 32.0000
+	v=736.0000 48.0000
+	v=736.0000 64.0000
+	v=32.0000 240.0000
+	v=0.0000 256.0000
+	v=48.0000 256.0000
+	v=64.0000 240.0000
+	v=158.8412 745.0196
+	v=196.5251 793.5667
+	v=179.3320 811.1328
+	v=189.6519 816.6866
+	v=-288.9649 823.7890
+	v=-311.3957 843.5018
+	v=-340.6777 849.3582
+	v=-368.9649 839.7890
+	v=-388.6777 817.3582
+	v=-394.5341 788.0762
+	v=-384.9649 759.7890
+	v=-362.5341 740.0762
+	v=-333.2521 734.2198
+	v=-304.9649 743.7890
+	v=-285.2521 766.2198
+	v=-279.3957 795.5018
+	v=-160.9649 951.7890
+	v=-183.3957 971.5018
+	v=-212.6777 977.3582
+	v=-240.9649 967.7890
+	v=-260.6777 945.3582
+	v=-266.5341 916.0762
+	v=-256.9649 887.7890
+	v=-234.5341 868.0762
+	v=-205.2521 862.2198
+	v=-176.9649 871.7890
+	v=-157.2521 894.2198
+	v=-151.3957 923.5018
+	v=784.0000 704.0000
+	v=738.7369 739.5530
+	v=683.3137 755.0782
+	v=626.1681 748.2121
+	v=576.0000 720.0000
+	v=540.4470 674.7369
+	v=524.9218 619.3137
+	v=531.7879 562.1681
+	v=560.0000 512.0000
+	v=605.2631 476.4470
+	v=660.6863 460.9218
+	v=717.8319 467.7879
+	v=768.0000 496.0000
+	v=803.5530 541.2631
+	v=819.0782 596.6863
+	v=812.2121 653.8319
+	v=-237.0713 -145.8192
+	v=-411.3912 358.2905
+	v=-427.3912 390.2905
+	v=-427.3912 422.2905
+	v=-395.3912 454.2905
+	v=-371.9503 454.2905
+	v=-339.9503 470.2905
+	v=-307.9503 454.2905
+	v=-307.9503 422.2905
+	v=-323.9503 390.2905
+	v=-387.9503 358.2905
+	v=176.0000 160.0000
+	v=144.0000 176.0000
+	v=128.0000 208.0000
+	v=144.0000 224.0000
+	v=176.0000 192.0000
+	v=273.1910 632.8314
+	v=285.1562 675.8310
+	v=274.6465 719.0024
+	v=132.1104 698.6985
+	v=147.4454 755.5142
+	v=186.6660 769.9429
+	v=236.2287 765.1844
+	v=138.6660 769.9429
+	v=186.6660 785.9429
+	v=244.2410 785.5843
+	v=-233.3468 571.0470
+	v=-245.9415 590.0506
+	v=-245.3340 625.9429
+	v=-213.3340 609.9429
+	v=-197.3340 577.9429
+	v=-198.7841 540.1182
+	v=-188.1877 524.2234
+	v=-181.3340 577.9429
+	v=-197.3340 625.9429
+	v=-245.3340 641.9429
+	v=-307.9503 518.2905
+	v=-281.5143 508.2587
+	v=-327.9000 529.0020
+	v=-304.2990 531.2094
+	v=-272.6847 519.4406
+	v=-264.2038 498.0370
+	v=-259.6321 597.2334
+	v=-258.8389 581.3992
+	v=-241.7625 559.2461
+	v=-221.1662 554.1107
+	v=160.5803 224.9948
+	v=192.0000 192.0000
+	v=192.0000 144.0000
+	v=144.0000 160.0000
+	v=112.0000 208.0000
+	v=136.6014 238.9825
+	v=-427.3912 342.2905
+	v=-443.3912 390.2905
+	v=-443.3912 438.2905
+	v=-411.3912 470.2905
+	v=-371.9503 470.2905
+	v=-339.9503 486.2905
+	v=-291.9503 470.2905
+	v=-291.9503 406.2905
+	v=-307.9503 374.2905
+	v=-371.9503 342.2905
+	v=592.0000 -144.0000
+	v=576.0000 -112.0000
+	v=592.0000 -128.0000
+	v=560.0000 -96.0000
+	v=544.0000 -96.0000
+	v=544.0000 -80.0000
+	v=250.0817 715.8760
+	v=236.4568 694.8246
+	v=240.3083 677.4932
+	v=233.0869 664.9762
+	v=248.7660 724.2883
+	v=229.7169 699.3979
+	v=233.0869 677.9745
+	v=224.6620 665.2169
+	v=238.4622 615.5005
+	v=99.0849 403.8624
+	v=101.1050 413.5632
+	v=156.7729 374.8658
+	v=132.4312 379.3828
+	v=581.8488 72.2749
+	v=581.8206 102.3736
+	v=595.3996 111.4263
+	v=600.4917 119.6303
+	v=615.2023 126.4198
+	v=623.3398 137.3359
+	v=585.5042 65.6288
+	v=587.4785 96.9986
+	v=601.3404 107.4658
+	v=605.3010 115.6698
+	v=620.0115 119.6303
+	v=632.3145 140.9258
+	v=784.0000 576.0000
+	v=791.9266 608.3724
+	v=790.1399 640.5341
+	v=802.2358 671.5721
+	v=797.3080 533.3126
+	v=772.2720 576.6583
+	v=782.5459 610.1601
+	v=779.8658 640.9817
+	v=795.7476 683.1099
+	v=399.3285 537.2820
+	v=-48.7795 504.2588
+	v=-385.0332 -181.3040
+	v=-414.0004 -71.4181
+	v=333.6845 367.5401
+	v=28.7248 -448.0000
+	v=76.6696 -439.8087
+	v=80.0000 -464.0000
+	v=96.0000 -480.0000
+	v=80.0000 -512.0000
+	v=16.0000 -512.0000
+	v=16.0000 -480.0000
+	v=48.0000 -528.0000
+	v=394.0362 575.7795
+	v=76.7462 268.2764
+}
+edges{
+	e{
+		s=3 72
+		v=3 43
+	}
+	e{
+		s=0 16
+		v=11 0
+	}
+	e{
+		s=14 72
+		v=1 36
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 72
+		v=2 79
+		smoothing_length=5.6000
+	}
+	e{
+		s=2 72
+		v=4 5
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 72
+		v=31 6
+	}
+	e{
+		s=14 72
+		v=6 121
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 72
+		v=7 8
+		smoothing_length=5.6000
+	}
+	e{
+		s=9 72
+		v=8 97
+	}
+	e{
+		s=5 72
+		v=9 58
+		smoothing_length=5.6000
+	}
+	e{
+		s=41 72
+		v=10 12
+		smoothing_length=5.6000
+	}
+	e{
+		s=2 0
+		v=11 122
+		smoothing_length=5.6000
+	}
+	e{
+		s=17 41
+		v=123 296
+		smoothing_length=5.6000
+	}
+	e{
+		s=1 40
+		v=183 185
+		smoothing_length=5.6000
+	}
+	e{
+		s=1 38
+		v=15 400
+	}
+	e{
+		s=1 42
+		v=188 15
+	}
+	e{
+		s=20 1
+		v=16 17
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 1
+		v=17 18
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 1
+		v=18 19
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 1
+		v=19 20
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 1
+		v=197 21
+	}
+	e{
+		s=2 1
+		v=21 125
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=22 20
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=23 403
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=24 404
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=25 24
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=26 25
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=145 26
+		smoothing_length=5.6000
+	}
+	e{
+		s=49 45
+		v=27 141
+		smoothing_length=5.6000
+	}
+	e{
+		s=48 50
+		v=28 207
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=147 28
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 14
+		v=6 30
+		smoothing_length=5.6000
+	}
+	e{
+		s=2 72
+		v=5 31
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 2
+		v=32 31
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 2
+		v=33 198
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 2
+		v=34 33
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 2
+		v=35 34
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 2
+		v=21 35
+		smoothing_length=5.6000
+	}
+	e{
+		s=14 72
+		v=36 128
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 15
+		v=37 129
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 20
+		v=37 39
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 20
+		v=39 40
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 20
+		v=40 41
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 20
+		v=41 146
+		smoothing_length=5.6000
+	}
+	e{
+		s=46 14
+		v=29 42
+		smoothing_length=5.6000
+	}
+	e{
+		s=41 72
+		v=43 10
+		smoothing_length=5.6000
+	}
+	e{
+		s=3 72
+		v=58 3
+	}
+	e{
+		s=3 41
+		v=43 44
+		smoothing_length=5.6000
+	}
+	e{
+		s=22 41
+		v=156 45
+		smoothing_length=5.6000
+	}
+	e{
+		s=22 41
+		v=45 184
+		smoothing_length=5.6000
+	}
+	e{
+		s=39 22
+		v=47 46
+		smoothing_length=5.6000
+	}
+	e{
+		s=22 38
+		v=47 401
+	}
+	e{
+		s=22 43
+		v=186 49
+	}
+	e{
+		s=20 22
+		v=50 49
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 22
+		v=51 50
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 22
+		v=52 51
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 22
+		v=53 52
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 22
+		v=54 53
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 22
+		v=55 54
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 22
+		v=56 55
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 22
+		v=57 56
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 3
+		v=58 152
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 20
+		v=53 59
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 20
+		v=59 60
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 20
+		v=60 65
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 53
+		v=61 62
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 4
+		v=63 84
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 4
+		v=64 63
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 4
+		v=57 64
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 53
+		v=65 61
+		smoothing_length=5.6000
+	}
+	e{
+		s=6 72
+		v=79 80
+	}
+	e{
+		s=20 53
+		v=66 65
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 53
+		v=67 66
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 53
+		v=68 67
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 53
+		v=69 68
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 53
+		v=70 69
+		smoothing_length=5.6000
+	}
+	e{
+		s=8 53
+		v=71 70
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 53
+		v=72 71
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 24
+		v=73 72
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 24
+		v=74 73
+		smoothing_length=5.6000
+	}
+	e{
+		s=68 24
+		v=75 399
+	}
+	e{
+		s=13 24
+		v=76 75
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 24
+		v=77 76
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 24
+		v=78 77
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 23
+		v=154 78
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 72
+		v=80 9
+		smoothing_length=5.6000
+	}
+	e{
+		s=4 53
+		v=62 84
+		smoothing_length=5.6000
+	}
+	e{
+		s=6 5
+		v=80 153
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 24
+		v=82 81
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 24
+		v=83 82
+		smoothing_length=5.6000
+	}
+	e{
+		s=5 53
+		v=84 83
+		smoothing_length=5.6000
+	}
+	e{
+		s=67 7
+		v=327 85
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 71
+		v=86 338
+		smoothing_length=5.6000
+	}
+	e{
+		s=68 20
+		v=331 87
+		smoothing_length=5.6000
+	}
+	e{
+		s=68 20
+		v=87 88
+		smoothing_length=5.6000
+	}
+	e{
+		s=34 20
+		v=88 89
+		smoothing_length=5.6000
+	}
+	e{
+		s=33 20
+		v=89 177
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 65
+		v=91 90
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 65
+		v=92 91
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 65
+		v=93 92
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 64
+		v=318 321
+		smoothing_length=5.6000
+	}
+	e{
+		s=37 35
+		v=94 113
+		smoothing_length=5.6000
+	}
+	e{
+		s=34 13
+		v=95 96
+		smoothing_length=5.6000
+	}
+	e{
+		s=68 13
+		v=96 75
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 72
+		v=97 342
+		smoothing_length=5.6000
+	}
+	e{
+		s=9 13
+		v=97 158
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 27
+		v=99 98
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 27
+		v=100 99
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 30
+		v=102 166
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 29
+		v=103 102
+		smoothing_length=5.6000
+	}
+	e{
+		s=12 29
+		v=104 398
+	}
+	e{
+		s=20 29
+		v=105 104
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 29
+		v=106 105
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 27
+		v=107 169
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 27
+		v=108 107
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 27
+		v=109 108
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 27
+		v=160 109
+		smoothing_length=5.6000
+	}
+	e{
+		s=35 20
+		v=94 111
+		smoothing_length=5.6000
+	}
+	e{
+		s=10 27
+		v=101 180
+	}
+	e{
+		s=37 13
+		v=112 315
+		smoothing_length=5.6000
+	}
+	e{
+		s=37 35
+		v=113 252
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 32
+		v=114 181
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 11
+		v=170 115
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 12
+		v=116 103
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 12
+		v=104 117
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 31
+		v=117 118
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 20
+		v=119 118
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 20
+		v=120 119
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 20
+		v=314 120
+		smoothing_length=5.6000
+	}
+	e{
+		s=14 72
+		v=121 1
+		smoothing_length=5.6000
+	}
+	e{
+		s=2 72
+		v=122 4
+		smoothing_length=5.6000
+	}
+	e{
+		s=0 72
+		v=12 122
+	}
+	e{
+		s=1 41
+		v=13 123
+		smoothing_length=5.6000
+	}
+	e{
+		s=17 1
+		v=124 123
+	}
+	e{
+		s=17 1
+		v=126 124
+	}
+	e{
+		s=2 16
+		v=125 11
+		smoothing_length=5.6000
+	}
+	e{
+		s=1 16
+		v=126 125
+	}
+	e{
+		s=17 16
+		v=0 126
+	}
+	e{
+		s=17 0
+		v=127 0
+	}
+	e{
+		s=20 72
+		v=129 7
+		smoothing_length=5.6000
+	}
+	e{
+		s=14 15
+		v=128 38
+		smoothing_length=5.6000
+	}
+	e{
+		s=15 72
+		v=128 129
+	}
+	e{
+		s=19 15
+		v=38 37
+	}
+	e{
+		s=49 45
+		v=203 191
+		smoothing_length=5.6000
+	}
+	e{
+		s=-1 20
+		v=140 131
+	}
+	e{
+		s=-1 20
+		v=131 132
+	}
+	e{
+		s=-1 20
+		v=132 133
+	}
+	e{
+		s=-1 20
+		v=133 134
+	}
+	e{
+		s=-1 20
+		v=134 135
+	}
+	e{
+		s=-1 20
+		v=135 136
+	}
+	e{
+		s=-1 20
+		v=136 137
+	}
+	e{
+		s=-1 20
+		v=137 138
+	}
+	e{
+		s=-1 20
+		v=138 139
+	}
+	e{
+		s=-1 20
+		v=139 140
+	}
+	e{
+		s=49 45
+		v=141 144
+		smoothing_length=5.6000
+	}
+	e{
+		s=49 45
+		v=142 143
+		smoothing_length=5.6000
+	}
+	e{
+		s=49 45
+		v=144 142
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=130 145
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 21
+		v=146 148
+	}
+	e{
+		s=20 21
+		v=147 146
+		smoothing_length=5.6000
+	}
+	e{
+		s=19 21
+		v=148 149
+	}
+	e{
+		s=46 19
+		v=42 149
+	}
+	e{
+		s=47 14
+		v=30 29
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 21
+		v=150 151
+	}
+	e{
+		s=47 21
+		v=151 147
+	}
+	e{
+		s=21 46
+		v=150 149
+	}
+	e{
+		s=5 25
+		v=152 155
+		smoothing_length=5.6000
+	}
+	e{
+		s=3 25
+		v=44 152
+	}
+	e{
+		s=5 23
+		v=81 153
+		smoothing_length=5.6000
+	}
+	e{
+		s=6 13
+		v=154 79
+		smoothing_length=5.6000
+	}
+	e{
+		s=6 23
+		v=153 154
+	}
+	e{
+		s=23 24
+		v=81 78
+	}
+	e{
+		s=5 22
+		v=155 57
+		smoothing_length=5.6000
+	}
+	e{
+		s=25 41
+		v=44 156
+		smoothing_length=5.6000
+	}
+	e{
+		s=22 25
+		v=155 156
+	}
+	e{
+		s=9 20
+		v=157 8
+		smoothing_length=5.6000
+	}
+	e{
+		s=26 9
+		v=157 158
+	}
+	e{
+		s=26 13
+		v=158 159
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 27
+		v=98 159
+		smoothing_length=5.6000
+	}
+	e{
+		s=26 20
+		v=160 157
+		smoothing_length=5.6000
+	}
+	e{
+		s=26 27
+		v=159 160
+	}
+	e{
+		s=13 10
+		v=161 374
+		smoothing_length=5.6000
+	}
+	e{
+		s=10 28
+		v=161 101
+	}
+	e{
+		s=13 28
+		v=162 161
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 35
+		v=163 372
+		smoothing_length=5.6000
+	}
+	e{
+		s=28 35
+		v=162 163
+	}
+	e{
+		s=13 35
+		v=112 162
+		smoothing_length=5.6000
+	}
+	e{
+		s=29 30
+		v=164 102
+	}
+	e{
+		s=29 30
+		v=165 164
+	}
+	e{
+		s=29 30
+		v=106 165
+	}
+	e{
+		s=11 27
+		v=166 101
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 30
+		v=169 106
+		smoothing_length=5.6000
+	}
+	e{
+		s=27 30
+		v=166 167
+	}
+	e{
+		s=27 30
+		v=167 402
+	}
+	e{
+		s=27 30
+		v=168 169
+	}
+	e{
+		s=12 31
+		v=116 411
+	}
+	e{
+		s=11 31
+		v=170 116
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 31
+		v=171 170
+	}
+	e{
+		s=63 31
+		v=118 171
+	}
+	e{
+		s=34 33
+		v=89 174
+	}
+	e{
+		s=68 34
+		v=173 96
+	}
+	e{
+		s=32 76
+		v=114 172
+	}
+	e{
+		s=68 34
+		v=88 173
+	}
+	e{
+		s=34 33
+		v=174 95
+	}
+	e{
+		s=33 13
+		v=175 95
+		smoothing_length=5.6000
+	}
+	e{
+		s=36 20
+		v=177 90
+		smoothing_length=5.6000
+	}
+	e{
+		s=36 33
+		v=175 176
+	}
+	e{
+		s=36 33
+		v=176 177
+	}
+	e{
+		s=36 13
+		v=178 175
+		smoothing_length=5.6000
+	}
+	e{
+		s=36 65
+		v=179 178
+	}
+	e{
+		s=36 65
+		v=90 179
+	}
+	e{
+		s=10 27
+		v=180 100
+	}
+	e{
+		s=63 11
+		v=115 181
+		smoothing_length=5.6000
+	}
+	e{
+		s=12 29
+		v=182 103
+	}
+	e{
+		s=38 42
+		v=15 48
+	}
+	e{
+		s=39 38
+		v=14 47
+		smoothing_length=5.6000
+	}
+	e{
+		s=39 1
+		v=183 14
+		smoothing_length=5.6000
+	}
+	e{
+		s=39 40
+		v=46 183
+	}
+	e{
+		s=22 40
+		v=184 46
+		smoothing_length=5.6000
+	}
+	e{
+		s=1 41
+		v=185 13
+		smoothing_length=5.6000
+	}
+	e{
+		s=40 41
+		v=184 185
+	}
+	e{
+		s=22 42
+		v=48 186
+	}
+	e{
+		s=1 43
+		v=16 188
+	}
+	e{
+		s=42 43
+		v=187 186
+	}
+	e{
+		s=42 43
+		v=188 187
+	}
+	e{
+		s=20 43
+		v=49 189
+	}
+	e{
+		s=20 43
+		v=189 16
+	}
+	e{
+		s=13 10
+		v=190 100
+		smoothing_length=5.6000
+	}
+	e{
+		s=49 45
+		v=191 27
+		smoothing_length=5.6000
+	}
+	e{
+		s=44 47
+		v=196 192
+	}
+	e{
+		s=44 47
+		v=192 193
+	}
+	e{
+		s=44 47
+		v=193 194
+	}
+	e{
+		s=44 47
+		v=194 195
+	}
+	e{
+		s=44 47
+		v=195 196
+	}
+	e{
+		s=47 1
+		v=20 197
+	}
+	e{
+		s=47 2
+		v=198 32
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 46
+		v=29 150
+	}
+	e{
+		s=19 14
+		v=42 38
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 48
+		v=28 199
+	}
+	e{
+		s=47 48
+		v=199 200
+	}
+	e{
+		s=47 48
+		v=200 201
+	}
+	e{
+		s=47 48
+		v=201 202
+	}
+	e{
+		s=47 20
+		v=202 130
+		smoothing_length=5.6000
+	}
+	e{
+		s=52 48
+		v=202 203
+		smoothing_length=5.6000
+	}
+	e{
+		s=49 45
+		v=143 207
+		smoothing_length=5.6000
+	}
+	e{
+		s=45 48
+		v=203 204
+	}
+	e{
+		s=45 48
+		v=204 205
+	}
+	e{
+		s=45 48
+		v=205 206
+	}
+	e{
+		s=45 48
+		v=206 207
+	}
+	e{
+		s=49 50
+		v=207 208
+	}
+	e{
+		s=49 50
+		v=208 209
+	}
+	e{
+		s=49 50
+		v=209 210
+	}
+	e{
+		s=49 50
+		v=210 211
+	}
+	e{
+		s=49 50
+		v=211 212
+	}
+	e{
+		s=49 50
+		v=212 213
+	}
+	e{
+		s=49 50
+		v=213 214
+	}
+	e{
+		s=49 50
+		v=214 215
+	}
+	e{
+		s=49 50
+		v=215 216
+	}
+	e{
+		s=49 50
+		v=216 217
+	}
+	e{
+		s=51 49
+		v=218 217
+	}
+	e{
+		s=51 49
+		v=219 218
+	}
+	e{
+		s=51 49
+		v=220 219
+	}
+	e{
+		s=52 49
+		v=203 220
+	}
+	e{
+		s=52 20
+		v=221 202
+	}
+	e{
+		s=51 20
+		v=222 221
+	}
+	e{
+		s=51 20
+		v=223 222
+	}
+	e{
+		s=51 20
+		v=224 223
+	}
+	e{
+		s=20 50
+		v=224 225
+	}
+	e{
+		s=20 50
+		v=225 226
+	}
+	e{
+		s=20 50
+		v=226 227
+	}
+	e{
+		s=20 50
+		v=227 228
+	}
+	e{
+		s=20 50
+		v=228 229
+	}
+	e{
+		s=20 50
+		v=229 230
+	}
+	e{
+		s=20 50
+		v=230 231
+	}
+	e{
+		s=20 50
+		v=231 232
+	}
+	e{
+		s=20 50
+		v=232 233
+	}
+	e{
+		s=20 50
+		v=233 28
+	}
+	e{
+		s=51 50
+		v=217 224
+	}
+	e{
+		s=52 51
+		v=220 221
+	}
+	e{
+		s=24 53
+		v=83 234
+	}
+	e{
+		s=24 53
+		v=234 72
+	}
+	e{
+		s=82 20
+		v=238 235
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=235 383
+		smoothing_length=5.6000
+	}
+	e{
+		s=54 20
+		v=236 382
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=237 240
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=239 238
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=240 244
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=241 239
+		shadow_length=4.2000
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=242 241
+		shadow_length=10.0000
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=243 242
+		shadow_length=1.2000
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=244 243
+		shadow_length=6.0000
+		smoothing_length=5.6000
+	}
+	e{
+		s=55 20
+		v=247 245
+		smoothing_length=1.6000
+	}
+	e{
+		s=55 20
+		v=245 246
+		smoothing_length=1.6000
+	}
+	e{
+		s=55 20
+		v=246 247
+		smoothing_length=1.6000
+	}
+	e{
+		s=56 72
+		v=250 412
+		smoothing_length=5.6000
+	}
+	e{
+		s=56 72
+		v=248 249
+		smoothing_length=5.6000
+	}
+	e{
+		s=56 72
+		v=249 250
+		smoothing_length=5.6000
+	}
+	e{
+		s=56 72
+		v=251 248
+		smoothing_length=5.6000
+	}
+	e{
+		s=37 35
+		v=252 112
+		smoothing_length=5.6000
+	}
+	e{
+		s=57 65
+		v=255 253
+	}
+	e{
+		s=57 65
+		v=253 254
+	}
+	e{
+		s=57 65
+		v=254 255
+	}
+	e{
+		s=20 58
+		v=267 256
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=256 257
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=257 258
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=258 259
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=259 260
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=260 261
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=261 262
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=262 263
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=263 264
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=264 265
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=265 266
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 58
+		v=266 267
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=279 268
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=268 269
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=269 270
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=270 271
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=271 272
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=272 273
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=273 274
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=274 275
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=275 276
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=276 277
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=277 278
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 59
+		v=278 279
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 60
+		v=295 392
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=280 281
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=281 282
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=282 283
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=283 284
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=284 285
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=285 286
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=286 287
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=287 288
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=288 289
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=289 290
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=290 291
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=291 292
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=292 393
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 60
+		v=293 294
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 60
+		v=294 295
+		smoothing_length=5.6000
+	}
+	e{
+		s=17 0
+		v=296 127
+	}
+	e{
+		s=0 41
+		v=296 12
+		smoothing_length=5.6000
+	}
+	e{
+		s=61 73
+		v=306 297
+	}
+	e{
+		s=61 73
+		v=297 298
+	}
+	e{
+		s=61 73
+		v=298 299
+	}
+	e{
+		s=61 73
+		v=299 300
+	}
+	e{
+		s=61 73
+		v=300 301
+	}
+	e{
+		s=61 73
+		v=301 302
+	}
+	e{
+		s=61 73
+		v=302 303
+	}
+	e{
+		s=61 73
+		v=303 304
+	}
+	e{
+		s=61 73
+		v=304 305
+	}
+	e{
+		s=61 73
+		v=305 306
+	}
+	e{
+		s=62 18
+		v=311 307
+	}
+	e{
+		s=62 85
+		v=307 308
+	}
+	e{
+		s=62 18
+		v=308 309
+	}
+	e{
+		s=62 18
+		v=309 310
+	}
+	e{
+		s=62 18
+		v=310 311
+	}
+	e{
+		s=20 32
+		v=314 172
+		smoothing_length=5.6000
+	}
+	e{
+		s=63 32
+		v=181 312
+	}
+	e{
+		s=63 32
+		v=312 313
+	}
+	e{
+		s=63 32
+		v=313 314
+	}
+	e{
+		s=13 64
+		v=178 315
+		smoothing_length=5.6000
+	}
+	e{
+		s=37 20
+		v=318 94
+		smoothing_length=5.6000
+	}
+	e{
+		s=37 64
+		v=315 316
+	}
+	e{
+		s=37 64
+		v=316 317
+	}
+	e{
+		s=37 64
+		v=317 318
+	}
+	e{
+		s=20 65
+		v=321 93
+		smoothing_length=5.6000
+	}
+	e{
+		s=64 65
+		v=178 319
+	}
+	e{
+		s=64 65
+		v=319 320
+	}
+	e{
+		s=64 65
+		v=320 321
+	}
+	e{
+		s=7 69
+		v=71 337
+		smoothing_length=5.6000
+	}
+	e{
+		s=67 71
+		v=85 322
+	}
+	e{
+		s=67 71
+		v=322 323
+	}
+	e{
+		s=67 71
+		v=323 86
+	}
+	e{
+		s=67 20
+		v=86 324
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 66
+		v=327 328
+		smoothing_length=5.6000
+	}
+	e{
+		s=67 66
+		v=324 325
+	}
+	e{
+		s=67 66
+		v=325 326
+	}
+	e{
+		s=67 66
+		v=326 327
+	}
+	e{
+		s=68 7
+		v=74 328
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 66
+		v=331 324
+		smoothing_length=5.6000
+	}
+	e{
+		s=68 66
+		v=328 329
+	}
+	e{
+		s=68 66
+		v=329 330
+	}
+	e{
+		s=68 66
+		v=330 331
+	}
+	e{
+		s=8 69
+		v=70 332
+	}
+	e{
+		s=8 69
+		v=332 333
+	}
+	e{
+		s=8 69
+		v=333 71
+	}
+	e{
+		s=20 69
+		v=334 70
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 70
+		v=337 341
+		smoothing_length=5.6000
+	}
+	e{
+		s=69 70
+		v=334 335
+	}
+	e{
+		s=69 70
+		v=335 336
+	}
+	e{
+		s=69 70
+		v=336 337
+	}
+	e{
+		s=20 70
+		v=338 334
+		smoothing_length=5.6000
+	}
+	e{
+		s=7 71
+		v=341 85
+		smoothing_length=5.6000
+	}
+	e{
+		s=70 71
+		v=338 339
+	}
+	e{
+		s=70 71
+		v=339 340
+	}
+	e{
+		s=70 71
+		v=340 341
+	}
+	e{
+		s=13 18
+		v=342 347
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 72
+		v=347 2
+		smoothing_length=5.6000
+	}
+	e{
+		s=18 72
+		v=342 343
+	}
+	e{
+		s=18 72
+		v=343 344
+	}
+	e{
+		s=85 72
+		v=344 345
+	}
+	e{
+		s=18 72
+		v=345 346
+	}
+	e{
+		s=18 72
+		v=346 347
+	}
+	e{
+		s=73 53
+		v=357 348
+	}
+	e{
+		s=73 53
+		v=348 349
+	}
+	e{
+		s=73 53
+		v=349 350
+	}
+	e{
+		s=73 53
+		v=350 351
+	}
+	e{
+		s=73 53
+		v=351 352
+	}
+	e{
+		s=73 53
+		v=352 353
+	}
+	e{
+		s=73 53
+		v=353 354
+	}
+	e{
+		s=73 53
+		v=354 355
+	}
+	e{
+		s=73 53
+		v=355 356
+	}
+	e{
+		s=73 53
+		v=356 357
+	}
+	e{
+		s=74 19
+		v=360 358
+	}
+	e{
+		s=74 19
+		v=358 359
+	}
+	e{
+		s=74 19
+		v=359 360
+	}
+	e{
+		s=75 19
+		v=363 361
+	}
+	e{
+		s=75 19
+		v=361 362
+	}
+	e{
+		s=75 19
+		v=362 363
+	}
+	e{
+		s=76 78
+		v=364 172
+	}
+	e{
+		s=76 78
+		v=365 364
+	}
+	e{
+		s=76 78
+		v=366 365
+	}
+	e{
+		s=76 77
+		v=367 366
+	}
+	e{
+		s=76 77
+		v=114 367
+	}
+	e{
+		s=20 78
+		v=172 111
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 77
+		v=372 114
+		smoothing_length=5.6000
+	}
+	e{
+		s=35 78
+		v=111 368
+	}
+	e{
+		s=35 78
+		v=368 369
+	}
+	e{
+		s=35 78
+		v=369 370
+	}
+	e{
+		s=35 77
+		v=370 371
+	}
+	e{
+		s=35 77
+		v=371 372
+	}
+	e{
+		s=77 78
+		v=370 366
+	}
+	e{
+		s=79 13
+		v=110 373
+		smoothing_length=5.6000
+	}
+	e{
+		s=80 13
+		v=375 376
+		smoothing_length=5.6000
+	}
+	e{
+		s=80 79
+		v=376 373
+	}
+	e{
+		s=80 13
+		v=373 374
+		smoothing_length=5.6000
+	}
+	e{
+		s=13 10
+		v=375 190
+		smoothing_length=5.6000
+	}
+	e{
+		s=80 10
+		v=374 375
+	}
+	e{
+		s=79 13
+		v=376 110
+		smoothing_length=5.6000
+	}
+	e{
+		s=54 20
+		v=377 236
+		smoothing_length=5.6000
+	}
+	e{
+		s=81 20
+		v=382 388
+		smoothing_length=5.6000
+	}
+	e{
+		s=81 54
+		v=377 378
+	}
+	e{
+		s=81 54
+		v=378 379
+	}
+	e{
+		s=81 54
+		v=379 380
+	}
+	e{
+		s=81 54
+		v=380 381
+	}
+	e{
+		s=81 54
+		v=381 382
+	}
+	e{
+		s=81 20
+		v=383 377
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 20
+		v=388 237
+		smoothing_length=5.6000
+	}
+	e{
+		s=82 81
+		v=383 384
+	}
+	e{
+		s=82 81
+		v=384 385
+	}
+	e{
+		s=82 81
+		v=385 386
+	}
+	e{
+		s=82 81
+		v=386 387
+	}
+	e{
+		s=82 81
+		v=387 388
+	}
+	e{
+		s=20 83
+		v=392 397
+		smoothing_length=5.6000
+	}
+	e{
+		s=60 83
+		v=293 389
+	}
+	e{
+		s=60 83
+		v=389 390
+	}
+	e{
+		s=60 83
+		v=390 391
+	}
+	e{
+		s=60 83
+		v=391 392
+	}
+	e{
+		s=20 83
+		v=393 293
+		smoothing_length=5.6000
+	}
+	e{
+		s=20 84
+		v=397 280
+		smoothing_length=5.6000
+	}
+	e{
+		s=83 84
+		v=393 394
+	}
+	e{
+		s=83 84
+		v=394 395
+	}
+	e{
+		s=83 84
+		v=395 396
+	}
+	e{
+		s=83 84
+		v=396 397
+	}
+	e{
+		s=18 85
+		v=308 345
+	}
+	e{
+		s=18 85
+		v=344 307
+	}
+	e{
+		s=12 29
+		v=398 182
+	}
+	e{
+		s=68 24
+		v=399 74
+	}
+	e{
+		s=1 38
+		v=400 14
+	}
+	e{
+		s=22 38
+		v=401 48
+	}
+	e{
+		s=27 30
+		v=402 168
+	}
+	e{
+		s=47 20
+		v=403 22
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=404 405
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=405 406
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=406 407
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=407 410
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=408 409
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=409 23
+		smoothing_length=5.6000
+	}
+	e{
+		s=47 20
+		v=410 408
+		smoothing_length=5.6000
+	}
+	e{
+		s=11 28
+		v=101 163
+		smoothing_length=5.6000
+	}
+	e{
+		s=12 31
+		v=411 117
+	}
+	e{
+		s=56 72
+		v=412 251
+		smoothing_length=5.6000
+	}
+}
+sectors{
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=100.0000
+		texture=textures/stone
+		texture_rotate=2.0659
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/dirt
+	}
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=200.0000
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/dirt
+	}
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/grass_light
+	}
+	s{
+		z=200.0000
+		texture=textures/dirt
+	}
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=0.0000
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/dirt
+	}
+	s{
+		z=100.0000
+		texture=textures/stone_2
+		texture_rotate=1.5010
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/dirt
+	}
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=0.0000
+		fade=true
+		texture=textures/grass_dark
+		texture_tint=156 165 175
+	}
+	s{
+		z=100.0000
+		texture=textures/grass_dark
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/grass_light
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=50.0000
+		texture=textures/stone
+	}
+	s{
+		z=0.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=50.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=50.0000
+		texture=textures/stone_2
+		texture_rotate=1.5010
+	}
+	s{
+		z=-8.0000
+		hazard=water
+		hazards_floor=true
+		texture=textures/stone_2
+		texture_rotate=1.5010
+		texture_tint=156 165 175
+	}
+	s{
+		z=100.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=150.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=100.0000
+		texture=textures/stone
+	}
+	s{
+		z=50.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=0.0000
+		texture=textures/dirt
+	}
+	s{
+		z=200.0000
+		brightness=192
+		texture=textures/dirt
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=450.0000
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=450.0000
+		texture=textures/grass_light
+	}
+	s{
+		z=100.0000
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		texture=textures/dirt
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone_2
+	}
+	s{
+		z=100.0000
+		texture=textures/stone_2
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/dirt
+	}
+	s{
+		type=blocking
+		z=400.0000
+		texture=textures/dirt
+	}
+	s{
+		type=blocking
+		z=400.0000
+		fade=true
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=400.0000
+		fade=true
+		texture=textures/grass_light
+	}
+	s{
+		type=blocking
+		z=400.0000
+		fade=true
+		texture=textures/grass_light
+	}
+	s{
+		z=100.0000
+		texture=textures/stone
+		texture_rotate=2.5440
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/grass_dark
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/stone
+	}
+	s{
+		z=60.0000
+		texture=textures/stone
+	}
+	s{
+		z=0.0000
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/stone
+		texture_rotate=1.4854
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=92.0000
+		hazard=water
+		hazards_floor=true
+		texture=textures/stone
+		texture_tint=156 165 175
+	}
+	s{
+		z=-8.0000
+		hazard=water
+		hazards_floor=true
+		texture=textures/grass_dark
+		texture_tint=156 165 175
+	}
+	s{
+		z=0.0000
+		texture=textures/stone_2
+		texture_rotate=1.5010
+	}
+	s{
+		z=0.0000
+		fade=true
+		texture=textures/grass_dark
+	}
+	s{
+		z=0.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=200.0000
+		fade=true
+		texture=textures/grass_dark
+	}
+	s{
+		z=200.0000
+		texture=textures/dirt
+	}
+	s{
+		z=200.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=200.0000
+		brightness=160
+		fade=true
+		texture=textures/dirt
+	}
+	s{
+		z=200.0000
+		brightness=160
+		texture=textures/dirt
+	}
+	s{
+		z=200.0000
+		brightness=160
+		fade=true
+		texture=textures/dirt
+	}
+	s{
+		z=0.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=160.0000
+		texture=textures/stone
+	}
+	s{
+		z=160.0000
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=100.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		z=0.0000
+		texture=textures/grass_dark
+	}
+	s{
+		z=0.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=500.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/stone
+		texture_rotate=4.4563
+	}
+	s{
+		type=blocking
+		z=500.0000
+		fade=true
+		texture=textures/stone
+	}
+	s{
+		type=blocking
+		z=500.0000
+		texture=textures/stone
+		texture_rotate=1.5537
+	}
+	s{
+		z=0.0000
+		fade=true
+		texture=textures/grass_dark
+		texture_tint=156 165 175
+	}
+}
+mobs{
+	leader{
+		type=charlie
+		p=-48.0000 16.0000
+	}
+	ship{
+		type=ss_drake
+		p=96.0000 -48.0000
+		angle=1.8713
+	}
+	custom{
+		type=bramble_gate_white
+		p=416.0000 -256.0000
+		angle=0.6747
+		vars=health=80.0000
+	}
+	treasure{
+		type=jigsaw_puzzle_piece
+		p=424.1964 -437.8943
+		angle=3.6710
+	}
+	treasure{
+		type=2_euro
+		p=-288.0000 -352.0000
+		angle=5.7538
+	}
+	resource{
+		type=chocolate_square
+		p=496.0000 -128.0000
+		angle=4.0123
+	}
+	treasure{
+		type=jigsaw_puzzle_piece
+		p=-438.0549 52.0987
+		angle=1.6561
+	}
+	resource{
+		type=chocolate_square
+		p=-336.0119 146.6766
+		angle=0.8025
+	}
+	treasure{
+		type=2_euro
+		p=-346.3224 376.8084
+	}
+	resource{
+		type=chocolate_square
+		p=-96.0000 736.0000
+		angle=5.5831
+	}
+	treasure{
+		type=2_euro
+		p=372.6994 656.3291
+		angle=1.1099
+	}
+	treasure{
+		type=jigsaw_puzzle_piece
+		p=366.8708 412.2530
+		angle=1.6219
+	}
+	treasure{
+		type=jigsaw_puzzle_piece
+		p=167.6456 824.3771
+		angle=0.8365
+	}
+	bouncer{
+		type=geyser
+		p=-394.2132 -35.4401
+		angle=1.2805
+		links=14
+	}
+	custom{
+		type=dummy
+		p=-394.7865 -116.5332
+	}
+	bouncer{
+		type=geyser
+		p=-96.0000 480.0000
+		angle=4.4221
+		links=16
+	}
+	custom{
+		type=dummy
+		p=-96.0000 560.0000
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-64.0000 -48.0000
+		vars=follow_link_as_leader=true
+		links=0
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-96.0000 -32.0000
+		vars=follow_link_as_leader=true
+		links=0 0
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-32.0000 -32.0000
+		vars=follow_link_as_leader=true
+		links=0 0
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-16.0000 -48.0000
+		vars=follow_link_as_leader=true
+		links=0 0
+	}
+	pikmin{
+		type=blue_pikmin
+		p=178.9245 577.0818
+		angle=-1.7781
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-32.0000 -64.0000
+		vars=follow_link_as_leader=true
+		links=0 0
+	}
+	decoration{
+		type=leaves
+		p=512.0000 -240.0000
+	}
+	decoration{
+		type=leaves
+		p=256.0000 48.0000
+	}
+	decoration{
+		type=leaves
+		p=208.0000 144.0000
+	}
+	decoration{
+		type=leaves
+		p=-192.0000 64.0000
+	}
+	decoration{
+		type=leaves
+		p=-16.0000 576.0000
+	}
+	decoration{
+		type=leaves
+		p=53.4729 834.8112
+	}
+	decoration{
+		type=leaves
+		p=288.0000 -336.0000
+	}
+	decoration{
+		type=leaves
+		p=-144.0000 -480.0000
+	}
+	decoration{
+		type=leaves
+		p=-272.0000 -64.0000
+	}
+	decoration{
+		type=leaves
+		p=-480.0000 240.0000
+	}
+	decoration{
+		type=leaves
+		p=-208.0000 288.0000
+	}
+	decoration{
+		type=leaves
+		p=-320.0000 688.0000
+	}
+	decoration{
+		type=leaves
+		p=-160.0000 944.0000
+	}
+	decoration{
+		type=leaves
+		p=0.0000 960.0000
+	}
+	decoration{
+		type=leaves
+		p=80.0000 976.0000
+	}
+	decoration{
+		type=leaves
+		p=336.0000 816.0000
+	}
+	decoration{
+		type=leaves
+		p=592.0000 688.0000
+	}
+	decoration{
+		type=leaves
+		p=672.0000 528.0000
+	}
+	decoration{
+		type=leaves
+		p=592.0000 400.0000
+	}
+	decoration{
+		type=leaves
+		p=688.0000 160.0000
+	}
+	decoration{
+		type=clover
+		p=400.0000 112.0000
+	}
+	decoration{
+		type=clover
+		p=768.0000 -528.0000
+	}
+	decoration{
+		type=clover
+		p=-608.0000 -208.0000
+	}
+	decoration{
+		type=clover
+		p=-448.0000 624.0000
+	}
+	decoration{
+		type=clover
+		p=448.0000 864.0000
+	}
+	pikmin{
+		type=blue_pikmin
+		p=-265.3548 558.4809
+		angle=0.7389
+	}
+	pikmin{
+		type=blue_pikmin
+		p=48.0000 -496.0000
+		angle=1.5040
+	}
+	bouncer{
+		type=geyser
+		p=-352.8795 -200.9597
+		angle=1.2805
+		links=14
+	}
+}
+path_stops{
+	s{
+		pos=-308.4011 -349.6351
+		radius=67.5000
+		links{
+			l=1
+			l=15
+			l=18
+		}
+	}
+	s{
+		pos=-96.0000 -400.0000
+		links{
+			l=0
+			l=2
+		}
+	}
+	s{
+		pos=128.0000 -368.0000
+		links{
+			l=1
+			l=3
+		}
+	}
+	s{
+		pos=240.0000 -240.0000
+		links{
+			l=2
+			l=4
+			l=16
+		}
+	}
+	s{
+		pos=320.0000 -256.0000
+		links{
+			l=3
+			l=5
+		}
+	}
+	s{
+		pos=368.0000 -304.0000
+		links{
+			l=4
+			l=6
+			l=17
+		}
+	}
+	s{
+		pos=512.0000 -240.0000
+		radius=58.5000
+		links{
+			l=5
+			l=7
+		}
+	}
+	s{
+		pos=496.0000 -112.0000
+		radius=61.0000
+		links{
+			l=6
+			l=8
+		}
+	}
+	s{
+		pos=320.0000 0.0000
+		links{
+			l=7
+			l=9
+			l=14
+			l=16
+			l=24
+		}
+	}
+	s{
+		pos=208.0000 32.0000
+		links{
+			l=8
+			l=10
+			l=14
+			l=24
+			l=40
+		}
+	}
+	s{
+		pos=64.0000 128.0000
+		links{
+			l=9
+			l=14
+			l=12
+			l=13
+			l=38
+		}
+	}
+	s{
+		pos=-115.5898 -154.5808
+		radius=53.0000
+		links{
+			l=12
+			l=15
+			l=38
+			l=39
+		}
+	}
+	s{
+		pos=-128.0000 0.0000
+		radius=41.0000
+		links{
+			l=11
+			l=13
+			l=10
+			l=14
+			l=37
+			l=38
+		}
+	}
+	s{
+		pos=-64.0000 176.0000
+		radius=41.0000
+		links{
+			l=12
+			l=14
+			l=10
+			l=29
+		}
+	}
+	s{
+		pos=96.0000 192.0000
+		links{
+			l=13
+			l=10
+			l=12
+			l=9
+			l=8
+			l=24
+		}
+	}
+	s{
+		pos=-224.0000 -288.0000
+		links{
+			l=11
+			l=0
+		}
+	}
+	s{
+		pos=192.0000 -128.0000
+		links{
+			l=3
+			l=8
+			l=39
+			l=40
+		}
+	}
+	s{
+		pos=416.0000 -448.0000
+		radius=73.0000
+		links{
+			l=5
+		}
+	}
+	s{
+		pos=-352.0000 -192.0000
+		links{
+			l=0
+		}
+	}
+	s{
+		pos=320.0000 288.0000
+		links{
+			l=20
+			l=24
+		}
+	}
+	s{
+		pos=392.8431 422.9507
+		radius=84.5000
+		links{
+			l=19
+			l=21
+			l=23
+		}
+	}
+	s{
+		pos=383.7567 659.3544
+		radius=50.0000
+		links{
+			l=20
+			l=22
+		}
+	}
+	s{
+		pos=196.0811 659.6751
+		radius=30.0000
+		links{
+			l=21
+			l=23
+			l=25
+		}
+	}
+	s{
+		pos=160.0000 480.0000
+		radius=34.0000
+		links{
+			l=22
+			l=20
+		}
+	}
+	s{
+		pos=224.0000 144.0000
+		radius=25.5000
+		links{
+			l=9
+			l=19
+			l=8
+			l=14
+		}
+	}
+	s{
+		pos=164.2203 817.2289
+		radius=38.0000
+		links{
+			l=22
+			l=26
+		}
+	}
+	s{
+		pos=8.4406 776.7883
+		radius=59.5000
+		links{
+			l=25
+			l=27
+			l=32
+		}
+	}
+	s{
+		pos=-58.7942 625.8629
+		radius=57.5000
+		links{
+			l=26
+			l=28
+			l=32
+		}
+	}
+	s{
+		pos=-48.0000 464.0000
+		radius=36.5000
+		links{
+			l=27
+			l=29
+		}
+	}
+	s{
+		pos=-112.0000 368.0000
+		radius=38.5000
+		links{
+			l=28
+			l=13
+			l=30
+		}
+	}
+	s{
+		pos=-384.0000 384.0000
+		radius=77.5000
+		links{
+			l=29
+			l=31
+			l=33
+		}
+	}
+	s{
+		pos=-326.1796 476.7724
+		flags=2
+		links{
+			l=30
+			l=32
+		}
+	}
+	s{
+		pos=-190.2329 642.7464
+		flags=2
+		links{
+			l=31
+			l=27
+			l=26
+		}
+	}
+	s{
+		pos=-336.1031 170.2006
+		radius=48.0000
+		links{
+			l=30
+			l=34
+			l=36
+			l=35
+		}
+	}
+	s{
+		pos=-448.0000 32.0000
+		radius=62.5000
+		links{
+			l=33
+			l=35
+		}
+	}
+	s{
+		pos=-336.0000 32.0000
+		links{
+			l=34
+			l=36
+			l=33
+		}
+	}
+	s{
+		pos=-272.0000 64.0000
+		links{
+			l=35
+			l=37
+			l=33
+		}
+	}
+	s{
+		pos=-192.0000 64.0000
+		links{
+			l=36
+			l=12
+		}
+	}
+	s{
+		pos=-32.0000 0.0000
+		links{
+			l=10
+			l=11
+			l=12
+		}
+	}
+	s{
+		pos=69.7299 -169.7149
+		links{
+			l=11
+			l=16
+		}
+	}
+	s{
+		pos=237.7047 -34.3165
+		links{
+			l=9
+			l=16
+		}
+	}
+}
+tree_shadows{
+	shadow{
+		pos=389.9516 -278.6553
+		size=4447.8667 5373.8838
+		file=textures/tree_shadow
+		sway=1.0000 1.0000
+		angle=0.6300
+	}
+}

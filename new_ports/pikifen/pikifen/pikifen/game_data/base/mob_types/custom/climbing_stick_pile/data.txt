@@ -1,0 +1,38 @@
+name = Climbing stick pile
+description = A pile of twigs that Pikmin can work on in order to make a full climbing stick.
+
+custom_category_name = Useful
+height = 64
+max_health = 4000
+pushable = false
+pushes = true
+pushes_softly = true
+radius = 20
+target_type = pikmin_obstacle
+team = obstacle
+
+sounds {
+    sticks {
+        sound = nature/sticks
+        speed_deviation = 10
+        volume = 30
+        stack_min_pos = 0.25
+    }
+    obstacle_cleared {
+        sound = gui/obstacle_cleared
+        type = gameplay_global
+    }
+}
+
+spawns {
+    full_stick {
+        object = climbing_stick
+        relative = true
+        coordinates = 0 0
+        angle = 0
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

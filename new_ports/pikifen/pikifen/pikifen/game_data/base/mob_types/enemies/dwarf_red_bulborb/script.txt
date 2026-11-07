@@ -1,0 +1,219 @@
+first_state = examining
+death_state = dying
+
+states_ignoring_death = crushed
+
+init {
+    set_var ignoring false
+}
+
+script {
+    examining {
+        on_enter {
+            set_animation looking random_time_on_spawn
+            stop
+            set_near_reach search
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state turning
+            end_if
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+        on_animation_end {
+            set_state grazing
+        }
+    }
+    
+    grazing {
+        on_enter {
+            set_animation grazing
+            stop
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+        on_animation_end {
+            set_state exploring
+        }
+    }
+    
+    exploring {
+        on_enter {
+            get_random_float x -1000 1000
+            get_random_float y -1000 1000
+            move_to_relative $x $y
+            set_animation moving normal true
+            get_random_float t 1.5 2.5
+            set_timer $t
+        }
+        on_opponent_in_reach {
+            focus trigger
+            set_state turning
+        }
+        on_reach_destination {
+            set_state examining
+        }
+        on_timer {
+            set_state examining
+        }
+        on_far_from_home {
+            set_state returning
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    turning {
+        on_enter {
+            set_animation moving
+            stop
+            turn_to_target focused_mob
+            set_near_reach chase
+            set_far_reach close
+        }
+        on_opponent_in_reach {
+            stop
+            focus trigger
+            set_state chasing
+        }
+        on_focus_off_reach {
+            set_state examining
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    chasing {
+        on_enter {
+            set_animation moving normal true
+            move_to_target focused_mob
+            set_near_reach attack
+            set_far_reach chase
+        }
+        on_opponent_in_reach {
+            set_state attacking
+        }
+        on_focus_off_reach {
+            set_state examining
+        }
+        on_far_from_home {
+            set_var ignoring true
+            set_state returning
+        }
+        on_itch {
+            set_state shaking
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    attacking {
+        on_enter {
+            stop
+            set_animation attacking
+            start_chomping 1 mouth
+        }
+        on_animation_end {
+            stop_chomping
+            get_mob_info t self chomped_pikmin
+            if $t > 0
+                set_state eating
+            else
+                set_state examining
+            end_if
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    eating {
+        on_enter {
+            set_animation eating
+        }
+        on_animation_end {
+            swallow_all
+            play_sound swallow
+            set_state examining
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    shaking {
+        on_enter {
+            stop
+            set_animation shaking
+        }
+        on_animation_end {
+            set_state examining
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    returning {
+        on_enter {
+            move_to_target home
+            set_animation moving normal true
+            set_timer 2
+            set_near_reach search
+        }
+        on_leave {
+            set_timer 0
+        }
+        on_timer {
+            set_var ignoring false
+        }
+        on_reach_destination {
+            set_state examining
+        }
+        on_opponent_in_reach {
+            if $ignoring = false
+                focus trigger
+                set_state turning
+            end_if
+        }
+        on_pikmin_land {
+            set_state crushed
+        }
+    }
+    
+    crushed {
+        on_enter {
+            set_animation crushed
+            set_health 0
+            stop
+            start_particles dust_explosion 0 0
+        }
+        on_animation_end {
+            set_state dying
+        }
+    }
+    
+    dying {
+        on_enter {
+            start_dying
+            set_animation dying
+        }
+        on_animation_end {
+            finish_dying
+        }
+    }
+    
+}

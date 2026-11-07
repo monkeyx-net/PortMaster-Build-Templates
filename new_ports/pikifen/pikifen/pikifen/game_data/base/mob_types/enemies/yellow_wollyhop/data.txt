@@ -1,0 +1,92 @@
+name = Yellow Wollyhop
+description = Once it senses prey, a Yellow Wollyhop will jump in the air if it can. It will then float for a bit, and land down with force, crushing anything below.
+
+acceleration = 1000
+allow_ground_attacks = true
+can_hunt = player; enemy
+can_hurt = player; enemy; weak_plain_obstacle; fragile
+can_walk_on_others = true
+custom_category_name = Enemy, small and aggressive
+health_regen = 0
+height = 100
+itch_damage = 20
+itch_time = 7
+max_carriers = 14
+max_health = 1600
+move_speed = 250
+pikmin_seeds = 8
+points = 30
+pushable = true
+pushes = true
+pushes_softly = true
+radius = 40
+rotation_speed = 80
+target_type = enemy
+terrain_radius = 48
+territory_radius = 300
+weight = 7
+
+reaches {
+    search = 250 360
+    align = 250 2
+    jump = 150 2
+}
+
+sounds {
+    croak {
+        sound = creature_vocals/frog_croak
+        volume = 70
+        speed = 80
+        speed_deviation = 10
+    }
+    croak_small {
+        sound = creature_vocals/frog_croak
+        volume = 30
+        speed = 130
+    }
+    croak_slow {
+        sound = creature_vocals/frog_croak
+        volume = 60
+        speed = 60
+        speed_deviation = 5
+    }
+    falling {
+        sound = effects/falling
+        volume = 50
+        speed_deviation = 5
+    }
+    jump {
+        sound = effects/jump
+        volume = 50
+        speed_deviation = 5
+    }
+    step {
+        sound = misc/stomp_small
+        volume = 30
+        speed = 160
+        speed_deviation = 5
+    }
+    thump {
+        sound = misc/stomp_mid
+        speed_deviation = 10
+        volume = 70
+    }
+    thump_death {
+        sound = misc/thump
+        speed = 130
+        volume = 80
+    }
+    thump_quiet {
+        sound = misc/thump
+        speed_deviation = 10
+        volume = 50
+    }
+}
+
+status_vulnerabilities {
+    muddy = 0
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0

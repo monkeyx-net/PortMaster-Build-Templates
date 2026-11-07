@@ -1,0 +1,28 @@
+name = Ultra-bitter nectar
+description = One instant dosage of ultra-bitter spray.
+
+can_walk_on_others = true
+consumer = leaders
+effect = increase_sprays
+increase_amount = 1
+radius = 20
+shrink_speed = 120
+spray_type_to_increase = ultra-bitter_spray
+total_doses = 1
+
+sounds {
+    bumped {
+        sound = effects/boing_low_2
+        volume = 40
+        speed_deviation = 8
+    }
+    splat {
+        sound = nature/wet_splat
+        volume = 40
+        speed_deviation = 8
+    }
+}
+
+maker = Espyo
+version = 1.0.0
+engine_version = 1.0.0
