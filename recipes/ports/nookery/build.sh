@@ -36,6 +36,10 @@ fi
 # (-N and the grep allow re-running on an already patched source)
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-x11-display.patch" || true
 grep -q AURORA_GLES_X11_DISPLAY extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora patch not applied"; exit 1; }
+# Aurora: read GX vertex/array data from r32uint textures instead of storage buffers, which libmali
+# does not allow in the vertex stage (GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS = 0)
+patch -p1 -N -r - < "${RECIPE}/aurora-gles-vertex-textures.patch" || true
+grep -q BufferTextureWidth extern/aurora/lib/gfx/resources.hpp || { echo "Error: Aurora texture patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).

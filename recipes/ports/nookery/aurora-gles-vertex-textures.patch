@@ -1,0 +1,604 @@
+--- a/extern/aurora/lib/gx/shader.cpp
++++ b/extern/aurora/lib/gx/shader.cpp
+@@ -608,33 +608,33 @@
+   // 3-component fixed-16 vertex attributes through reusable vector fetch helpers.
+   // Emitting scalar component fetches at the call site avoids observed artifacts.
+   if (mapping.cnt == 2) {
+-    const auto comp0 = fmt::format("{}_1(&{}, {} + 0u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
+-    const auto comp1 = fmt::format("{}_1(&{}, {} + 2u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
++    const auto comp0 = fmt::format("{}_1({}, {} + 0u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
++    const auto comp1 = fmt::format("{}_1({}, {} + 2u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
+     return fmt::format("vec2f({}, {})", comp0, comp1);
+   }
+   if (mapping.cnt == 3) {
+-    const auto comp0 = fmt::format("{}_1(&{}, {} + 0u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
+-    const auto comp1 = fmt::format("{}_1(&{}, {} + 2u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
+-    const auto comp2 = fmt::format("{}_1(&{}, {} + 4u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
++    const auto comp0 = fmt::format("{}_1({}, {} + 0u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
++    const auto comp1 = fmt::format("{}_1({}, {} + 2u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
++    const auto comp2 = fmt::format("{}_1({}, {} + 4u, {}u, {})", fetchFn, buf, offs, mapping.frac, le);
+     return fmt::format("vec3f({}, {}, {})", comp0, comp1, comp2);
+   }
+-  return fmt::format("{}_{}(&{}, {}, {}u, {})", fetchFn, mapping.cnt, buf, offs, mapping.frac, le);
++  return fmt::format("{}_{}({}, {}, {}u, {})", fetchFn, mapping.cnt, buf, offs, mapping.frac, le);
+ }
+ 
+ auto fetch_attr(const AttrConfig& mapping, std::string_view buf, std::string_view offs, bool le) -> std::string {
+   switch (mapping.compType) {
+   case GX_U8:
+-    return fmt::format("fetch_u8_{}(&{}, {}, {}, {})", mapping.cnt, buf, offs, mapping.frac, le);
++    return fmt::format("fetch_u8_{}({}, {}, {}, {})", mapping.cnt, buf, offs, mapping.frac, le);
+   case GX_S8:
+-    return fmt::format("fetch_s8_{}(&{}, {}, {}, {})", mapping.cnt, buf, offs, mapping.frac, le);
++    return fmt::format("fetch_s8_{}({}, {}, {}, {})", mapping.cnt, buf, offs, mapping.frac, le);
+   case GX_U16:
+     return fetch_fixed16_attr("fetch_u16"sv, mapping, buf, offs, le);
+   case GX_S16:
+     return fetch_fixed16_attr("fetch_s16"sv, mapping, buf, offs, le);
+   case GX_F32:
+-    return fmt::format("fetch_f32_{}(&{}, {}, {})", mapping.cnt, buf, offs, le);
++    return fmt::format("fetch_f32_{}({}, {}, {})", mapping.cnt, buf, offs, le);
+   case GX_RGBA8:
+-    return fmt::format("unpack4x8unorm(load_u32_raw(&{}, {}))", buf, offs);
++    return fmt::format("unpack4x8unorm(load_u32_raw({}, {}))", buf, offs);
+   default:
+     Log.fatal("fetch_attr: Unimplemented {}", static_cast<GXCompType>(mapping.compType));
+   }
+@@ -643,17 +643,17 @@
+ auto fetch_color_attr(const AttrConfig& mapping, std::string_view buf, std::string_view offs, bool le) -> std::string {
+   switch (mapping.compType) {
+   case GX_RGB565:
+-    return fmt::format("fetch_rgb565(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgb565({}, {}, {})", buf, offs, le);
+   case GX_RGB8:
+-    return fmt::format("fetch_rgb8(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgb8({}, {}, {})", buf, offs, le);
+   case GX_RGBX8:
+-    return fmt::format("fetch_rgbx8(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgbx8({}, {}, {})", buf, offs, le);
+   case GX_RGBA4:
+-    return fmt::format("fetch_rgba4(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgba4({}, {}, {})", buf, offs, le);
+   case GX_RGBA6:
+-    return fmt::format("fetch_rgba6(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgba6({}, {}, {})", buf, offs, le);
+   case GX_RGBA8:
+-    return fmt::format("fetch_rgba8(&{}, {}, {})", buf, offs, le);
++    return fmt::format("fetch_rgba8({}, {}, {})", buf, offs, le);
+   default:
+     Log.fatal("fetch_color_attr: Unimplemented {}", static_cast<GXCompType>(mapping.compType));
+   }
+@@ -675,12 +675,12 @@
+     -> AttrAddress {
+   const u32 dlOffset = mapping.offset + dlExtra;
+   if (mapping.attrType == GX_INDEX8) {
+-    return {fmt::format("{} + raw_fetch_u8_1(&vbuf, imm.vtx_start + {} * {}u + {}u) * {}u + {}u", imm_array_start(attr),
++    return {fmt::format("{} + raw_fetch_u8_1(vbuf, imm.vtx_start + {} * {}u + {}u) * {}u + {}u", imm_array_start(attr),
+                         vidx, vtxStride, dlOffset, mapping.stride, within),
+             "abuf"sv, mapping.le};
+   }
+   if (mapping.attrType == GX_INDEX16) {
+-    return {fmt::format("{} + raw_fetch_u16_1(&vbuf, imm.vtx_start + {} * {}u + {}u, false) * {}u + {}u",
++    return {fmt::format("{} + raw_fetch_u16_1(vbuf, imm.vtx_start + {} * {}u + {}u, false) * {}u + {}u",
+                         imm_array_start(attr), vidx, vtxStride, dlOffset, mapping.stride, within),
+             "abuf"sv, mapping.le};
+   }
+@@ -695,7 +695,7 @@
+   const auto [offs, buf, le] = attr_address(mapping, attr, vidx, config.vtxStride, 0u, 0u);
+   switch (attr) {
+   case GX_VA_PNMTXIDX:
+-    return fmt::format("(raw_fetch_u8_1(&{}, {}) / 3u)", buf, offs);
++    return fmt::format("(raw_fetch_u8_1({}, {}) / 3u)", buf, offs);
+   case GX_VA_TEX0MTXIDX:
+   case GX_VA_TEX1MTXIDX:
+   case GX_VA_TEX2MTXIDX:
+@@ -704,7 +704,7 @@
+   case GX_VA_TEX5MTXIDX:
+   case GX_VA_TEX6MTXIDX:
+   case GX_VA_TEX7MTXIDX:
+-    return fmt::format("raw_fetch_u8_1(&{}, {})", buf, offs);
++    return fmt::format("raw_fetch_u8_1({}, {})", buf, offs);
+   case GX_VA_POS: {
+     const auto posLoad = fetch_attr(mapping, buf, offs, le);
+     if (mapping.cnt == 2) {
+@@ -1513,7 +1513,7 @@
+           fmt::format("\n    // Perspective fog\n    var fogBase = ubuf.fog.a / (ubuf.fog.b - {});", fogDepth);
+     }
+     if (config.fogRangeEnabled) {
+-      fragmentFn += "\n        fogBase *= bitcast<f32>(abuf[imm.fog_range_base + u32(in.pos.x)]);";
++      fragmentFn += "\n        fogBase *= bitcast<f32>(load_word(abuf, imm.fog_range_base + u32(in.pos.x)));";
+     }
+     fragmentFn += "\n    var fogF = clamp(fogBase - ubuf.fog.c, 0.0, 1.0);";
+     switch (config.fogType) {
+@@ -1653,24 +1653,27 @@
+   return select(((v & 0xFFu) << 8u) | (v >> 8u), v, le);
+ }}
+ 
+-fn load_word(p: ptr<storage, array<u32>>, word_idx: u32) -> u32 {{
++fn load_word(p: texture_2d<u32>, word_idx: u32) -> u32 {{
+   // This guard is not expected to handle routine out-of-bounds accesses.
+   // It appears to discourage some Adreno drivers/optimizers from storage buffer
+   // optimizations that can cause visual artifacts, including vertex explosions
+   // in Dusklight.
+-  if (word_idx < arrayLength(p)) {{
+-    return p[word_idx];
++  // Vertex/array data lives in r32uint textures (libmali has no vertex-stage storage buffers).
++  let dims = textureDimensions(p);
++  let coord = vec2u(word_idx % dims.x, word_idx / dims.x);
++  if (coord.y < dims.y) {{
++    return textureLoad(p, coord, 0).x;
+   }}
+   return 0u;
+ }}
+ 
+-fn load_u8(p: ptr<storage, array<u32>>, byte_off: u32) -> u32 {{
++fn load_u8(p: texture_2d<u32>, byte_off: u32) -> u32 {{
+   let word = load_word(p, byte_off / 4u);
+   let shift = (byte_off & 3u) * 8u;
+   return (word >> shift) & 0xFFu;
+ }}
+ 
+-fn load_u32_raw(p: ptr<storage, array<u32>>, byte_off: u32) -> u32 {{
++fn load_u32_raw(p: texture_2d<u32>, byte_off: u32) -> u32 {{
+   let word_idx = byte_off >> 2u;
+   let sub = byte_off & 3u;
+   let lo = load_word(p, word_idx);
+@@ -1682,7 +1685,7 @@
+   return (lo >> shift) | (hi << (32u - shift));
+ }}
+ 
+-fn load_u16(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> u32 {{
++fn load_u16(p: texture_2d<u32>, byte_off: u32, le: bool) -> u32 {{
+   let word_idx = byte_off >> 2u;
+   let sub = byte_off & 3u;
+   let word = load_word(p, word_idx);
+@@ -1694,7 +1697,7 @@
+   return bswap16(raw, le);
+ }}
+ 
+-fn load_u24(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> u32 {{
++fn load_u24(p: texture_2d<u32>, byte_off: u32, le: bool) -> u32 {{
+   let raw = load_u32_raw(p, byte_off) & 0x00FFFFFFu;
+   if (le) {{
+     return raw;
+@@ -1704,19 +1707,19 @@
+          ((raw & 0xFF0000u) >> 16u);
+ }}
+ 
+-fn load_u32(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> u32 {{
++fn load_u32(p: texture_2d<u32>, byte_off: u32, le: bool) -> u32 {{
+   return bswap32(load_u32_raw(p, byte_off), le);
+ }}
+ 
+-fn load_f32(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> f32 {{
++fn load_f32(p: texture_2d<u32>, byte_off: u32, le: bool) -> f32 {{
+   return bitcast<f32>(load_u32(p, byte_off, le));
+ }}
+ 
+-fn raw_fetch_u8_1(p: ptr<storage, array<u32>>, byte_off: u32) -> u32 {{
++fn raw_fetch_u8_1(p: texture_2d<u32>, byte_off: u32) -> u32 {{
+   return load_u8(p, byte_off);
+ }}
+ 
+-fn raw_fetch_u8_2(p: ptr<storage, array<u32>>, byte_off: u32) -> vec2u {{
++fn raw_fetch_u8_2(p: texture_2d<u32>, byte_off: u32) -> vec2u {{
+   let word_idx = byte_off >> 2u;
+   let sub = byte_off & 3u;
+   let word = load_word(p, word_idx);
+@@ -1734,7 +1737,7 @@
+   );
+ }}
+ 
+-fn raw_fetch_u8_3(p: ptr<storage, array<u32>>, byte_off: u32) -> vec3u {{
++fn raw_fetch_u8_3(p: texture_2d<u32>, byte_off: u32) -> vec3u {{
+   let raw = load_u32_raw(p, byte_off);
+   return vec3u(
+     extractBits(raw, 0u, 8u),
+@@ -1743,7 +1746,7 @@
+   );
+ }}
+ 
+-fn raw_fetch_u8_4(p: ptr<storage, array<u32>>, byte_off: u32) -> vec4u {{
++fn raw_fetch_u8_4(p: texture_2d<u32>, byte_off: u32) -> vec4u {{
+   let raw = load_u32_raw(p, byte_off);
+   return vec4u(
+     extractBits(raw, 0u, 8u),
+@@ -1753,18 +1756,18 @@
+   );
+ }}
+ 
+-fn raw_fetch_u16_1(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> u32 {{
++fn raw_fetch_u16_1(p: texture_2d<u32>, byte_off: u32, le: bool) -> u32 {{
+   return load_u16(p, byte_off, le);
+ }}
+ 
+-fn raw_fetch_u16_2(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec2u {{
++fn raw_fetch_u16_2(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec2u {{
+   return vec2u(
+     load_u16(p, byte_off + 0u, le),
+     load_u16(p, byte_off + 2u, le),
+   );
+ }}
+ 
+-fn raw_fetch_u16_3(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec3u {{
++fn raw_fetch_u16_3(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec3u {{
+   return vec3u(
+     load_u16(p, byte_off + 0u, le),
+     load_u16(p, byte_off + 2u, le),
+@@ -1772,7 +1775,7 @@
+   );
+ }}
+ 
+-fn raw_fetch_u16_4(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4u {{
++fn raw_fetch_u16_4(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4u {{
+   return vec4u(
+     load_u16(p, byte_off + 0u, le),
+     load_u16(p, byte_off + 2u, le),
+@@ -1781,18 +1784,18 @@
+   );
+ }}
+ 
+-fn raw_fetch_f32_1(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> f32 {{
++fn raw_fetch_f32_1(p: texture_2d<u32>, byte_off: u32, le: bool) -> f32 {{
+   return load_f32(p, byte_off, le);
+ }}
+ 
+-fn raw_fetch_f32_2(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec2f {{
++fn raw_fetch_f32_2(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec2f {{
+   return vec2f(
+     load_f32(p, byte_off + 0u, le),
+     load_f32(p, byte_off + 4u, le),
+   );
+ }}
+ 
+-fn raw_fetch_f32_3(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec3f {{
++fn raw_fetch_f32_3(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec3f {{
+   return vec3f(
+     load_f32(p, byte_off + 0u, le),
+     load_f32(p, byte_off + 4u, le),
+@@ -1800,7 +1803,7 @@
+   );
+ }}
+ 
+-fn raw_fetch_f32_4(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn raw_fetch_f32_4(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   return vec4f(
+     load_f32(p, byte_off + 0u, le),
+     load_f32(p, byte_off + 4u, le),
+@@ -1809,103 +1812,103 @@
+   );
+ }}
+ 
+-fn fetch_u8_1(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> f32 {{
++fn fetch_u8_1(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> f32 {{
+   let v = raw_fetch_u8_1(p, byte_off);
+   return f32(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s8_1(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> f32 {{
++fn fetch_s8_1(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> f32 {{
+   let v = (bitcast<i32>(raw_fetch_u8_1(p, byte_off)) << 24) >> 24;
+   return f32(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u8_2(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
++fn fetch_u8_2(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
+   let v = raw_fetch_u8_2(p, byte_off);
+   return vec2f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s8_2(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
++fn fetch_s8_2(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
+   let v = (bitcast<vec2i>(raw_fetch_u8_2(p, byte_off)) << vec2u(24u)) >> vec2u(24u);
+   return vec2f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u8_3(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
++fn fetch_u8_3(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
+   let v = raw_fetch_u8_3(p, byte_off);
+   return vec3f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s8_3(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
++fn fetch_s8_3(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
+   let v = (bitcast<vec3i>(raw_fetch_u8_3(p, byte_off)) << vec3u(24u)) >> vec3u(24u);
+   return vec3f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u8_4(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
++fn fetch_u8_4(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
+   let v = raw_fetch_u8_4(p, byte_off);
+   return vec4f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s8_4(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
++fn fetch_s8_4(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
+   let v = (bitcast<vec4i>(raw_fetch_u8_4(p, byte_off)) << vec4u(24u)) >> vec4u(24u);
+   return vec4f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u16_1(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> f32 {{
++fn fetch_u16_1(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> f32 {{
+   let v = raw_fetch_u16_1(p, byte_off, le);
+   return f32(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s16_1(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> f32 {{
++fn fetch_s16_1(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> f32 {{
+   let v = bitcast<i32>(raw_fetch_u16_1(p, byte_off, le) << 16u) >> 16;
+   return f32(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u16_2(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
++fn fetch_u16_2(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
+   let v = raw_fetch_u16_2(p, byte_off, le);
+   return vec2f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s16_2(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
++fn fetch_s16_2(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec2f {{
+   let v = (bitcast<vec2i>(raw_fetch_u16_2(p, byte_off, le)) << vec2u(16u)) >> vec2u(16u);
+   return vec2f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u16_3(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
++fn fetch_u16_3(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
+   let v = raw_fetch_u16_3(p, byte_off, le);
+   return vec3f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s16_3(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
++fn fetch_s16_3(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec3f {{
+   let v = (bitcast<vec3i>(raw_fetch_u16_3(p, byte_off, le)) << vec3u(16u)) >> vec3u(16u);
+   return vec3f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_u16_4(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
++fn fetch_u16_4(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
+   let v = raw_fetch_u16_4(p, byte_off, le);
+   return vec4f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_s16_4(p: ptr<storage, array<u32>>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
++fn fetch_s16_4(p: texture_2d<u32>, byte_off: u32, frac: u32, le: bool) -> vec4f {{
+   let v = (bitcast<vec4i>(raw_fetch_u16_4(p, byte_off, le)) << vec4u(16u)) >> vec4u(16u);
+   return vec4f(v) / f32(1u << frac);
+ }}
+ 
+-fn fetch_f32_1(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> f32 {{
++fn fetch_f32_1(p: texture_2d<u32>, byte_off: u32, le: bool) -> f32 {{
+   return raw_fetch_f32_1(p, byte_off, le);
+ }}
+ 
+-fn fetch_f32_2(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec2f {{
++fn fetch_f32_2(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec2f {{
+   return raw_fetch_f32_2(p, byte_off, le);
+ }}
+ 
+-fn fetch_f32_3(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec3f {{
++fn fetch_f32_3(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec3f {{
+   return raw_fetch_f32_3(p, byte_off, le);
+ }}
+ 
+-fn fetch_f32_4(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_f32_4(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   return raw_fetch_f32_4(p, byte_off, le);
+ }}
+ 
+-fn fetch_rgb565(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgb565(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = load_u16(p, byte_off, le);
+   return vec4f(
+     f32((v >> 11u) & 0x1Fu) / f32(0x1Fu),
+@@ -1915,17 +1918,17 @@
+   );
+ }}
+ 
+-fn fetch_rgb8(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgb8(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = raw_fetch_u8_3(p, byte_off);
+   return vec4f(f32(v.x), f32(v.y), f32(v.z), 255.0) / 255.0;
+ }}
+ 
+-fn fetch_rgbx8(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgbx8(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = raw_fetch_u8_4(p, byte_off);
+   return vec4f(f32(v.x), f32(v.y), f32(v.z), 255.0) / 255.0;
+ }}
+ 
+-fn fetch_rgba4(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgba4(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = load_u16(p, byte_off, le);
+   return vec4f(
+     f32((v >> 12u) & 0x0Fu) / f32(0x0Fu),
+@@ -1935,7 +1938,7 @@
+   );
+ }}
+ 
+-fn fetch_rgba6(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgba6(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = load_u24(p, byte_off, le);
+   return vec4f(
+     f32((v >> 18u) & 0x3Fu) / f32(0x3Fu),
+@@ -1945,7 +1948,7 @@
+   );
+ }}
+ 
+-fn fetch_rgba8(p: ptr<storage, array<u32>>, byte_off: u32, le: bool) -> vec4f {{
++fn fetch_rgba8(p: texture_2d<u32>, byte_off: u32, le: bool) -> vec4f {{
+   let v = raw_fetch_u8_4(p, byte_off);
+   return vec4f(v) / 255.0;
+ }}
+@@ -1983,9 +1986,9 @@
+     logical_viewport_size: vec2f,{0}
+ }};
+ @group(0) @binding(0)
+-var<storage, read> vbuf: array<u32>;
++var vbuf: texture_2d<u32>;
+ @group(0) @binding(1)
+-var<storage, read> abuf: array<u32>;
++var abuf: texture_2d<u32>;
+ @group(1) @binding(0)
+ var<uniform> ubuf: Uniform;{1}
+ 
+--- a/extern/aurora/lib/gfx/resources.hpp
++++ b/extern/aurora/lib/gfx/resources.hpp
+@@ -9,6 +9,11 @@
+ inline constexpr uint64_t IndexBufferSize = 2097152;    // 2 MiB
+ inline constexpr uint64_t StorageBufferSize = 8388608;  // 8 MiB
+ inline constexpr uint64_t TextureUploadSize = 25165824; // 24 MiB
++// The GX shaders read vertex and array data from r32uint copies of the vertex and storage buffers,
++// since some GLES drivers (libmali) have no storage buffers in the vertex stage.
++inline constexpr uint32_t BufferTextureWidth = 2048;
++inline constexpr uint64_t BufferTextureRowBytes = BufferTextureWidth * 4;
++static_assert(VertexBufferSize % BufferTextureRowBytes == 0 && StorageBufferSize % BufferTextureRowBytes == 0);
+ 
+ namespace detail {
+ struct Resources {
+@@ -16,6 +21,8 @@
+   wgpu::Buffer uniformBuffer;
+   wgpu::Buffer indexBuffer;
+   wgpu::Buffer storageBuffer;
++  wgpu::Texture vertexTexture;
++  wgpu::Texture storageTexture;
+   wgpu::BindGroupLayout staticBindGroupLayout;
+   wgpu::BindGroup staticBindGroup;
+   wgpu::BindGroupLayout uniformBindGroupLayout;
+--- a/extern/aurora/lib/gfx/frame.cpp
++++ b/extern/aurora/lib/gfx/frame.cpp
+@@ -426,6 +426,17 @@
+                "Shared Index Buffer");
+   createBuffer(g_resources.storageBuffer, wgpu::BufferUsage::Storage | wgpu::BufferUsage::CopyDst, StorageBufferSize,
+                "Shared Storage Buffer");
++  const auto createBufferTexture = [](wgpu::Texture& out, uint64_t size, const char* label) {
++    const wgpu::TextureDescriptor descriptor{
++        .label = label,
++        .usage = wgpu::TextureUsage::TextureBinding | wgpu::TextureUsage::CopyDst,
++        .size = {BufferTextureWidth, static_cast<uint32_t>(size / BufferTextureRowBytes), 1},
++        .format = wgpu::TextureFormat::R32Uint,
++    };
++    out = g_device.CreateTexture(&descriptor);
++  };
++  createBufferTexture(g_resources.vertexTexture, VertexBufferSize, "Shared Vertex Texture");
++  createBufferTexture(g_resources.storageTexture, StorageBufferSize, "Shared Storage Texture");
+   for (size_t i = 0; i < g_stagingBuffers.size(); ++i) {
+     const auto label = fmt::format("Staging Buffer {}", i);
+     createBuffer(g_stagingBuffers[i], wgpu::BufferUsage::MapWrite | wgpu::BufferUsage::CopySrc, StagingBufferSize,
+@@ -444,18 +455,20 @@
+         wgpu::BindGroupLayoutEntry{
+             .binding = 0,
+             .visibility = wgpu::ShaderStage::Vertex,
+-            .buffer =
+-                wgpu::BufferBindingLayout{
+-                    .type = wgpu::BufferBindingType::ReadOnlyStorage,
++            .texture =
++                wgpu::TextureBindingLayout{
++                    .sampleType = wgpu::TextureSampleType::Uint,
++                    .viewDimension = wgpu::TextureViewDimension::e2D,
+                 },
+         },
+         // Storage data buffer
+         wgpu::BindGroupLayoutEntry{
+             .binding = 1,
+             .visibility = wgpu::ShaderStage::Vertex | wgpu::ShaderStage::Fragment,
+-            .buffer =
+-                wgpu::BufferBindingLayout{
+-                    .type = wgpu::BufferBindingType::ReadOnlyStorage,
++            .texture =
++                wgpu::TextureBindingLayout{
++                    .sampleType = wgpu::TextureSampleType::Uint,
++                    .viewDimension = wgpu::TextureViewDimension::e2D,
+                 },
+         },
+     };
+@@ -468,11 +481,11 @@
+     const std::array entries{
+         wgpu::BindGroupEntry{
+             .binding = 0,
+-            .buffer = g_resources.vertexBuffer,
++            .textureView = g_resources.vertexTexture.CreateView(),
+         },
+         wgpu::BindGroupEntry{
+             .binding = 1,
+-            .buffer = g_resources.storageBuffer,
++            .textureView = g_resources.storageTexture.CreateView(),
+         },
+     };
+     const wgpu::BindGroupDescriptor bindGroupDescriptor{
+@@ -560,6 +573,8 @@
+   g_resources.uniformBuffer = {};
+   g_resources.indexBuffer = {};
+   g_resources.storageBuffer = {};
++  g_resources.vertexTexture = {};
++  g_resources.storageTexture = {};
+   g_stagingBuffers.fill({});
+   for (auto& packet : g_framePackets) {
+     packet = {};
+--- a/extern/aurora/lib/gfx/encoding.cpp
++++ b/extern/aurora/lib/gfx/encoding.cpp
+@@ -339,7 +339,8 @@
+ constexpr uint32_t align_down_copy_offset(uint32_t value) noexcept { return value & ~3u; }
+ 
+ void copy_staging_buffer_range(wgpu::CommandEncoder& cmd, const FramePacket& frame, uint32_t& copied,
+-                               uint32_t highWater, uint64_t stagingOffset, const wgpu::Buffer& dst) {
++                               uint32_t highWater, uint64_t stagingOffset, const wgpu::Buffer& dst,
++                               const wgpu::Texture& dstTexture = {}) {
+   if (highWater <= copied) {
+     return;
+   }
+@@ -347,6 +348,26 @@
+   const uint32_t copyEnd = AURORA_ALIGN(highWater, 4);
+   cmd.CopyBufferToBuffer(staging_buffer(frame.stagingBuffer), stagingOffset + copyStart, dst, copyStart,
+                          copyEnd - copyStart);
++  if (dstTexture) {
++    // Copy the whole texture rows covering the range (rows past highWater are rewritten by the next copy)
++    const uint32_t rowStart = copyStart / BufferTextureRowBytes;
++    const uint32_t rowEnd = (copyEnd + BufferTextureRowBytes - 1) / BufferTextureRowBytes;
++    const wgpu::TexelCopyBufferInfo src{
++        .layout =
++            wgpu::TexelCopyBufferLayout{
++                .offset = stagingOffset + rowStart * BufferTextureRowBytes,
++                .bytesPerRow = static_cast<uint32_t>(BufferTextureRowBytes),
++                .rowsPerImage = rowEnd - rowStart,
++            },
++        .buffer = staging_buffer(frame.stagingBuffer),
++    };
++    const wgpu::TexelCopyTextureInfo texDst{
++        .texture = dstTexture,
++        .origin = {0, rowStart, 0},
++    };
++    const wgpu::Extent3D size{BufferTextureWidth, rowEnd - rowStart, 1};
++    cmd.CopyBufferToTexture(&src, &texDst, &size);
++  }
+   copied = highWater;
+ }
+ 
+@@ -369,12 +390,13 @@
+   const webgpu::gpu_prof::Zone zone{cmd, "Staging copies"};
+   const auto& highWater = op.highWater;
+   auto& res = resources();
+-  copy_staging_buffer_range(cmd, frame, frame.copied.verts, highWater.verts, VertexStagingOffset, res.vertexBuffer);
++  copy_staging_buffer_range(cmd, frame, frame.copied.verts, highWater.verts, VertexStagingOffset, res.vertexBuffer,
++                            res.vertexTexture);
+   copy_staging_buffer_range(cmd, frame, frame.copied.uniforms, highWater.uniforms, UniformStagingOffset,
+                             res.uniformBuffer);
+   copy_staging_buffer_range(cmd, frame, frame.copied.indices, highWater.indices, IndexStagingOffset, res.indexBuffer);
+   copy_staging_buffer_range(cmd, frame, frame.copied.storage, highWater.storage, StorageStagingOffset,
+-                            res.storageBuffer);
++                            res.storageBuffer, res.storageTexture);
+ 
+   if constexpr (UseTextureBuffer) {
+     for (size_t i = frame.copied.textureUploadCount; i < op.textureUploads.size(); ++i) {
+--- a/extern/aurora/lib/webgpu/gpu.cpp
++++ b/extern/aurora/lib/webgpu/gpu.cpp
+@@ -867,8 +867,8 @@
+     wgpu::Limits supportedLimits{};
+     g_adapter.GetLimits(&supportedLimits);
+     wgpu::CompatibilityModeLimits compatibilityModeLimits{wgpu::CompatibilityModeLimits::Init{
+-        .maxStorageBuffersInVertexStage = 2,
+-        .maxStorageBuffersInFragmentStage = 2,
++        .maxStorageBuffersInVertexStage = 0,
++        .maxStorageBuffersInFragmentStage = 0,
+     }};
+     const wgpu::Limits requiredLimits{
+         .nextInChain = &compatibilityModeLimits,
