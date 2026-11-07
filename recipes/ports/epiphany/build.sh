@@ -13,7 +13,7 @@ cd "new_ports/${PORT_FOLDER}/source"
 sed -i 's/m_fullscreen = false;/m_fullscreen = true;/' src/epiconfig.cpp
 
 autoreconf -fi
-./configure
+./configure LDFLAGS="-L/usr/local/lib"
 make -j$(nproc)
 
 mkdir -p dist/data
