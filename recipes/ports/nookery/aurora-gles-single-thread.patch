@@ -43,3 +43,16 @@
      g_hasPipelineThread = false;
    } else {
      g_hasPipelineThread = true;
+--- a/extern/aurora/lib/webgpu/gpu.cpp
++++ b/extern/aurora/lib/webgpu/gpu.cpp
+@@ -972,6 +972,10 @@
+         "disable_symbol_renaming",
+         "enable_immediate_error_handling",
+         "gl_allow_context_on_multi_threads",
++        // Defer GL resource creation and uploads to Queue::Submit, so they run on the render
++        // thread: under EGL wrappers like crusty only that thread has a current context
++        // (see render_worker::initialize).
++        "gl_defer",
+     };
+     constexpr std::array disableToggles{
+         "timestamp_quantization",

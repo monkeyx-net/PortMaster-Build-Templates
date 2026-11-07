@@ -40,10 +40,10 @@ grep -q AURORA_GLES_X11_DISPLAY extern/aurora/lib/webgpu/gpu.cpp || { echo "Erro
 # does not allow in the vertex stage (GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS = 0)
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-vertex-textures.patch" || true
 grep -q BufferTextureWidth extern/aurora/lib/gfx/resources.hpp || { echo "Error: Aurora texture patch not applied"; exit 1; }
-# Aurora: on GLES, render and compile pipelines on the main thread; crusty's eglMakeCurrent is a
-# no-op, so its GL context is never current on Aurora's worker threads
+# Aurora: on GLES, render, compile pipelines and create GL resources (gl_defer) on the main thread;
+# crusty's eglMakeCurrent is a no-op, so its GL context is never current on any other thread
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-single-thread.patch" || true
-grep -q 'BackendType::OpenGLES' extern/aurora/lib/gfx/render_worker.cpp || { echo "Error: Aurora single-thread patch not applied"; exit 1; }
+grep -q gl_defer extern/aurora/lib/webgpu/gpu.cpp && grep -q 'BackendType::OpenGLES' extern/aurora/lib/gfx/render_worker.cpp || { echo "Error: Aurora single-thread patch not applied"; exit 1; }
 # Aurora: AURORA_GL_DEBUG=1 enables Dawn's GL debug output (driver error messages in the log)
 patch -p1 -N -r - < "${RECIPE}/aurora-gl-debug.patch" || true
 grep -q AURORA_GL_DEBUG extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora GL debug patch not applied"; exit 1; }
