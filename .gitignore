@@ -8,3 +8,8 @@ new_ports/*/*/*.zip
 /*.zip
 # On-device test results from test_port.sh (report.md, screenshots, logs, test zip)
 new_ports/*/test/
+# User-supplied game data placed in a port folder for local testing (never commit or publish)
+new_ports/*/*/*/*.iso
+new_ports/*/*/*/*.rvz
+new_ports/*/*/*/*.gcm
+new_ports/*/*/*/*.ciso

@@ -24,6 +24,7 @@ on:
           - 'lighthouse'
           - 'lix'
           - 'manicminer'
+          - 'nookery'
           - 'pikifen'
           - 'recwars'
           - 'shamogu'

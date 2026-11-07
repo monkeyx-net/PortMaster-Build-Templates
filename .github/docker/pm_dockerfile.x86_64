@@ -55,9 +55,12 @@ RUN apt-get update && \
       libsdl2-image-dev \
       libsdl2-mixer-dev \
       libsdl2-ttf-dev \
+      libc++-18-dev \
+      libc++abi-18-dev \
       libstdc++-10-dev \
       libtool \
       libvorbis-dev \
+      libx11-xcb-dev \
       libzip-dev \
       lsb-release \
       make \

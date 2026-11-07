@@ -1,0 +1,7 @@
+{
+  "$version": 2,
+  "video.renderer": "opengles",
+  "video.windowMode": 1,
+  "backend.skipPrelaunch": true,
+  "backend.checkForUpdates": false
+}

@@ -1,0 +1,36 @@
+{
+  "version": 4,
+  "name": "nookery.zip",
+  "items": [
+    "Nookery.sh",
+    "nookery"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Animal Crossing (Nookery)",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "Nookery is a native PC port of Animal Crossing for the GameCube, built on the ac-decomp decompilation. Move into a village of animals, pay off your house, fish, catch bugs and play the NES games.",
+    "desc_md": null,
+    "inst": "Place your Animal Crossing (GAFE01, USA Rev 0) disc image (.rvz, .iso, .gcm or .ciso) in ports/nookery.",
+    "inst_md": null,
+    "genres": [
+      "simulation"
+    ],
+    "image": null,
+    "rtr": false,
+    "exp": false,
+    "runtime": [
+      "weston_pkg_0.2.squashfs"
+    ],
+    "store": [],
+    "availability": "full",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}

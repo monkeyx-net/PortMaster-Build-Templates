@@ -1,0 +1,18 @@
+{
+  "recipe_version": 1,
+  "name": "nookery.zip",
+  "port_json": "new_ports/nookery/nookery/nookery/port.json",
+  "source": {
+    "date_updated": "2026-11-07",
+    "port_exe": "Nookery",
+    "port_build": "cmake --build build",
+    "port_checksum": "02dfaea82550efb26c2475d28126d4d2ca3513024942883b8e6a10db03c91cf7",
+    "port_url": "flyngmt/Nookery",
+    "port_version": "v1.0.0",
+    "port_download": "https://github.com/flyngmt/Nookery/archive/refs/tags/v1.0.0.tar.gz"
+  },
+  "test": {
+    "delay": 20,
+    "needs_data": "*.rvz *.iso *.gcm *.ciso"
+  }
+}

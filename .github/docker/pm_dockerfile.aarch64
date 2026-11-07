@@ -64,6 +64,7 @@ RUN apt-get update && \
       libstdc++-10-dev \
       libtool \
       libvorbis-dev \
+      libx11-xcb-dev \
       libzip-dev \
       lsb-release \
       make \
@@ -87,6 +88,8 @@ RUN apt-get update && \
 RUN wget https://apt.llvm.org/llvm.sh && \
     chmod +x llvm.sh && \
     ./llvm.sh 18 && \
+    apt-get install -y --no-install-recommends libc++-18-dev libc++abi-18-dev && \
+    rm -rf /var/lib/apt/lists/* && \
     rm llvm.sh
 
 RUN wget -O sdl.tar.gz https://github.com/libsdl-org/SDL/archive/refs/tags/release-${SDL_VERSION}.tar.gz && \
