@@ -69,7 +69,7 @@ pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 # westonwrap evals the command line, so quote the disc path (names like "Animal Crossing (USA).iso")
 $ESUDO env WRAPPED_LIBRARY_PATH=$game_libs \
 $weston_dir/westonwrap.sh headless noop kiosk crusty_x11egl \
-HOME=$CONFDIR SDL_VIDEO_DRIVER=x11 \
+HOME=$CONFDIR SDL_VIDEO_DRIVER=x11 AURORA_GL_DEBUG=1 \
 $GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} --user-dir "$CONFDIR" --disc "$(printf '%q' "$disc")"
 
 $ESUDO $weston_dir/westonwrap.sh cleanup
