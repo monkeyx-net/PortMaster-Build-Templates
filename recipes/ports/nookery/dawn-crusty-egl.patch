@@ -1,0 +1,171 @@
+--- a/src/dawn/native/opengl/DisplayEGL.cpp
++++ b/src/dawn/native/opengl/DisplayEGL.cpp
+@@ -27,7 +27,10 @@
+ 
+ #include "src/dawn/native/opengl/DisplayEGL.h"
+ 
++#include <map>
++#include <mutex>
+ #include <string>
++#include <tuple>
+ #include <utility>
+ 
+ #include "absl/container/flat_hash_set.h"
+@@ -35,6 +38,15 @@
+ 
+ namespace dawn::native::opengl {
+ 
++namespace {
++// Some EGL wrappers (Westonpack's crusty) answer eglChooseConfig with the config of the current
++// context, which fails once Dawn's own context is current. Remember every config found so
++// later lookups (surface capabilities, swap chain, adapter re-creation) get the same answer.
++using ConfigKey = std::tuple<EGLDisplay, EGLint, wgpu::TextureFormat, wgpu::TextureFormat>;
++std::mutex gConfigCacheMutex;
++std::map<ConfigKey, EGLConfig> gConfigCache;
++}  // namespace
++
+ // static
+ ResultOrError<Ref<DisplayEGL>> DisplayEGL::CreateFromDynamicLoading(
+     wgpu::BackendType backend,
+@@ -127,6 +139,9 @@
+                         targetAPI, rawClientAPIs);
+     }
+ 
++    // Look up the window config now, before any Dawn context is current (see gConfigCache).
++    ChooseConfig(EGL_WINDOW_BIT, wgpu::TextureFormat::RGBA8Unorm);
++
+     return {};
+ }
+ 
+@@ -158,6 +173,15 @@
+ EGLConfig DisplayEGL::ChooseConfig(EGLint surfaceType,
+                                    wgpu::TextureFormat color,
+                                    wgpu::TextureFormat depthStencil) const {
++    const ConfigKey key{mDisplay, surfaceType, color, depthStencil};
++    {
++        std::lock_guard<std::mutex> lock(gConfigCacheMutex);
++        auto it = gConfigCache.find(key);
++        if (it != gConfigCache.end()) {
++            return it->second;
++        }
++    }
++
+     absl::InlinedVector<EGLint, 20> attribs;
+     auto AddAttrib = [&](EGLint attrib, EGLint value) {
+         attribs.push_back(attrib);
+@@ -228,6 +252,8 @@
+         return kNoConfig;
+     }
+ 
++    std::lock_guard<std::mutex> lock(gConfigCacheMutex);
++    gConfigCache[key] = config;
+     return config;
+ }
+ 
+--- a/src/dawn/native/opengl/UtilsEGL.h
++++ b/src/dawn/native/opengl/UtilsEGL.h
+@@ -73,6 +73,8 @@
+ 
+   private:
+     Ref<DisplayEGL> mDisplay;
++    // EGLDisplay of the context that was current at creation (see Create)
++    EGLDisplay mSyncDisplay;
+     EGLSync mSync = nullptr;
+     bool mOwnsSync = false;
+ };
+--- a/src/dawn/native/opengl/UtilsEGL.cpp
++++ b/src/dawn/native/opengl/UtilsEGL.cpp
+@@ -110,20 +110,28 @@
+     const EGLFunctions& egl = display->egl.get();
+ 
+     EGLSyncKHR sync = EGL_NO_SYNC;
++    // Fence syncs must be created on the current context's display. EGL wrappers (Westonpack's
++    // crusty) may hand Dawn a different handle for the same display, so use the current one.
++    EGLDisplay syncDisplay = egl.GetCurrentDisplay();
++    if (syncDisplay == EGL_NO_DISPLAY) {
++        syncDisplay = display->GetDisplay();
++    }
+     // We don't use OpenGLFunctions struct. However eglCreateSync requires a current context,
+     // so a OpenGLFunctions parameter restricts the caller to call this inside Device's
+     // EnqueueGL/ExecuteGL.
+     if (egl.HasExt(EGLExt::FenceSync)) {
+-        sync = egl.CreateSyncKHR(display->GetDisplay(), type, attribs);
++        sync = egl.CreateSyncKHR(syncDisplay, type, attribs);
+     } else {
+         DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
+         std::vector<EGLAttrib> convertedAttribs = ConvertEGLIntParameterListToEGLAttrib(attribs);
+-        sync = egl.CreateSync(display->GetDisplay(), type, convertedAttribs.data());
++        sync = egl.CreateSync(syncDisplay, type, convertedAttribs.data());
+     }
+ 
+     DAWN_TRY(CheckEGL(egl, sync != EGL_NO_SYNC, "eglCreateSync"));
+ 
+-    return AcquireRef(new WrappedEGLSync(display, sync, true));
++    Ref<WrappedEGLSync> wrapped = AcquireRef(new WrappedEGLSync(display, sync, true));
++    wrapped->mSyncDisplay = syncDisplay;
++    return wrapped;
+ }
+ 
+ ResultOrError<Ref<WrappedEGLSync>> WrappedEGLSync::AcquireExternal(DisplayEGL* display,
+@@ -148,7 +156,7 @@
+ }
+ 
+ WrappedEGLSync::WrappedEGLSync(DisplayEGL* display, EGLSync sync, bool ownsSync)
+-    : mDisplay(display), mSync(sync), mOwnsSync(ownsSync) {
++    : mDisplay(display), mSyncDisplay(display->GetDisplay()), mSync(sync), mOwnsSync(ownsSync) {
+     DAWN_ASSERT(mDisplay != nullptr);
+     DAWN_ASSERT(mSync != EGL_NO_SYNC);
+ }
+@@ -157,10 +165,10 @@
+     if (mOwnsSync) {
+         const EGLFunctions& egl = mDisplay->egl.get();
+         if (egl.HasExt(EGLExt::FenceSync)) {
+-            egl.DestroySyncKHR(mDisplay->GetDisplay(), mSync);
++            egl.DestroySyncKHR(mSyncDisplay, mSync);
+         } else {
+             DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
+-            egl.DestroySync(mDisplay->GetDisplay(), mSync);
++            egl.DestroySync(mSyncDisplay, mSync);
+         }
+     }
+ }
+@@ -173,7 +181,7 @@
+     const EGLFunctions& egl = mDisplay->egl.get();
+     DAWN_ASSERT(egl.HasExt(EGLExt::ReusableSync));
+ 
+-    DAWN_TRY(CheckEGL(egl, egl.SignalSync(mDisplay->GetDisplay(), mSync, mode), "eglSignalSync"));
++    DAWN_TRY(CheckEGL(egl, egl.SignalSync(mSyncDisplay, mSync, mode), "eglSignalSync"));
+     return {};
+ }
+ 
+@@ -184,10 +192,10 @@
+ 
+     EGLenum result = EGL_FALSE;
+     if (egl.HasExt(EGLExt::FenceSync)) {
+-        result = egl.ClientWaitSyncKHR(mDisplay->GetDisplay(), mSync, flags, uint64_t(timeout));
++        result = egl.ClientWaitSyncKHR(mSyncDisplay, mSync, flags, uint64_t(timeout));
+     } else {
+         DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
+-        result = egl.ClientWaitSync(mDisplay->GetDisplay(), mSync, flags, uint64_t(timeout));
++        result = egl.ClientWaitSync(mSyncDisplay, mSync, flags, uint64_t(timeout));
+     }
+ 
+     DAWN_TRY(CheckEGL(egl, result != EGL_FALSE, "eglClientWaitSync"));
+@@ -199,7 +207,7 @@
+     DAWN_ASSERT(egl.HasExt(EGLExt::WaitSync));
+ 
+     constexpr EGLint flags = 0;
+-    DAWN_TRY(CheckEGL(egl, egl.WaitSync(mDisplay->GetDisplay(), mSync, flags), "eglWaitSync"));
++    DAWN_TRY(CheckEGL(egl, egl.WaitSync(mSyncDisplay, mSync, flags), "eglWaitSync"));
+     return {};
+ }
+ 
+@@ -207,7 +215,7 @@
+     const EGLFunctions& egl = mDisplay->egl.get();
+     DAWN_ASSERT(egl.HasExt(EGLExt::NativeFenceSync));
+ 
+-    EGLint fd = egl.DupNativeFenceFD(mDisplay->GetDisplay(), mSync);
++    EGLint fd = egl.DupNativeFenceFD(mSyncDisplay, mSync);
+     DAWN_TRY(CheckEGL(egl, fd != EGL_NO_NATIVE_FENCE_FD_ANDROID, "eglDupNativeFenceFDANDROID"));
+ 
+     return fd;
