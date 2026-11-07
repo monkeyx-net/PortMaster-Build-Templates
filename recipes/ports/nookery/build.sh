@@ -45,8 +45,7 @@ cmake -S . -B build -G Ninja \
   -DCMAKE_CXX_COMPILER=clang++-18 \
   -DCMAKE_C_FLAGS="-Wno-error=return-type -Wno-error=int-conversion -Wno-error=incompatible-function-pointer-types -Wno-error=implicit-function-declaration -Wno-error=implicit-int" \
   -DCMAKE_CXX_FLAGS="-stdlib=libc++ -fexperimental-library" \
-  -DCMAKE_EXE_LINKER_FLAGS="-nostdlib++ -Wl,-Bstatic -lc++ -lc++experimental -lc++abi -Wl,-Bdynamic" \
-  -DCMAKE_LINKER_TYPE=LLD \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -nostdlib++ -Wl,-Bstatic -lc++ -lc++experimental -lc++abi -Wl,-Bdynamic" \
   -DBOREALIS_APP_VERSION_OVERRIDE="${PORT_VERSION}" \
   -DBOREALIS_HTTP_BACKEND=none \
   -DAURORA_DAWN_PROVIDER=vendor \
