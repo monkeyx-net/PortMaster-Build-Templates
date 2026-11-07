@@ -64,108 +64,118 @@
  
 --- a/src/dawn/native/opengl/UtilsEGL.h
 +++ b/src/dawn/native/opengl/UtilsEGL.h
-@@ -73,6 +73,8 @@
+@@ -33,6 +33,7 @@
+ #include "src/dawn/common/egl_platform.h"
+ #include "src/dawn/native/Error.h"
+ #include "src/dawn/native/opengl/DisplayEGL.h"
++#include "src/dawn/native/opengl/opengl_platform.h"
+ #include "src/utils/non_movable.h"
  
-   private:
+ namespace dawn::native::opengl {
+@@ -75,6 +76,9 @@
      Ref<DisplayEGL> mDisplay;
-+    // EGLDisplay of the context that was current at creation (see Create)
-+    EGLDisplay mSyncDisplay;
      EGLSync mSync = nullptr;
      bool mOwnsSync = false;
++    // GL fence used instead of an EGL sync for internal fences (see Create)
++    GLsync mGLSync = nullptr;
++    const OpenGLFunctions* mGL = nullptr;
  };
+ 
+ }  // namespace dawn::native::opengl
 --- a/src/dawn/native/opengl/UtilsEGL.cpp
 +++ b/src/dawn/native/opengl/UtilsEGL.cpp
-@@ -110,20 +110,28 @@
+@@ -104,11 +104,26 @@
+ }
+ 
+ ResultOrError<Ref<WrappedEGLSync>> WrappedEGLSync::Create(DisplayEGL* display,
+-                                                          const OpenGLFunctions&,
++                                                          const OpenGLFunctions& gl,
+                                                           EGLenum type,
+                                                           const EGLint* attribs) {
      const EGLFunctions& egl = display->egl.get();
  
-     EGLSyncKHR sync = EGL_NO_SYNC;
-+    // Fence syncs must be created on the current context's display. EGL wrappers (Westonpack's
-+    // crusty) may hand Dawn a different handle for the same display, so use the current one.
-+    EGLDisplay syncDisplay = egl.GetCurrentDisplay();
-+    if (syncDisplay == EGL_NO_DISPLAY) {
-+        syncDisplay = display->GetDisplay();
++    // EGL wrappers (Westonpack's crusty) re-route Dawn's context, so EGL sees no current context
++    // and eglCreateSync fails with EGL_BAD_MATCH. Internal fences (no attribs) only need the
++    // current GL context, so use GL fence syncs for them.
++    if (attribs == nullptr) {
++        GLsync glSync = gl.FenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
++        if (glSync == nullptr) {
++            return DAWN_INTERNAL_ERROR("glFenceSync failed");
++        }
++        Ref<WrappedEGLSync> wrapped =
++            AcquireRef(new WrappedEGLSync(display, static_cast<EGLSync>(glSync), false));
++        wrapped->mGLSync = glSync;
++        wrapped->mGL = &gl;
++        return wrapped;
 +    }
++
+     EGLSyncKHR sync = EGL_NO_SYNC;
      // We don't use OpenGLFunctions struct. However eglCreateSync requires a current context,
      // so a OpenGLFunctions parameter restricts the caller to call this inside Device's
-     // EnqueueGL/ExecuteGL.
-     if (egl.HasExt(EGLExt::FenceSync)) {
--        sync = egl.CreateSyncKHR(display->GetDisplay(), type, attribs);
-+        sync = egl.CreateSyncKHR(syncDisplay, type, attribs);
-     } else {
-         DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
-         std::vector<EGLAttrib> convertedAttribs = ConvertEGLIntParameterListToEGLAttrib(attribs);
--        sync = egl.CreateSync(display->GetDisplay(), type, convertedAttribs.data());
-+        sync = egl.CreateSync(syncDisplay, type, convertedAttribs.data());
-     }
- 
-     DAWN_TRY(CheckEGL(egl, sync != EGL_NO_SYNC, "eglCreateSync"));
- 
--    return AcquireRef(new WrappedEGLSync(display, sync, true));
-+    Ref<WrappedEGLSync> wrapped = AcquireRef(new WrappedEGLSync(display, sync, true));
-+    wrapped->mSyncDisplay = syncDisplay;
-+    return wrapped;
+@@ -154,6 +169,9 @@
  }
  
- ResultOrError<Ref<WrappedEGLSync>> WrappedEGLSync::AcquireExternal(DisplayEGL* display,
-@@ -148,7 +156,7 @@
- }
- 
- WrappedEGLSync::WrappedEGLSync(DisplayEGL* display, EGLSync sync, bool ownsSync)
--    : mDisplay(display), mSync(sync), mOwnsSync(ownsSync) {
-+    : mDisplay(display), mSyncDisplay(display->GetDisplay()), mSync(sync), mOwnsSync(ownsSync) {
-     DAWN_ASSERT(mDisplay != nullptr);
-     DAWN_ASSERT(mSync != EGL_NO_SYNC);
- }
-@@ -157,10 +165,10 @@
+ WrappedEGLSync::~WrappedEGLSync() {
++    if (mGLSync != nullptr) {
++        mGL->DeleteSync(mGLSync);
++    }
      if (mOwnsSync) {
          const EGLFunctions& egl = mDisplay->egl.get();
          if (egl.HasExt(EGLExt::FenceSync)) {
--            egl.DestroySyncKHR(mDisplay->GetDisplay(), mSync);
-+            egl.DestroySyncKHR(mSyncDisplay, mSync);
-         } else {
-             DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
--            egl.DestroySync(mDisplay->GetDisplay(), mSync);
-+            egl.DestroySync(mSyncDisplay, mSync);
-         }
-     }
+@@ -170,6 +188,9 @@
  }
-@@ -173,7 +181,7 @@
+ 
+ MaybeError WrappedEGLSync::Signal(const OpenGLFunctions&, EGLenum mode) {
++    if (mGLSync != nullptr) {
++        return {};  // GL fences signal on completion
++    }
      const EGLFunctions& egl = mDisplay->egl.get();
      DAWN_ASSERT(egl.HasExt(EGLExt::ReusableSync));
  
--    DAWN_TRY(CheckEGL(egl, egl.SignalSync(mDisplay->GetDisplay(), mSync, mode), "eglSignalSync"));
-+    DAWN_TRY(CheckEGL(egl, egl.SignalSync(mSyncDisplay, mSync, mode), "eglSignalSync"));
+@@ -177,9 +198,22 @@
      return {};
  }
  
-@@ -184,10 +192,10 @@
+-ResultOrError<EGLenum> WrappedEGLSync::ClientWait(const OpenGLFunctions&,
++ResultOrError<EGLenum> WrappedEGLSync::ClientWait(const OpenGLFunctions& gl,
+                                                   EGLint flags,
+                                                   Nanoseconds timeout) {
++    if (mGLSync != nullptr) {
++        GLenum glResult = gl.ClientWaitSync(mGLSync, flags ? GL_SYNC_FLUSH_COMMANDS_BIT : 0,
++                                            uint64_t(timeout));
++        switch (glResult) {
++            case GL_ALREADY_SIGNALED:
++            case GL_CONDITION_SATISFIED:
++                return EGLenum(EGL_CONDITION_SATISFIED);
++            case GL_TIMEOUT_EXPIRED:
++                return EGLenum(EGL_TIMEOUT_EXPIRED);
++            default:
++                return DAWN_INTERNAL_ERROR("glClientWaitSync failed");
++        }
++    }
+     const EGLFunctions& egl = mDisplay->egl.get();
  
      EGLenum result = EGL_FALSE;
-     if (egl.HasExt(EGLExt::FenceSync)) {
--        result = egl.ClientWaitSyncKHR(mDisplay->GetDisplay(), mSync, flags, uint64_t(timeout));
-+        result = egl.ClientWaitSyncKHR(mSyncDisplay, mSync, flags, uint64_t(timeout));
-     } else {
-         DAWN_ASSERT(egl.IsAtLeastVersion(1, 5));
--        result = egl.ClientWaitSync(mDisplay->GetDisplay(), mSync, flags, uint64_t(timeout));
-+        result = egl.ClientWaitSync(mSyncDisplay, mSync, flags, uint64_t(timeout));
-     }
- 
-     DAWN_TRY(CheckEGL(egl, result != EGL_FALSE, "eglClientWaitSync"));
-@@ -199,7 +207,7 @@
-     DAWN_ASSERT(egl.HasExt(EGLExt::WaitSync));
- 
-     constexpr EGLint flags = 0;
--    DAWN_TRY(CheckEGL(egl, egl.WaitSync(mDisplay->GetDisplay(), mSync, flags), "eglWaitSync"));
-+    DAWN_TRY(CheckEGL(egl, egl.WaitSync(mSyncDisplay, mSync, flags), "eglWaitSync"));
-     return {};
+@@ -194,7 +228,11 @@
+     return result;
  }
  
-@@ -207,7 +215,7 @@
+-MaybeError WrappedEGLSync::Wait(const OpenGLFunctions&) {
++MaybeError WrappedEGLSync::Wait(const OpenGLFunctions& gl) {
++    if (mGLSync != nullptr) {
++        gl.WaitSync(mGLSync, 0, GL_TIMEOUT_IGNORED);
++        return {};
++    }
+     const EGLFunctions& egl = mDisplay->egl.get();
+     DAWN_ASSERT(egl.HasExt(EGLExt::WaitSync));
+ 
+@@ -204,6 +242,9 @@
+ }
+ 
+ ResultOrError<EGLint> WrappedEGLSync::DupFD(const OpenGLFunctions&) {
++    if (mGLSync != nullptr) {
++        return DAWN_INTERNAL_ERROR("GL fence syncs cannot be exported as a native fence FD");
++    }
      const EGLFunctions& egl = mDisplay->egl.get();
      DAWN_ASSERT(egl.HasExt(EGLExt::NativeFenceSync));
  
--    EGLint fd = egl.DupNativeFenceFD(mDisplay->GetDisplay(), mSync);
-+    EGLint fd = egl.DupNativeFenceFD(mSyncDisplay, mSync);
-     DAWN_TRY(CheckEGL(egl, fd != EGL_NO_NATIVE_FENCE_FD_ANDROID, "eglDupNativeFenceFDANDROID"));
- 
-     return fd;

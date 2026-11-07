@@ -85,9 +85,9 @@ if grep -q 'GET_PROC_WITH_NAME(CreatePlatformPixmapSurface' "${DAWN_EGL}"; then
   exit 1
 fi
 # crusty: eglChooseConfig returns the current context's config (fails once Dawn's context is current),
-# so cache the window config found first; and fence syncs need the current context's EGLDisplay.
+# so cache the window config found first; and crusty hides the current context from EGL, so internal fences use GL syncs.
 patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-crusty-egl.patch" || true
-grep -q mSyncDisplay build/_deps/dawn-src/src/dawn/native/opengl/UtilsEGL.cpp || { echo "Error: Dawn crusty EGL patch not applied"; exit 1; }
+grep -q mGLSync build/_deps/dawn-src/src/dawn/native/opengl/UtilsEGL.cpp || { echo "Error: Dawn crusty EGL patch not applied"; exit 1; }
 
 ${PORT_BUILD}
 
