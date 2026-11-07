@@ -1,0 +1,70 @@
+--- a/src/dawn/native/opengl/UtilsGL.h
++++ b/src/dawn/native/opengl/UtilsGL.h
+@@ -64,6 +64,13 @@
+                  const char* function,
+                  unsigned int line);
+ 
++bool GLDebugChecks();
++void LogGLErrorIfEnabled(const OpenGLFunctions& gl,
++                         const char* call,
++                         const char* file,
++                         const char* function,
++                         unsigned int line);
++
+ // Check for a single GL error.
+ MaybeError CheckError(const OpenGLFunctions& gl,
+                       const char* call,
+@@ -82,8 +89,13 @@
+ #define DAWN_GL_TRY(gl, call) DAWN_GL_TRY_ALWAYS_CHECK(gl, call)
+ #define DAWN_GL_TRY_IGNORE_ERRORS(gl, call) DAWN_GL_TRY_ALWAYS_CHECK_IGNORE_ERRORS(gl, call)
+ #else
+-#define DAWN_GL_TRY(gl, call) (gl.call)
+-#define DAWN_GL_TRY_IGNORE_ERRORS(gl, call) (gl.call)
++// AURORA_GL_DEBUG=1 (nookery port): log every GL error at the checked call that raised it, or at
++// the next checked call after an unchecked one ("Preexisting"), without failing.
++#define DAWN_GL_TRY(gl, call)                                                \
++    ((GLDebugChecks() ? ClearErrors(gl, __FILE__, __func__, __LINE__) : void()), \
++     (gl.call));                                                              \
++    LogGLErrorIfEnabled(gl, "gl" #call, __FILE__, __func__, __LINE__)
++#define DAWN_GL_TRY_IGNORE_ERRORS(gl, call) DAWN_GL_TRY(gl, call)
+ #endif
+ 
+ }  // namespace dawn::native::opengl
+--- a/src/dawn/native/opengl/UtilsGL.cpp
++++ b/src/dawn/native/opengl/UtilsGL.cpp
+@@ -27,6 +27,7 @@
+ 
+ #include "src/dawn/native/opengl/UtilsGL.h"
+ 
++#include <cstdlib>
+ #include <string>
+ 
+ #include "src/dawn/native/EnumMaskIterator.h"
+@@ -255,6 +256,27 @@
+     DebugLog(file, function, line) << message;
+ }
+ 
++bool GLDebugChecks() {
++    static const bool enabled = std::getenv("AURORA_GL_DEBUG") != nullptr;
++    return enabled;
++}
++
++void LogGLErrorIfEnabled(const OpenGLFunctions& gl,
++                         const char* call,
++                         const char* file,
++                         const char* function,
++                         unsigned int line) {
++    if (!GLDebugChecks()) {
++        return;
++    }
++    GLenum error = gl.GetError();
++    while (error != GL_NO_ERROR && error != GL_CONTEXT_LOST) {
++        WarningLog() << "GL error: " << call << " failed with " << GLErrorAsString(error) << " at "
++                     << file << ":" << line << " (" << function << ")";
++        error = gl.GetError();
++    }
++}
++
+ MaybeError CheckError(const OpenGLFunctions& gl,
+                       const char* call,
+                       const char* file,

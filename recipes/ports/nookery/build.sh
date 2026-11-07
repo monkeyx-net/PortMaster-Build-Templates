@@ -102,6 +102,9 @@ fi
 # so cache the window config found first; and crusty stubs EGL syncs, so internal fences use GL syncs.
 patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-crusty-egl.patch" || true
 grep -q mGLSync build/_deps/dawn-src/src/dawn/native/opengl/UtilsEGL.cpp || { echo "Error: Dawn crusty EGL patch not applied"; exit 1; }
+# AURORA_GL_DEBUG=1 also checks glGetError around Dawn's GL calls and logs failures (no KHR_debug on libmali)
+patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-gl-debug.patch" || true
+grep -q LogGLErrorIfEnabled build/_deps/dawn-src/src/dawn/native/opengl/UtilsGL.h || { echo "Error: Dawn GL debug patch not applied"; exit 1; }
 
 ${PORT_BUILD}
 
