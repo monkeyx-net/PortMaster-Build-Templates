@@ -19,6 +19,7 @@ FILES=(
   "libfreetype.so.6"
   "libpng16.so.16"
   "libjpeg.so.8"
+  "libtheoradec.so.1"
   "libvorbis.so.0"
   "libvorbisfile.so.3"
   "libogg.so.0"
