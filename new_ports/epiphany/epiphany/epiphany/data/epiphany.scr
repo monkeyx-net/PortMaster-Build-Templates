@@ -1,0 +1,5 @@
+sprite pippo gfx/pippo.bmp
+# This file is used to find data dir.
+# future versions of epiphany may use this file
+# for resource configuration
+
