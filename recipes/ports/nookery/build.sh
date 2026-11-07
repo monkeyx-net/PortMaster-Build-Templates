@@ -66,6 +66,14 @@ if ! grep -q 'kEGLLib = "libEGL.so.1"' "${DAWN_GL}"; then
   echo "Error: failed to patch the EGL library name in ${DAWN_GL}"
   exit 1
 fi
+# EGL 1.4 drivers (e.g. Mali blobs) can list EGL_EXT_platform_base without exporting
+# eglCreatePlatformPixmapSurfaceEXT, which Dawn rejects the adapter for but never calls.
+DAWN_EGL=build/_deps/dawn-src/src/dawn/native/opengl/EGLFunctions.cpp
+perl -pi -e 's/GET_PROC_WITH_NAME\(CreatePlatformPixmapSurface, "eglCreatePlatformPixmapSurfaceEXT"\);/CreatePlatformPixmapSurface = reinterpret_cast<decltype(CreatePlatformPixmapSurface)>(GetProcAddress("eglCreatePlatformPixmapSurfaceEXT"));/' "${DAWN_EGL}"
+if grep -q 'GET_PROC_WITH_NAME(CreatePlatformPixmapSurface' "${DAWN_EGL}"; then
+  echo "Error: failed to patch the optional pixmap surface proc in ${DAWN_EGL}"
+  exit 1
+fi
 
 ${PORT_BUILD}
 
