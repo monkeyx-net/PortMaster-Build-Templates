@@ -19,12 +19,11 @@ get_controls
 
 GAMEBINARY=epiphany-game
 GAMEDIR=/$directory/ports/epiphany
-exec > >(tee "$GAMEDIR/log.txt") 2>&1
+> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
-# Needed if config data binding to the conf folder
-#bind_directories ~/.local/share/$GAMEBINARY $GAMEDIR/conf
-export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+bind_files "$HOME/.epiphany" "$GAMEDIR/conf/epiphany.xml"
+chmod +x "./$GAMEBINARY.${DEVICE_ARCH}"
 
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig" ./$GAMEBINARY.${DEVICE_ARCH}

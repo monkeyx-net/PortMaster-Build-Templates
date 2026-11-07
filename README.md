@@ -11,7 +11,7 @@ _Last checked: 2026-11-06_
 | -- | animalcrossing | 🟢 | commit:f7fc9a1 | 2026-04-23 | -- |
 | Defendguin | defendguin | 🟢 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
 | -- | edgar | 🟢 | 1.38 | 2026-03-27 | -- |
-| -- | epiphany | 🟢 | commit:316b357 | 2026-10-15 | -- |
+| -- | epiphany | 🟢 | v0.9.2 | 2026-11-07 | -- |
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | Harmonist | harmonist | 🟢 | v1.0.3 | 2026-08-07 | 2026-01-07 |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |

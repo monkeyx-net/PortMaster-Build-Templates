@@ -1,25 +1,19 @@
 ## Notes
-Thanks to ??? for creating this game.
+Thanks to Giuseppe D'Aquì for creating this game.
 
-[URL](URL)
-
+[https://github.com/giuppe/epiphany-game](https://github.com/giuppe/epiphany-game)
 
 ## Controls
 
 | Button | Action |
 |--|--|
-| Dpad | Move |
-| Left Analog | Move|
-| Right Analog | Run |
-| A | Interact(Equip/Acivate) |
-| B | Inventory |
-| X | Examine |
-| Y | Answer Y |
-| L1 | View Messages |
-| L2 | Settings |
-| R1 | Goto |
-| R2 | Wizard Mode|
+| D-pad / Left Analog | Move |
+| A | Snap / Select |
+| B | Back |
+| X | Pause |
+| Start | Select |
+| Select | Back / Quit |
 
 ## Compiling
 
-Guthub Actions automatic [build](https://github.com/monkeyx-net/shamogu)
+GitHub Actions automatic [build](https://github.com/monkeyx-net/PortMaster-Build-Templates)

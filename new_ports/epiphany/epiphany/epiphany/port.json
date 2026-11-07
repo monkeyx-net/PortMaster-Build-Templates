@@ -11,24 +11,25 @@
     "porter": [
       "monkeyx-net"
     ],
-    "desc": "Your text here.",
+    "desc": "GPL Boulder Dash-like game: collect every gem while dodging falling boulders and bombs.",
     "desc_md": null,
-    "inst": "Ready to play",
+    "inst": "Ready to run. Everything is included.",
     "inst_md": null,
     "genres": [
-      "todo"
+      "puzzle",
+      "action"
     ],
     "image": null,
     "rtr": true,
     "exp": false,
     "runtime": [],
     "store": [],
-    "availability": "",
+    "availability": "free",
     "reqs": [],
     "arch": [
       "aarch64",
       "x86_64"
     ],
-    "min_glibc": ""
+    "min_glibc": "2.31"
   }
 }
