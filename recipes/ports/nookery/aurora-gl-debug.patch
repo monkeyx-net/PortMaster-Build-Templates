@@ -1,0 +1,21 @@
+--- a/extern/aurora/lib/webgpu/gpu.cpp
++++ b/extern/aurora/lib/webgpu/gpu.cpp
+@@ -1,5 +1,6 @@
+ #include "gpu.hpp"
+ 
++#include <cstdlib>
+ #include <algorithm>
+ #include <atomic>
+ #include <array>
+@@ -742,7 +743,10 @@
+                                                         ? dawn::native::BackendValidationLevel::Partial
+                                                         : dawn::native::BackendValidationLevel::Disabled;
+ #else
+-    dawnInstanceDescriptor.backendValidationLevel = dawn::native::BackendValidationLevel::Disabled;
++    // AURORA_GL_DEBUG=1: have Dawn's GL backend log driver errors via KHR_debug (GLES 3.2)
++    dawnInstanceDescriptor.backendValidationLevel = std::getenv("AURORA_GL_DEBUG") != nullptr
++                                                        ? dawn::native::BackendValidationLevel::Partial
++                                                        : dawn::native::BackendValidationLevel::Disabled;
+ #endif
+     dawnInstanceDescriptor.SetLoggingCallback(wgpu_log);
+ #ifdef TRACY_ENABLE

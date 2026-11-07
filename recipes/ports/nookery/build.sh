@@ -44,6 +44,9 @@ grep -q BufferTextureWidth extern/aurora/lib/gfx/resources.hpp || { echo "Error:
 # no-op, so its GL context is never current on Aurora's worker threads
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-single-thread.patch" || true
 grep -q 'BackendType::OpenGLES' extern/aurora/lib/gfx/render_worker.cpp || { echo "Error: Aurora single-thread patch not applied"; exit 1; }
+# Aurora: AURORA_GL_DEBUG=1 enables Dawn's GL debug output (driver error messages in the log)
+patch -p1 -N -r - < "${RECIPE}/aurora-gl-debug.patch" || true
+grep -q AURORA_GL_DEBUG extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora GL debug patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).
@@ -78,6 +81,13 @@ DAWN_GL=build/_deps/dawn-src/src/dawn/native/opengl/BackendGL.cpp
 perl -pi -e 's/const char\* kEGLLib = "libEGL" DAWN_ANGLE_LIBS_SUFFIX ".so";/const char* kEGLLib = "libEGL.so.1";/' "${DAWN_GL}"
 if ! grep -q 'kEGLLib = "libEGL.so.1"' "${DAWN_GL}"; then
   echo "Error: failed to patch the EGL library name in ${DAWN_GL}"
+  exit 1
+fi
+# Dawn's GL debug callback (on with AURORA_GL_DEBUG=1) aborts on the first driver error; log and go on.
+DAWN_GLDEV=build/_deps/dawn-src/src/dawn/native/opengl/DeviceGL.cpp
+perl -0pi -e 's/(<< "\\n    Message: " << message;\n)\n        \/\/ Abort on an error when in Debug mode.\n        DAWN_UNREACHABLE\(\);\n/$1/' "${DAWN_GLDEV}"
+if grep -q 'Abort on an error when in Debug mode' "${DAWN_GLDEV}"; then
+  echo "Error: failed to patch the GL debug callback in ${DAWN_GLDEV}"
   exit 1
 fi
 # EGL 1.4 drivers (e.g. Mali blobs) can list EGL_EXT_platform_base without exporting
