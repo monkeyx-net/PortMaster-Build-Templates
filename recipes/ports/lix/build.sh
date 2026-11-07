@@ -17,7 +17,6 @@ LDC_VERSION=1.39.0
 
 # System libraries devices may lack, bundled in libs.<arch>
 FILES=(
-  "libtheoradec.so.1"
   "libenet.so.7"
   "libfreetype.so.6"
   "libpng16.so.16"
@@ -25,6 +24,8 @@ FILES=(
   "libvorbis.so.0"
   "libvorbisfile.so.3"
   "libogg.so.0"
+  "libtheoradec.so.1"
+  "libbz2.so.1.0"
 )
 
 mkdir -p "$WORK"
