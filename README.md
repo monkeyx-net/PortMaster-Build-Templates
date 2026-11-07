@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-06_
+_Last checked: 2026-11-07_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -17,6 +17,7 @@ _Last checked: 2026-11-06_
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | -- | lix | 🟢 | v0.10.36 | 2026-11-05 | -- |
 | Manic Miner | manicminer | 🟢 | 1.1.1 | 2026-03-01 | 2025-11-04 |
+| -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
 | Shamogu | shamogu | 🟢 | v1.6.0 | 2026-09-25 | 2026-08-21 |
 | Space Invaders Part 2 | sip2 | 🟢 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
@@ -26,7 +27,7 @@ _Last checked: 2026-11-06_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🟢 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 17 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 18 &nbsp; 🟢 OK: 18 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
