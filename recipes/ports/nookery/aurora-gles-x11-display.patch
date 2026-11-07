@@ -1,6 +1,6 @@
 --- a/extern/aurora/lib/webgpu/gpu.cpp
 +++ b/extern/aurora/lib/webgpu/gpu.cpp
-@@ -33,6 +33,14 @@
+@@ -33,6 +33,30 @@
  #include <dawn/native/DawnNative.h>
  #endif
  
@@ -9,13 +9,29 @@
 +#include <SDL3/SDL_properties.h>
 +#include <SDL3/SDL_video.h>
 +#include <dawn/native/OpenGLBackend.h>
++#include <cstring>
 +#include <dlfcn.h>
++
++namespace {
++// Preloaded EGL wrappers (Westonpack's crusty) only redirect some names in eglGetProcAddress; their
++// eglSwapBuffers, which presents through SDL2 (KMSDRM page flip), is only reachable as a global
++// symbol. Prefer the global one (the same libEGL function without a wrapper).
++dawn::native::opengl::EGLGetProcProc g_eglGetProc = nullptr;
++dawn::native::opengl::EGLFunctionPointerType aurora_egl_get_proc(const char* name) {
++  if (std::strcmp(name, "eglSwapBuffers") == 0) {
++    if (void* global = dlsym(RTLD_DEFAULT, name)) {
++      return reinterpret_cast<dawn::native::opengl::EGLFunctionPointerType>(global);
++    }
++  }
++  return g_eglGetProc(name);
++}
++} // namespace
 +#endif
 +
  namespace aurora::webgpu {
  static Module Log("aurora::gpu");
  
-@@ -766,7 +774,31 @@
+@@ -766,7 +790,32 @@
      return false;
    }
    {
@@ -35,7 +51,8 @@
 +      auto getDisplay = egl ? reinterpret_cast<dawn::native::opengl::EGLDisplay (*)(void*)>(dlsym(egl, "eglGetDisplay")) : nullptr;
 +      dawn::native::opengl::EGLDisplay display = getProc && getDisplay ? getDisplay(xDisplay) : nullptr;
 +      if (display != nullptr) {
-+        glProcOptions.getProc = getProc;
++        g_eglGetProc = getProc;
++        glProcOptions.getProc = aurora_egl_get_proc;
 +        glProcOptions.display = display;
 +        adapterChain = &glProcOptions;
 +        Log.info("Using the window's X11 display for EGL");
