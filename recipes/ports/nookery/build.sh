@@ -6,7 +6,8 @@ PORT_FOLDER="$1"
 PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
-PORT_VERSION=$(jq -r '.source.port_version' "recipes/ports/${PORT_FOLDER}/recipe.json")
+RECIPE="${PWD}/recipes/ports/${PORT_FOLDER}"
+PORT_VERSION=$(jq -r '.source.port_version' "${RECIPE}/recipe.json")
 
 # Aurora builds its disc reader (nod) from Rust source via Corrosion, and the builder images do
 # not ship Rust, so install a toolchain into $HOME (HOME=/tmp inside the build container).
@@ -30,6 +31,11 @@ if [[ ! -f extern/aurora/CMakeLists.txt || ! -f extern/borealis/CMakeLists.txt ]
   cp -a /tmp/nookery-git/extern/borealis/. extern/borealis/
   rm -rf /tmp/nookery-git
 fi
+
+# Aurora: give Dawn's EGL the window's X11 display instead of EGL_DEFAULT_DISPLAY (crusty/Mali need it)
+# (-N and the grep allow re-running on an already patched source)
+patch -p1 -N -r - < "${RECIPE}/aurora-gles-x11-display.patch" || true
+grep -q AURORA_GLES_X11_DISPLAY extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).

@@ -1,0 +1,49 @@
+--- a/extern/aurora/lib/webgpu/gpu.cpp
++++ b/extern/aurora/lib/webgpu/gpu.cpp
+@@ -33,6 +33,14 @@
+ #include <dawn/native/DawnNative.h>
+ #endif
+ 
++#if defined(__linux__) && !defined(__ANDROID__) && defined(DAWN_ENABLE_BACKEND_OPENGLES)
++#define AURORA_GLES_X11_DISPLAY 1
++#include <SDL3/SDL_properties.h>
++#include <SDL3/SDL_video.h>
++#include <dawn/native/OpenGLBackend.h>
++#include <dlfcn.h>
++#endif
++
+ namespace aurora::webgpu {
+ static Module Log("aurora::gpu");
+ 
+@@ -766,7 +774,31 @@
+     return false;
+   }
+   {
++    const wgpu::ChainedStruct* adapterChain = nullptr;
++#ifdef AURORA_GLES_X11_DISPLAY
++    // Dawn opens EGL_DEFAULT_DISPLAY. Like SDL, pass the window's X11 display instead: EGL drivers
++    // that only map a native X11 display (crusty_x11egl on Mali under Westonpack) reject the default.
++    dawn::native::opengl::RequestAdapterOptionsGetGLProc glProcOptions;
++    if (backend == wgpu::BackendType::OpenGLES) {
++      SDL_Window* sdlWindow = window::get_sdl_window();
++      void* xDisplay = sdlWindow ? SDL_GetPointerProperty(SDL_GetWindowProperties(sdlWindow),
++                                                          SDL_PROP_WINDOW_X11_DISPLAY_POINTER, nullptr)
++                                 : nullptr;
++      void* egl = xDisplay ? dlopen("libEGL.so.1", RTLD_NOW | RTLD_GLOBAL) : nullptr;
++      auto getProc = egl ? reinterpret_cast<dawn::native::opengl::EGLGetProcProc>(dlsym(egl, "eglGetProcAddress"))
++                         : nullptr;
++      auto getDisplay = egl ? reinterpret_cast<dawn::native::opengl::EGLDisplay (*)(void*)>(dlsym(egl, "eglGetDisplay")) : nullptr;
++      dawn::native::opengl::EGLDisplay display = getProc && getDisplay ? getDisplay(xDisplay) : nullptr;
++      if (display != nullptr) {
++        glProcOptions.getProc = getProc;
++        glProcOptions.display = display;
++        adapterChain = &glProcOptions;
++        Log.info("Using the window's X11 display for EGL");
++      }
++    }
++#endif
+     const wgpu::RequestAdapterOptions options{
++        .nextInChain = adapterChain,
+         .featureLevel = wgpu::FeatureLevel::Compatibility,
+         .powerPreference = wgpu::PowerPreference::HighPerformance,
+         .backendType = backend,
