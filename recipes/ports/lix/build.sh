@@ -90,7 +90,7 @@ unzip -q -o "${WORK}/lix-music.zip" -d "$ASSETS/"
 # Game files go in one archive that the launcher extracts on first run (thousands of small
 # files install slowly from the zip). Sorted, fixed mtime/owner and gzip -n, so both arch
 # builds write the same assets.tar.gz and an unchanged build does not change the file.
-tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -C "$ASSETS" -cf - data images levels music \
+tar --sort=name --mtime='2020-01-01 00:00Z' --owner=0 --group=0 --numeric-owner -C "$ASSETS" -cf - data images levels music \
     | gzip -9n > "${DIST}/assets.tar.gz"
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C "$DIST" .

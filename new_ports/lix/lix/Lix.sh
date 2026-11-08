@@ -23,24 +23,6 @@ cd "$GAMEDIR"
 
 $ESUDO chmod +x "$GAMEDIR/lix.${DEVICE_ARCH}"
 
-# Game files ship as assets.tar.gz; extract on first run and after an update.
-# levels/ is extracted over, not removed, so levels saved by the editor are kept.
-ARCHIVE_FILES=(assets.tar.gz)
-
-die() { pm_message "Error: $1"; sleep 5; exit 1; }
-
-if [[ -f ${ARCHIVE_FILES[0]} ]]; then
-    [[ -d data ]] && { pm_message "Removing old game data"; $ESUDO rm -rf data images music; }
-    pm_message "Extracting game data, this can take a few minutes..."
-    for f in "${ARCHIVE_FILES[@]}"; do
-        ( set -o pipefail; gunzip -c "$f" | tar xf - ) || die "Extraction failed."
-    done
-    pm_message "Extraction successful."
-    $ESUDO rm -f "${ARCHIVE_FILES[@]}"
-elif [[ ! -d data ]]; then
-    die "No data directory present and archive files not found."
-fi
-
 # First run: Lix asks for a player name, which needs a keyboard. Pre-seed one
 # and default to fullscreen at the device's resolution.
 if [ ! -f "$GAMEDIR/user/options.sdl" ]; then
@@ -61,6 +43,37 @@ $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
 if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   pm_finish
   exit 0
+fi
+
+# Game files ship as assets.tar.gz; extract on first run and after an update.
+# Runs after the launcher, so the message window is not on screen with it.
+# levels/ is extracted over, not removed, so levels saved by the editor are kept.
+# The message is shown with PortMaster's portmsg run as this user, not pm_message:
+# on sudo CFWs (ArkOS/dArkOS) pm_message's root copy can't be closed again.
+# Older PortMaster without portmsg falls back to pm_message.
+PORTMSG="$controlfolder/portmsg.${DEVICE_ARCH}"
+
+ARCHIVE_FILE="assets.tar.gz"
+if [[ -f "$ARCHIVE_FILE" ]]; then
+    [[ -d data ]] && $ESUDO rm -rf data images music
+    MSG="Extracting game data, this can take a few minutes..."
+    if [ -x "$PORTMSG" ]; then
+        "$PORTMSG" --wait --type info --text "$MSG" &
+        MSG_PID=$!
+    else
+        pm_message "$MSG"
+    fi
+    gunzip -c "$ARCHIVE_FILE" | tar --no-same-owner -m -xf -
+    EXTRACT_RC=$?
+    [ -n "$MSG_PID" ] && { kill "$MSG_PID"; wait "$MSG_PID"; }
+    if [ $EXTRACT_RC -ne 0 ]; then
+        pm_show_error "Extraction failed. Check free space and launch again."
+        exit 1
+    fi
+    $ESUDO rm -f "$ARCHIVE_FILE"
+elif [[ ! -d data ]]; then
+    pm_show_error "No game data and $ARCHIVE_FILE not found. Reinstall the port."
+    exit 1
 fi
 
 # Launcher settings: minimum cursor scale (Lix default is 1), gptokeyb mouse_scale
