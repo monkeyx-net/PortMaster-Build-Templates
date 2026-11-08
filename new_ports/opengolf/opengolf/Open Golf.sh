@@ -24,8 +24,16 @@ GAMEDIR=/$directory/ports/opengolf
 cd $GAMEDIR
 chmod +x "$GAMEBINARY.${DEVICE_ARCH}"
 
+# Launcher (Love2D): Play and the controls image. There are no game settings, so no config file (-)
+rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
-$LOVE_RUN controls/controls.love controls/controls.png 10 $DISPLAY_WIDTH $DISPLAY_HEIGHT
+$LOVE_RUN "$GAMEDIR/launcher" - "$GAMEDIR/launch.cfg"
+
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
+  pm_finish
+  exit 0
+fi
 
 # The game reads the gamepad itself; gptokeyb only provides the exit hotkey
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" &

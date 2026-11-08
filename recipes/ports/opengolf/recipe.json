@@ -15,5 +15,10 @@
     "delay": 8,
     "env": "GOLF_WINDOW=640x480"
   },
-  "controls": "controls/controls.png"
+  "controls": "launcher/controls.png",
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ]
 }
