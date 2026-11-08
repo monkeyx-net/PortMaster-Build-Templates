@@ -24,6 +24,7 @@ cd "$GAMEDIR"
 $ESUDO chmod +x "$GAMEDIR/lix.${DEVICE_ARCH}"
 
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 
 # Launcher (Love2D): player name (in user/options.sdl), cursor size, mouse speed and
 # fullscreen mode (in lix.cfg), and the controls image
@@ -31,7 +32,6 @@ rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
 
-# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
 if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   pm_finish
   exit 0
@@ -47,8 +47,6 @@ if [[ -f assets.tar.gz || ! -d data ]]; then
     $ESUDO rm -f assets.tar.gz
 fi
 
-# Launcher settings: minimum cursor scale (Lix default is 1), gptokeyb mouse_scale
-# (lower is faster) and hardware (2, default) or software (1) fullscreen
 source "$GAMEDIR/lix.cfg"
 export LIX_CURSOR_MIN_SCALE
 sed -i "s/^mouse_scale = .*/mouse_scale = $MOUSE_SCALE/" "$GAMEDIR/lix.gptk"
@@ -58,11 +56,6 @@ else
   FULLSCREEN="--hardfull=${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}"
 fi
 
-# Bundled libs only for Lix: their libfreetype is older than some CFWs' and breaks
-# the launcher's system libcairo (dArkOS: undefined symbol FT_Get_Transform)
-export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
-
-# Lix is mouse-driven: gptokeyb turns the left stick into a mouse
 $GPTOKEYB "lix.${DEVICE_ARCH}" -c "$GAMEDIR/lix.gptk" &
 pm_platform_helper "$GAMEDIR/lix.${DEVICE_ARCH}"
 ./lix.${DEVICE_ARCH} "$FULLSCREEN"
