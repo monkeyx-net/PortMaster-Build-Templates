@@ -14,7 +14,9 @@
   "includes": [
     "launcher/main.lua",
     "launcher/osk.lua",
-    "launcher/conf.lua"
+    "launcher/conf.lua",
+    "extract/main.lua",
+    "extract/conf.lua"
   ],
   "controls": "launcher/controls.png"
 }

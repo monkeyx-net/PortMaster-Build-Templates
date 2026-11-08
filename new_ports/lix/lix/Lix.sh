@@ -23,18 +23,10 @@ cd "$GAMEDIR"
 
 $ESUDO chmod +x "$GAMEDIR/lix.${DEVICE_ARCH}"
 
-# First run: Lix asks for a player name, which needs a keyboard. Pre-seed one
-# and default to fullscreen at the device's resolution.
-if [ ! -f "$GAMEDIR/user/options.sdl" ]; then
-  mkdir -p "$GAMEDIR/user"
-  printf 'userName "Player"\nscreenMode 1\n' > "$GAMEDIR/user/options.sdl"
-fi
-
-export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
-# Launcher (Love2D): cursor size, mouse speed and fullscreen mode, saved in lix.cfg,
-# and the controls image
+# Launcher (Love2D): player name (in user/options.sdl), cursor size, mouse speed and
+# fullscreen mode (in lix.cfg), and the controls image
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
@@ -46,29 +38,13 @@ if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
 fi
 
 # Game files ship as assets.tar.gz; extract on first run and after an update.
-PORTMSG="$controlfolder/portmsg.${DEVICE_ARCH}"
-
-ARCHIVE_FILE="assets.tar.gz"
-if [[ -f "$ARCHIVE_FILE" ]]; then
+# levels/ is extracted over, not removed, so levels saved by the editor are kept.
+# extract/ (shared Love2D include) shows the message while it extracts and closes when
+# done; it also shows the error if assets.tar.gz is missing or extraction fails.
+if [[ -f assets.tar.gz || ! -d data ]]; then
     [[ -d data ]] && $ESUDO rm -rf data images music
-    MSG="Extracting game data, this can take a few minutes..."
-    if [ -x "$PORTMSG" ]; then
-        "$PORTMSG" --wait --type info --text "$MSG" &
-        MSG_PID=$!
-    else
-        pm_message "$MSG"
-    fi
-    gunzip -c "$ARCHIVE_FILE" | tar -xof -
-    EXTRACT_RC=$?
-    [ -n "$MSG_PID" ] && { kill "$MSG_PID"; wait "$MSG_PID"; }
-    if [ $EXTRACT_RC -ne 0 ]; then
-        pm_show_error "Extraction failed. Check free space and launch again."
-        exit 1
-    fi
-    $ESUDO rm -f "$ARCHIVE_FILE"
-elif [[ ! -d data ]]; then
-    pm_show_error "No game data and $ARCHIVE_FILE not found. Reinstall the port."
-    exit 1
+    $LOVE_RUN "$GAMEDIR/extract" assets.tar.gz || exit 1
+    $ESUDO rm -f assets.tar.gz
 fi
 
 # Launcher settings: minimum cursor scale (Lix default is 1), gptokeyb mouse_scale
@@ -81,6 +57,10 @@ if [ "$SCREEN_MODE" = "1" ]; then
 else
   FULLSCREEN="--hardfull=${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}"
 fi
+
+# Bundled libs only for Lix: their libfreetype is older than some CFWs' and breaks
+# the launcher's system libcairo (dArkOS: undefined symbol FT_Get_Transform)
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
 
 # Lix is mouse-driven: gptokeyb turns the left stick into a mouse
 $GPTOKEYB "lix.${DEVICE_ARCH}" -c "$GAMEDIR/lix.gptk" &
