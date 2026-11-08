@@ -5,7 +5,7 @@ Thanks to [FlyingMeta](https://github.com/flyngmt) for Nookery, the PC port of A
 
 You need your own copy of the game: place an Animal Crossing (USA, GAFE01 Rev 0) disc image (`.rvz`, `.iso`, `.gcm` or `.ciso`) in `ports/nookery`. Saves and settings go to `ports/nookery/conf`.
 
-Nookery renders through Dawn (WebGPU). This port uses Dawn's OpenGL ES backend (GLES 3.1 required) and runs under the Westonpack runtime.
+Nookery renders through Dawn (WebGPU). This port uses Dawn's OpenGL ES backend (GLES 3.1 required). The screen is opened with the CFW's own SDL2 (Dawn renders into its EGL surface), so no Westonpack runtime is needed; the bundled SDL3 only handles input.
 
 ## Launcher
 A settings launcher opens before the game: frame rate (30/60), aspect (Auto widens the view on wide screens and letterboxes on square ones, or always 4:3) and render resolution (screen or the GameCube's 640x480, faster on high-resolution screens). Choose Play, or wait for it to start the game.

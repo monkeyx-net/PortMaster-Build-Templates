@@ -1,0 +1,69 @@
+diff --git a/src/dawn/native/Surface.cpp b/src/dawn/native/Surface.cpp
+--- a/src/dawn/native/Surface.cpp
++++ b/src/dawn/native/Surface.cpp
+@@ -129,6 +129,15 @@ ResultOrError<UnpackedPtr<SurfaceDescriptor>> ValidateSurfaceDescriptor(
+             DAWN_INVALID_IF(subDesc->window == nullptr, "Android window is not set.");
+             return descriptor;
+         }
++#elif DAWN_PLATFORM_IS(LINUX)
++        // PortMaster: on Linux, the "Android window" is an existing EGLSurface owned by the
++        // application (SDL2's KMSDRM window), which the GL backend renders into.
++        case wgpu::SType::SurfaceSourceAndroidNativeWindow: {
++            auto* subDesc = descriptor.Get<SurfaceSourceAndroidNativeWindow>();
++            DAWN_ASSERT(subDesc != nullptr);
++            DAWN_INVALID_IF(subDesc->window == nullptr, "EGL surface is not set.");
++            return descriptor;
++        }
+ #endif  // DAWN_PLATFORM_IS(ANDROID)
+ #if defined(DAWN_ENABLE_BACKEND_METAL)
+         case wgpu::SType::SurfaceSourceMetalLayer: {
+diff --git a/src/dawn/native/opengl/SwapChainEGL.cpp b/src/dawn/native/opengl/SwapChainEGL.cpp
+--- a/src/dawn/native/opengl/SwapChainEGL.cpp
++++ b/src/dawn/native/opengl/SwapChainEGL.cpp
+@@ -79,6 +79,7 @@ MaybeError SwapChainEGL::Initialize(SwapChainBase* previousSwapChain) {
+             SwapChainEGL* previousEGLSwapChain =
+                 reinterpret_cast<SwapChainEGL*>(ToBackend(previousSwapChain));
+             std::swap(previousEGLSwapChain->mEGLSurface, mEGLSurface);
++            std::swap(previousEGLSwapChain->mExternalEGLSurface, mExternalEGLSurface);
+         }
+ 
+         previousSwapChain->DetachFromSurface();
+@@ -160,9 +161,12 @@ ResultOrError<SwapChainTextureInfo> SwapChainEGL::GetCurrentTextureImpl() {
+ 
+ void SwapChainEGL::DetachFromSurfaceImpl() {
+     if (mEGLSurface != EGL_NO_SURFACE) {
+-        Device* device = ToBackend(GetDevice());
+-        device->GetEGL(false).DestroySurface(device->GetEGLDisplay(), mEGLSurface);
++        if (!mExternalEGLSurface) {
++            Device* device = ToBackend(GetDevice());
++            device->GetEGL(false).DestroySurface(device->GetEGLDisplay(), mEGLSurface);
++        }
+         mEGLSurface = EGL_NO_SURFACE;
++        mExternalEGLSurface = false;
+     }
+ 
+     if (mTexture != nullptr) {
+@@ -209,6 +213,12 @@ MaybeError SwapChainEGL::CreateEGLSurface(const DisplayEGL* display) {
+                     eglDisplay, config,
+                     static_cast<ANativeWindow*>(surface->GetAndroidNativeWindow()), attribs.data());
+                 return {};
++#elif DAWN_PLATFORM_IS(LINUX)
++            case Surface::Type::AndroidWindow:
++                // PortMaster: adopt the application's EGLSurface (see Surface.cpp)
++                mEGLSurface = static_cast<EGLSurface>(surface->GetAndroidNativeWindow());
++                mExternalEGLSurface = true;
++                return {};
+ #endif  // DAWN_PLATFORM_IS(ANDROID)
+ #if defined(DAWN_ENABLE_BACKEND_METAL)
+             case Surface::Type::MetalLayer:
+diff --git a/src/dawn/native/opengl/SwapChainEGL.h b/src/dawn/native/opengl/SwapChainEGL.h
+--- a/src/dawn/native/opengl/SwapChainEGL.h
++++ b/src/dawn/native/opengl/SwapChainEGL.h
+@@ -55,6 +55,7 @@ class SwapChainEGL final : public SwapChainBase {
+     MaybeError CreateEGLSurface(const DisplayEGL* display);
+ 
+     EGLSurface mEGLSurface = EGL_NO_SURFACE;
++    bool mExternalEGLSurface = false;  // owned by the application, never destroyed
+     Ref<Texture> mTexture;
+     Ref<TextureView> mTextureView;
+ 

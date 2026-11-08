@@ -57,38 +57,12 @@ NOOKERY_RENDER_SCALE=0
 
 $ESUDO chmod +x "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
-export game_libs="$LD_LIBRARY_PATH"
-
-# Aurora renders through Dawn (WebGPU), which only creates surfaces on X11/Wayland windows,
-# so run it under Westonpack with the device's native EGL/GLES (crusty_x11egl).
-weston_dir=/tmp/weston
-$ESUDO mkdir -p "${weston_dir}"
-weston_runtime="weston_pkg_0.2"
-if [ ! -f "$controlfolder/libs/${weston_runtime}.squashfs" ]; then
-  if [ ! -f "$controlfolder/harbourmaster" ]; then
-    pm_message "This port requires the latest PortMaster to run, please go to https://portmaster.games/ for more info."
-    sleep 5
-    exit 1
-  fi
-  $ESUDO $controlfolder/harbourmaster --quiet --no-check runtime_check "${weston_runtime}.squashfs"
-fi
-if [[ "$PM_CAN_MOUNT" != "N" ]]; then
-  $ESUDO umount "${weston_dir}"
-fi
-$ESUDO mount "$controlfolder/libs/${weston_runtime}.squashfs" "${weston_dir}"
 
 # The game reads the gamepad itself (SDL3); gptokeyb only provides the exit hotkey
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
+# Dawn (WebGPU) cannot open a KMSDRM screen: AURORA_SDL2_DISPLAY=1 opens it with the CFW's SDL2
+HOME="$CONFDIR" AURORA_SDL2_DISPLAY=1 NOOKERY_ASPECT=$NOOKERY_ASPECT NOOKERY_RENDER_SCALE=$NOOKERY_RENDER_SCALE \
+./$GAMEBINARY.${DEVICE_ARCH} --user-dir "$CONFDIR" --disc "$disc"
 
-# westonwrap evals the command line, so quote the disc path (names like "Animal Crossing (USA).iso")
-$ESUDO env WRAPPED_LIBRARY_PATH=$game_libs \
-$weston_dir/westonwrap.sh headless noop kiosk crusty_x11egl \
-HOME=$CONFDIR SDL_VIDEO_DRIVER=x11 NOOKERY_ASPECT=$NOOKERY_ASPECT NOOKERY_RENDER_SCALE=$NOOKERY_RENDER_SCALE \
-$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} --user-dir "$CONFDIR" --disc "$(printf '%q' "$disc")"
-
-$ESUDO $weston_dir/westonwrap.sh cleanup
-if [[ "$PM_CAN_MOUNT" != "N" ]]; then
-  $ESUDO umount "${weston_dir}"
-fi
 pm_finish

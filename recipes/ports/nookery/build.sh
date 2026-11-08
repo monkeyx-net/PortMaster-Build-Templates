@@ -51,6 +51,10 @@ grep -q NOOKERY_RENDER_SCALE pc/src/aurora_main.cpp || { echo "Error: Nookery di
 # Aurora: AURORA_GL_DEBUG=1 enables Dawn's GL debug output (driver error messages in the log)
 patch -p1 -N -r - < "${RECIPE}/aurora-gl-debug.patch" || true
 grep -q AURORA_GL_DEBUG extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora GL debug patch not applied"; exit 1; }
+# Aurora: AURORA_SDL2_DISPLAY=1 presents through the CFW's SDL2 (fullscreen KMSDRM GL window; Dawn
+# renders into its EGL surface and SDL_GL_SwapWindow page-flips), so no Westonpack; SDL3 keeps input
+patch -p1 -N -r - < "${RECIPE}/aurora-sdl2-display.patch" || true
+grep -q AURORA_SDL2_DISPLAY extern/aurora/lib/window.cpp || { echo "Error: Aurora SDL2 display patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).
@@ -80,7 +84,7 @@ cmake -S . -B build -G Ninja \
   -DDAWN_ENABLE_OPENGLES=ON
 
 # Dawn (fetched during configure) dlopens the unversioned "libEGL.so", a dev symlink most CFWs do not
-# ship; under Westonpack it should also pick the same libEGL.so.1 as crusty. Load the soname instead.
+# ship, and it must be the libEGL.so.1 that SDL2 and Aurora use. Load the soname instead.
 DAWN_GL=build/_deps/dawn-src/src/dawn/native/opengl/BackendGL.cpp
 perl -pi -e 's/const char\* kEGLLib = "libEGL" DAWN_ANGLE_LIBS_SUFFIX ".so";/const char* kEGLLib = "libEGL.so.1";/' "${DAWN_GL}"
 if ! grep -q 'kEGLLib = "libEGL.so.1"' "${DAWN_GL}"; then
@@ -109,6 +113,9 @@ grep -q mGLSync build/_deps/dawn-src/src/dawn/native/opengl/UtilsEGL.cpp || { ec
 # AURORA_GL_DEBUG=1 also checks glGetError around Dawn's GL calls and logs failures (no KHR_debug on libmali)
 patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-gl-debug.patch" || true
 grep -q LogGLErrorIfEnabled build/_deps/dawn-src/src/dawn/native/opengl/UtilsGL.h || { echo "Error: Dawn GL debug patch not applied"; exit 1; }
+# Let a Linux "Android window" surface carry an existing EGLSurface (SDL2's), which Dawn never destroys
+patch -d build/_deps/dawn-src -p1 -N -r - < "${RECIPE}/dawn-external-egl-surface.patch" || true
+grep -q mExternalEGLSurface build/_deps/dawn-src/src/dawn/native/opengl/SwapChainEGL.h || { echo "Error: Dawn external EGL surface patch not applied"; exit 1; }
 
 ${PORT_BUILD}
 
