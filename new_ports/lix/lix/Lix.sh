@@ -54,6 +54,7 @@ export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 # Launcher (Love2D): cursor size, mouse speed and fullscreen mode, saved in lix.cfg,
 # and the controls image
 rm -f "$GAMEDIR/launch.cfg"
+source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
 
 # Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
