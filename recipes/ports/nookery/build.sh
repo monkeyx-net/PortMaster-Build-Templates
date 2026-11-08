@@ -44,6 +44,9 @@ grep -q BufferTextureWidth extern/aurora/lib/gfx/resources.hpp || { echo "Error:
 # crusty's eglMakeCurrent is a no-op, so its GL context is never current on any other thread
 patch -p1 -N -r - < "${RECIPE}/aurora-gles-single-thread.patch" || true
 grep -q gl_defer extern/aurora/lib/webgpu/gpu.cpp && grep -q 'BackendType::OpenGLES' extern/aurora/lib/gfx/render_worker.cpp || { echo "Error: Aurora single-thread patch not applied"; exit 1; }
+# Nookery: letterbox the 4:3 view on screens narrower than 4:3 (the stretch policy crops it on 1:1)
+patch -p1 -N -r - < "${RECIPE}/nookery-narrow-letterbox.patch" || true
+grep -q AURORA_VIEWPORT_FIT pc/src/aurora_main.cpp || { echo "Error: Nookery letterbox patch not applied"; exit 1; }
 # Aurora: AURORA_GL_DEBUG=1 enables Dawn's GL debug output (driver error messages in the log)
 patch -p1 -N -r - < "${RECIPE}/aurora-gl-debug.patch" || true
 grep -q AURORA_GL_DEBUG extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Aurora GL debug patch not applied"; exit 1; }
