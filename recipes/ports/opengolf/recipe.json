@@ -1,0 +1,19 @@
+{
+  "recipe_version": 1,
+  "name": "opengolf.zip",
+  "port_json": "new_ports/opengolf/opengolf/opengolf/port.json",
+  "source": {
+    "date_updated": "2026-11-08",
+    "port_exe": "golf",
+    "port_build": "cmake -S . -B cmake-build -DGOLF_PORTMASTER=ON -DCMAKE_BUILD_TYPE=Release",
+    "port_checksum": "4deeb46aee020e3e1abf22b69eff76cd2c1c60fbf08d07cce5cb853b3e3093c9",
+    "port_url": "https://github.com/monkeyx-net/Open-Golf/archive/refs/heads/portmaster.zip",
+    "port_download": "https://github.com/monkeyx-net/Open-Golf/archive/16ccbf3733da4745cf420bbd836dec104eb9f09a.zip",
+    "port_version": "commit:16ccbf3"
+  },
+  "screenshot": {
+    "delay": 8,
+    "env": "GOLF_WINDOW=640x480"
+  },
+  "controls": "controls/controls.png"
+}

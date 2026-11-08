@@ -25,6 +25,7 @@ on:
           - 'lix'
           - 'manicminer'
           - 'nookery'
+          - 'opengolf'
           - 'pikifen'
           - 'recwars'
           - 'shamogu'
