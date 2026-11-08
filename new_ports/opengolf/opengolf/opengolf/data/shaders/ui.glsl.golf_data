@@ -1,0 +1,178 @@
+{
+    "glsl330": {
+        "fs": {
+            "source": "#version 330\n\nuniform vec4 ui_fs_params[3];\nuniform sampler2D ui_texture;\n\nin vec2 frag_texture_coord;\nlayout(location = 0) out vec4 g_frag_color;\n\nvoid main()\n{\n    vec2 tc = vec2(ui_fs_params[1].y, ui_fs_params[1].z) + (frag_texture_coord * vec2(ui_fs_params[1].w, ui_fs_params[2].x));\n    g_frag_color = texture(ui_texture, tc);\n    g_frag_color.w = ui_fs_params[1].x * ((ui_fs_params[2].y * g_frag_color.x) + ((1.0 - ui_fs_params[2].y) * g_frag_color.w));\n    if (g_frag_color.w < 0.00999999977648258209228515625)\n    {\n        discard;\n    }\n    vec3 _101 = (((g_frag_color.xyz * (1.0 - ui_fs_params[0].w)) + (ui_fs_params[0].xyz * ui_fs_params[0].w)) * (1.0 - ui_fs_params[2].y)) + (ui_fs_params[0].xyz * ui_fs_params[2].y);\n    g_frag_color = vec4(_101.x, _101.y, _101.z, g_frag_color.w);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "frag_texture_coord",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "ui_fs_params",
+                    "size": 48,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        },
+                        {
+                            "name": "alpha",
+                            "offset": 16,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_x",
+                            "offset": 20,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_y",
+                            "offset": 24,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_dx",
+                            "offset": 28,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_dy",
+                            "offset": 32,
+                            "size": 4
+                        },
+                        {
+                            "name": "is_font",
+                            "offset": 36,
+                            "size": 4
+                        }
+                    ]
+                }
+            ],
+            "textures": [
+                {
+                    "name": "ui_texture",
+                    "binding": 0
+                }
+            ]
+        },
+        "vs": {
+            "source": "#version 330\n\nuniform vec4 ui_vs_params[4];\nout vec2 frag_texture_coord;\nlayout(location = 1) in vec2 texture_coord;\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    frag_texture_coord = texture_coord;\n    gl_Position = mat4(ui_vs_params[0], ui_vs_params[1], ui_vs_params[2], ui_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "texture_coord",
+                    "location": 1
+                },
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "ui_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "gles300": {
+        "fs": {
+            "source": "#version 300 es\nprecision mediump float;\nprecision highp int;\n\nuniform highp vec4 ui_fs_params[3];\nuniform highp sampler2D ui_texture;\n\nin highp vec2 frag_texture_coord;\nlayout(location = 0) out highp vec4 g_frag_color;\n\nvoid main()\n{\n    highp vec2 tc = vec2(ui_fs_params[1].y, ui_fs_params[1].z) + (frag_texture_coord * vec2(ui_fs_params[1].w, ui_fs_params[2].x));\n    g_frag_color = texture(ui_texture, tc);\n    g_frag_color.w = ui_fs_params[1].x * ((ui_fs_params[2].y * g_frag_color.x) + ((1.0 - ui_fs_params[2].y) * g_frag_color.w));\n    if (g_frag_color.w < 0.00999999977648258209228515625)\n    {\n        discard;\n    }\n    highp vec3 _101 = (((g_frag_color.xyz * (1.0 - ui_fs_params[0].w)) + (ui_fs_params[0].xyz * ui_fs_params[0].w)) * (1.0 - ui_fs_params[2].y)) + (ui_fs_params[0].xyz * ui_fs_params[2].y);\n    g_frag_color = vec4(_101.x, _101.y, _101.z, g_frag_color.w);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "frag_texture_coord",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "ui_fs_params",
+                    "size": 48,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        },
+                        {
+                            "name": "alpha",
+                            "offset": 16,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_x",
+                            "offset": 20,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_y",
+                            "offset": 24,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_dx",
+                            "offset": 28,
+                            "size": 4
+                        },
+                        {
+                            "name": "tex_dy",
+                            "offset": 32,
+                            "size": 4
+                        },
+                        {
+                            "name": "is_font",
+                            "offset": 36,
+                            "size": 4
+                        }
+                    ]
+                }
+            ],
+            "textures": [
+                {
+                    "name": "ui_texture",
+                    "binding": 0
+                }
+            ]
+        },
+        "vs": {
+            "source": "#version 300 es\n\nuniform vec4 ui_vs_params[4];\nout vec2 frag_texture_coord;\nlayout(location = 1) in vec2 texture_coord;\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    frag_texture_coord = texture_coord;\n    gl_Position = mat4(ui_vs_params[0], ui_vs_params[1], ui_vs_params[2], ui_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "texture_coord",
+                    "location": 1
+                },
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "ui_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

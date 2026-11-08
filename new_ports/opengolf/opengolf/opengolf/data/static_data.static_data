@@ -1,0 +1,19 @@
+[
+    "data/models/ui_square.obj",
+    "data/models/cube.obj",
+    "data/models/render_image_square.obj",
+    "data/models/editor/ball_start.obj",
+    "data/models/golf_ball.obj",
+
+    "data/textures/golf_ball_normal_map.jpg",
+    "data/textures/fallback.png",
+    "data/textures/colors/white.png",
+    "data/textures/colors/black.png",
+    "data/textures/colors/red.png",
+    "data/textures/colors/yellow.png",
+    "data/textures/aimer.png",
+    "data/textures/arrow.png",
+    "data/textures/water_noise_1.png",
+    "data/textures/water_noise_2.png",
+    "data/textures/water_noise_3.png"
+]

@@ -1,0 +1,90 @@
+{
+    "glsl330": {
+        "fs": {
+            "source": "#version 330\n\nuniform vec4 solid_color_material_fs_params[1];\nlayout(location = 0) out vec4 g_frag_color;\n\nvoid main()\n{\n    g_frag_color = vec4(solid_color_material_fs_params[0]);\n}\n\n",
+            "inputs": [],
+            "uniforms": [
+                {
+                    "name": "solid_color_material_fs_params",
+                    "size": 16,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        }
+                    ]
+                }
+            ],
+            "textures": []
+        },
+        "vs": {
+            "source": "#version 330\n\nuniform vec4 solid_color_material_vs_params[4];\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    gl_Position = mat4(solid_color_material_vs_params[0], solid_color_material_vs_params[1], solid_color_material_vs_params[2], solid_color_material_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "solid_color_material_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "gles300": {
+        "fs": {
+            "source": "#version 300 es\nprecision mediump float;\nprecision highp int;\n\nuniform highp vec4 solid_color_material_fs_params[1];\nlayout(location = 0) out highp vec4 g_frag_color;\n\nvoid main()\n{\n    g_frag_color = vec4(solid_color_material_fs_params[0]);\n}\n\n",
+            "inputs": [],
+            "uniforms": [
+                {
+                    "name": "solid_color_material_fs_params",
+                    "size": 16,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        }
+                    ]
+                }
+            ],
+            "textures": []
+        },
+        "vs": {
+            "source": "#version 300 es\n\nuniform vec4 solid_color_material_vs_params[4];\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    gl_Position = mat4(solid_color_material_vs_params[0], solid_color_material_vs_params[1], solid_color_material_vs_params[2], solid_color_material_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "solid_color_material_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

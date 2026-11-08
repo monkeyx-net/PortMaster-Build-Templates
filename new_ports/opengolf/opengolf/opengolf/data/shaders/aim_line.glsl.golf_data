@@ -1,0 +1,168 @@
+{
+    "glsl330": {
+        "fs": {
+            "source": "#version 330\n\nuniform vec4 aim_line_fs_params[3];\nuniform sampler2D aim_line_image;\n\nin vec2 frag_texture_coord;\nlayout(location = 0) out vec4 g_frag_color;\n\nvoid main()\n{\n    float a = texture(aim_line_image, (aim_line_fs_params[1].zw * frag_texture_coord) + aim_line_fs_params[1].xy).w;\n    float t = (aim_line_fs_params[2].x + ((aim_line_fs_params[2].y - aim_line_fs_params[2].x) * frag_texture_coord.x)) \/ aim_line_fs_params[2].z;\n    float blend = 1.0;\n    if (t > 0.4000000059604644775390625)\n    {\n        blend = 1.0 - ((t - 0.4000000059604644775390625) \/ 0.60000002384185791015625);\n        a = (a * blend) * blend;\n    }\n    g_frag_color = vec4(aim_line_fs_params[0].xyz, aim_line_fs_params[0].w * a);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "frag_texture_coord",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "aim_line_fs_params",
+                    "size": 48,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        },
+                        {
+                            "name": "texture_coord_offset",
+                            "offset": 16,
+                            "size": 8
+                        },
+                        {
+                            "name": "texture_coord_scale",
+                            "offset": 24,
+                            "size": 8
+                        },
+                        {
+                            "name": "length0",
+                            "offset": 32,
+                            "size": 4
+                        },
+                        {
+                            "name": "length1",
+                            "offset": 36,
+                            "size": 4
+                        },
+                        {
+                            "name": "total_length",
+                            "offset": 40,
+                            "size": 4
+                        }
+                    ]
+                }
+            ],
+            "textures": [
+                {
+                    "name": "aim_line_image",
+                    "binding": 0
+                }
+            ]
+        },
+        "vs": {
+            "source": "#version 330\n\nuniform vec4 aim_line_vs_params[4];\nout vec2 frag_texture_coord;\nlayout(location = 1) in vec2 texture_coord;\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    frag_texture_coord = texture_coord;\n    gl_Position = mat4(aim_line_vs_params[0], aim_line_vs_params[1], aim_line_vs_params[2], aim_line_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "texture_coord",
+                    "location": 1
+                },
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "aim_line_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "gles300": {
+        "fs": {
+            "source": "#version 300 es\nprecision mediump float;\nprecision highp int;\n\nuniform highp vec4 aim_line_fs_params[3];\nuniform highp sampler2D aim_line_image;\n\nin highp vec2 frag_texture_coord;\nlayout(location = 0) out highp vec4 g_frag_color;\n\nvoid main()\n{\n    highp float a = texture(aim_line_image, (aim_line_fs_params[1].zw * frag_texture_coord) + aim_line_fs_params[1].xy).w;\n    highp float t = (aim_line_fs_params[2].x + ((aim_line_fs_params[2].y - aim_line_fs_params[2].x) * frag_texture_coord.x)) \/ aim_line_fs_params[2].z;\n    highp float blend = 1.0;\n    if (t > 0.4000000059604644775390625)\n    {\n        blend = 1.0 - ((t - 0.4000000059604644775390625) \/ 0.60000002384185791015625);\n        a = (a * blend) * blend;\n    }\n    g_frag_color = vec4(aim_line_fs_params[0].xyz, aim_line_fs_params[0].w * a);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "frag_texture_coord",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "aim_line_fs_params",
+                    "size": 48,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "color",
+                            "offset": 0,
+                            "size": 16
+                        },
+                        {
+                            "name": "texture_coord_offset",
+                            "offset": 16,
+                            "size": 8
+                        },
+                        {
+                            "name": "texture_coord_scale",
+                            "offset": 24,
+                            "size": 8
+                        },
+                        {
+                            "name": "length0",
+                            "offset": 32,
+                            "size": 4
+                        },
+                        {
+                            "name": "length1",
+                            "offset": 36,
+                            "size": 4
+                        },
+                        {
+                            "name": "total_length",
+                            "offset": 40,
+                            "size": 4
+                        }
+                    ]
+                }
+            ],
+            "textures": [
+                {
+                    "name": "aim_line_image",
+                    "binding": 0
+                }
+            ]
+        },
+        "vs": {
+            "source": "#version 300 es\n\nuniform vec4 aim_line_vs_params[4];\nout vec2 frag_texture_coord;\nlayout(location = 1) in vec2 texture_coord;\nlayout(location = 0) in vec3 position;\n\nvoid main()\n{\n    frag_texture_coord = texture_coord;\n    gl_Position = mat4(aim_line_vs_params[0], aim_line_vs_params[1], aim_line_vs_params[2], aim_line_vs_params[3]) * vec4(position, 1.0);\n}\n\n",
+            "inputs": [
+                {
+                    "name": "texture_coord",
+                    "location": 1
+                },
+                {
+                    "name": "position",
+                    "location": 0
+                }
+            ],
+            "uniforms": [
+                {
+                    "name": "aim_line_vs_params",
+                    "size": 64,
+                    "binding": 0,
+                    "members": [
+                        {
+                            "name": "mvp_mat",
+                            "offset": 0,
+                            "size": 64
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
