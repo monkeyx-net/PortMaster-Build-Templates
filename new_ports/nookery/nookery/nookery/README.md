@@ -7,6 +7,9 @@ You need your own copy of the game: place an Animal Crossing (USA, GAFE01 Rev 0)
 
 Nookery renders through Dawn (WebGPU). This port uses Dawn's OpenGL ES backend (GLES 3.1 required) and runs under the Westonpack runtime.
 
+## Launcher
+A settings launcher opens before the game: frame rate (30/60), aspect (Auto widens the view on wide screens and letterboxes on square ones, or always 4:3) and render resolution (screen or the GameCube's 640x480, faster on high-resolution screens). Choose Play, or wait for it to start the game.
+
 ## Controls
 
 | Button | Action |

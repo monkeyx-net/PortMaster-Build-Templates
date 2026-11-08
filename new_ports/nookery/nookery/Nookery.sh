@@ -40,9 +40,24 @@ fi
 # First run: OpenGL ES renderer, fullscreen, no prelaunch menu, no update check
 [ -f "$CONFDIR/config.json" ] || cp "$GAMEDIR/config.json.default" "$CONFDIR/config.json"
 
+# Launcher (Love2D): frame rate (config.json), aspect and render resolution (conf/launcher.cfg)
+rm -f "$GAMEDIR/launch.cfg"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}":$LD_LIBRARY_PATH
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN "$GAMEDIR/launcher" "$CONFDIR/config.json" "$GAMEDIR/launch.cfg"
+
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
+  pm_finish
+  exit 0
+fi
+NOOKERY_ASPECT=auto
+NOOKERY_RENDER_SCALE=0
+[ -f "$CONFDIR/launcher.cfg" ] && source "$CONFDIR/launcher.cfg"
+
 $ESUDO chmod +x "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
-export game_libs="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+export game_libs="$LD_LIBRARY_PATH"
 
 # Aurora renders through Dawn (WebGPU), which only creates surfaces on X11/Wayland windows,
 # so run it under Westonpack with the device's native EGL/GLES (crusty_x11egl).
@@ -69,7 +84,7 @@ pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 # westonwrap evals the command line, so quote the disc path (names like "Animal Crossing (USA).iso")
 $ESUDO env WRAPPED_LIBRARY_PATH=$game_libs \
 $weston_dir/westonwrap.sh headless noop kiosk crusty_x11egl \
-HOME=$CONFDIR SDL_VIDEO_DRIVER=x11 \
+HOME=$CONFDIR SDL_VIDEO_DRIVER=x11 NOOKERY_ASPECT=$NOOKERY_ASPECT NOOKERY_RENDER_SCALE=$NOOKERY_RENDER_SCALE \
 $GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} --user-dir "$CONFDIR" --disc "$(printf '%q' "$disc")"
 
 $ESUDO $weston_dir/westonwrap.sh cleanup

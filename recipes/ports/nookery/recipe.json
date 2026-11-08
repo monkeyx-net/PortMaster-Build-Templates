@@ -14,5 +14,10 @@
   "test": {
     "delay": 20,
     "needs_data": "*.rvz *.iso *.gcm *.ciso"
-  }
+  },
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ]
 }
