@@ -281,7 +281,12 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Add port ${{ needs.build.outputs.port_title }} [$(date +%Y-%m-%d)]"
-            git push
+            # Other builds may push while this one runs; the commit only touches this port's folder
+            for i in 1 2 3 4 5; do
+              git pull --rebase && git push && break
+              [ "$i" = 5 ] && exit 1
+              sleep 10
+            done
           fi
 
       - name: Publish GitHub release
