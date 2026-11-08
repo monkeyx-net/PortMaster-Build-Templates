@@ -46,11 +46,6 @@ if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
 fi
 
 # Game files ship as assets.tar.gz; extract on first run and after an update.
-# Runs after the launcher, so the message window is not on screen with it.
-# levels/ is extracted over, not removed, so levels saved by the editor are kept.
-# The message is shown with PortMaster's portmsg run as this user, not pm_message:
-# on sudo CFWs (ArkOS/dArkOS) pm_message's root copy can't be closed again.
-# Older PortMaster without portmsg falls back to pm_message.
 PORTMSG="$controlfolder/portmsg.${DEVICE_ARCH}"
 
 ARCHIVE_FILE="assets.tar.gz"
@@ -63,7 +58,7 @@ if [[ -f "$ARCHIVE_FILE" ]]; then
     else
         pm_message "$MSG"
     fi
-    gunzip -c "$ARCHIVE_FILE" | tar --no-same-owner -m -xf -
+    gunzip -c "$ARCHIVE_FILE" | tar -xof -
     EXTRACT_RC=$?
     [ -n "$MSG_PID" ] && { kill "$MSG_PID"; wait "$MSG_PID"; }
     if [ $EXTRACT_RC -ne 0 ]; then
