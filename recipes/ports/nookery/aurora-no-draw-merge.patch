@@ -1,0 +1,22 @@
+--- a/extern/aurora/lib/gx/command_processor.cpp
++++ b/extern/aurora/lib/gx/command_processor.cpp
+@@ -16,6 +16,7 @@
+ #include <algorithm>
+ #include <cmath>
+ #include <cstdint>
++#include <cstdlib>
+ #include <span>
+ #include <vector>
+ 
+@@ -506,7 +507,10 @@
+   const bool cleanState = g_gxState.dirty == 0 && fmt == sDrawCache.lastDrawFmt && sDrawCache.lineMode == 0 &&
+                           prim != GX_LINES && prim != GX_LINESTRIP && prim != GX_POINTS;
+   auto* lastDraw = cleanState ? gfx::get_last_draw_command<DrawData>() : nullptr;
+-  const bool canMerge = lastDraw != nullptr && lastDraw->instanceCount == 1;
++  // AURORA_NO_DRAW_MERGE=1: draw every primitive on its own. On libmali (Mali-G52) merged draws
++  // only render their first primitive (e.g. one letter per line of dialogue).
++  static const bool noMerge = std::getenv("AURORA_NO_DRAW_MERGE") != nullptr;
++  const bool canMerge = !noMerge && lastDraw != nullptr && lastDraw->instanceCount == 1;
+ 
+   // Push raw vertex data to buffer. Merged draws must remain contiguous with the previous range.
+   const auto vertexData = reader.take(totalVtxBytes);

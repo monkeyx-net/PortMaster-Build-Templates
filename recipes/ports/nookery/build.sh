@@ -55,6 +55,10 @@ grep -q AURORA_GL_DEBUG extern/aurora/lib/webgpu/gpu.cpp || { echo "Error: Auror
 # renders into its EGL surface and SDL_GL_SwapWindow page-flips), so no Westonpack; SDL3 keeps input
 patch -p1 -N -r - < "${RECIPE}/aurora-sdl2-display.patch" || true
 grep -q AURORA_SDL2_DISPLAY extern/aurora/lib/window.cpp || { echo "Error: Aurora SDL2 display patch not applied"; exit 1; }
+# Aurora: AURORA_NO_DRAW_MERGE=1 stops merging consecutive draws (libmali drew only the first
+# primitive of a merged draw, so dialogue showed one letter per line)
+patch -p1 -N -r - < "${RECIPE}/aurora-no-draw-merge.patch" || true
+grep -q AURORA_NO_DRAW_MERGE extern/aurora/lib/gx/command_processor.cpp || { echo "Error: Aurora draw merge patch not applied"; exit 1; }
 
 # Dawn is built from source with only its OpenGL ES backend: PortMaster devices have no Vulkan, and
 # the prebuilt Dawn packages are built on Ubuntu 24.04 (too new a glibc/libstdc++ for the target).
