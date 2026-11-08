@@ -67,9 +67,13 @@ rm -rf "$DIST"
 mkdir -p "$LIBS"
 cp "bin/${PORT_EXE}" "${DIST}/${PORT_EXE}.${ARCH}"
 strip "${DIST}/${PORT_EXE}.${ARCH}" || true
-cp -r data images levels "$DIST/"
+ASSETS="${WORK}/assets"
+rm -rf "$ASSETS"
+mkdir -p "$ASSETS"
+cp -r data images levels "$ASSETS/"
+rm -rf "${ASSETS}/data/desktop"
 # Bigger, outlined mouse cursor for handheld screens
-cp -r "${RECIPE}/data/." "${DIST}/data/"
+cp -r "${RECIPE}/data/." "${ASSETS}/data/"
 
 # No symlinks: they break on FAT/exFAT SD cards
 cp -L "${PREFIX}"/lib/liballegro*.so.5.2 "$LIBS/"
@@ -81,6 +85,12 @@ done
 cp "$LIBS/libenet.so.7" "$LIBS/libenet.so"
 
 curl -fsSL -o "${WORK}/lix-music.zip" https://www.lixgame.com/dow/lix-music.zip
-unzip -q -o "${WORK}/lix-music.zip" -d "$DIST/"
+unzip -q -o "${WORK}/lix-music.zip" -d "$ASSETS/"
+
+# Game files go in one archive that the launcher extracts on first run (thousands of small
+# files install slowly from the zip). Sorted, fixed mtime/owner and gzip -n, so both arch
+# builds write the same assets.tar.gz and an unchanged build does not change the file.
+tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -C "$ASSETS" -cf - data images levels music \
+    | gzip -9n > "${DIST}/assets.tar.gz"
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C "$DIST" .

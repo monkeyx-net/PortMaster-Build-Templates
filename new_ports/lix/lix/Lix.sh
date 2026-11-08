@@ -23,6 +23,24 @@ cd "$GAMEDIR"
 
 $ESUDO chmod +x "$GAMEDIR/lix.${DEVICE_ARCH}"
 
+# Game files ship as assets.tar.gz; extract on first run and after an update.
+# levels/ is extracted over, not removed, so levels saved by the editor are kept.
+ARCHIVE_FILES=(assets.tar.gz)
+
+die() { pm_message "Error: $1"; sleep 5; exit 1; }
+
+if [[ -f ${ARCHIVE_FILES[0]} ]]; then
+    [[ -d data ]] && { pm_message "Removing old game data"; $ESUDO rm -rf data images music; }
+    pm_message "Extracting game data, this can take a few minutes..."
+    for f in "${ARCHIVE_FILES[@]}"; do
+        ( set -o pipefail; gunzip -c "$f" | tar xf - ) || die "Extraction failed."
+    done
+    pm_message "Extraction successful."
+    $ESUDO rm -f "${ARCHIVE_FILES[@]}"
+elif [[ ! -d data ]]; then
+    die "No data directory present and archive files not found."
+fi
+
 # First run: Lix asks for a player name, which needs a keyboard. Pre-seed one
 # and default to fullscreen at the device's resolution.
 if [ ! -f "$GAMEDIR/user/options.sdl" ]; then
@@ -36,7 +54,6 @@ export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 # Launcher (Love2D): cursor size, mouse speed and fullscreen mode, saved in lix.cfg,
 # and the controls image
 rm -f "$GAMEDIR/launch.cfg"
-source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/lix.cfg" "$GAMEDIR/launch.cfg"
 
 # Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)

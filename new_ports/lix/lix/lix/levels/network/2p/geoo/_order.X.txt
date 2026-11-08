@@ -1,2 +1,0 @@
-steppingstones.txt
-ghettowars.txt
