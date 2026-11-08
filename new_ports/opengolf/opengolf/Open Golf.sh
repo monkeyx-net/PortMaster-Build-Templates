@@ -24,6 +24,9 @@ GAMEDIR=/$directory/ports/opengolf
 cd $GAMEDIR
 chmod +x "$GAMEBINARY.${DEVICE_ARCH}"
 
+# libtheoradec for the Love2D launcher (missing on AmberELEC)
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+
 # Launcher (Love2D): Play and the controls image. There are no game settings, so no config file (-)
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt
