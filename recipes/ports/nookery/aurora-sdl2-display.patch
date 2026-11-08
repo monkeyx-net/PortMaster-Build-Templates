@@ -1,7 +1,7 @@
 diff --git a/extern/aurora/lib/dawn/BackendBinding.cpp b/extern/aurora/lib/dawn/BackendBinding.cpp
 --- a/extern/aurora/lib/dawn/BackendBinding.cpp
 +++ b/extern/aurora/lib/dawn/BackendBinding.cpp
-@@ -32,6 +32,13 @@ std::shared_ptr<wgpu::ChainedStruct> SetupWindowAndGetSurfaceDescriptor(SDL_Wind
+@@ -32,6 +32,13 @@
    desc->hinstance = SDL_GetPointerProperty(props, SDL_PROP_WINDOW_WIN32_INSTANCE_POINTER, nullptr);
    return std::move(desc);
  #elif defined(SDL_PLATFORM_LINUX)
@@ -18,7 +18,7 @@ diff --git a/extern/aurora/lib/dawn/BackendBinding.cpp b/extern/aurora/lib/dawn/
 diff --git a/extern/aurora/lib/webgpu/gpu.cpp b/extern/aurora/lib/webgpu/gpu.cpp
 --- a/extern/aurora/lib/webgpu/gpu.cpp
 +++ b/extern/aurora/lib/webgpu/gpu.cpp
-@@ -47,7 +47,18 @@ namespace {
+@@ -47,7 +47,18 @@
  // eglSwapBuffers, which presents through SDL2 (KMSDRM page flip), is only reachable as a global
  // symbol. Prefer the global one (the same libEGL function without a wrapper).
  dawn::native::opengl::EGLGetProcProc g_eglGetProc = nullptr;
@@ -37,14 +37,14 @@ diff --git a/extern/aurora/lib/webgpu/gpu.cpp b/extern/aurora/lib/webgpu/gpu.cpp
    if (std::strcmp(name, "eglSwapBuffers") == 0) {
      if (void* global = dlsym(RTLD_DEFAULT, name)) {
        return reinterpret_cast<dawn::native::opengl::EGLFunctionPointerType>(global);
-@@ -799,7 +810,19 @@ bool initialize(AuroraBackend auroraBackend, bool allowCpu) {
+@@ -799,7 +810,19 @@
      // Dawn opens EGL_DEFAULT_DISPLAY. Like SDL, pass the window's X11 display instead: EGL drivers
      // that only map a native X11 display (crusty_x11egl on Mali under Westonpack) reject the default.
      dawn::native::opengl::RequestAdapterOptionsGetGLProc glProcOptions;
 -    if (backend == wgpu::BackendType::OpenGLES) {
 +    if (backend == wgpu::BackendType::OpenGLES && window::sdl2_display_active()) {
 +      // AURORA_SDL2_DISPLAY: use SDL2's EGL display, which owns the window surface
-+      g_eglLib = dlopen("libEGL.so.1", RTLD_NOW | RTLD_GLOBAL);
++      g_eglLib = window::sdl2_egl_library();  // the libEGL SDL2 uses
 +      g_eglGetProc = g_eglLib ? reinterpret_cast<dawn::native::opengl::EGLGetProcProc>(
 +                                    dlsym(g_eglLib, "eglGetProcAddress"))
 +                              : nullptr;
@@ -61,7 +61,7 @@ diff --git a/extern/aurora/lib/webgpu/gpu.cpp b/extern/aurora/lib/webgpu/gpu.cpp
 diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 --- a/extern/aurora/lib/window.cpp
 +++ b/extern/aurora/lib/window.cpp
-@@ -32,6 +32,12 @@ extern "C" void Android_LockActivityMutex(void);
+@@ -32,6 +32,12 @@
  extern "C" void Android_UnlockActivityMutex(void);
  #endif
  
@@ -74,7 +74,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
  #include <algorithm>
  #include <atomic>
  #include <deque>
-@@ -49,6 +55,130 @@ namespace aurora::window {
+@@ -49,6 +55,141 @@
  namespace {
  constexpr Module Log{"aurora::window"};
  
@@ -99,6 +99,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 +void* g_context = nullptr;
 +void* g_eglDisplay = nullptr;
 +void* g_eglSurface = nullptr;
++void* g_eglLib = nullptr;
 +int g_width = 0;
 +int g_height = 0;
 +void (*GL_SwapWindow)(void*) = nullptr;
@@ -134,13 +135,6 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 +      !load(GL_SwapWindow, "SDL_GL_SwapWindow")) {
 +    return false;
 +  }
-+  void* egl = dlopen("libEGL.so.1", RTLD_NOW | RTLD_GLOBAL);
-+  auto getCurrentDisplay = egl ? reinterpret_cast<void* (*)()>(dlsym(egl, "eglGetCurrentDisplay")) : nullptr;
-+  auto getCurrentSurface = egl ? reinterpret_cast<void* (*)(int)>(dlsym(egl, "eglGetCurrentSurface")) : nullptr;
-+  if (getCurrentDisplay == nullptr || getCurrentSurface == nullptr) {
-+    Log.error("SDL2 display: libEGL.so.1 not found");
-+    return false;
-+  }
 +  if (Init(INIT_VIDEO) != 0) {
 +    Log.error("SDL2 display: SDL_Init failed: {}", GetError());
 +    return false;
@@ -164,8 +158,25 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 +  // The first swap applies pending mode changes (KMSDRM recreates its surfaces there), so the
 +  // EGL surface read afterwards stays valid.
 +  GL_SwapWindow(g_window);
-+  g_eglDisplay = getCurrentDisplay();
-+  g_eglSurface = getCurrentSurface(0x3059 /* EGL_DRAW */);
++  // Use the EGL library SDL2 made its context current with: SDL_VIDEO_EGL_DRIVER (dArkOS sets
++  // libEGL.so, the Mali blob, while libEGL.so.1 is glvnd/Mesa), else SDL2's default libEGL.so.1.
++  const char* const candidates[] = {std::getenv("SDL_VIDEO_EGL_DRIVER"), "libEGL.so.1", "libEGL.so"};
++  for (const char* name : candidates) {
++    void* egl = name != nullptr && *name != '\0' ? dlopen(name, RTLD_NOW | RTLD_GLOBAL) : nullptr;
++    auto getCurrentDisplay = egl ? reinterpret_cast<void* (*)()>(dlsym(egl, "eglGetCurrentDisplay")) : nullptr;
++    auto getCurrentSurface = egl ? reinterpret_cast<void* (*)(int)>(dlsym(egl, "eglGetCurrentSurface")) : nullptr;
++    if (getCurrentDisplay == nullptr || getCurrentSurface == nullptr) {
++      continue;
++    }
++    g_eglDisplay = getCurrentDisplay();
++    g_eglSurface = getCurrentSurface(0x3059 /* EGL_DRAW */);
++    if (g_eglDisplay != nullptr && g_eglSurface != nullptr) {
++      g_eglLib = egl;
++      Log.info("SDL2 display: EGL from {}", name);
++      break;
++    }
++    g_eglDisplay = g_eglSurface = nullptr;
++  }
 +  GL_GetDrawableSize(g_window, &g_width, &g_height);
 +  if (g_eglDisplay == nullptr || g_eglSurface == nullptr || g_width <= 0 || g_height <= 0) {
 +    Log.error("SDL2 display: no EGL surface");
@@ -205,7 +216,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
  SDL_Window* g_window;
  std::atomic g_surfaceType = AURORA_SURFACE_SDL_MANAGED;
  SDL_Renderer* g_renderer;
-@@ -391,6 +521,17 @@ bool create_window(AuroraBackend backend) {
+@@ -391,6 +532,17 @@
      height = 480;
    }
  
@@ -223,7 +234,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
    Sint32 posX = g_config.windowPosX;
    Sint32 posY = g_config.windowPosY;
    if (posX < 0 || posY < 0) {
-@@ -419,6 +560,11 @@ bool create_window(AuroraBackend backend) {
+@@ -419,6 +571,11 @@
      return false;
    }
    input::sdl::initialize_text_input();
@@ -235,7 +246,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
    SDL_SetWindowMinimumSize(g_window, 640, 480);
    set_window_icon();
    return true;
-@@ -467,6 +613,12 @@ bool initialize() {
+@@ -467,6 +624,12 @@
    g_initializedSubsystems = surface_type() == AURORA_SURFACE_SDL_MANAGED ? SDL_INIT_EVENTS | SDL_INIT_VIDEO
                              : surface_type() == AURORA_SURFACE_HEADLESS  ? 0
                                                                           : SDL_INIT_EVENTS;
@@ -248,7 +259,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
    if (g_initializedSubsystems) {
      TRY(SDL_InitSubSystem(g_initializedSubsystems), "Error initializing SDL: {}", SDL_GetError());
    }
-@@ -514,6 +666,9 @@ void shutdown() {
+@@ -514,6 +677,9 @@
      SDL_RemoveEventWatch(lifecycle_event_watch, nullptr);
    }
    destroy_window();
@@ -258,7 +269,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
    if ((g_initializedSubsystems & SDL_INIT_VIDEO) != 0) {
      TRY_WARN(SDL_EnableScreenSaver(), "Error enabling screensaver: {}", SDL_GetError());
    }
-@@ -563,6 +718,13 @@ AuroraWindowSize refresh_window_size() {
+@@ -563,6 +729,13 @@
    AURORA_ASSERT(SDL_GetWindowSize(g_window, &width, &height), "Failed to get window size: {}", SDL_GetError());
    AURORA_ASSERT(SDL_GetWindowSizeInPixels(g_window, &native_fb_w, &native_fb_h),
                  "Failed to get window size in pixels: {}", SDL_GetError());
@@ -272,13 +283,14 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
  
  #ifdef AURORA_ENABLE_GX
    const auto scale = SDL_GetWindowDisplayScale(g_window);
-@@ -637,6 +799,21 @@ wgpu::Surface create_sdl_surface(const wgpu::Instance& instance, const char* lab
+@@ -637,6 +810,23 @@
  }
  #endif
  
 +#ifdef AURORA_SDL2_DISPLAY
 +bool sdl2_display_active() noexcept { return sdl2::g_eglSurface != nullptr; }
 +void* sdl2_egl_display() noexcept { return sdl2::g_eglDisplay; }
++void* sdl2_egl_library() noexcept { return sdl2::g_eglLib; }
 +void* sdl2_egl_surface() noexcept { return sdl2::g_eglSurface; }
 +unsigned int sdl2_swap_buffers(void*, void*) noexcept {
 +  sdl2::GL_SwapWindow(sdl2::g_window);
@@ -287,6 +299,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 +#else
 +bool sdl2_display_active() noexcept { return false; }
 +void* sdl2_egl_display() noexcept { return nullptr; }
++void* sdl2_egl_library() noexcept { return nullptr; }
 +void* sdl2_egl_surface() noexcept { return nullptr; }
 +unsigned int sdl2_swap_buffers(void*, void*) noexcept { return 0; }
 +#endif
@@ -294,7 +307,7 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
  AuroraSurfaceType surface_type() noexcept { return g_surfaceType.load(std::memory_order_acquire); }
  
  void set_surface_type(AuroraSurfaceType type) noexcept { g_surfaceType.store(type, std::memory_order_release); }
-@@ -743,16 +920,16 @@ void set_title(const char* title) {
+@@ -743,16 +933,16 @@
  }
  
  void set_fullscreen(bool fullscreen) {
@@ -317,13 +330,14 @@ diff --git a/extern/aurora/lib/window.cpp b/extern/aurora/lib/window.cpp
 diff --git a/extern/aurora/lib/window.hpp b/extern/aurora/lib/window.hpp
 --- a/extern/aurora/lib/window.hpp
 +++ b/extern/aurora/lib/window.hpp
-@@ -70,4 +70,9 @@ void notify_frame_buffer_change();
+@@ -70,4 +70,10 @@
  void set_frame_buffer_scale(float scale);
  void set_frame_buffer_aspect_fit(bool fit);
  void set_background_input(bool value);
 +// AURORA_SDL2_DISPLAY=1 (Linux): display through the system SDL2 (see window.cpp)
 +bool sdl2_display_active() noexcept;
 +void* sdl2_egl_display() noexcept;
++void* sdl2_egl_library() noexcept;
 +void* sdl2_egl_surface() noexcept;
 +unsigned int sdl2_swap_buffers(void* display, void* surface) noexcept;
  }; // namespace aurora::window
