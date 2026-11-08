@@ -6,10 +6,10 @@
     "date_updated": "2026-11-08",
     "port_exe": "golf",
     "port_build": "cmake -S . -B cmake-build -DGOLF_PORTMASTER=ON -DCMAKE_BUILD_TYPE=Release",
-    "port_checksum": "d51bacce588e876e608ec249026b8d7919282146e664199a9b477fc51e3b3937",
+    "port_checksum": "721f1b9c6346b2256eb4d2e7dcf2010ece4810cb3079027acdfe75a0cdda4898",
     "port_url": "https://github.com/monkeyx-net/Open-Golf/archive/refs/heads/portmaster.zip",
-    "port_download": "https://github.com/monkeyx-net/Open-Golf/archive/96b81f317d0855979b4661d1dc2f5cd75a5887f6.zip",
-    "port_version": "commit:96b81f3"
+    "port_download": "https://github.com/monkeyx-net/Open-Golf/archive/6863808b511fb04a8f693d061c609e84bec7d223.zip",
+    "port_version": "commit:6863808"
   },
   "screenshot": {
     "delay": 8,

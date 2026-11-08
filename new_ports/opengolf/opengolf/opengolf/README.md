@@ -16,6 +16,8 @@ Progress is saved in `storage.json` in the port folder.
 | B | Back |
 | L1 | Cam ← |
 | R1 | Cam → |
+| L2 | Cam down |
+| R2 | Cam up |
 | Start | Pause |
 | Select | Exit (+Start) |
 | D-pad | Pointer (slow) |
