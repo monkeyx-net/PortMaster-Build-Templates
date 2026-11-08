@@ -369,25 +369,31 @@ generate_report() {
         echo ""
         echo "| Title | Port | Status | Version | Date Updated | PM Date Updated |"
         echo "|-------|------|--------|---------|--------------|-----------------|"
+        local n_ok=0 n_update=0
         for row in "${REPORT_ROWS[@]}"; do
             IFS='|' read -r r_name r_status r_version r_date r_url r_zip <<< "$row"
-            case "$r_status" in
-                OK)     r_badge="🟢" ;;
-                UPDATE) r_badge="🔵" ;;
-                SKIP)   r_badge="🟡" ;;
-                ERROR)  r_badge="🔴" ;;
-                *)      r_badge="$r_status" ;;
-            esac
             local r_title="" r_pm_date=""
             if [[ -f "$releases_json" && -n "$r_zip" ]]; then
                 r_title=$(jq -r --arg z "$r_zip" '.ports[$z].attr.title // empty' "$releases_json")
                 r_pm_date=$(jq -r --arg z "$r_zip" '.ports[$z].source.date_updated // empty' "$releases_json")
             fi
+            # Up to date with upstream, but newer than the version in PortMaster
+            # (YYYY-MM-DD dates compare as strings): still needs submitting.
+            if [[ "$r_status" == OK && -n "$r_pm_date" && "$r_date" > "$r_pm_date" ]]; then
+                r_status=UPDATE
+            fi
+            case "$r_status" in
+                OK)     r_badge="🟢"; n_ok=$((n_ok+1)) ;;
+                UPDATE) r_badge="🔵"; n_update=$((n_update+1)) ;;
+                SKIP)   r_badge="🟡" ;;
+                ERROR)  r_badge="🔴" ;;
+                *)      r_badge="$r_status" ;;
+            esac
             printf "| %s | %s | %s | %s | %s | %s |\n" \
                 "${r_title:---}" "$r_name" "$r_badge" "${r_version:---}" "${r_date:---}" "${r_pm_date:---}"
         done
         echo ""
-        echo "_Checked: $TOTAL &nbsp; 🟢 OK: $OK &nbsp; 🔵 Updates: $UPDATES &nbsp; 🔴 Errors: $ERRORS &nbsp; 🟡 Skipped: ${SKIPPED}_"
+        echo "_Checked: $TOTAL &nbsp; 🟢 OK: $n_ok &nbsp; 🔵 Updates: $n_update &nbsp; 🔴 Errors: $ERRORS &nbsp; 🟡 Skipped: ${SKIPPED}_"
     } > "$tmp_report"
 
     awk -v reportfile="$tmp_report" '
