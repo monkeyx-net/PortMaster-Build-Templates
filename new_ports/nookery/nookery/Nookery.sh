@@ -61,9 +61,8 @@ export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 # The game reads the gamepad itself (SDL3); gptokeyb only provides the exit hotkey
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
-# Dawn (WebGPU) cannot open a KMSDRM screen: AURORA_SDL2_DISPLAY=1 opens it with the CFW's SDL2.
-# AURORA_NO_DRAW_MERGE=1: libmali only draws the first primitive of merged draws (dialogue text).
-HOME="$CONFDIR" AURORA_SDL2_DISPLAY=1 AURORA_NO_DRAW_MERGE=1 NOOKERY_ASPECT=$NOOKERY_ASPECT NOOKERY_RENDER_SCALE=$NOOKERY_RENDER_SCALE \
+# Dawn (WebGPU) cannot open a KMSDRM screen: AURORA_SDL2_DISPLAY=1 opens it with the CFW's SDL2
+HOME="$CONFDIR" AURORA_SDL2_DISPLAY=1 NOOKERY_ASPECT=$NOOKERY_ASPECT NOOKERY_RENDER_SCALE=$NOOKERY_RENDER_SCALE \
 ./$GAMEBINARY.${DEVICE_ARCH} --user-dir "$CONFDIR" --disc "$disc"
 
 pm_finish

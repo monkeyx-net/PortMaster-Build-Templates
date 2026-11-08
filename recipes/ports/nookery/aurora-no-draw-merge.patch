@@ -13,8 +13,8 @@
                            prim != GX_LINES && prim != GX_LINESTRIP && prim != GX_POINTS;
    auto* lastDraw = cleanState ? gfx::get_last_draw_command<DrawData>() : nullptr;
 -  const bool canMerge = lastDraw != nullptr && lastDraw->instanceCount == 1;
-+  // AURORA_NO_DRAW_MERGE=1: draw every primitive on its own. On libmali (Mali-G52) merged draws
-+  // only render their first primitive (e.g. one letter per line of dialogue).
++  // AURORA_NO_DRAW_MERGE=1: draw every primitive on its own (for testing drivers that render
++  // only the first primitive of a merged draw)
 +  static const bool noMerge = std::getenv("AURORA_NO_DRAW_MERGE") != nullptr;
 +  const bool canMerge = !noMerge && lastDraw != nullptr && lastDraw->instanceCount == 1;
  
