@@ -49,6 +49,14 @@ gh_latest_release() {
         | jq -r '.tag_name // empty' 2>/dev/null || true
 }
 
+# Highest plain version tag (1.2.3 / v1.2.3, no -rc or branch-like tags) for repos without
+# GitHub releases. The /tags API is sorted by name, not version, so list all tag refs.
+gh_highest_version_tag() {
+    curl -sf "https://api.github.com/repos/$1/git/matching-refs/tags/" \
+        | jq -r '.[].ref | sub("^refs/tags/"; "")' 2>/dev/null \
+        | grep -E '^v?[0-9]+(\.[0-9]+)*$' | sort -V | tail -n 1 || true
+}
+
 # Default branch name for a GitHub repo.
 gh_default_branch() {
     curl -sf "https://api.github.com/repos/$1" \
@@ -181,8 +189,7 @@ check_port() {
         local latest_tag
         latest_tag=$(gh_latest_release "$repo")
         [[ -z "$latest_tag" || "$latest_tag" == "null" ]] \
-            && latest_tag=$(curl -sf "https://api.github.com/repos/${repo}/tags" \
-                | jq -r '.[0].name // empty' 2>/dev/null || true)
+            && latest_tag=$(gh_highest_version_tag "$repo")
         [[ -n "$latest_tag" ]] && upstream_version="$latest_tag"
 
         # Verify checksum against the URL that's actually stored (not the latest)

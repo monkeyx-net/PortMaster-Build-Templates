@@ -10,6 +10,10 @@ CDIR="${PWD}"
 SRC="${CDIR}/new_ports/${PORT_FOLDER}/source"
 DEPS="${SRC}/deps.${ARCH}"
 LIBDIR="/usr/lib/${ARCH}-linux-gnu"
+# The Love2D controls viewer needs libtheoradec, which some CFWs do not ship
+FILES=(
+    "libtheoradec.so.1"
+)
 
 # DDNet needs Rust >= 1.85; the builder images do not ship Rust (HOME=/tmp in the build container)
 export CARGO_HOME="${HOME}/.cargo"
@@ -95,6 +99,10 @@ cp license.txt dist/licenses/LICENSE.ddnet.txt
 cp "${DEPS}/src/curl-8.11.1/COPYING" dist/licenses/LICENSE.curl.txt
 cp "${DEPS}/src/wavpack-5.7.0/COPYING" dist/licenses/LICENSE.wavpack.txt
 cp /usr/share/doc/libssl-dev/copyright dist/licenses/LICENSE.openssl.txt
+mkdir -p "dist/libs.${ARCH}"
+for file in "${FILES[@]}"; do
+    cp -L "${LIBDIR}/${file}" "dist/libs.${ARCH}/" 2>/dev/null || echo "Warning: ${file} not found"
+done
 
 ldd "dist/${PORT_EXE}.${ARCH}" "dist/DDNet-Server.${ARCH}" || true
 objdump -T "dist/${PORT_EXE}.${ARCH}" | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1

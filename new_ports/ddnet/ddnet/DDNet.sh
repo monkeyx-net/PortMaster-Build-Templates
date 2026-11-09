@@ -32,6 +32,8 @@ for CA in /etc/ssl/certs/ca-certificates.crt /etc/ssl/cacert.pem /etc/pki/tls/ce
   [ -f "$CA" ] && export SSL_CERT_FILE="$CA" && break
 done
 
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}:$LD_LIBRARY_PATH"
+
 source $controlfolder/runtimes/"love_11.5"/love.txt
 $LOVE_RUN controls/controls.love controls/controls.png 30 $DISPLAY_WIDTH $DISPLAY_HEIGHT
 
