@@ -3,7 +3,10 @@
 --   config.title, config.subtitle, config.help   text shown on the screen
 --   config.notice (optional) warning drawn in a large bold font below the items
 --   config.items  { { id, label, kind = "text", maxlen, allowed } or
+--                   { id, label, kind = "number", min, max, maxlen } or (whole numbers, keypad)
 --                   { id, label, kind = "choice", choices = { { value, label }, ... } } }
+--                 any item: help = "...", visible = function(values) -> bool (e.g. sub-options
+--                 shown only while a choice has a certain value)
 --   config.load(path) -> table of values keyed by item id
 --   config.save(path, values) -> ok, err
 --
@@ -38,13 +41,25 @@ local transform = { scale = 1, ox = 0, oy = 0 }
 -- seconds until the game starts by itself (LAUNCHER_AUTOSTART in conf.lua); nil once cancelled
 local autostart = (tonumber(LAUNCHER_AUTOSTART) or 0) > 0 and tonumber(LAUNCHER_AUTOSTART) or nil
 
-local items = { { id = "_play", label = "Play " .. config.title } }
-for _, it in ipairs(config.items) do items[#items + 1] = it end
+local allItems = { { id = "_play", label = "Play " .. config.title } }
+for _, it in ipairs(config.items) do allItems[#allItems + 1] = it end
 -- launcher/controls.png comes from Controls4PM at build time ("controls" in recipe.json)
 if love.filesystem.getInfo("controls.png") then
-    items[#items + 1] = { id = "_controls", label = "Controls", help = "Show the button layout" }
+    allItems[#allItems + 1] = { id = "_controls", label = "Controls", help = "Show the button layout" }
 end
-items[#items + 1] = { id = "_quit", label = "Save and quit" }
+allItems[#allItems + 1] = { id = "_quit", label = "Save and quit" }
+local items = allItems
+
+-- Rebuild the list of shown items after a value changed, keeping the selected item
+local function refreshItems()
+    local current = items[sel]
+    items = {}
+    for _, it in ipairs(allItems) do
+        if not it.visible or it.visible(values) then items[#items + 1] = it end
+    end
+    sel = math.min(sel, #items)
+    for i, it in ipairs(items) do if it == current then sel = i end end
+end
 local controlsImage, showControls = nil, false
 
 local function choiceIndex(it)
@@ -56,7 +71,7 @@ end
 
 local function valueLabel(it)
     if it.kind == "choice" then return it.choices[choiceIndex(it)][2] end
-    return values[it.id]
+    return tostring(values[it.id] or "")
 end
 
 local function finish(launch)
@@ -83,6 +98,20 @@ local function editText(it)
     end)
 end
 
+local function editNumber(it)
+    keyboard = osk.new({ title = it.label, value = values[it.id], kind = "number", maxlen = it.maxlen or 5 },
+                       function(ok, value)
+        keyboard = nil
+        local n = ok and tonumber(value)
+        if not ok then return end
+        if not n or (it.min and n < it.min) or (it.max and n > it.max) then
+            toast, toastTime = it.label .. ": enter " .. (it.min or 0) .. " to " .. (it.max or "any"), 2.5
+        else
+            values[it.id] = n
+        end
+    end)
+end
+
 local function cycle(it, dir)
     local n = #it.choices
     values[it.id] = it.choices[(choiceIndex(it) - 1 + dir) % n + 1][1]
@@ -99,6 +128,7 @@ local function handleAction(action)
     elseif action == "back" then finish(false)
     elseif it.kind == "choice" and (action == "left" or action == "right" or action == "a") then
         cycle(it, action == "left" and -1 or 1)
+        refreshItems()
     elseif action == "a" then
         if it.id == "_play" then finish(true)
         elseif it.id == "_quit" then finish(false)
@@ -106,7 +136,8 @@ local function handleAction(action)
             -- string path, not ImageData: newImage(ImageData) crashes the Mali driver
             controlsImage = controlsImage or love.graphics.newImage("controls.png")
             showControls = true
-        elseif it.kind == "text" then editText(it) end
+        elseif it.kind == "text" then editText(it)
+        elseif it.kind == "number" then editNumber(it) end
     end
 end
 
@@ -192,6 +223,7 @@ function love.load(args)
     local function f(px) return love.graphics.newFont(math.max(8, math.floor(px * transform.scale + 0.5))) end
     fonts.small, fonts.normal, fonts.big, fonts.title, fonts.logo = f(13), f(17), f(22), f(22), f(40)
     values = config.load(paths.config)
+    refreshItems()
 end
 
 function love.resize()
@@ -235,7 +267,7 @@ local function drawMain()
     local rows = 0
     for _, it in ipairs(items) do if it.id ~= "_play" then rows = rows + 1 end end
     local space = VH - 88 - 130 - 48 - (config.notice and 36 or 0)
-    local step = math.max(24, math.min(32, math.floor(space / math.max(rows, 1))))
+    local step = math.max(20, math.min(32, math.floor(space / math.max(rows, 1))))
     local y = 130
     for i, it in ipairs(items) do
         local s = (i == sel)

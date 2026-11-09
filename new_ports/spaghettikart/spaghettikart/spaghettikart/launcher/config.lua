@@ -3,7 +3,8 @@
 -- forces gOpenMenu to 0 (port menu closed) and gControlNav to 1.
 
 -- Aspect ratio presets as in the game's Graphics menu (ResolutionEditor.cpp); the index is
--- gAdvancedResolution.UIComboItem.AspectRatio. "Off" sets X/Y to 0 (fill the screen).
+-- gAdvancedResolution.UIComboItem.AspectRatio. "Off" sets X/Y to 0 (fill the screen);
+-- Custom ([1]) uses the customX/customY items, 720 x 720 by default.
 local ASPECTS = {
     [0] = { 0, 0 }, [1] = { 720, 720 }, [2] = { 4, 3 }, [3] = { 16, 9 }, [4] = { 5, 3 },
     [5] = { 16, 10 }, [6] = { 21, 9 },
@@ -33,7 +34,13 @@ local config = {
         { id = "aspect", label = "Aspect ratio", kind = "choice",
           choices = { { 0, "Off" }, { 1, "Custom" }, { 2, "Original (4:3)" }, { 3, "Widescreen (16:9)" },
                       { 4, "Nintendo 3DS (5:3)" }, { 5, "16:10 (8:5)" }, { 6, "Ultrawide (21:9)" } },
-          help = "Off fills the screen. Custom is 720 x 720 (square) unless changed in the game menu." },
+          help = "Off fills the screen. Custom: set the ratio below (720 x 720 is square)." },
+        { id = "customX", label = "   Custom X", kind = "number", min = 1, max = 9999,
+          visible = function(v) return v.aspect == 1 end,
+          help = "Width part of the custom aspect ratio, e.g. 720 for 720 x 720." },
+        { id = "customY", label = "   Custom Y", kind = "number", min = 1, max = 9999,
+          visible = function(v) return v.aspect == 1 end,
+          help = "Height part of the custom aspect ratio, e.g. 720 for 720 x 720." },
     },
 }
 
@@ -131,12 +138,14 @@ function config.load(path)
     local lines = readLines(path) or {}
     local v = {}
     for id, k in pairs(KEYS) do v[id] = get(lines, k[1]) or k[2] end
-    -- keep a custom ratio set in the game menu
-    if v.aspect == 1 then config.customX, config.customY = get(lines, ASPECT_X), get(lines, ASPECT_Y) end
+    -- custom ratio: the one in the file when Custom is selected there, else 720 x 720
+    local x, y = get(lines, ASPECT_X), get(lines, ASPECT_Y)
+    local custom = v.aspect == 1 and (x or 0) > 0 and (y or 0) > 0
+    v.customX, v.customY = custom and x or ASPECTS[1][1], custom and y or ASPECTS[1][2]
     -- a value set in game that the launcher doesn't offer (e.g. 75 fps) is kept as an extra choice
     for _, it in ipairs(config.items) do
-        local ok = false
-        for _, c in ipairs(it.choices) do if c[1] == v[it.id] then ok = true end end
+        local ok = not it.choices
+        for _, c in ipairs(it.choices or {}) do if c[1] == v[it.id] then ok = true end end
         if not ok then table.insert(it.choices, { v[it.id], tostring(v[it.id]) .. " (set in game)" }) end
     end
     return v
@@ -146,10 +155,7 @@ function config.save(path, v)
     local lines = readLines(path)
     if not lines then return false, "cannot read " .. path end
     for id, k in pairs(KEYS) do set(lines, k[1], v[id]) end
-    local xy = ASPECTS[v.aspect]
-    if v.aspect == 1 and (config.customX or 0) > 0 and (config.customY or 0) > 0 then
-        xy = { config.customX, config.customY }
-    end
+    local xy = v.aspect == 1 and { v.customX, v.customY } or ASPECTS[v.aspect]
     if xy then
         set(lines, ASPECT_X, xy[1], true)
         set(lines, ASPECT_Y, xy[2], true)
