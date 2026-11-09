@@ -18,65 +18,103 @@ get_controls
 
 # Set variables
 GAMEDIR="/$directory/ports/spaghettikart"
+BINARY="Spaghettify.${DEVICE_ARCH}"
 
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/libs.$DEVICE_ARCH:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.${DEVICE_ARCH}":$LD_LIBRARY_PATH
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
-# Set up logging
-BINARY="Spaghettify.${DEVICE_ARCH}"
+# CD and set log
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+$ESUDO chmod +x "$GAMEDIR/$BINARY" "$GAMEDIR/assets/torch.${DEVICE_ARCH}"
+mkdir -p "$GAMEDIR/mods"
 
-# Permissions
-$ESUDO chmod +x "$GAMEDIR/${BINARY}"
-$ESUDO chmod +x "$GAMEDIR/tools/otrgen"
-$ESUDO chmod +x "$GAMEDIR/tools/torch.$DEVICE_ARCH"
+# -------------------- BEGIN FUNCTIONS --------------------
 
-# Close the menu if open
-sed -i 's/"gOpenMenu": *1/"gOpenMenu": 0/' spaghettify.cfg.json
-
-# Warn if mk64.o2r is older than Spaghettify or spaghetti.o2r
-if [ -f "$GAMEDIR/mk64.o2r" ]; then
-    if [ -f "$GAMEDIR/$BINARY" ] && [ "$GAMEDIR/$BINARY" -nt "$GAMEDIR/mk64.o2r" ] \
-       || [ -f "$GAMEDIR/spaghetti.o2r" ] && [ "$GAMEDIR/spaghetti.o2r" -nt "$GAMEDIR/mk64.o2r" ]; then
-        echo "Notice: mk64.o2r is older than Spaghettify and/or spaghetti.o2r. Forcing regeneration."
-        rm -f "$GAMEDIR/mk64.o2r"
-        REGEN=1
-        export REGEN
-    fi
-fi
-
-# Check if we need to generate any o2r files
-if [ ! -f "$GAMEDIR/mk64.o2r" ]; then
-    # Ensure we have a rom file before attempting to generate o2r
-    if ls "$GAMEDIR/baseroms/"*.*64 1> /dev/null 2>&1; then
-        if [ -f "$controlfolder/utils/patcher.txt" ]; then
-            export PATCHER_FILE="$GAMEDIR/tools/otrgen"
-            export PATCHER_GAME="$(basename "${0%.*}")"
-            export PATCHER_TIME="5 to 10 minutes"
-            export controlfolder
-            source "$controlfolder/utils/patcher.txt"
-            pid=$(pidof gptokeyb) && [ -n "$pid" ] && $ESUDO kill -9 $pid
+# torch reads config.yml, yamls/, include/ and meta/ from the working directory
+unzip_assets() {
+    if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
+        pm_message "Unpacking extractor assets..."
+        if "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR" >/dev/null; then
+            rm -f "$GAMEDIR/assets/extractor.zip"
         else
-            pm_message "This port requires the latest version of PortMaster."
+            pm_message "Failed to unpack extractor.zip!"
+            sleep 5
+            exit 1
         fi
-    else
-        pm_message "Missing ROM files! Can't generate o2r!"
     fi
+}
+
+# mk64.o2r is built from the rom by the standalone torch. Rebuild it when the port was
+# updated after it was made (and the rom is still there).
+find_roms() {
+    ROMS=()
+    for rom in "$GAMEDIR/baseroms/"*.z64; do
+        [ -f "$rom" ] && ROMS+=("$rom")
+    done
+    if [ -f "mk64.o2r" ]; then
+        if [ ${#ROMS[@]} -gt 0 ] && { [ "$BINARY" -nt "mk64.o2r" ] || [ "spaghetti.o2r" -nt "mk64.o2r" ]; }; then
+            echo "mk64.o2r is older than the port, rebuilding it"
+            rm -f "mk64.o2r"
+        else
+            ROMS=()
+        fi
+    elif [ ${#ROMS[@]} -eq 0 ]; then
+        pm_message "Missing ROM! Place a Mario Kart 64 US .z64 in baseroms/"
+        sleep 5
+        pm_finish
+        exit 0
+    fi
+}
+
+extract_roms() {
+    [ ${#ROMS[@]} -eq 0 ] && return
+    for rom in "${ROMS[@]}"; do
+        pm_message "Converting $(basename "$rom"), this can take a few minutes..."
+        "$GAMEDIR/assets/torch.${DEVICE_ARCH}" header -o "$rom" >/dev/null \
+            && "$GAMEDIR/assets/torch.${DEVICE_ARCH}" o2r "$rom" --additional-files meta/mods.toml \
+            || echo "torch failed on $rom"
+        [ -f "mk64.o2r" ] && break
+    done
+    if [ ! -f "mk64.o2r" ]; then
+        pm_message "No mk64.o2r created! A Mario Kart 64 US rom is required."
+        sleep 5
+        pm_finish
+        exit 0
+    fi
+}
+
+# Temporary swap for rom extraction on <=1GB devices (swap_on/swap_off)
+source "$GAMEDIR/swap.txt"
+
+# --------------------- END FUNCTIONS ---------------------
+
+# Launcher (Love2D): frame rate and level of detail; also closes the port menu and enables
+# controller navigation in spaghettify.cfg.json
+rm -f "$GAMEDIR/launch.cfg"
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/spaghettify.cfg.json" "$GAMEDIR/launch.cfg"
+
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
+  pm_finish
+  exit 0
 fi
 
-# Check if O2R files were generated
-if [ ! -f "$GAMEDIR/mk64.o2r" ]; then
-    pm_message "No o2r found, can't run the game!"
-    exit 1
-fi
+# Perform functions
+unzip_assets
+find_roms
+swap_on
+trap swap_off EXIT
+extract_roms
+swap_off
 
 # Run the game
-$GPTOKEYB "${BINARY}" -c "spaghetti.gptk" &
-pm_platform_helper "$GAMEDIR/${BINARY}" > /dev/null
-"./${BINARY}"
+$GPTOKEYB "$BINARY" -c "spaghetti.gptk" &
+pm_platform_helper "$GAMEDIR/$BINARY" >/dev/null
+./$BINARY
 
 # Cleanup
-rm -rf logs
+rm -rf "$GAMEDIR/logs/"
 pm_finish

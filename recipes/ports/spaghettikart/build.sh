@@ -6,20 +6,22 @@ PORT_FOLDER="$1"
 PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
-# needs file.arch?
+# Spaghettify needs ogg/vorbis, libzip and tinyxml2; the rest are libzip's dependencies (ldd)
 FILES=(
   "libz.so.1"
-  "libzip.so.5"
+  "libbz2.so.1.0"
+  "liblzma.so.5"
+  "libcrypto.so.1.1"
   "libogg.so.0"
   "libvorbis.so.0"
   "libvorbisfile.so.3"
   "libvorbisenc.so.2"
-  "libcrypto.so.1.1"
-  "libtheoradec.so.1"
-  "liblzma.so.5"
+  "libzip.so.5"
+  "libtinyxml2.so.10"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
+RECIPE_DIR="${CDIR}/recipes/ports/${PORT_FOLDER}"
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu"
@@ -28,27 +30,38 @@ elif [[ ${ARCH} == "x86_64" ]]; then
 fi
 
 #### SpaghettiKart ####
+# The recipe pins a main commit (port_download = archive/<sha>.tar.gz); clone it because the
+# tarball has no submodules
+SHA=$(jq -r '.source.port_download' "${RECIPE_DIR}/recipe.json" | sed -n 's|.*/archive/\([0-9a-f]\{40\}\)\.tar\.gz$|\1|p')
+if [[ -z "${SHA}" ]]; then
+  echo "Error: no commit in the recipe's port_download"
+  exit 1
+fi
 git clone https://github.com/HarbourMasters/SpaghettiKart.git
 cd SpaghettiKart
-
-# Checkout latest tag
-git fetch --tags
-git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
-
-# Grab SpaghettiKart PR Need and IF statement here as only for aarch64?
-git fetch origin pull/650/head:pr-650-spaghettikart
-git checkout pr-650-spaghettikart
-
-# Initialize and sync submodules
-git submodule sync
+git checkout "${SHA}" || exit 1
 git submodule update --init --recursive
 
-# libultraship PR
-cd libultraship
-git remote add kenix https://github.com/Kenix3/libultraship.git 2>/dev/null || true
-git fetch kenix pull/1004/head:pr-1004-libultraship
-git checkout pr-1004-libultraship
-cd ..
+# libultraship's SegAddr treats any odd address as segmented and indexes the segment table with
+# its top bits, so a native 64-bit pointer with bit 0 set (e.g. a resource path string) crashes
+# with SIGSEGV on arm64. Pass anything above the N64 segment range through unchanged.
+# LUS PR #1004 did this but was closed without being merged.
+sed -i '/^void\* Interpreter::SegAddr(uintptr_t w1) {$/a\    if (w1 > 0x0FFFFFFF) {\n        return (void*)w1;\n    }' libultraship/src/fast/interpreter.cpp
+sed -i 's|uint32_t segNum = (uint32_t)(w1 >> 24);|uintptr_t segNum = w1 >> 24;|; s|uint32_t offset = w1 & 0x00FFFFFE;|uintptr_t offset = w1 \& 0x00FFFFFE;|' libultraship/src/fast/interpreter.cpp
+if ! grep -q 'if (w1 > 0x0FFFFFFF) {' libultraship/src/fast/interpreter.cpp \
+   || ! grep -q 'uintptr_t segNum = w1 >> 24;' libultraship/src/fast/interpreter.cpp; then
+  echo "Error: SegAddr patch did not apply"
+  exit 1
+fi
+
+# torch builds the whole O2R in RAM (and never frees it), which runs 1GB devices out of memory
+# during rom extraction; replace its writer with one that streams entries straight to the file.
+cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" torch/src/archive/
+
+# The standalone torch (used on device to extract the rom without a window) is built as an
+# ExternalProject with no build type, i.e. unoptimised; build it as Release.
+sed -i 's|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/torch|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/torch -DCMAKE_BUILD_TYPE=Release|' CMakeLists.txt
+grep -q 'torch -DCMAKE_BUILD_TYPE=Release' CMakeLists.txt || { echo "Error: torch Release patch did not apply"; exit 1; }
 
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
@@ -59,45 +72,31 @@ else
     export CXX=clang++-18
 fi
 
-## Build
 mkdir build-spaghettikart && cd build-spaghettikart
-cmake .. -GNinja \
-  -DCMAKE_C_COMPILER=clang-18 \
-  -DCMAKE_CXX_COMPILER=clang++-18 \
-  -DCMAKE_LINKER=lld-18 \
-  -DUSE_OPENGLES=1 \
-  -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_C_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
-  -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char -fuse-ld=lld" \
-  -DCMAKE_EXE_LINKER_FLAGS="-ldl -pthread -Wl,--no-relax"
-
-
-cmake --build . -j$(nproc) --config Release --target GenerateO2R
+# dladdr (libultraship's crash handler) lives in libdl on glibc < 2.34 (the 20.04 aarch64 builder);
+# append it after the objects so it isn't dropped
+cmake .. -GNinja -DUSE_OPENGLES=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD_LIBRARIES="-ldl"
+# Builds the standalone torch and packs spaghetti.o2r (mk64.o2r needs the rom, so it's made on device)
+cmake --build . --target GenerateO2R -j$(nproc)
 cmake --build . -j$(nproc)
 cd ../..
-
-
-mkdir -p ${CDIR}/dist/tools
-ls -lha SpaghettiKart/
 ls -lha SpaghettiKart/build-spaghettikart/
+if [[ ! -f "SpaghettiKart/build-spaghettikart/${PORT_EXE}" ]]; then
+  echo "Error: ${PORT_EXE} was not built"
+  exit 1
+fi
+mkdir -p "${CDIR}/dist/assets"
 strip "SpaghettiKart/build-spaghettikart/${PORT_EXE}" || true
 cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
-# cp "SpaghettiKart/build-spaghettikart/${PORT_EXE}.pdb" "dist/"
 cp "SpaghettiKart/build-spaghettikart/spaghetti.o2r" "dist/"
-wget -O "dist/gamecontrollerdb.txt" "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt"
-cp -r "${CDIR}/SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal-build/torch" "${CDIR}/dist/tools/torch.${ARCH}"
-
-rm -rf "${CDIR}/tools/yamls"
-rm -f "${CDIR}/tools/config.yml"
-cp -r "${CDIR}/SpaghettiKart/config.yml" "${CDIR}/dist/tools"
-ls -lha dist/
-
-# use a subshell to avoid changing the current working directory of the main script
-(
-  cd "/workspace/SpaghettiKart" || exit
-  zip -r "/workspace/dist/tools/assets.zip" yamls/ meta/ include/
-)
-
+TORCH="SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal-build/torch"
+strip "${TORCH}" || true
+cp "${TORCH}" "dist/assets/torch.${ARCH}"
+# torch reads config.yml, the asset yamls, include/ (enums) and meta/mods.toml from the working
+# directory; ship them as extractor.zip to unpack into the port folder
+(cd "${CDIR}/SpaghettiKart" && zip -qr "${CDIR}/dist/assets/extractor.zip" config.yml yamls include meta)
+unzip -tq "${CDIR}/dist/assets/extractor.zip" || exit 1
+ls -lha dist/ dist/assets/
 
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 # if sourcedir !null and files !null

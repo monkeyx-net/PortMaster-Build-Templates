@@ -26,7 +26,7 @@ _Last checked: 2026-11-09_
 | Space Invaders Part 2 | sip2 | 🔵 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
 | Ship of Harkinian | soh | 🔵 | 9.3.1 | 2026-10-20 | 2026-03-16 |
 | Ship of Harkinian 2 | soh2 | 🔵 | 5.0.1 | 2026-08-26 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🔵 | 1.0.0 | 2026-03-14 | 2025-09-08 |
+| SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-09 | 2025-09-08 |
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 

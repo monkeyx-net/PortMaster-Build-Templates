@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<gamelist>
-	<game>
-		<path>./SpaghettiKart.sh</path>
-		<name>SpaghettiKart</name>
-		<desc>A source port of Mario Kart 64. It features extensive and significant enhancements over the original game, such as improved performance, increased frame-rate, native ultra-widescreen support, and extensive mod support (especially compared to emulated versions of the original), among other features.</desc>
-		<image>./spaghettikart/cover.png</image>
-		<thumbnail>./spaghettikart/thumb.png</thumbnail>
-		<releasedate>20251115</releasedate>
-		<developer>Nintendo</developer>
-		<publisher>Harbour Masters</publisher>
-		<genre>Racing</genre>
-	</game>
-<gamelist>
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./SpaghettiKart.sh</path>
+    <name>SpaghettiKart</name>
+    <desc>SpaghettiKart is the HarbourMasters PC port of Mario Kart 64, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.</desc>
+    <releasedate>20251115T000000</releasedate>
+    <developer>Nintendo</developer>
+    <publisher>HarbourMasters</publisher>
+    <genre>Racing</genre>
+    <image>./spaghettikart/cover.png</image>
+  </game>
+</gameList>
