@@ -4,32 +4,32 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-08_
+_Last checked: 2026-11-09_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
 | -- | animalcrossing | 🟢 | commit:f7fc9a1 | 2026-04-23 | -- |
-| Defendguin | defendguin | 🟢 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
+| Defendguin | defendguin | 🔵 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
 | -- | edgar | 🟢 | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 | v0.9.2 | 2026-11-07 | -- |
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
-| Harmonist | harmonist | 🟢 | v1.0.3 | 2026-08-07 | 2026-01-07 |
+| Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | -- | lix | 🟢 | v0.10.36 | 2026-11-05 | -- |
-| Manic Miner | manicminer | 🟢 | 1.1.1 | 2026-03-01 | 2025-11-04 |
+| Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | -- | nookery | 🟢 | v1.0.0 | 2026-11-07 | -- |
 | -- | opengolf | 🟢 | v0.0.4 | 2026-11-08 | -- |
 | -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
-| Shamogu | shamogu | 🟢 | v1.6.0 | 2026-09-25 | 2026-08-21 |
-| Space Invaders Part 2 | sip2 | 🟢 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
-| Ship of Harkinian | soh | 🟢 | 9.3.1 | 2026-10-20 | 2026-03-16 |
-| Ship of Harkinian 2 | soh2 | 🟢 | 5.0.1 | 2026-08-26 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🟢 | 1.0.0 | 2026-03-14 | 2025-09-08 |
+| Shamogu | shamogu | 🔵 | v1.6.0 | 2026-09-25 | 2026-08-21 |
+| Space Invaders Part 2 | sip2 | 🔵 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
+| Ship of Harkinian | soh | 🔵 | 9.3.1 | 2026-10-20 | 2026-03-16 |
+| Ship of Harkinian 2 | soh2 | 🔵 | 5.0.1 | 2026-08-26 | 2026-03-16 |
+| SpaghettiKart | spaghettikart | 🔵 | 1.0.0 | 2026-03-14 | 2025-09-08 |
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
-| Stunt Car Racer | stuntcarracer | 🟢 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 20 &nbsp; 🟢 OK: 20 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 20 &nbsp; 🟢 OK: 11 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
