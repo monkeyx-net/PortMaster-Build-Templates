@@ -86,7 +86,7 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
-# Launcher (Love2D): frame rate and level of detail; also closes the port menu and enables
+# Launcher (Love2D): frame rate, VSync, level of detail and culling; also closes the port menu and enables
 # controller navigation in spaghettify.cfg.json
 rm -f "$GAMEDIR/launch.cfg"
 source $controlfolder/runtimes/"love_11.5"/love.txt

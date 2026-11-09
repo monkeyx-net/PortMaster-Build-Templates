@@ -8,16 +8,23 @@ local config = {
     help = "In game: press Select to open the menu.",
     items = {
         { id = "gInterpolationFPS", label = "Frame rate", kind = "choice",
-          choices = { { 30, "30 (original)" }, { 60, "60" } },
-          help = "60 is smoother but needs a faster device." },
+          choices = { { 30, "30 (original)" }, { 40, "40" }, { 45, "45" }, { 50, "50" }, { 60, "60" },
+                      { 90, "90" }, { 120, "120" } },
+          help = "Higher is smoother but needs a faster device. With VSync on it is capped at the display rate." },
+        { id = "gVsyncEnabled", label = "VSync", kind = "choice",
+          choices = { { 0, "Off" }, { 1, "On" } },
+          help = "On removes tearing but caps the frame rate at the display's refresh rate." },
         { id = "gDisableLod", label = "Level of detail", kind = "choice",
           choices = { { 1, "Full detail" }, { 0, "Original (LOD)" } },
-          help = "Original uses simpler models in the distance. Helps on weaker devices." },
+          help = "Original draws simpler cars, trucks, trains and plants in the distance. Helps on weaker devices." },
+        { id = "gNoCulling", label = "Disable culling", kind = "choice",
+          choices = { { 0, "Off" }, { 1, "On" } },
+          help = "On also draws objects off screen and far away. Off (original) is much faster." },
     },
 }
 
--- Game defaults when a key is not in the file yet
-local DEFAULTS = { gInterpolationFPS = 30, gDisableLod = 1 }
+-- Game defaults when a key is not in the file yet (VSync is on in the game, off here)
+local DEFAULTS = { gInterpolationFPS = 30, gVsyncEnabled = 0, gDisableLod = 1, gNoCulling = 0 }
 -- Always written on save
 local FORCED = { gOpenMenu = 0, gControlNav = 1 }
 

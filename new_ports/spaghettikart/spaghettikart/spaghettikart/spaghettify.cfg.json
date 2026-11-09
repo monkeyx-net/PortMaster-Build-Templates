@@ -18,7 +18,7 @@
         "gFreecam": 0,
         "gMainMusicVolume": 1.0,
         "gMatchRefreshRate": 0,
-        "gNoCulling": 1,
+        "gNoCulling": 0,
         "gOpenMenu": 0,
         "gSdlWindowedFullscreen": 0,
         "gSettings": {
@@ -28,7 +28,7 @@
                 "SettingsSidebarSection": "Graphics"
             }
         },
-        "gVsyncEnabled": 1
+        "gVsyncEnabled": 0
     },
     "Window": {
         "AudioBackend": "sdl",
