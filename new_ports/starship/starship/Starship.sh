@@ -34,14 +34,8 @@ mkdir -p "$GAMEDIR/mods"
 # torch reads config.yml and assets/yaml/ from the working directory
 unzip_assets() {
     if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
-        pm_message "Unpacking extractor assets..."
-        if "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR" >/dev/null; then
-            rm -f "$GAMEDIR/assets/extractor.zip"
-        else
-            pm_message "Failed to unpack extractor.zip!"
-            sleep 5
-            exit 1
-        fi
+        $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." assets/extractor.zip || exit 1
+        rm -f "$GAMEDIR/assets/extractor.zip"
     fi
 }
 
@@ -64,10 +58,14 @@ find_roms() {
 
 extract_roms() {
     [ ${#ROMS[@]} -eq 0 ] && return
+    # The extract app shows the message while torch runs (a pm_message window stays up and
+    # uses CPU); a failed voice-pack rom must not stop the others
+    args=()
     for rom in "${ROMS[@]}"; do
-        pm_message "Converting $(basename "$rom"), this can take a few minutes..."
-        "$GAMEDIR/assets/torch.${DEVICE_ARCH}" o2r "$rom" || echo "torch failed on $rom"
+        r=$(printf %q "$rom")
+        args+=(--run "assets/torch.${DEVICE_ARCH} o2r $r || echo torch failed on $r")
     done
+    $LOVE_RUN "$GAMEDIR/extract" --text "Converting roms, this can take a few minutes..." "${args[@]}"
     if [ ! -f "sf64.o2r" ]; then
         pm_message "No sf64.o2r created! A Star Fox 64 US v1.0 or v1.1 rom is required."
         sleep 5

@@ -33,15 +33,8 @@ $ESUDO chmod +x "$GAMEDIR/Lighthouse.${DEVICE_ARCH}"
 # Lighthouse extracts roms itself (torch) using config.yml and assets/yaml/ from its folder
 unzip_assets() {
     if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
-        pm_message "Unpacking extractor assets..."
-        if "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR" >/dev/null; then
-            rm -f "$GAMEDIR/assets/extractor.zip"
-        else
-            pm_message "Failed to unpack extractor.zip!"
-            sleep 5
-            pm_finish
-            exit 0
-        fi
+        $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." assets/extractor.zip || exit 1
+        rm -f "$GAMEDIR/assets/extractor.zip"
     fi
 }
 

@@ -13,6 +13,7 @@ FILES=(
   "liblzma.so.5"
   "libcrypto.so.1.1"
   "libogg.so.0"
+  "libtheoradec.so.1"
   "libvorbis.so.0"
   "libvorbisfile.so.3"
   "libvorbisenc.so.2"

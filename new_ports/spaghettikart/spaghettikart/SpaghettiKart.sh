@@ -35,14 +35,8 @@ mkdir -p "$GAMEDIR/mods"
 # torch reads config.yml, yamls/, include/ and meta/ from the working directory
 unzip_assets() {
     if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
-        pm_message "Unpacking extractor assets..."
-        if "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR" >/dev/null; then
-            rm -f "$GAMEDIR/assets/extractor.zip"
-        else
-            pm_message "Failed to unpack extractor.zip!"
-            sleep 5
-            exit 1
-        fi
+        $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." assets/extractor.zip || exit 1
+        rm -f "$GAMEDIR/assets/extractor.zip"
     fi
 }
 
@@ -70,11 +64,13 @@ find_roms() {
 
 extract_roms() {
     [ ${#ROMS[@]} -eq 0 ] && return
+    # The extract app shows the message while torch runs (a pm_message window stays up and
+    # uses CPU); a failed rom shows an error until a button is pressed, then the next is tried
     for rom in "${ROMS[@]}"; do
-        pm_message "Converting $(basename "$rom"), this can take a few minutes..."
-        "$GAMEDIR/assets/torch.${DEVICE_ARCH}" header -o "$rom" >/dev/null \
-            && "$GAMEDIR/assets/torch.${DEVICE_ARCH}" o2r "$rom" --additional-files meta/mods.toml \
-            || echo "torch failed on $rom"
+        r=$(printf %q "$rom")
+        $LOVE_RUN "$GAMEDIR/extract" --text "Converting $(basename "$rom"), this can take a few minutes..." \
+            --run "assets/torch.${DEVICE_ARCH} header -o $r >/dev/null" \
+            --run "assets/torch.${DEVICE_ARCH} o2r $r --additional-files meta/mods.toml"
         [ -f "mk64.o2r" ] && break
     done
     if [ ! -f "mk64.o2r" ]; then

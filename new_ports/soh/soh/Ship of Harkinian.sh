@@ -36,15 +36,8 @@ sed -i 's/"Menu": *1/"Menu": 0/' shipofharkinian.json
 # SoH 9.3+ extracts roms itself (torch) using the ymls in assets/, so no patcher is needed
 unzip_assets() {
     if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
-        pm_message "Unpacking extractor assets..."
-        if "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR/assets" >/dev/null; then
-            rm -f "$GAMEDIR/assets/extractor.zip"
-        else
-            pm_message "Failed to unpack extractor.zip!"
-            sleep 5
-            pm_finish
-            exit 0
-        fi
+        $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." --dir "$GAMEDIR/assets" assets/extractor.zip || exit 1
+        rm -f "$GAMEDIR/assets/extractor.zip"
     fi
 }
 
