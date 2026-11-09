@@ -32,7 +32,7 @@ if [[ "${ARCH}" == "aarch64" ]]; then
   CMAKE_ARGS=(-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -nostdlib++ -Wl,-Bstatic -lc++ -lc++abi -Wl,-Bdynamic")
 fi
 
-# curl, SQLite and WavPack are not on every CFW (and distro libcurl drags in many more libs):
+# curl, SQLite, WavPack and Opus/Opusfile/Ogg are not on every CFW (and distro libcurl drags in many more libs):
 # build them as static libraries. curl uses the builder's static OpenSSL and has no compiled-in
 # CA bundle, so it falls back to OpenSSL's default paths / SSL_CERT_FILE (set by the launcher).
 if [[ ! -f "${DEPS}/lib/libcurl.a" ]]; then
@@ -83,6 +83,9 @@ cmake -S . -B build -G Ninja \
   -DSQLite3_INCLUDEDIR="${DEPS}/include" \
   -DWAVPACK_LIBRARY="${DEPS}/lib/libwavpack.a" \
   -DWAVPACK_INCLUDEDIR="${DEPS}/include/wavpack" \
+  -DOPUSFILE_LIBRARY="${LIBDIR}/libopusfile.a" \
+  -DOPUS_LIBRARY="${LIBDIR}/libopus.a" \
+  -DOGG_LIBRARY="${LIBDIR}/libogg.a" \
   -DPREFER_BUNDLED_LIBS=OFF \
   -DVULKAN=OFF -DVIDEORECORDER=OFF -DINFORM_UPDATE=OFF -DAUTOUPDATE=OFF -DTOOLS=OFF \
   -DDISCORD=OFF -DUPNP=OFF -DDOWNLOAD_GTEST=OFF \
