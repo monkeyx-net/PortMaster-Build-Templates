@@ -231,6 +231,11 @@ local function drawMain()
     love.graphics.setColor(colors.dim)
     vprint(config.subtitle or "", fonts.small, 0, 90, VW, "center")
 
+    -- rows shrink from 32px when there are many items, so they stay clear of the help text
+    local rows = 0
+    for _, it in ipairs(items) do if it.id ~= "_play" then rows = rows + 1 end end
+    local space = VH - 88 - 130 - 48 - (config.notice and 36 or 0)
+    local step = math.max(24, math.min(32, math.floor(space / math.max(rows, 1))))
     local y = 130
     for i, it in ipairs(items) do
         local s = (i == sel)
@@ -243,19 +248,20 @@ local function drawMain()
         else
             if s then
                 love.graphics.setColor(colors.accent[1], colors.accent[2], colors.accent[3], 0.18)
-                love.graphics.rectangle("fill", 40, y - 3, VW - 80, 28, 8, 8)
+                love.graphics.rectangle("fill", 40, y - 3, VW - 80, step - 4, 8, 8)
                 love.graphics.setColor(colors.accent)
-                love.graphics.rectangle("line", 40, y - 3, VW - 80, 28, 8, 8)
+                love.graphics.rectangle("line", 40, y - 3, VW - 80, step - 4, 8, 8)
             end
             love.graphics.setColor(s and colors.accent or colors.text)
-            vprint(it.label, fonts.normal, 56, y + 2, 300, "left")
+            local ty = y + 2 - (32 - step) / 2
+            vprint(it.label, fonts.normal, 56, ty, 300, "left")
             local v = it.kind and valueLabel(it)
             if v then
                 if it.kind == "choice" and s then v = "<  " .. v .. "  >" end
                 love.graphics.setColor(s and colors.text or colors.dim)
-                vprint(v, fonts.normal, 300, y + 2, VW - 356, "right")
+                vprint(v, fonts.normal, 300, ty, VW - 356, "right")
             end
-            y = y + 32
+            y = y + step
         end
     end
 

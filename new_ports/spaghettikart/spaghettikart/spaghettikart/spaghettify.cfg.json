@@ -1,7 +1,12 @@
 {
     "CVars": {
         "gAdvancedResolution": {
-            "Enabled": 1
+            "AspectRatioX": 0.0,
+            "AspectRatioY": 0.0,
+            "Enabled": 1,
+            "UIComboItem": {
+                "AspectRatio": 0
+            }
         },
         "gBetterResultPortraits": 1,
         "gControlNav": 1,
