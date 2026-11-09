@@ -84,15 +84,6 @@ otr_check
 swap_on
 trap swap_off EXIT
 
-# torch writes the finished o2r to $TMPDIR before copying it here; /tmp is RAM (tmpfs) on most CFWs
-if [ ${#ROMS[@]} -gt 0 ]; then
-    rm -rf "$GAMEDIR/tmp"
-    mkdir -p "$GAMEDIR/tmp"
-    export TMPDIR="$GAMEDIR/tmp"
-    pm_message "After extraction choose No at 'Run Lighthouse?', the game restarts automatically"
-fi
-
-# Run the game
 $GPTOKEYB "Lighthouse.${DEVICE_ARCH}" -c "lighthouse.gptk" &
 pm_platform_helper "Lighthouse.${DEVICE_ARCH}" >/dev/null
 ./Lighthouse.${DEVICE_ARCH} "${ROMS[@]}"
