@@ -1,0 +1,19 @@
+{
+  "recipe_version": 1,
+  "name": "ddnet.zip",
+  "port_json": "new_ports/ddnet/ddnet/ddnet/port.json",
+  "source": {
+    "date_updated": "2026-11-09",
+    "port_exe": "DDNet",
+    "port_build": "cmake --build build",
+    "port_checksum": "96a09e91b499ba1d6a4f407e7f3b5918c7c543a4fa6a47348590626d6ae7da2d",
+    "port_url": "ddnet/ddnet",
+    "port_download": "https://github.com/ddnet/ddnet/archive/f5a4b018b3c0f9e6f5ea2ea6dfeb2e9b92fa94d2.zip",
+    "port_version": "commit:f5a4b01"
+  },
+  "screenshot": {
+    "delay": 10,
+    "keys": "Return Return Escape"
+  },
+  "controls": "controls/controls.png"
+}

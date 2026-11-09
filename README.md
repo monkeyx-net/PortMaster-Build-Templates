@@ -9,7 +9,12 @@ _Last checked: 2026-11-09_
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
 | -- | animalcrossing | 🟢 | commit:f7fc9a1 | 2026-04-23 | -- |
+<<<<<<< HEAD
 | Defendguin | defendguin | 🔵 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
+=======
+| -- | ddnet | 🟢 | commit:f5a4b01 | 2026-11-09 | -- |
+| Defendguin | defendguin | 🟢 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
+>>>>>>> 1df5ceebd (ddnet)
 | -- | edgar | 🟢 | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 | v0.9.2 | 2026-11-07 | -- |
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
@@ -29,7 +34,11 @@ _Last checked: 2026-11-09_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
+<<<<<<< HEAD
 _Checked: 20 &nbsp; 🟢 OK: 11 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+=======
+_Checked: 21 &nbsp; 🟢 OK: 21 &nbsp; 🔵 Updates: 0 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+>>>>>>> 1df5ceebd (ddnet)
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach

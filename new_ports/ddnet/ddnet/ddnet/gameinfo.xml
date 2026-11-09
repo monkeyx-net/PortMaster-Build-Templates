@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./DDNet.sh</path>
+    <name>DDraceNetwork</name>
+    <desc>DDraceNetwork (DDNet) is a free, open source cooperative online platformer based on Teeworlds. Hook, jump and hammer your way through thousands of race maps together with other players, or play offline on a local server.</desc>
+    <releasedate>20140101T000000</releasedate>
+    <developer>DDNet team</developer>
+    <publisher>DDNet</publisher>
+    <genre>Platform</genre>
+    <image>./ddnet/cover.png</image>
+  </game>
+</gameList>
