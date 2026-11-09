@@ -68,6 +68,9 @@ grep -q "SERVER_EXEC \"DDNet-Server.${ARCH}\"" src/engine/client/updater.h || { 
 # No desktop notifications: libnotify (glib, gdk-pixbuf) is not on CFWs
 sed -i '/#include <libnotify\/notify.h>/d; /#define NOTIFICATIONS_USE_LIBNOTIFY/d' src/engine/client/notifications.cpp
 if grep -q libnotify src/engine/client/notifications.cpp; then echo "Error: libnotify not removed"; exit 1; fi
+# Upstream limits SDL >= 2.30 to x11,wayland (a GLX-GLEW workaround); there is no GLEW here and CFWs need kmsdrm
+sed -i 's|^#if CONF_PLATFORM_LINUX && SDL_VERSION_ATLEAST(2, 0, 22)$|#if 0 // PortMaster: let SDL choose the video driver|' src/engine/client/backend_sdl.cpp
+grep -q "PortMaster: let SDL choose" src/engine/client/backend_sdl.cpp || { echo "Error: SDL video driver hint not patched"; exit 1; }
 
 # GLES only: CONF_BACKEND_OPENGL_ES drops the desktop OpenGL backend (as on Android), so no GLEW
 # (GLX) is needed and the client links libGLESv2 where upstream links libGL.
