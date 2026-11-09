@@ -54,7 +54,8 @@ if [ ! -f "${PREFIX}/lib/liballegro.so" ]; then
     cmake --install "${WORK}/allegro5/build"
 fi
 
-# Lix, patched for an integer-scaled mouse cursor (LIX_CURSOR_MIN_SCALE) and
+# Lix, patched for an integer-scaled mouse cursor (LIX_CURSOR_MIN_SCALE), no cursor
+# jump on mouse-enter events (sent on button presses under Wayland) and
 # more music buffering (Allegro's SDL driver reads 4096 frames at a time)
 cd "new_ports/${PORT_FOLDER}/source"
 # (-N and the grep allow re-running on an already patched source)

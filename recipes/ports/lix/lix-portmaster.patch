@@ -58,6 +58,30 @@ index 508697c..d64952f 100644
      }
  
  private:
+diff --git a/src/hardware/mouse.d b/src/hardware/mouse.d
+--- a/src/hardware/mouse.d
++++ b/src/hardware/mouse.d
+@@ -164,17 +164,9 @@
+         case ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY:
+             if (hardware.display.displayActive)
+                 _trapMouse = true;
+-            // Nepster 2016-06: When entering the display, the ingame
+-            // cursor should jump to where we entered.
+-            // This would sometimes trigger when the hardware mouse is close
+-            // to the window edge, and is reset to window center by
+-            // al_set_mouse_xy(), see further down this function calc().
+-            // To guard against this, we move the mouse only if hardware
+-            // x or y are sufficiently far away from the screen center.
+-            if (   abs(event.mouse.x - xl/2) > 5
+-                || abs(event.mouse.y - yl/2) > 5) {
+-                _mouseOwn = Point(event.mouse.x, event.mouse.y);
+-            }
++            // PortMaster: no jump to the entry point. SDL sends ENTER on button
++            // presses under Wayland (sway on ROCKNIX), where the reported
++            // pointer position is wrong (no warps, scaled output).
+             break;
+ 
+         case ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY:
 diff --git a/src/hardware/mousecur.d b/src/hardware/mousecur.d
 index 60f4530..a7696c9 100644
 --- a/src/hardware/mousecur.d
