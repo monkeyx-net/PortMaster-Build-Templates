@@ -37,6 +37,15 @@ if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   exit 0
 fi
 
+# Game data ships as assets.tar.gz; extract on first run and after an update.
+# extract/ (shared Love2D include) shows the message while it extracts and closes when
+# done; it also shows the error if assets.tar.gz is missing or extraction fails.
+if [[ -f assets.tar.gz || ! -d data ]]; then
+  [[ -d data ]] && $ESUDO rm -rf data
+  $LOVE_RUN "$GAMEDIR/extract" assets.tar.gz || exit 1
+  $ESUDO rm -f assets.tar.gz
+fi
+
 # The game reads the gamepad itself; gptokeyb only provides the exit hotkey
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"

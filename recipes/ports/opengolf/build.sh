@@ -25,8 +25,11 @@ for file in "${FILES[@]}"; do
     cp -L "$path" "dist/libs.${ARCH}/" 2>/dev/null || echo "Warning: ${file} not found"
 done
 
-# Game data (both arch builds produce the same files)
+# Game data goes in one archive that the launcher extracts on first run (hundreds of small
+# files install slowly from the zip). Sorted, fixed mtime/owner and gzip -n, so both arch
+# builds write the same assets.tar.gz and an unchanged build does not change the file.
 rm -rf dist/data
-cp -r data dist/data
+tar --sort=name --mtime='2020-01-01 00:00Z' --owner=0 --group=0 --numeric-owner -cf - data \
+    | gzip -9n > dist/assets.tar.gz
 
 tar -czf "/workspace/${PORT_FOLDER}-linux-${ARCH}.tar.gz" -C dist .

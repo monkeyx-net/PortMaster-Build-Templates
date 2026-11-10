@@ -40,6 +40,8 @@ game_pid=""
 work=$(mktemp -d)
 cp -a "$port_dir"/. "$work"/
 tar -xzf "/workspace/${port}-linux-x86_64.tar.gz" -C "$work"
+# Ports that ship game files as assets.tar.gz (extracted on device by the launcher)
+[[ -f "$work/assets.tar.gz" ]] && tar -xzf "$work/assets.tar.gz" -C "$work"
 mkdir -p "$work/.home"
 
 Xvfb :99 -screen 0 640x480x24 -nolisten tcp 2> /dev/null &
