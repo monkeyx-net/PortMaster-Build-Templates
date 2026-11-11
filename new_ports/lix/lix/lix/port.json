@@ -19,6 +19,6 @@
     "availability": "free",
     "reqs": [],
     "arch": ["aarch64", "x86_64"],
-    "min_glibc": ""
+    "min_glibc": "2.29"
   }
 }
