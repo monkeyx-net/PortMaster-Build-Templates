@@ -25,7 +25,7 @@ export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # CD and set log
 cd $GAMEDIR
-> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+: > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 $ESUDO chmod +x "$GAMEDIR/soh.elf.${DEVICE_ARCH}"
 
 # Close the menu if open
