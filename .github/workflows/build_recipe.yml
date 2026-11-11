@@ -266,10 +266,13 @@ jobs:
       - name: Check and package
         run: |
           RECIPE="recipes/ports/${{ github.event.inputs.recipe_file }}/recipe.json"
+          # check_port.sh --fix letterboxes/compresses screenshot.png and cover.png (pngquant, ImageMagick)
+          PKGS="pngquant imagemagick"
           if jq -e '.controls' "$RECIPE" > /dev/null; then
             # make_controls.sh runs Controls4PM's converter (Lua) and exports the PNG with Inkscape
-            sudo apt-get update && sudo apt-get install -y --no-install-recommends inkscape lua5.4 fonts-liberation fonts-dejavu-core
+            PKGS="$PKGS inkscape lua5.4 fonts-liberation fonts-dejavu-core"
           fi
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends $PKGS
           recipes/templates/scripts/package.sh "${{ needs.build.outputs.port_folder }}"
 
       - name: Commit post build changes

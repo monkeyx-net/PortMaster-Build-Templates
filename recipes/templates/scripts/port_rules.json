@@ -1,0 +1,101 @@
+{
+  "_comment": "Reference lists for check_port.sh. Patterns are extended regexes matched against library file names.",
+  "genres": [
+    "action", "adventure", "arcade", "casino/card", "fps", "platformer", "puzzle",
+    "racing", "rhythm", "rpg", "simulation", "sports", "strategy", "visual novel", "other"
+  ],
+  "gameinfo_tags": ["path", "name", "desc", "releasedate", "developer", "publisher", "genre", "image"],
+  "port_json_attrs": [
+    "title", "porter", "desc", "desc_md", "inst", "inst_md", "genres", "image", "rtr", "exp",
+    "runtime", "store", "availability", "reqs", "arch", "min_glibc"
+  ],
+  "arches": ["aarch64", "armhf", "x86_64", "x86"],
+  "_elf_machine_arch": "ELF e_machine names from readelf -h -> port.json arch key",
+  "elf_machine_arch": {
+    "AArch64": "aarch64",
+    "ARM": "armhf",
+    "Advanced Micro Devices X86-64": "x86_64",
+    "Intel 80386": "x86"
+  },
+  "_banned_libs": "Libraries a port must never bundle: the CFW ships a device-specific build.",
+  "banned_libs": [
+    {"pattern": "^libSDL2(-2\\.0)?\\.so", "reason": "SDL2 comes from the CFW (device-patched KMS/DRM, input, audio)"},
+    {"pattern": "^libGLESv1_CM\\.so|^libGLESv2\\.so|^libmali", "reason": "GPU driver library, always from the CFW"},
+    {"pattern": "^libdrm\\.so|^libgbm\\.so", "reason": "display stack library, always from the CFW"},
+    {"pattern": "^libwayland-(client|egl|cursor|server)\\.so", "reason": "compositor-adjacent library, always from the CFW"},
+    {"pattern": "^libc\\.so|^ld-linux|^libm\\.so|^libpthread\\.so|^libdl\\.so|^librt\\.so", "reason": "glibc itself must never be bundled"},
+    {"pattern": "^libasound\\.so", "reason": "ALSA comes from the CFW"},
+    {"pattern": "^libudev\\.so", "reason": "udev comes from the CFW"}
+  ],
+  "_gl_libs": "libGL/libEGL are only allowed inside a gl4es.<arch>/ folder.",
+  "gl_libs": "^lib(GL|EGL)\\.so",
+  "_common_libs": "Near-universal on CFW base images: bundling only bloats the port. libstdc++/libgcc_s can legitimately be newer than the CFW's (GLIBCXX), so they are not listed.",
+  "common_libs": [
+    "^libSDL2_image-2\\.0\\.so", "^libSDL2_mixer-2\\.0\\.so",
+    "^libpng16\\.so", "^libz\\.so", "^libfreetype\\.so", "^libexpat\\.so", "^libbz2\\.so"
+  ],
+  "_license_aliases": "Bundled lib component (lib name without lib/.so/version) -> licenses/LICENSE.<component>.txt name, where the names do not start the same way.",
+  "license_aliases": {
+    "crypto": "openssl", "ssl": "openssl", "z": "zlib", "bz2": "bzip2", "lzma": "xz",
+    "GL": "gl4es", "EGL": "gl4es", "turbojpeg": "libjpeg-turbo",
+    "png16": "libpng", "theoradec": "libtheora", "theoraenc": "libtheora",
+    "vorbisfile": "libvorbis", "vorbisenc": "libvorbis", "vorbis": "libvorbis", "ogg": "libogg",
+    "zip": "libzip", "opus": "opus", "opusfile": "opusfile",
+    "sndfile": "libsndfile", "instpatch": "libinstpatch", "gobject": "glib", "gmodule": "glib",
+    "gio": "glib", "modplug": "libmodplug"
+  },
+  "_license_urls": "License name -> upstream license file, fetched by check_port.sh --fix-license into licenses/LICENSE.<name>.txt. Matched like license names (lib component starts with the name, through license_aliases).",
+  "license_urls": {
+    "libtheora": "https://raw.githubusercontent.com/xiph/theora/master/COPYING",
+    "bzip2": "https://gitlab.com/bzip2/bzip2/-/raw/master/COPYING",
+    "zlib": "https://raw.githubusercontent.com/madler/zlib/master/LICENSE",
+    "libpng": "https://raw.githubusercontent.com/pnggroup/libpng/libpng16/LICENSE",
+    "libvorbis": "https://raw.githubusercontent.com/xiph/vorbis/master/COPYING",
+    "libogg": "https://raw.githubusercontent.com/xiph/ogg/master/COPYING",
+    "libzip": "https://raw.githubusercontent.com/nih-at/libzip/main/LICENSE",
+    "openssl": "https://raw.githubusercontent.com/openssl/openssl/OpenSSL_1_1_1-stable/LICENSE",
+    "spdlog": "https://raw.githubusercontent.com/gabime/spdlog/v1.x/LICENSE",
+    "xz": "https://raw.githubusercontent.com/tukaani-project/xz/master/COPYING",
+    "fmt": "https://raw.githubusercontent.com/fmtlib/fmt/master/LICENSE",
+    "tinyxml2": "https://raw.githubusercontent.com/leethomason/tinyxml2/master/LICENSE.txt",
+    "opus": "https://raw.githubusercontent.com/xiph/opus/main/COPYING",
+    "opusfile": "https://raw.githubusercontent.com/xiph/opusfile/master/COPYING",
+    "freetype": "https://raw.githubusercontent.com/freetype/freetype/master/LICENSE.TXT",
+    "libjpeg-turbo": "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/main/LICENSE.md",
+    "enet": "https://raw.githubusercontent.com/lsalzman/enet/master/LICENSE",
+    "allegro": "https://raw.githubusercontent.com/liballeg/allegro5/master/LICENSE.txt",
+    "SDL2_image": "https://raw.githubusercontent.com/libsdl-org/SDL_image/SDL2/LICENSE.txt",
+    "SDL2_mixer": "https://raw.githubusercontent.com/libsdl-org/SDL_mixer/SDL2/LICENSE.txt",
+    "SDL2_ttf": "https://raw.githubusercontent.com/libsdl-org/SDL_ttf/SDL2/LICENSE.txt",
+    "SDL2_net": "https://raw.githubusercontent.com/libsdl-org/SDL_net/SDL2/LICENSE.txt",
+    "gl4es": "https://raw.githubusercontent.com/ptitSeb/gl4es/master/LICENSE",
+    "harfbuzz": "https://raw.githubusercontent.com/harfbuzz/harfbuzz/main/COPYING",
+    "brotli": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
+    "zstd": "https://raw.githubusercontent.com/facebook/zstd/dev/LICENSE",
+    "glib": "https://raw.githubusercontent.com/GNOME/glib/main/COPYING",
+    "fluidsynth": "https://raw.githubusercontent.com/FluidSynth/fluidsynth/master/LICENSE",
+    "libsndfile": "https://raw.githubusercontent.com/libsndfile/libsndfile/master/COPYING",
+    "libinstpatch": "https://raw.githubusercontent.com/swami/libinstpatch/master/COPYING",
+    "openal": "https://raw.githubusercontent.com/kcat/openal-soft/master/COPYING",
+    "expat": "https://raw.githubusercontent.com/libexpat/libexpat/master/expat/COPYING",
+    "curl": "https://raw.githubusercontent.com/curl/curl/master/COPYING",
+    "wavpack": "https://raw.githubusercontent.com/dbry/WavPack/master/COPYING",
+    "physfs": "https://raw.githubusercontent.com/icculus/physfs/main/LICENSE.txt",
+    "libmodplug": "https://raw.githubusercontent.com/Konstanty/libmodplug/master/COPYING",
+    "flac": "https://raw.githubusercontent.com/xiph/flac/master/COPYING.Xiph",
+    "mpg123": "https://raw.githubusercontent.com/madebr/mpg123/master/COPYING",
+    "jack": "https://raw.githubusercontent.com/jackaudio/jack2/develop/COPYING",
+    "dbus": "https://gitlab.freedesktop.org/dbus/dbus/-/raw/main/COPYING",
+    "cairo": "https://gitlab.freedesktop.org/cairo/cairo/-/raw/master/COPYING"
+  },
+  "_cfw_provided": "NEEDED entries a port can expect the CFW to provide.",
+  "cfw_provided": [
+    "^libc\\.so", "^libm\\.so", "^libdl\\.so", "^libpthread\\.so", "^librt\\.so", "^ld-linux",
+    "^libgcc_s\\.so", "^libstdc\\+\\+\\.so", "^libSDL2-2\\.0\\.so", "^libSDL2_(image|mixer|ttf)-2\\.0\\.so",
+    "^libGL\\.so", "^libEGL\\.so", "^libGLES", "^libdrm\\.so", "^libgbm\\.so", "^libasound\\.so",
+    "^libudev\\.so", "^libz\\.so", "^libpng16\\.so", "^libfreetype\\.so", "^libexpat\\.so",
+    "^libbz2\\.so", "^libogg\\.so", "^libvorbis", "^libopenal\\.so", "^libpulse", "^libcrypt\\.so",
+    "^liblzma\\.so", "^libutil\\.so", "^libresolv\\.so", "^libatomic\\.so", "^libSDL-1\\.2\\.so",
+    "^libX11\\.so", "^libwayland-"
+  ]
+}
