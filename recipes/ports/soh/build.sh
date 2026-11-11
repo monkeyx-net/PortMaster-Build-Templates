@@ -11,6 +11,7 @@ FILES=(
   "libopus.so.0"
   "liblzma.so.5"
   "libogg.so.0"
+  "libSDL2_net-2.0.so.0"
   "libspdlog.so.1"
   "libspdlog.so.1.12"
   "libzip.so.5"
