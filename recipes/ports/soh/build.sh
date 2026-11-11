@@ -8,13 +8,9 @@ PORT_EXE="$3"
 ARCH="$4"
 # needs file.arch?
 FILES=(
-  "libz.so.1"
-  "libbz2.so.1"
-  "libbz2.so.1.0"
   "libopus.so.0"
   "liblzma.so.5"
   "libogg.so.0"
-  "libpng16.so.16"
   "libspdlog.so.1"
   "libspdlog.so.1.12"
   "libzip.so.5"
