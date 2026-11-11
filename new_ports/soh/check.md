@@ -1,8 +1,8 @@
 # check_port: soh
 
-`check_port.sh soh --fix --fix-bloat --fix-license` on 2026-11-11 23:00, commit b24e716.
+`check_port.sh soh --test` on 2026-11-11 23:36, commit 286a38035.
 
-**Result: ok, 6 warning(s)**
+**Result: dry run, changes: none; 0 error(s) left, 7 warning(s)**
 
 ## Warnings
 
@@ -10,37 +10,11 @@
 - libcairo.so.2 (aarch64) is needed by libs.aarch64/libtheoradec.so.1 but not bundled or in cfw_provided: check ldd on devices
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
-- libopusfile.so.0 (aarch64) is needed by soh.elf.aarch64 but not bundled or in cfw_provided: check ldd on devices
-- libopusfile.so.0 (x86_64) is needed by soh.elf.x86_64 but not bundled or in cfw_provided: check ldd on devices
+- build.sh FILES copies libcrypto.so.1.1 for x86_64 but libs.x86_64/ has none and only aarch64 loads it: move it to a [[ ${ARCH} == "aarch64" ]] && FILES+=( ) block
+- build.sh FILES copies libopusfile.so.0 but no libs.\<arch>/ has it although aarch64 x86_64 needs it: rebuild (or it is missing on the builder)
+- build.sh FILES copies libbz2.so.1.0 but no libs.\<arch>/ has it although x86_64 needs it: rebuild (or it is missing on the builder)
 
-## Fixed by --fix
+## Notes
 
-- set Ship of Harkinian.sh to 644 (staged in git)
-- Ship of Harkinian.sh:28: change "> file" to ": > file" (SC2188)
-- set attr.min_glibc from "" to "2.29" (soh.elf.aarch64 needs GLIBC_2.29)
-- shrink screenshot.png from 425 to 70 kB (32 colours)
-- shrink cover.png from 172 to 56 kB (256 colours)
-
-## Fixed by --fix-bloat
-
-- remove libs.x86_64/libpng16.so.16: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.x86_64/libbz2.so.1: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.x86_64/libz.so.1: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.x86_64/libbz2.so.1.0: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.aarch64/libpng16.so.16: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.aarch64/libbz2.so.1: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.aarch64/libz.so.1: CFWs already ship it (also drop it from FILES in build.sh)
-- remove libs.aarch64/libbz2.so.1.0: CFWs already ship it (also drop it from FILES in build.sh)
-
-## Fixed by --fix-license
-
-- fetch licenses/LICENSE.libzip.txt for libs.x86_64/libzip.so.5 libs.aarch64/libzip.so.5 from https://raw.githubusercontent.com/nih-at/libzip/main/LICENSE
-- fetch licenses/LICENSE.xz.txt for libs.x86_64/liblzma.so.5 libs.aarch64/liblzma.so.5 from https://raw.githubusercontent.com/tukaani-project/xz/master/COPYING
-- fetch licenses/LICENSE.fmt.txt for libs.x86_64/libfmt.so.9 from https://raw.githubusercontent.com/fmtlib/fmt/master/LICENSE
-- fetch licenses/LICENSE.tinyxml2.txt for libs.x86_64/libtinyxml2.so.10 libs.aarch64/libtinyxml2.so.10 from https://raw.githubusercontent.com/leethomason/tinyxml2/master/LICENSE.txt
-- fetch licenses/LICENSE.libogg.txt for libs.x86_64/libogg.so.0 libs.aarch64/libogg.so.0 from https://raw.githubusercontent.com/xiph/ogg/master/COPYING
-- fetch licenses/LICENSE.opus.txt for libs.x86_64/libopus.so.0 libs.aarch64/libopus.so.0 from https://raw.githubusercontent.com/xiph/opus/main/COPYING
-- fetch licenses/LICENSE.spdlog.txt for libs.x86_64/libspdlog.so.1.12 libs.aarch64/libspdlog.so.1 from https://raw.githubusercontent.com/gabime/spdlog/v1.x/LICENSE
-- fetch licenses/LICENSE.libtheora.txt for libs.aarch64/libtheoradec.so.1 from https://raw.githubusercontent.com/xiph/theora/master/COPYING
-- fetch licenses/LICENSE.SDL2_net.txt for libs.x86_64/libSDL2_net-2.0.so.0 libs.aarch64/libSDL2_net-2.0.so.0 from https://raw.githubusercontent.com/libsdl-org/SDL_net/SDL2/LICENSE.txt
-- fetch licenses/LICENSE.openssl.txt for libs.aarch64/libcrypto.so.1.1 from https://raw.githubusercontent.com/openssl/openssl/OpenSSL_1_1_1-stable/LICENSE
+- aarch64 loads from libs.aarch64: libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libtheoradec.so.1 libzip.so.5
+- x86_64 loads from libs.x86_64: liblzma.so.5 libogg.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libzip.so.5

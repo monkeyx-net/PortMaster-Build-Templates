@@ -7,6 +7,7 @@ PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
 FILES=(
+  "libcrypto.so.1.1"
   "libopus.so.0"
   "libopusfile.so.0"
   "libogg.so.0"
@@ -15,7 +16,7 @@ FILES=(
   "liblzma.so.5"
 )
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
-  "libcrypto.so.1.1"
+  "libcairo.so.2"
   "libtheoradec.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
