@@ -7,11 +7,13 @@
 # runs it on every build.
 #
 # Usage (from the repo root):
-#   recipes/templates/scripts/check_port.sh <port> [--fix] [--fix-bloat] [--test]
+#   recipes/templates/scripts/check_port.sh <port> [--fix] [--fix-bloat] [--fix-license] [--test]
+#
+# package.sh (so every build) runs it with --fix --fix-bloat --fix-license.
 #
 # Writes the result to new_ports/<port>/check.md (next to test/, so it is not in the zip).
 #
-# --test changes nothing in the port: it lists what --fix (and --fix-bloat) would change
+# --test changes nothing in the port: it lists what --fix, --fix-bloat and --fix-license would change
 # ("to fix:") and the errors and warnings left for a manual fix, on screen and in check.md.
 #
 # --fix repairs what can be repaired instead of reporting it (package.sh passes it, so
@@ -21,11 +23,10 @@
 # drops built-in runtimes from attr.runtime and renames LICENSE_x/LICENSE-x to LICENSE.x.txt.
 #
 # --fix-license downloads the license of each bundled lib that has none from license_urls in
-# port_rules.json into licenses/LICENSE.<name>.txt (opt-in, needs network; check the files).
+# port_rules.json into licenses/LICENSE.<name>.txt (needs network; check the files).
 #
 # --fix-bloat deletes bundled libs that are in common_libs (the "bloats the port" warning).
-# Opt-in and not used by package.sh: build.sh adds them on purpose, so the next build brings
-# them back unless they are also taken out of FILES there.
+# The build removes them every time, so also take them out of FILES in the port's build.sh.
 
 set -uo pipefail
 
