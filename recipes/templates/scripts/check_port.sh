@@ -301,10 +301,139 @@ for e in "${elfs[@]}"; do
         [[ "$n" =~ $provided_re || -n "${bundled[$arch/$n]:-}" ]] || unresolved[$arch/$n]+=" ${f#"$dir"/}"
     done < <(readelf -d "$f" 2> /dev/null | sed -n 's/.*(NEEDED).*\[\(.*\)\]/\1/p')
 done
+
+# which libs.<arch>/ files each arch really loads: follow NEEDED from the binaries (every ELF
+# outside libs.<arch>/) through the bundled libs. A lib whose file name or SONAME appears as a
+# string in a loaded ELF counts as dlopen'd (e.g. D/derelict bindings); so do dlopen_libs in
+# port_rules.json. Copies sharing a SONAME (libbz2.so.1 + libbz2.so.1.0) are loaded together.
+dlopen_re=$(jq -r '.dlopen_libs // [] | join("|")' "$rules")
+declare -A libat=() soname=() reached=() wanted=()   # wanted: arch/name NEEDED by a loaded ELF
+queue=() libs=() loaded=()
+for e in "${elfs[@]}"; do
+    arch="${e%%$'\t'*}" f="${e#*$'\t'}" rel="${f#"$dir"/}"
+    if [[ "$rel" == libs."$arch"/* ]]; then
+        libs+=("$e")
+        libat[$arch/${f##*/}]+="$f"$'\n'
+        so=$(readelf -d "$f" 2> /dev/null | sed -n 's/.*(SONAME).*\[\(.*\)\]/\1/p')
+        soname[$f]="$so"
+        [[ -n "$so" && "$so" != "${f##*/}" ]] && libat[$arch/$so]+="$f"$'\n'
+    else
+        queue+=("$e"); loaded+=("$f")
+    fi
+done
+reach() {   # arch name: mark every bundled file with that name/SONAME as loaded
+    local lf
+    while IFS= read -r lf; do
+        [[ -n "$lf" && -z "${reached[$lf]:-}" ]] || continue
+        reached[$lf]=1; queue+=("$1"$'\t'"$lf"); loaded+=("$lf")
+    done <<< "${libat[$1/$2]:-}"
+}
+while :; do
+    while (( ${#queue[@]} )); do
+        e="${queue[0]}"; queue=("${queue[@]:1}")
+        arch="${e%%$'\t'*}" f="${e#*$'\t'}"
+        [[ -n "${soname[$f]:-}" ]] && reach "$arch" "${soname[$f]}"
+        while IFS= read -r n; do wanted[$arch/$n]=1; reach "$arch" "$n"; done \
+            < <(readelf -d "$f" 2> /dev/null | sed -n 's/.*(NEEDED).*\[\(.*\)\]/\1/p')
+    done
+    for e in "${libs[@]}"; do   # dlopen'd: named in a loaded ELF other than itself
+        arch="${e%%$'\t'*}" f="${e#*$'\t'}" name="${f##*/}"
+        [[ -z "${reached[$f]:-}" ]] || continue
+        others=()
+        for l in "${loaded[@]}"; do [[ "$l" == "$f" ]] || others+=("$l"); done
+        if [[ -n "$dlopen_re" && "$name" =~ $dlopen_re ]] \
+            || grep -qaF -e "$name" ${soname[$f]:+-e "${soname[$f]}"} "${others[@]}" 2> /dev/null; then
+            reach "$arch" "$name"
+        fi
+    done
+    (( ${#queue[@]} )) || break
+done
+# build.sh FILES per arch: the shared FILES=( ) list plus [[ ${ARCH} == "<arch>" ]] && FILES+=( )
+# blocks (see soh). Only those statements are run, once per arch.
+build="recipes/ports/$port/build.sh"
+declare -A files_for=() loaded_name=() used_by_arch=()
+lib_arches=()
+for a in $port_arches; do [[ -d "$dir/libs.$a" ]] && lib_arches+=("$a"); done
+if [[ -f "$build" ]] && grep -qE '^[[:space:]]*FILES=\(' "$build"; then
+    snippet=$(awk '/^[[:space:]]*(\[\[.*\]\][[:space:]]*&&[[:space:]]*)?FILES\+?=\(/ { on = 1 }
+                   on { print } on && /\)[[:space:]]*$/ { on = 0 }' "$build")
+    for a in "${lib_arches[@]}"; do
+        files_for[$a]=" $(ARCH="$a" bash -c "$snippet"$'\nprintf "%s " "${FILES[@]}"' 2> /dev/null)"
+    done
+fi
+in_files() { [[ "${files_for[$1]:-}" == *" $2 "* ]]; }   # arch name
 for k in "${!unresolved[@]}"; do
+    in_files "${k%%/*}" "${k#*/}" && continue   # in FILES: the FILES check below says rebuild
     # a warning: many CFWs have more than cfw_provided lists; test_port.sh's ldd on devices is the proof
     warn "${k#*/} (${k%%/*}) is needed by${unresolved[$k]} but not bundled or in cfw_provided: check ldd on devices"
 done
+
+for e in "${libs[@]}"; do
+    arch="${e%%$'\t'*}" f="${e#*$'\t'}" name="${f##*/}"
+    if [[ -n "${reached[$f]:-}" ]] || [[ -n "$dlopen_re" && "$name" =~ $dlopen_re ]]; then
+        loaded_name[$arch/$name]=1 loaded_name[$name]=1
+        [[ -n "${reached[$f]:-}" ]] && used_by_arch[$arch]+=" $name"
+    fi
+done
+for e in "${libs[@]}"; do
+    arch="${e%%$'\t'*}" f="${e#*$'\t'}" rel="${f#"$dir"/}" name="${f##*/}"
+    if [[ -n "${loaded_name[$arch/$name]:-}" ]]; then
+        :
+    elif in_files "$arch" "$name"; then
+        # loaded on another arch: the FILES check below says to move it to that arch's block
+        [[ -n "${loaded_name[$name]:-}" ]] && continue
+        warn "$rel is not loaded: not NEEDED by or named in the binary or another bundled lib (drop it from FILES for $arch in build.sh, or add it to dlopen_libs if it is dlopen'd)"
+    else
+        warn "$rel is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)"
+    fi
+done
+for arch in "${!used_by_arch[@]}"; do
+    note "$arch loads from libs.$arch:$(tr ' ' '\n' <<< "${used_by_arch[$arch]}" | sort | tr '\n' ' ' | sed 's/ $//')"
+done
+
+# FILES entries must be bundled and loaded on every arch that copies them; an entry only one
+# arch has or loads belongs in that arch's [[ ${ARCH} == "<arch>" ]] && FILES+=( ) block.
+# common_libs are left to the --fix-bloat message.
+if (( ${#files_for[@]} )); then
+    declare -A seen=()
+    for a in "${lib_arches[@]}"; do
+        for n in ${files_for[$a]}; do
+            [[ -z "${seen[$n]:-}" && ! "$n" =~ $common_re ]] || continue
+            seen[$n]=1
+            copied=() bundled_in=() used_in=()
+            for b in "${lib_arches[@]}"; do
+                in_files "$b" "$n" && copied+=("$b")
+                [[ -e "$dir/libs.$b/$n" ]] && bundled_in+=("$b")
+                [[ -n "${loaded_name[$b/$n]:-}" ]] && used_in+=("$b")
+            done
+            if (( ${#bundled_in[@]} == 0 && ${#used_in[@]} == 0 )); then
+                needed_in=()
+                for b in "${copied[@]}"; do
+                    [[ -n "${wanted[$b/$n]:-}" ]] || [[ -n "$dlopen_re" && "$n" =~ $dlopen_re ]] && needed_in+=("$b")
+                done
+                if (( ${#needed_in[@]} )); then
+                    warn "build.sh FILES copies $n but no libs.<arch>/ has it although ${needed_in[*]} needs it: rebuild (or it is missing on the builder)"
+                else
+                    warn "build.sh FILES copies $n for ${copied[*]} but nothing NEEDs it: drop it from FILES"
+                fi
+                continue
+            fi
+            for b in "${copied[@]}"; do
+                [[ -e "$dir/libs.$b/$n" ]] && continue
+                if [[ -n "${wanted[$b/$n]:-}" ]]; then
+                    warn "build.sh FILES copies $n for $b and $b NEEDs it, but libs.$b/ has none: rebuild (or it is missing on the $b builder)"
+                elif (( ${#used_in[@]} )); then
+                    warn "build.sh FILES copies $n for $b but libs.$b/ has none and only ${used_in[*]} loads it: move it to a [[ \${ARCH} == \"${used_in[0]}\" ]] && FILES+=( ) block"
+                else
+                    warn "build.sh FILES copies $n for $b but $b does not need it: drop it from FILES for $b"
+                fi
+            done
+            if (( ${#copied[@]} > 1 && ${#used_in[@]} == 1 && ${#bundled_in[@]} == ${#copied[@]} )); then
+                warn "build.sh FILES copies $n for ${copied[*]} but only ${used_in[0]} loads it: move it to a [[ \${ARCH} == \"${used_in[0]}\" ]] && FILES+=( ) block"
+            fi
+        done
+    done
+fi
 
 for f in "$dir"/*.aarch64 "$dir"/*.x86_64; do
     is_elf "$f" || continue

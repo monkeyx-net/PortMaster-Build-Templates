@@ -29,10 +29,10 @@
   ],
   "_gl_libs": "libGL/libEGL are only allowed inside a gl4es.<arch>/ folder.",
   "gl_libs": "^lib(GL|EGL)\\.so",
-  "_common_libs": "Near-universal on CFW base images: bundling only bloats the port. libstdc++/libgcc_s can legitimately be newer than the CFW's (GLIBCXX), so they are not listed.",
+  "_common_libs": "Near-universal on CFW base images: bundling only bloats the port. libstdc++/libgcc_s can legitimately be newer than the CFW's (GLIBCXX), so they are not listed. libbz2.so.1.0 is the Debian/Ubuntu soname (x86_64 libzip needs it) and is missing on other systems, so only libbz2.so.1 is listed.",
   "common_libs": [
     "^libSDL2_image-2\\.0\\.so", "^libSDL2_mixer-2\\.0\\.so",
-    "^libpng16\\.so", "^libz\\.so", "^libfreetype\\.so", "^libexpat\\.so", "^libbz2\\.so"
+    "^libpng16\\.so", "^libz\\.so", "^libfreetype\\.so", "^libexpat\\.so", "^libbz2\\.so\\.1$"
   ],
   "_license_aliases": "Bundled lib component (lib name without lib/.so/version) -> licenses/LICENSE.<component>.txt name, where the names do not start the same way.",
   "license_aliases": {
@@ -88,13 +88,15 @@
     "dbus": "https://gitlab.freedesktop.org/dbus/dbus/-/raw/main/COPYING",
     "cairo": "https://gitlab.freedesktop.org/cairo/cairo/-/raw/master/COPYING"
   },
+  "_dlopen_libs": "Bundled libs no port binary NEEDs but something else loads, so check_port.sh does not report them as unused. libtheoradec: the love_11.5 runtime (Love2D launcher/extract) needs it on AmberELEC.",
+  "dlopen_libs": ["^libtheoradec\\.so"],
   "_cfw_provided": "NEEDED entries a port can expect the CFW to provide.",
   "cfw_provided": [
     "^libc\\.so", "^libm\\.so", "^libdl\\.so", "^libpthread\\.so", "^librt\\.so", "^ld-linux",
     "^libgcc_s\\.so", "^libstdc\\+\\+\\.so", "^libSDL2-2\\.0\\.so", "^libSDL2_(image|mixer|ttf)-2\\.0\\.so",
     "^libGL\\.so", "^libEGL\\.so", "^libGLES", "^libdrm\\.so", "^libgbm\\.so", "^libasound\\.so",
     "^libudev\\.so", "^libz\\.so", "^libpng16\\.so", "^libfreetype\\.so", "^libexpat\\.so",
-    "^libbz2\\.so", "^libogg\\.so", "^libvorbis", "^libopenal\\.so", "^libpulse", "^libcrypt\\.so",
+    "^libbz2\\.so\\.1$", "^libogg\\.so", "^libvorbis", "^libopenal\\.so", "^libpulse", "^libcrypt\\.so",
     "^liblzma\\.so", "^libutil\\.so", "^libresolv\\.so", "^libatomic\\.so", "^libSDL-1\\.2\\.so",
     "^libX11\\.so", "^libwayland-"
   ]
