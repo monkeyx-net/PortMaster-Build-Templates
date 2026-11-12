@@ -25,7 +25,8 @@
     {"pattern": "^libwayland-(client|egl|cursor|server)\\.so", "reason": "compositor-adjacent library, always from the CFW"},
     {"pattern": "^libc\\.so|^ld-linux|^libm\\.so|^libpthread\\.so|^libdl\\.so|^librt\\.so", "reason": "glibc itself must never be bundled"},
     {"pattern": "^libasound\\.so", "reason": "ALSA comes from the CFW"},
-    {"pattern": "^libudev\\.so", "reason": "udev comes from the CFW"}
+    {"pattern": "^libudev\\.so", "reason": "udev comes from the CFW"},
+    {"pattern": "^libcairo\\.so", "reason": "cairo is linked against X11/xcb, which most CFWs lack; rebuild the dependant lib without it (e.g. libtheora without telemetry)"}
   ],
   "_gl_libs": "libGL/libEGL are only allowed inside a gl4es.<arch>/ folder.",
   "gl_libs": "^lib(GL|EGL)\\.so",
@@ -85,8 +86,7 @@
     "flac": "https://raw.githubusercontent.com/xiph/flac/master/COPYING.Xiph",
     "mpg123": "https://raw.githubusercontent.com/madebr/mpg123/master/COPYING",
     "jack": "https://raw.githubusercontent.com/jackaudio/jack2/develop/COPYING",
-    "dbus": "https://gitlab.freedesktop.org/dbus/dbus/-/raw/main/COPYING",
-    "cairo": "https://gitlab.freedesktop.org/cairo/cairo/-/raw/master/COPYING"
+    "dbus": "https://gitlab.freedesktop.org/dbus/dbus/-/raw/main/COPYING"
   },
   "_dlopen_libs": "Bundled libs no port binary NEEDs but something else loads, so check_port.sh does not report them as unused. libtheoradec: the love_11.5 runtime (Love2D launcher/extract) needs it on AmberELEC.",
   "dlopen_libs": ["^libtheoradec\\.so"],

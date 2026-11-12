@@ -43,7 +43,6 @@ RUN apt-get update && \
       libgles2-mesa-dev \
       libglm-dev \
       libogg-dev \
-      libtheora0 \
       libopengl-dev \
       libssl-dev \
       libopus-dev \
@@ -168,6 +167,16 @@ RUN git clone https://github.com/xiph/opusfile.git && \
     PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --prefix=/usr/local --libdir=/usr/lib/aarch64-linux-gnu && \
     make -j$(nproc) && \
     make install
+
+# libtheoradec without telemetry: Ubuntu's libtheora0 NEEDS libcairo (-> X11/xcb), which AmberELEC lacks
+RUN wget -q https://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2 && \
+    tar xjf libtheora-1.1.1.tar.bz2 && \
+    cd libtheora-1.1.1 && \
+    ./configure --build=aarch64-unknown-linux-gnu --prefix=/usr/local --libdir=/usr/lib/aarch64-linux-gnu \
+      --disable-examples --disable-encode --disable-spec --disable-oggtest --disable-vorbistest --disable-sdltest && \
+    make -j$(nproc) && \
+    make install && \
+    ! readelf -d /usr/lib/aarch64-linux-gnu/libtheoradec.so.1 | grep -i cairo
 
 RUN git clone https://github.com/leethomason/tinyxml2.git && \
     cd tinyxml2 && \

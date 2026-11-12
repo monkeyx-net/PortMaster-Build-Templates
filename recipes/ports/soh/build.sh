@@ -16,7 +16,6 @@ FILES=(
   "liblzma.so.5"
 )
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
-  "libcairo.so.2"
   "libtheoradec.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
