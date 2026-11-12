@@ -20,7 +20,8 @@
 # builds stay correct): writes the glibc the aarch64 binaries need to attr.min_glibc in
 # port.json, letterboxes screenshot.png to 640x480 and compresses screenshot/cover to <100 kB,
 # and for warnings: sets the launcher to 644, fixes shellcheck SC2188 (bare "> file"),
-# drops built-in runtimes from attr.runtime and renames LICENSE_x/LICENSE-x to LICENSE.x.txt.
+# drops built-in runtimes from attr.runtime, renames LICENSE_x/LICENSE-x to LICENSE.x.txt
+# and appends a ## Compile section to README.md if missing.
 #
 # --fix-license downloads the license of each bundled lib that has none from license_urls in
 # port_rules.json into licenses/LICENSE.<name>.txt (needs network; check the files).
@@ -537,6 +538,45 @@ if [[ -d "$dir/licenses" ]]; then
     find "$dir/licenses" -maxdepth 1 -type f ! -name .gitkeep | grep -q . || err "licenses/ is empty"
 else
     err "no licenses/ folder"
+fi
+
+# ---------------------------------------------------------------- README.md
+# Reviewers want to know how the binary was built: the README ends with a ## Compile
+# section (build command, upstream source, recipe folder). Only added when missing.
+add_compile_section() {
+    local repo build url
+    if [[ -n "${GITHUB_SERVER_URL:-}" && -n "${GITHUB_REPOSITORY:-}" ]]; then
+        repo="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+    else
+        repo=$(git remote get-url origin 2> /dev/null | sed -E 's#^git@github\.com:#https://github.com/#; s#://[^/@]*@#://#; s#\.git$##')
+    fi
+    [[ -n "$repo" ]] || return 1
+    build=$(jq -r '.source.port_build // empty' "$recipe" 2> /dev/null)
+    url=$(jq -r '.source.port_url // empty' "$recipe" 2> /dev/null)
+    local src="upstream source"
+    if [[ "$url" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then src="[$url](https://github.com/$url)"
+    elif [[ -n "$url" ]]; then src="[$url]($url)"; fi
+    local rdir="recipes/ports/$port"
+    [[ -n "$(tail -c1 "$readme")" ]] && echo >> "$readme"
+    [[ -n "$(tail -n1 "$readme")" ]] && echo >> "$readme"
+    {
+        printf '## Compile\n\n'
+        printf 'Built with [PortMaster-Build-Templates](%s) from %s. ' "$repo" "$src"
+        printf 'The recipe folder [%s](%s/tree/main/%s) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder' "$rdir" "$repo" "$rdir"
+        if [[ -n "$build" ]]; then
+            printf ' before running the build command:\n\n```sh\n%s\n```\n' "$build"
+        else
+            printf '. The build steps are in `build.sh`.\n'
+        fi
+    } >> "$readme"
+}
+readme="$dir/README.md"
+if [[ -f "$readme" ]] && ! grep -qiE '^##[[:space:]]*compile' "$readme"; then
+    if fixing; then
+        fixit --fix "add ## Compile section to README.md" add_compile_section
+    else
+        warn "README.md has no ## Compile section (or run with --fix)"
+    fi
 fi
 
 # ---------------------------------------------------------------- screenshot and cover
