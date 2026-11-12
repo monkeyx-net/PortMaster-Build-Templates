@@ -3,13 +3,13 @@
   "name": "spaghettikart.zip",
   "port_json": "new_ports/spaghettikart/spaghettikart/spaghettikart/port.json",
   "source": {
-    "date_updated": "2026-11-11",
+    "date_updated": "2026-11-12",
     "port_exe": "Spaghettify",
     "port_build": "cmake",
-    "port_checksum": "e3d93a8a65bd3094b371d34f0d69d71c63ea0aace9ac2a90408af80c3985a607",
+    "port_checksum": "37a7dc10184d6d02928abc2505b64f6a4f468dc82fa7915ef46d087f9e0d8358",
     "port_url": "https://github.com/HarbourMasters/SpaghettiKart/archive/refs/heads/main.tar.gz",
     "port_version": "commit:ce0f935",
-    "port_download": "https://github.com/HarbourMasters/SpaghettiKart/archive/refs/heads/main.tar.gz"
+    "port_download": "https://github.com/HarbourMasters/SpaghettiKart/archive/ce0f9358f0505bbdeb76b1aff7a25556cda3fdef.tar.gz"
   },
   "includes": [
     "swap.txt",
