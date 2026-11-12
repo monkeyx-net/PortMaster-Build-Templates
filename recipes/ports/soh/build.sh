@@ -7,24 +7,20 @@ PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
 FILES=(
-  "libcrypto.so.1.1"
   "liblzma.so.5"
+  "libogg.so.0"
   "libopus.so.0"
   "libopusfile.so.0"
-  "libogg.so.0"
   "libSDL2_net-2.0.so.0"
-  "libspdlog.so.1.12"
-  "libtinyxml2.so.10"
-  "libz.so.1"
   "libzip.so.5"
-
-  "libbz2.so.1.0"
 )
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
+  "libcrypto.so.1.1"
   "libtheoradec.so.1"
+  "libz.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
-  "libfmt.so.9"
+  "libbz2.so.1.0"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"

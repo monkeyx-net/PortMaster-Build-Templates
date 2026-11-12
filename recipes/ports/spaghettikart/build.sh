@@ -8,17 +8,21 @@ PORT_EXE="$3"
 ARCH="$4"
 # Spaghettify needs ogg/vorbis, libzip and tinyxml2; the rest are libzip's dependencies (ldd)
 FILES=(
-  "libz.so.1"
-  "libbz2.so.1.0"
   "liblzma.so.5"
-  "libcrypto.so.1.1"
   "libogg.so.0"
-  "libtheoradec.so.1"
   "libvorbis.so.0"
-  "libvorbisfile.so.3"
   "libvorbisenc.so.2"
-  "libzip.so.5"
+  "libvorbisfile.so.3"
   "libtinyxml2.so.10"
+  "libzip.so.5"
+)
+[[ ${ARCH} == "aarch64" ]] && FILES+=(
+  "libcrypto.so.1.1"
+  "libtheoradec.so.1"
+  "libz.so.1"
+)
+[[ ${ARCH} == "x86_64" ]] && FILES+=(
+  "libbz2.so.1.0"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"

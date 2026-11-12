@@ -8,21 +8,22 @@ PORT_EXE="$3"
 ARCH="$4"
 # needs file.arch?
 FILES=(
-  "libz.so.1"
-  "libbz2.so.1"
-  "libbz2.so.1.0"
+  "liblzma.so.5"
+  "libogg.so.0"
   "libopus.so.0"
   "libopusfile.so.0"
-  "libogg.so.0"
-  "libpng16.so.16"
-  "libspdlog.so.1"
-  "libspdlog.so.1.12"
-  "libzip.so.5"
-  "libtheoradec.so.1"
   "libtinyxml2.so.10"
+  "libzip.so.5"
+)
+[[ ${ARCH} == "aarch64" ]] && FILES+=(
   "libcrypto.so.1.1"
+  "libspdlog.so.1"
+  "libz.so.1"
+)
+[[ ${ARCH} == "x86_64" ]] && FILES+=(
+  "libbz2.so.1.0"
   "libfmt.so.9"
-  "liblzma.so.5"
+  "libspdlog.so.1.12"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
