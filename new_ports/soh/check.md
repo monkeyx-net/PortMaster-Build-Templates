@@ -1,6 +1,6 @@
 # check_port: soh
 
-`check_port.sh soh --fix --fix-bloat --fix-license` on 2026-11-12 01:40, commit 9809ab3.
+`check_port.sh soh` on 2026-11-12 01:43, commit d6640b599.
 
 **Result: ok, 4 warning(s)**
 
@@ -13,5 +13,5 @@
 
 ## Notes
 
-- aarch64 loads from libs.aarch64: libSDL2_net-2.0.so.0 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libopus.so.0 libopusfile.so.0 libtheoradec.so.1 libzip.so.5
-- x86_64 loads from libs.x86_64: libSDL2_net-2.0.so.0 libbz2.so.1.0 liblzma.so.5 libogg.so.0 libopus.so.0 libopusfile.so.0 libzip.so.5
+- aarch64 loads from libs.aarch64: libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libopusfile.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libtheoradec.so.1 libzip.so.5
+- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libopusfile.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libzip.so.5
