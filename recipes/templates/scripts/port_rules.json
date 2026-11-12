@@ -30,10 +30,10 @@
   ],
   "_gl_libs": "libGL/libEGL are only allowed inside a gl4es.<arch>/ folder.",
   "gl_libs": "^lib(GL|EGL)\\.so",
-  "_common_libs": "Near-universal on CFW base images: bundling only bloats the port. libstdc++/libgcc_s can legitimately be newer than the CFW's (GLIBCXX), so they are not listed. libbz2.so.1.0 is the Debian/Ubuntu soname (x86_64 libzip needs it) and is missing on other systems, so only libbz2.so.1 is listed. libz is not listed: it is missing on some panfrost images, and ports that need it bundle it for aarch64.",
+  "_common_libs": "Near-universal on CFW base images: bundling only bloats the port. libstdc++/libgcc_s can legitimately be newer than the CFW's (GLIBCXX), so they are not listed. libbz2.so.1.0 is the Debian/Ubuntu soname (x86_64 libzip needs it) and is missing on other systems. libbz2.so.1 (the CMake soname, as built in the aarch64 builder) is missing on some CFWs (ROCKNIX), so ports that need it bundle it for aarch64. libz is not listed: it is missing on some panfrost images, and ports that need it bundle it for aarch64.",
   "common_libs": [
     "^libSDL2_image-2\\.0\\.so", "^libSDL2_mixer-2\\.0\\.so",
-    "^libpng16\\.so", "^libfreetype\\.so", "^libexpat\\.so", "^libbz2\\.so\\.1$"
+    "^libpng16\\.so", "^libfreetype\\.so", "^libexpat\\.so"
   ],
   "_license_aliases": "Bundled lib component (lib name without lib/.so/version) -> licenses/LICENSE.<component>.txt name, where the names do not start the same way.",
   "license_aliases": {
@@ -96,7 +96,7 @@
     "^libgcc_s\\.so", "^libstdc\\+\\+\\.so", "^libSDL2-2\\.0\\.so", "^libSDL2_(image|mixer|ttf)-2\\.0\\.so",
     "^libGL\\.so", "^libEGL\\.so", "^libGLES", "^libdrm\\.so", "^libgbm\\.so", "^libasound\\.so",
     "^libudev\\.so", "^libz\\.so", "^libpng16\\.so", "^libfreetype\\.so", "^libexpat\\.so",
-    "^libbz2\\.so\\.1$", "^libogg\\.so", "^libvorbis", "^libopenal\\.so", "^libpulse", "^libcrypt\\.so",
+    "^libogg\\.so", "^libvorbis", "^libopenal\\.so", "^libpulse", "^libcrypt\\.so",
     "^liblzma\\.so", "^libutil\\.so", "^libresolv\\.so", "^libatomic\\.so", "^libSDL-1\\.2\\.so",
     "^libX11\\.so", "^libwayland-"
   ]

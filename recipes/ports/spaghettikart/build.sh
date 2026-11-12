@@ -17,6 +17,7 @@ FILES=(
   "libzip.so.5"
 )
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
+  "libbz2.so.1"
   "libcrypto.so.1.1"
   "libtheoradec.so.1"
   "libz.so.1"

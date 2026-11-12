@@ -9,7 +9,7 @@
 # Usage (from the repo root):
 #   recipes/templates/scripts/check_port.sh <port> [--fix] [--fix-bloat] [--fix-license] [--test]
 #
-# package.sh (so every build) runs it with --fix --fix-bloat --fix-license.
+# package.sh (so every build) runs it with --fix --fix-license (not --fix-bloat: bundled common libs stay, with a warning).
 #
 # Writes the result to new_ports/<port>/check.md (next to test/, so it is not in the zip).
 #
