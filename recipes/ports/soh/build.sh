@@ -15,7 +15,7 @@ FILES=(
   "libSDL2_net-2.0.so.0"
   "libspdlog.so.1.12"
   "libtinyxml2.so.10"
-   "libz.so.1"
+  "libz.so.1"
   "libzip.so.5"
 
   "libbz2.so.1.0"
