@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-13_
+_Last checked: 2026-11-14_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -27,10 +27,10 @@ _Last checked: 2026-11-13_
 | Ship of Harkinian | soh | 🔵 | 9.3.1 | 2026-10-20 | 2026-03-16 |
 | Ship of Harkinian 2 | soh2 | 🔵 | 5.0.1 | 2026-08-26 | 2026-03-16 |
 | SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-12 | 2025-09-08 |
-| -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
-| Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| -- | starship | 🔴 | v2.0.0 | 2026-10-28 | -- |
+| Stunt Car Racer | stuntcarracer | 🔴 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 21 &nbsp; 🟢 OK: 12 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 21 &nbsp; 🟢 OK: 11 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 2 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
