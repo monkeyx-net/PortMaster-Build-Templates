@@ -1,24 +1,24 @@
 # check_port: legoisland
 
-`check_port.sh legoisland --fix` on 2026-11-16 11:33, commit 709d191.
+`check_port.sh legoisland --fix --fix-license` on 2026-11-16 13:04, commit dacd1ca.
 
-**Result: 1 error(s), 3 warning(s)**
-
-## Errors
-
-- gameinfo.xml \<image> ./legoisland/cover.png does not exist
+**Result: ok, 2 warning(s)**
 
 ## Warnings
 
-- no aarch64 binaries in new_ports/legoisland/legoisland/legoisland (not built yet?)
-- no screenshot.png (make_images.sh creates a placeholder)
-- no cover.png (make_images.sh creates a placeholder)
+- screenshot.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
+- cover.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
 
 ## Fixed by --fix
 
-- remove love_11.5 from attr.runtime (it ships with PortMaster)
-- add ## Compile section to README.md
+- LEGO Island.sh:28: change "> file" to ": > file" (SC2188)
+- set attr.min_glibc from "" to "2.30" (libs.aarch64/libSDL3.so.0 needs GLIBC_2.30)
+
+## Fixed by --fix-license
+
+- fetch licenses/LICENSE.libtheora.txt for libs.aarch64/libtheoradec.so.1 from https://raw.githubusercontent.com/xiph/theora/master/COPYING
 
 ## Notes
 
-- shellcheck not installed, launcher lint skipped
+- aarch64 loads from libs.aarch64: libSDL3.so.0 liblego1.so libtheoradec.so.1
+- x86_64 loads from libs.x86_64: libSDL3.so.0 liblego1.so
