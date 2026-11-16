@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./LEGO Island.sh</path>
+    <name>LEGO Island</name>
+    <desc>LEGO Island, portable: the 1997 open-world adventure rebuilt from the isledecomp decompilation. Explore the island, build vehicles, deliver pizzas, race and chase the Brickster.</desc>
+    <releasedate>19970926T000000</releasedate>
+    <developer>Mindscape</developer>
+    <publisher>LEGO Media</publisher>
+    <genre>Adventure</genre>
+    <image>./legoisland/cover.png</image>
+  </game>
+</gameList>

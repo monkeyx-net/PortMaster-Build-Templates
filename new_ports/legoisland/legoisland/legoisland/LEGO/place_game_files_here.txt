@@ -1,0 +1,2 @@
+Copy the LEGO folder from your LEGO Island CD here (see README.md):
+LEGO/SCRIPTS and LEGO/DATA

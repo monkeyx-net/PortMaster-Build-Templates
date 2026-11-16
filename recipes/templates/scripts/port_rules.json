@@ -43,7 +43,7 @@
     "vorbisfile": "libvorbis", "vorbisenc": "libvorbis", "vorbis": "libvorbis", "ogg": "libogg",
     "zip": "libzip", "opus": "opus", "opusfile": "opusfile",
     "sndfile": "libsndfile", "instpatch": "libinstpatch", "gobject": "glib", "gmodule": "glib",
-    "gio": "glib", "modplug": "libmodplug"
+    "gio": "glib", "modplug": "libmodplug", "lego1": "isle-portable"
   },
   "_license_urls": "License name -> upstream license file, fetched by check_port.sh --fix-license into licenses/LICENSE.<name>.txt. Matched like license names (lib component starts with the name, through license_aliases).",
   "license_urls": {

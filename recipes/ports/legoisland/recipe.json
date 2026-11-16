@@ -1,0 +1,25 @@
+{
+  "recipe_version": 1,
+  "name": "legoisland.zip",
+  "port_json": "new_ports/legoisland/legoisland/legoisland/port.json",
+  "source": {
+    "date_updated": "",
+    "port_exe": "isle",
+    "port_build": "cmake",
+    "port_checksum": "",
+    "port_url": "isledecomp/isle-portable",
+    "port_download": "",
+    "port_version": ""
+  },
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ],
+  "controls": "launcher/controls.png",
+  "test": {
+    "delay": 20,
+    "keys": "start",
+    "needs_data": "LEGO"
+  }
+}

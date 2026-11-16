@@ -1,0 +1,34 @@
+{
+  "version": 4,
+  "name": "legoisland.zip",
+  "items": [
+    "LEGO Island.sh",
+    "legoisland"
+  ],
+  "items_opt": null,
+  "attr": {
+    "title": "LEGO Island",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "LEGO Island, portable: the 1997 open-world adventure rebuilt from the isledecomp decompilation. Explore the island, build vehicles, deliver pizzas, race and chase the Brickster.",
+    "desc_md": null,
+    "inst": "Requires the LEGO Island (v1.1, English) CD. Copy the contents of the CD's LEGO folder into ports/legoisland/LEGO, then copy the DATA folder from the CD's DATA/DISK/LEGO folder into it, so ports/legoisland/LEGO contains SCRIPTS and DATA (about 450 MB).",
+    "inst_md": null,
+    "genres": [
+      "adventure"
+    ],
+    "image": {},
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "paid",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": null
+  }
+}

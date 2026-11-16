@@ -1,0 +1,19 @@
+back = \"
+start = \"
+up = \"
+down = \"
+left = \"
+right = \"
+a = \"
+b = \"
+x = \"
+y = \"
+l1 = \"
+l2 = \"
+r1 = \"
+r2 = \"
+
+left_analog_up = mouse_movement_up
+left_analog_down = mouse_movement_down
+left_analog_left = mouse_movement_left
+left_analog_right = mouse_movement_right
