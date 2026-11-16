@@ -15,6 +15,7 @@ _Last checked: 2026-11-16_
 | -- | epiphany | 🟢 | v0.9.2 | 2026-11-07 | -- |
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
+| -- | legoisland | 🔵 | continuous-2026-11-16 | 2026-11-16 | -- |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | Lix | lix | 🟢 | v0.10.36 | 2026-11-05 | 2026-11-15 |
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
@@ -30,7 +31,7 @@ _Last checked: 2026-11-16_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 21 &nbsp; 🟢 OK: 12 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 22 &nbsp; 🟢 OK: 12 &nbsp; 🔵 Updates: 10 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
