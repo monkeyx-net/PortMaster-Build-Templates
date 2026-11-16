@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-15_
+_Last checked: 2026-11-16_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -16,7 +16,7 @@ _Last checked: 2026-11-15_
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
-| -- | lix | 🟢 | v0.10.36 | 2026-11-05 | -- |
+| Lix | lix | 🟢 | v0.10.36 | 2026-11-05 | 2026-11-15 |
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | -- | nookery | 🟢 | v1.0.0 | 2026-11-07 | -- |
 | -- | opengolf | 🟢 | v0.0.4 | 2026-11-08 | -- |
