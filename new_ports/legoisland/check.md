@@ -1,6 +1,6 @@
 # check_port: legoisland
 
-`check_port.sh legoisland --fix --fix-license` on 2026-11-16 13:04, commit dacd1ca.
+`check_port.sh legoisland --fix --fix-license` on 2026-11-16 17:30, commit 01cfba5.
 
 **Result: ok, 2 warning(s)**
 
@@ -11,12 +11,7 @@
 
 ## Fixed by --fix
 
-- LEGO Island.sh:28: change "> file" to ": > file" (SC2188)
-- set attr.min_glibc from "" to "2.30" (libs.aarch64/libSDL3.so.0 needs GLIBC_2.30)
-
-## Fixed by --fix-license
-
-- fetch licenses/LICENSE.libtheora.txt for libs.aarch64/libtheoradec.so.1 from https://raw.githubusercontent.com/xiph/theora/master/COPYING
+- set attr.min_glibc from "2.30" to "2.29" (libs.aarch64/liblego1.so needs GLIBC_2.29)
 
 ## Notes
 
