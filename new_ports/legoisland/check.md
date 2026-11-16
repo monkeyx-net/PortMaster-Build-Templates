@@ -1,6 +1,6 @@
 # check_port: legoisland
 
-`check_port.sh legoisland --fix --fix-license` on 2026-11-16 17:30, commit 01cfba5.
+`check_port.sh legoisland --fix --fix-license` on 2026-11-16 18:18, commit 15a33c8.
 
 **Result: ok, 2 warning(s)**
 
@@ -8,10 +8,6 @@
 
 - screenshot.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
 - cover.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
-
-## Fixed by --fix
-
-- set attr.min_glibc from "2.30" to "2.29" (libs.aarch64/liblego1.so needs GLIBC_2.29)
 
 ## Notes
 
