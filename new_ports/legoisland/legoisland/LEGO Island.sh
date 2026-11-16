@@ -41,13 +41,20 @@ if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
   exit 0
 fi
 
-# The game files are not included (see README.md)
-if [ -z "$(find "$GAMEDIR/LEGO" -iname world.wdb 2>/dev/null)" ]; then
-  pm_message "Missing game files! Copy the LEGO folder from your LEGO Island CD to ports/legoisland/LEGO"
+# The game files are not included (see README.md): the whole CD in LEGO/, or its Lego/Scripts and
+# DATA/DISK/LEGO/data folders as LEGO/Scripts and LEGO/data. cdpath and diskpath are the folders
+# above them.
+SCRIPTS=$(find "$GAMEDIR/LEGO" -maxdepth 4 -ipath '*/lego/scripts/credits.si' | head -n 1)
+DATA=$(find "$GAMEDIR/LEGO" -maxdepth 6 -ipath '*/lego/data/world.wdb' | head -n 1)
+if [ -z "$SCRIPTS" ] || [ -z "$DATA" ]; then
+  pm_message "Missing game files! Copy your LEGO Island CD to ports/legoisland/LEGO"
   sleep 5
   pm_finish
   exit 0
 fi
+sed -i -e "s|^cdpath *=.*|cdpath = \"${SCRIPTS%/*/*/*}/\"|" \
+  -e "s|^diskpath *=.*|diskpath = \"${DATA%/*/*/*}/\"|" \
+  -e "s|^mediapath *=.*|mediapath = \"${DATA%/*/*/*}/\"|" "$GAMEDIR/isle.ini"
 
 # libSDL3 is the SDL3-on-SDL2 shim: hand the CFW's driver choice to SDL2 and run SDL3 on it
 if [ -n "$SDL_VIDEODRIVER" ]; then

@@ -1,5 +1,5 @@
 -- LEGO Island launcher settings. Edits isle.ini (iniparser format: [section], then
--- lowercase `key = "value"` lines) and always points the game paths at the port folder.
+-- lowercase `key = "value"` lines) and always points the save path at the port folder.
 
 -- "3D Device ID": driver number and the miniwin renderer GUID as printed by the game
 local function device(n) return "0 0x682656f3 0x0 0x0 0x" .. n .. "000000" end
@@ -97,10 +97,8 @@ function config.save(path, v)
     for _, it in ipairs(config.items) do
         if v[it.id] == "" then removeValue(lines, it.id) else setValue(lines, it.id, v[it.id]) end
     end
-    -- The port folder differs per CFW: game files in LEGO/, saves in saves/
-    local dir = path:match("^(.*)/[^/]*$") .. "/"
-    for _, key in ipairs({ "diskpath", "cdpath", "mediapath" }) do setValue(lines, "isle:" .. key, dir) end
-    setValue(lines, "isle:savepath", dir .. "saves/")
+    -- The port folder differs per CFW (the .sh sets the game file paths)
+    setValue(lines, "isle:savepath", path:match("^(.*)/[^/]*$") .. "/saves/")
     setValue(lines, "isle:full screen", "true")
     local tmp = path .. ".tmp"
     local f, err = io.open(tmp, "w")

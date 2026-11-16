@@ -4,10 +4,7 @@ LEGO Island, portable ([isle-portable](https://github.com/isledecomp/isle-portab
 ## Installation
 You need your own copy of the LEGO Island CD (v1.1, English).
 
-1. Copy the contents of the CD's `LEGO` folder into `ports/legoisland/LEGO`.
-2. Copy the `DATA` folder from the CD's `DATA/DISK/LEGO` folder into `ports/legoisland/LEGO` as well.
-
-`ports/legoisland/LEGO` then contains `SCRIPTS` and `DATA` (about 450 MB). Saves go to `ports/legoisland/saves`. Logs are written to `ports/legoisland/log.txt`; please include it when reporting an issue.
+Copy the whole CD into `ports/legoisland/LEGO`, so that it contains the CD's `LEGO` and `DATA` folders. A smaller copy works too: put the CD's `LEGO/SCRIPTS` folder and its `DATA/DISK/LEGO/DATA` folder into `ports/legoisland/LEGO` (about 450 MB). Saves go to `ports/legoisland/saves`. Logs are written to `ports/legoisland/log.txt`; please include it when reporting an issue.
 
 ## Launcher
 A settings launcher opens before the game: renderer, island detail and textures, frame rate limit, transitions, cursor speed, music and the third-person camera extension. Choose Play, or wait for it to start the game. Try OpenGL ES 2 or Software if the picture is wrong.
