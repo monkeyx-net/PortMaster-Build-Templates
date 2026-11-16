@@ -17,13 +17,15 @@ cd "new_ports/${PORT_FOLDER}/source"
 # SDL3, iniparser, miniaudio, libsmacker and libweaver are fetched at configure time. CFWs ship
 # only SDL2, so SDL3 is bundled (built shared, as lego1 and isle both link it).
 # Not built: the OpenGL 1 renderer (links desktop libGL/GLX, missing on most CFWs), the SDL GPU
-# renderer (needs Vulkan), the Qt config tool and libwebsockets multiplayer.
+# renderer (needs Vulkan), the Qt config tool and libwebsockets multiplayer. XTEST is not in the
+# 20.04 builder (and SDL3 only needs it for X11 input faking).
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_DISABLE_FIND_PACKAGE_OpenGL=ON \
   -DISLE_RENDERER_SDLGPU=OFF \
   -DISLE_BUILD_CONFIG=OFF \
-  -DISLE_USE_LWS=OFF || exit 1
+  -DISLE_USE_LWS=OFF \
+  -DSDL_X11_XTEST=OFF || exit 1
 grep -q '#define SDL_VIDEO_DRIVER_KMSDRM 1' build/_deps/sdl3-build/include-config-release/build_config/SDL_build_config.h \
   || { echo "Error: SDL3 was configured without KMSDRM"; exit 1; }
 cmake --build build -j$(nproc) || exit 1
