@@ -49,6 +49,14 @@ if [ -z "$(find "$GAMEDIR/LEGO" -iname world.wdb 2>/dev/null)" ]; then
   exit 0
 fi
 
+# libSDL3 is the SDL3-on-SDL2 shim: hand the CFW's driver choice to SDL2 and run SDL3 on it
+if [ -n "$SDL_VIDEODRIVER" ]; then
+  export SDL3SHIM_SDL2_VIDEODRIVER="$SDL_VIDEODRIVER" SDL_VIDEODRIVER=sdl2
+fi
+if [ -n "$SDL_AUDIODRIVER" ]; then
+  export SDL3SHIM_SDL2_AUDIODRIVER="$SDL_AUDIODRIVER" SDL_AUDIODRIVER=sdl2
+fi
+
 # Run the game
 $GPTOKEYB "isle.${DEVICE_ARCH}" -c "isle.gptk" &
 pm_platform_helper "isle.${DEVICE_ARCH}" >/dev/null
