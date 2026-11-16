@@ -35,7 +35,9 @@ RUN apt-get update && \
       libfuse2 \
       libgl-dev \
       libgl1-mesa-dev \
+      libdrm-dev \
       libegl1-mesa-dev \
+      libgbm-dev \
       libgles2-mesa-dev \
       libglm-dev \
       libogg-dev \
