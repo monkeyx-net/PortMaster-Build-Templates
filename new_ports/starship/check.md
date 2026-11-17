@@ -1,6 +1,6 @@
 # check_port: starship
 
-`check_port.sh starship --fix --fix-license` on 2026-11-17 17:27, commit fd4284c.
+`check_port.sh starship --fix --fix-license` on 2026-11-17 18:16, commit 6e73feb.
 
 **Result: ok, 4 warning(s)**
 
@@ -13,5 +13,5 @@
 
 ## Notes
 
-- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libtheoradec.so.1 libtinyxml2.so.10 libz.so.1 libzip.so.5
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libz.so.1 libzip.so.5
 - x86_64 loads from libs.x86_64: libbz2.so.1 libbz2.so.1.0 liblzma.so.5 libtinyxml2.so.10 libz.so.1 libzip.so.5
