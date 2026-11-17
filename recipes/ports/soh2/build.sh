@@ -6,7 +6,6 @@ PORT_FOLDER="$1"
 PORT_BUILD="$2"
 PORT_EXE="$3"
 ARCH="$4"
-# needs file.arch?
 FILES=(
   "liblzma.so.5"
   "libogg.so.0"
@@ -18,16 +17,16 @@ FILES=(
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
   "libbz2.so.1"
   "libcrypto.so.1.1"
-  "libspdlog.so.1"
+  "libtheoradec.so.1"
   "libz.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
   "libbz2.so.1.0"
-  "libfmt.so.9"
-  "libspdlog.so.1.12"
 )
 CDIR=$(pwd)
 DEST_DIR="${CDIR}/dist/libs.${ARCH}"
+RECIPE_DIR="${CDIR}/recipes/ports/${PORT_FOLDER}"
+TAG=$(jq -r '.source.port_version' "${RECIPE_DIR}/recipe.json")
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu"
@@ -36,20 +35,9 @@ elif [[ ${ARCH} == "x86_64" ]]; then
 fi
 
 #### SoH2 ####
-git clone https://github.com/HarbourMasters/2ship2harkinian.git
+git clone --branch "${TAG}" https://github.com/HarbourMasters/2ship2harkinian.git || exit 1
 cd 2ship2harkinian
-
-git fetch --tags
-git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
-
 git submodule update --init
-
-cd libultraship
-patch -p1 < $CDIR/recipes/ports/soh2/soh2.patch
-cd ..
-
-export CFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
-export CXXFLAGS="-O3 -Wall -Wextra -Wno-return-type -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-macro-redefined -Wno-unknown-warning-option"
 
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
@@ -62,25 +50,27 @@ fi
 
 mkdir build-soh2 && cd build-soh2
 cmake .. -GNinja -DUSE_OPENGLES=1 -DBUILD_CROWD_CONTROL=0 -DCMAKE_BUILD_TYPE=Release
-cmake --build . -j8
-cmake --build . --target Generate2ShipOtr -j8
+cmake --build . -j$(nproc)
+cmake --build . --target Generate2ShipOtr -j$(nproc)
 cd ../..
-mkdir -p ${CDIR}/dist/assets/extractor
 ls -lha 2ship2harkinian/build-soh2/mm/
+if [[ ! -f "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" ]]; then
+  echo "Error: ${PORT_EXE}.elf was not built"
+  exit 1
+fi
+mkdir -p "${CDIR}/dist/assets"
 strip "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" || true
 cp "2ship2harkinian/build-soh2/mm/${PORT_EXE}.elf" "dist/${PORT_EXE}.elf.${ARCH}"
 cp "2ship2harkinian/build-soh2/mm/2ship.o2r" "dist/"
-cp -r "${CDIR}/2ship2harkinian/mm/assets/extractor/." "${CDIR}/dist/assets/extractor/"
-cp -r "${CDIR}/2ship2harkinian/mm/assets/xml/." "${CDIR}/dist/assets/xml/"
-ls -lha dist/
-cd "${CDIR}/dist/assets"
-zip -r ${CDIR}/dist/assets/extractor.zip ./*
-rm -rf extractor/* xml
-cp "${CDIR}/2ship2harkinian/build-soh2/ZAPD/ZAPD.out" "${CDIR}/dist/assets/extractor/ZAPD.out.${ARCH}"
-
+# The rom is converted in game (ZAPD is built into 2s2h.elf); it reads Config_*.xml, filelists/
+# and xml/ from assets/. Ship them as extractor.zip (unpacked into assets/ by the launcher). This
+# also replaces the LFS pointer for extractor.zip that the package job checks out with lfs: false.
+(cd "${CDIR}/2ship2harkinian/mm/assets/extractor" && zip -qr "${CDIR}/dist/assets/extractor.zip" .)
+(cd "${CDIR}/2ship2harkinian/mm/assets" && zip -qr "${CDIR}/dist/assets/extractor.zip" xml)
+unzip -tq "${CDIR}/dist/assets/extractor.zip" || exit 1
+ls -lha dist/ dist/assets/
 
 mkdir -p ${CDIR}/dist/libs.${ARCH}
-# if sourcedir !null and files !null
 for file in "${FILES[@]}"; do
     cp "${SOURCE_DIR}/${file}" "${DEST_DIR}/" 2>/dev/null || echo "Warning: ${file} not found"
 done

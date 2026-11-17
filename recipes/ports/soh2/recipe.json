@@ -10,5 +10,20 @@
     "port_url": "2ship2harkinian/2ship2harkinian",
     "port_version": "5.0.1",
     "port_download": "https://github.com/2ship2harkinian/2ship2harkinian/archive/refs/tags/5.0.1.tar.gz"
+  },
+  "includes": [
+    "swap.txt",
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua",
+    "launcher/anchor.lua",
+    "extract/main.lua",
+    "extract/conf.lua"
+  ],
+  "controls": "launcher/controls.png",
+  "test": {
+    "delay": 30,
+    "keys": "start",
+    "needs_data": "baseroms/*.z64 mm.o2r"
   }
 }

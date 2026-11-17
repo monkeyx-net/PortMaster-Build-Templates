@@ -5,6 +5,8 @@
 -- fpsDefault is only needed when the game's unset default differs from fps.
 -- anchor = false: no Anchor co-op items (frame rate and low-res only, e.g. PaperBoat).
 -- settings = { Key = n, ... }: extra CVars.gSettings ints forced on every save.
+-- flat = true: the game keeps these CVars directly in CVars with a "g" prefix
+-- (gInterpolationFPS, gLowResMode, ...) instead of in gSettings (e.g. 2Ship2Harkinian).
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -28,6 +30,9 @@ return function(title, opts)
     end
 
     local anchor = opts.anchor ~= false
+    -- object holding the frame rate/low-res CVars, and their key names in it
+    local section = opts.flat and "CVars" or "gSettings"
+    local function cvar(k) return opts.flat and "g" .. k or k end
 
     local config = {
         title = title,
@@ -118,13 +123,13 @@ return function(title, opts)
             return l
         end)
         local s = {}
-        eachLine(lines, "gSettings", function(l, inSettings)
+        eachLine(lines, section, function(l, inSettings)
             local k, n = l:match('^%s*"(%w+)":%s*(%-?%d+)')
             if inSettings and k then s[k] = tonumber(n) end
             return l
         end)
-        v.fps = s.MatchRefreshRate == 1 and 0 or s.InterpolationFPS or fpsDefault
-        v.lowres = s.LowResMode or 0
+        v.fps = s[cvar("MatchRefreshRate")] == 1 and 0 or s[cvar("InterpolationFPS")] or fpsDefault
+        v.lowres = s[cvar("LowResMode")] or 0
 
         -- a value set in game that the launcher doesn't offer (e.g. 45 fps) is kept as an extra choice
         for _, it in ipairs(config.items) do
@@ -174,14 +179,17 @@ return function(title, opts)
         end
 
         -- gSettings ints; InterpolationFPS is left alone with "Match display"
-        local set = { ControlNav = 1, LowResMode = v.lowres, MatchRefreshRate = v.fps == 0 and 1 or 0 }
-        if v.fps ~= 0 then set.InterpolationFPS = v.fps end
-        local keys = { "ControlNav", "InterpolationFPS", "LowResMode", "MatchRefreshRate" }
+        local named = { ControlNav = 1, LowResMode = v.lowres, MatchRefreshRate = v.fps == 0 and 1 or 0 }
+        if v.fps ~= 0 then named.InterpolationFPS = v.fps end
+        local order = { "ControlNav", "InterpolationFPS", "LowResMode", "MatchRefreshRate" }
         for k, n in pairs(opts.settings or {}) do
-            if set[k] == nil and k ~= "InterpolationFPS" then keys[#keys + 1] = k end
-            set[k] = n
+            if named[k] == nil and k ~= "InterpolationFPS" then order[#order + 1] = k end
+            named[k] = n
         end
-        eachLine(lines, "gSettings", function(l, inSettings)
+        local set, keys = {}, {}
+        for k, n in pairs(named) do set[cvar(k)] = n end
+        for _, k in ipairs(order) do keys[#keys + 1] = cvar(k) end
+        eachLine(lines, section, function(l, inSettings)
             local k = l:match('^%s*"(%w+)":%s*%-?%d+')
             if inSettings and k and set[k] then
                 l = l:gsub('("' .. k .. '":%s*)%-?%d+', '%1' .. set[k])
@@ -195,7 +203,7 @@ return function(title, opts)
         end
         if #add > 0 then
             for n = 1, #add - 1 do add[n] = add[n] .. "," end
-            local settings = find(lines, '"gSettings":%s*{%s*$')
+            local settings = find(lines, '"' .. section .. '":%s*{%s*$')
             local cvars = find(lines, '"CVars":%s*{%s*$')
             if settings then
                 insertAfter(lines, settings, add)
