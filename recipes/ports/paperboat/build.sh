@@ -40,6 +40,11 @@ cd PaperBoat
 # during rom extraction; replace its writer with one that streams entries straight to the file.
 cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" external/torch/src/archive/
 
+# macros.h defines PACKED, which the builder's fmt 10 (via spdlog in libultraship) uses as a
+# template parameter name; include spdlog first so fmt is parsed before the macro exists.
+sed -i 's|^#define _MACROS_H_$|&\n#ifdef __cplusplus\n#include <spdlog/spdlog.h>\n#endif|' include/macros.h
+grep -q '#include <spdlog/spdlog.h>' include/macros.h || { echo "Error: macros.h patch did not apply"; exit 1; }
+
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
