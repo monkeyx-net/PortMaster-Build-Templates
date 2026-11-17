@@ -17,7 +17,8 @@
     "launcher/osk.lua",
     "launcher/conf.lua",
     "extract/main.lua",
-    "extract/conf.lua"
+    "extract/conf.lua",
+    "launcher/cvars.lua"
   ],
   "controls": "launcher/controls.png",
   "test": {

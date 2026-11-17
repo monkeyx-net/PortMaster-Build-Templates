@@ -14,7 +14,7 @@ Put the rom (`.z64`, `.n64` or `.v64`) in `ports/soh2/baseroms` and start the po
 Texture packs and mods go in the `ports/soh2/mods` folder. Logs are written to `ports/soh2/log.txt`; please include it when reporting an issue. HarbourMasters is not affiliated with PortMaster and does not support this distribution.
 
 ## Launcher
-A settings launcher opens before the game: frame rate and N64 low-res mode. Choose Play, or wait for it to start the game.
+A settings launcher opens before the game: frame rate, match display rate, VSync, N64 low-res mode and aspect ratio. Choose Play, or wait for it to start the game.
 
 ## Menu Navigation
 2Ship2Harkinian has built-in controller navigation for the menu. Press `SELECT` to open it and use the `D-PAD` to choose a submenu, then press `A` to switch focus to it. Press `B` to back out of a submenu.

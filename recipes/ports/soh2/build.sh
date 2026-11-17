@@ -21,6 +21,7 @@ FILES=(
   "libz.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
+  "libbz2.so.1"
   "libbz2.so.1.0"
 )
 CDIR=$(pwd)

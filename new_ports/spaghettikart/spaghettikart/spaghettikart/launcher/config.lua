@@ -1,16 +1,6 @@
--- SpaghettiKart launcher settings. Edits CVars in spaghettify.cfg.json line by line; the
--- game writes it pretty-printed (one key per line), so no JSON parser is needed. Also
--- forces gOpenMenu to 0 (port menu closed) and gControlNav to 1.
-
--- Aspect ratio presets as in the game's Graphics menu (ResolutionEditor.cpp); the index is
--- gAdvancedResolution.UIComboItem.AspectRatio. "Off" sets X/Y to 0 (fill the screen);
--- Custom ([1]) uses the customX/customY items, 720 x 720 by default.
-local ASPECTS = {
-    [0] = { 0, 0 }, [1] = { 720, 640 }, [2] = { 4, 3 }, [3] = { 16, 9 }, [4] = { 5, 3 },
-    [5] = { 16, 10 }, [6] = { 21, 9 },
-}
-
-local config = {
+-- SpaghettiKart launcher settings (shared logic in cvars.lua); also forces gOpenMenu to 0
+-- (port menu closed) and gControlNav to 1
+return require("cvars")({
     title = "SpaghettiKart",
     subtitle = "Mario Kart 64 settings",
     help = "In game: press Select to open the menu.",
@@ -28,145 +18,13 @@ local config = {
         { id = "culling", label = "Disable culling", kind = "choice",
           choices = { { 0, "Off" }, { 1, "On" } },
           help = "On also draws objects off screen and far away. Off (original) is much faster." },
-        { id = "advres", label = "Advanced resolution", kind = "choice",
-          choices = { { 1, "On" }, { 0, "Off" } },
-          help = "Enables the aspect ratio setting below (game menu: Graphics, Enable advanced settings)." },
-        { id = "aspect", label = "Aspect ratio", kind = "choice",
-          choices = { { 0, "Off" }, { 1, "Custom" }, { 2, "Original (4:3)" }, { 3, "Widescreen (16:9)" },
-                      { 4, "Nintendo 3DS (5:3)" }, { 5, "16:10 (8:5)" }, { 6, "Ultrawide (21:9)" } },
-          help = "Off fills the screen. Custom: set the ratio below (720 x 720 is square)." },
-        { id = "customX", label = "   Custom X", kind = "number", min = 1, max = 9999,
-          visible = function(v) return v.aspect == 1 end,
-          help = "Width part of the custom aspect ratio, e.g. 720 for 720 x 720." },
-        { id = "customY", label = "   Custom Y", kind = "number", min = 1, max = 9999,
-          visible = function(v) return v.aspect == 1 end,
-          help = "Height part of the custom aspect ratio, e.g. 720 for 720 x 720." },
+        "resolution",
     },
-}
-
--- id -> CVar path below "CVars", and the value used when it's not in the file yet
-local KEYS = {
-    fps = { { "gInterpolationFPS" }, 30 },
-    vsync = { { "gVsyncEnabled" }, 0 },        -- the game's default is 1
-    lod = { { "gDisableLod" }, 1 },
-    culling = { { "gNoCulling" }, 0 },
-    advres = { { "gAdvancedResolution", "Enabled" }, 1 },
-    aspect = { { "gAdvancedResolution", "UIComboItem", "AspectRatio" }, 0 },
-}
-local ASPECT_X = { "gAdvancedResolution", "AspectRatioX" }
-local ASPECT_Y = { "gAdvancedResolution", "AspectRatioY" }
--- Always written on save
-local FORCED = { gOpenMenu = 0, gControlNav = 1 }
-
-local function readLines(path)
-    local f = io.open(path, "r")
-    if not f then return nil end
-    local lines = {}
-    for l in f:lines() do lines[#lines + 1] = l end
-    f:close()
-    return lines
-end
-
-local function braces(l)
-    local _, open = l:gsub("{", "")
-    local _, close = l:gsub("}", "")
-    return open - close
-end
-
--- Line of the direct child "key" of the object opened on line s (nil if missing), and the
--- line closing that object
-local function child(lines, s, key)
-    local depth, found = 0, nil
-    for i = s + 1, #lines do
-        if depth == 0 then
-            if lines[i]:match("^%s*}") then return found, i end
-            if lines[i]:match('^%s*"' .. key .. '":') then found = found or i end
-        end
-        depth = depth + braces(lines[i])
-    end
-end
-
--- Insert "key": text as the first child of the object opened on line s
-local function insert(lines, s, key, text)
-    local indent = lines[s]:match("^(%s*)") .. "    "
-    local empty = (lines[s + 1] or ""):match("^%s*}")
-    table.insert(lines, s + 1, indent .. '"' .. key .. '": ' .. text .. (empty and "" or ","))
-end
-
-local function cvarsLine(lines)
-    for i, l in ipairs(lines) do if l:match('^%s*"CVars":%s*{%s*$') then return i end end
-end
-
--- Line of a CVar path; with create, missing objects are added and a missing value is
--- inserted as "0"
-local function locate(lines, path, create)
-    local s = cvarsLine(lines)
-    if not s then return nil end
-    for n, key in ipairs(path) do
-        local i = child(lines, s, key)
-        if not i then
-            if not create then return nil end
-            if n < #path then
-                insert(lines, s, key, "{")
-                table.insert(lines, s + 2, lines[s + 1]:match("^(%s*)") .. "}" .. (lines[s + 1]:match(",$") and "," or ""))
-                lines[s + 1] = lines[s + 1]:gsub(",$", "")
-            else
-                insert(lines, s, key, "0")
-            end
-            i = s + 1
-        end
-        s = i
-    end
-    return s
-end
-
-local function get(lines, path)
-    local i = locate(lines, path)
-    return i and tonumber(lines[i]:match(':%s*([%d%.%-]+)'))
-end
-
--- Floats keep a decimal point: the game reads 720 as an integer CVar, and CVarGetFloat
--- ignores integer CVars
-local function set(lines, path, value, float)
-    local i = locate(lines, path, true)
-    if not i then return end
-    local text = float and string.format("%.1f", value) or tostring(math.floor(value))
-    lines[i] = lines[i]:gsub('(":%s*)[%d%.%-]+', "%1" .. text, 1)
-end
-
-function config.load(path)
-    local lines = readLines(path) or {}
-    local v = {}
-    for id, k in pairs(KEYS) do v[id] = get(lines, k[1]) or k[2] end
-    -- custom ratio: the one in the file when Custom is selected there, else 720 x 720
-    local x, y = get(lines, ASPECT_X), get(lines, ASPECT_Y)
-    local custom = v.aspect == 1 and (x or 0) > 0 and (y or 0) > 0
-    v.customX, v.customY = custom and x or ASPECTS[1][1], custom and y or ASPECTS[1][2]
-    -- a value set in game that the launcher doesn't offer (e.g. 75 fps) is kept as an extra choice
-    for _, it in ipairs(config.items) do
-        local ok = not it.choices
-        for _, c in ipairs(it.choices or {}) do if c[1] == v[it.id] then ok = true end end
-        if not ok then table.insert(it.choices, { v[it.id], tostring(v[it.id]) .. " (set in game)" }) end
-    end
-    return v
-end
-
-function config.save(path, v)
-    local lines = readLines(path)
-    if not lines then return false, "cannot read " .. path end
-    for id, k in pairs(KEYS) do set(lines, k[1], v[id]) end
-    local xy = v.aspect == 1 and { v.customX, v.customY } or ASPECTS[v.aspect]
-    if xy then
-        set(lines, ASPECT_X, xy[1], true)
-        set(lines, ASPECT_Y, xy[2], true)
-    end
-    for k, n in pairs(FORCED) do set(lines, { k }, n) end
-    local tmp = path .. ".tmp"
-    local f, err = io.open(tmp, "w")
-    if not f then return false, err end
-    f:write(table.concat(lines, "\n"), "\n")
-    f:close()
-    return os.rename(tmp, path)
-end
-
-return config
+    keys = {
+        fps = { { "gInterpolationFPS" }, 30 },
+        vsync = { { "gVsyncEnabled" }, 0 },        -- the game's default is 1
+        lod = { { "gDisableLod" }, 1 },
+        culling = { { "gNoCulling" }, 0 },
+    },
+    forced = { { { "gOpenMenu" }, 0 }, { { "gControlNav" }, 1 } },
+})
