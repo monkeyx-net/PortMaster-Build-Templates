@@ -58,3 +58,11 @@ I prefer the OoT 3DS look along with a studio ghibli style skybox:
 - HarbourMasters for the native pc port
 - AkerHasReawakened for the cover art
 - IanSantos for the ghibli skybox mod
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [HarbourMasters/Shipwright](https://github.com/HarbourMasters/Shipwright). The recipe folder [recipes/ports/soh](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/soh) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```
