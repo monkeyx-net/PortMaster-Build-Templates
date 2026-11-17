@@ -21,6 +21,7 @@ _Last checked: 2026-11-17_
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
 | -- | nookery | 🟢 | v1.0.0 | 2026-11-07 | -- |
 | -- | opengolf | 🟢 | v0.0.4 | 2026-11-08 | -- |
+| -- | paperboat | 🟢 | 1.0.3 | 2026-11-17 | -- |
 | -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
 | Shamogu | shamogu | 🔵 | v1.6.0 | 2026-09-25 | 2026-08-21 |
@@ -31,7 +32,7 @@ _Last checked: 2026-11-17_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 22 &nbsp; 🟢 OK: 13 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 23 &nbsp; 🟢 OK: 14 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
