@@ -1,8 +1,8 @@
 # check_port: paperboat
 
-`check_port.sh paperboat --fix --fix-license` on 2026-11-17 12:54, commit f4af44b.
+`check_port.sh paperboat --test` on 2026-11-17 19:56, commit 8c5e3cdb5.
 
-**Result: ok, 5 warning(s)**
+**Result: dry run, changes: none; 0 error(s) left, 5 warning(s)**
 
 ## Warnings
 
@@ -14,5 +14,6 @@
 
 ## Notes
 
-- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libtheoradec.so.1 libtinyxml2.so.10 libz.so.1 libzip.so.5
+- shellcheck not installed, launcher lint skipped
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libtheoradec.so.1 libtinyxml2.so.10 libzip.so.5 libz.so.1
 - x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libtinyxml2.so.10 libzip.so.5

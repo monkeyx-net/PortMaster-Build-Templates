@@ -3,6 +3,8 @@
 -- Ship of Harkinian). A port's launcher/config.lua is just:
 --   return require("anchor")("Game Title", { fps = <original fps>, fpsDefault = <fps when unset> })
 -- fpsDefault is only needed when the game's unset default differs from fps.
+-- anchor = false: no Anchor co-op items (frame rate and low-res only, e.g. PaperBoat).
+-- settings = { Key = n, ... }: extra CVars.gSettings ints forced on every save.
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -14,6 +16,8 @@
 --   CVars.gSettings.InterpolationFPS / MatchRefreshRate - frame rate ("Match display"
 --                                         sets MatchRefreshRate 1, which ignores InterpolationFPS)
 --   CVars.gSettings.LowResMode          - N64 low-res mode
+--   CVars.gSettings.VsyncEnabled and gSettings.AdvancedResolution.* (aspect ratio) - through
+--                                         the shared cvars.lua
 
 return function(title, opts)
     opts = opts or {}
@@ -25,13 +29,13 @@ return function(title, opts)
         if n ~= fps then fpsChoices[#fpsChoices + 1] = { n, tostring(n) } end
     end
 
+    local anchor = opts.anchor ~= false
+
     local config = {
         title = title,
-        subtitle = "Anchor online co-op setup",
-        help = "Players with the same Room ID play together. The name is what other players see.",
+        subtitle = anchor and "Anchor online co-op setup" or "Settings",
+        help = anchor and "Players with the same Room ID play together. The name is what other players see." or nil,
         items = {
-            { id = "name", label = "Player name", kind = "text", maxlen = 20 },
-            { id = "room", label = "Room ID", kind = "text", maxlen = 20 },
             { id = "fps", label = "Frame rate", kind = "choice", choices = fpsChoices,
               help = "Higher is smoother but needs a faster device." },
             { id = "lowres", label = "N64 low-res mode", kind = "choice",
@@ -39,6 +43,22 @@ return function(title, opts)
               help = "Renders at the N64's original resolution. Helps on weaker devices." },
         },
     }
+    if anchor then
+        table.insert(config.items, 1, { id = "name", label = "Player name", kind = "text", maxlen = 20 })
+        table.insert(config.items, 2, { id = "room", label = "Room ID", kind = "text", maxlen = 20 })
+    end
+
+    -- VSync and aspect ratio, edited by the shared CVar engine
+    local extra = require("cvars")({
+        items = {
+            { id = "vsync", label = "VSync", kind = "choice", choices = { { 1, "On" }, { 0, "Off" } },
+              help = "On removes tearing but caps the frame rate at the display's refresh rate." },
+            "resolution",
+        },
+        keys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } },
+        resolution = { "gSettings", "AdvancedResolution" },
+    })
+    for _, it in ipairs(extra.items) do config.items[#config.items + 1] = it end
 
     local function readLines(path)
         local f = io.open(path, "r")
@@ -119,6 +139,7 @@ return function(title, opts)
         end)
         v.fps = s.MatchRefreshRate == 1 and 0 or s.InterpolationFPS or fpsDefault
         v.lowres = s.LowResMode or 0
+        for k, x in pairs(extra.load(path)) do v[k] = x end
 
         -- a value set in game that the launcher doesn't offer (e.g. 45 fps) is kept as an extra choice
         for _, it in ipairs(config.items) do
@@ -153,7 +174,7 @@ return function(title, opts)
         if not hasName then missing[#missing + 1] = name end
         if not hasRoom then missing[#missing + 1] = room end
         if #missing == 2 then missing[1] = missing[1] .. "," end
-        if #missing > 0 then
+        if anchor and #missing > 0 then
             local anchor = find(lines, '"Anchor":%s*{%s*$')
             local remote = find(lines, '"gRemote":%s*{%s*$')
             local cvars = find(lines, '"CVars":%s*{%s*$')
@@ -170,6 +191,11 @@ return function(title, opts)
         -- gSettings ints; InterpolationFPS is left alone with "Match display"
         local set = { ControlNav = 1, LowResMode = v.lowres, MatchRefreshRate = v.fps == 0 and 1 or 0 }
         if v.fps ~= 0 then set.InterpolationFPS = v.fps end
+        local keys = { "ControlNav", "InterpolationFPS", "LowResMode", "MatchRefreshRate" }
+        for k, n in pairs(opts.settings or {}) do
+            if set[k] == nil and k ~= "InterpolationFPS" then keys[#keys + 1] = k end
+            set[k] = n
+        end
         eachLine(lines, "gSettings", function(l, inSettings)
             local k = l:match('^%s*"(%w+)":%s*%-?%d+')
             if inSettings and k and set[k] then
@@ -179,7 +205,7 @@ return function(title, opts)
             return l
         end)
         local add = {}
-        for _, k in ipairs({ "ControlNav", "InterpolationFPS", "LowResMode", "MatchRefreshRate" }) do
+        for _, k in ipairs(keys) do
             if set[k] then add[#add + 1] = '"' .. k .. '": ' .. set[k] end
         end
         if #add > 0 then
@@ -201,7 +227,9 @@ return function(title, opts)
         if not f then return false, err end
         f:write(table.concat(lines, "\n"), "\n")
         f:close()
-        return os.rename(tmp, path)
+        local ok, rerr = os.rename(tmp, path)
+        if not ok then return false, rerr end
+        return extra.save(path, v)
     end
 
     return config

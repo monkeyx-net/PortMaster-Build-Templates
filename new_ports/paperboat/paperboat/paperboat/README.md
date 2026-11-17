@@ -7,7 +7,7 @@ You need to provide your own rom. Copy your Paper Mario US `.z64` rom (SHA1 `383
 Mods can be added to the `ports/paperboat/mods` folder. Logs are written to `ports/paperboat/log.txt`; please include it when reporting an issue.
 
 ## Launcher
-A settings launcher opens before the game: frame rate and N64 low-res mode. Choose Play, or wait for it to start the game.
+A settings launcher opens before the game: frame rate, N64 low-res mode, VSync and aspect ratio. Choose Play, or wait for it to start the game.
 
 ## Controls
 

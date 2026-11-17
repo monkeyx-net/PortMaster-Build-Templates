@@ -7,7 +7,7 @@ You need to provide your own rom. Copy your Banjo-Kazooie `.z64` rom (US v1.0, U
 Extra languages (PAL: UK, French, German; JP: Japanese) can be extracted from another rom in the in-game menu under General -> Languages. Mods and romhacks (`.o2r`/`.otr`) go in the `ports/lighthouse/mods` folder. Logs are written to `ports/lighthouse/log.txt`; please include it when reporting an issue.
 
 ## Launcher
-A settings launcher opens before the game: Anchor player name and room ID, frame rate and N64 low-res mode. Choose Play, or wait for it to start the game.
+A settings launcher opens before the game: Anchor player name and room ID, frame rate, N64 low-res mode, VSync and aspect ratio. Choose Play, or wait for it to start the game.
 
 ## Controls
 Default Retro (N64) layout:

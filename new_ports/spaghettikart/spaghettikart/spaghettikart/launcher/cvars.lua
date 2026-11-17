@@ -7,7 +7,10 @@
 --       keys = { fps = { { "gInterpolationFPS" }, 30 }, ... }, -- id -> CVar path below "CVars", default
 --       forced = { { { "gControlNav" }, 1 }, ... },             -- always written on save
 --       o2r = { "game.o2r", ... },  -- optional: on <=1GB devices with none of these next to
---   })                              -- the config yet, warn to answer No after the rom conversion
+--                                   -- the config yet, warn to answer No after the rom conversion
+--       resolution = { "gSettings", "AdvancedResolution" },  -- optional: where the aspect ratio
+--   })                              -- CVars live (default { "gAdvancedResolution" })
+-- anchor.lua uses it too, for the items it doesn't handle itself.
 -- Edits the game's JSON config line by line; the game writes it pretty-printed (one key per
 -- line), so no JSON parser is needed.
 
@@ -18,8 +21,6 @@ local ASPECTS = {
     [0] = { 0, 0 }, [1] = { 720, 640 }, [2] = { 4, 3 }, [3] = { 16, 9 }, [4] = { 5, 3 },
     [5] = { 16, 10 }, [6] = { 21, 9 },
 }
-local ASPECT_X = { "gAdvancedResolution", "AspectRatioX" }
-local ASPECT_Y = { "gAdvancedResolution", "AspectRatioY" }
 
 local RESOLUTION_ITEMS = {
     { id = "advres", label = "Advanced resolution", kind = "choice",
@@ -36,10 +37,13 @@ local RESOLUTION_ITEMS = {
       visible = function(v) return v.aspect == 1 end,
       help = "Height part of the custom aspect ratio, e.g. 720 for 720 x 720." },
 }
-local RESOLUTION_KEYS = {
-    advres = { { "gAdvancedResolution", "Enabled" }, 1 },
-    aspect = { { "gAdvancedResolution", "UIComboItem", "AspectRatio" }, 0 },
-}
+-- CVar path below "CVars": base .. rest
+local function path(base, ...)
+    local p = {}
+    for _, k in ipairs(base) do p[#p + 1] = k end
+    for _, k in ipairs({ ... }) do p[#p + 1] = k end
+    return p
+end
 
 local function readLines(path)
     local f = io.open(path, "r")
@@ -135,6 +139,12 @@ local function set(lines, path, value, float)
 end
 
 return function(spec)
+    local res = spec.resolution or { "gAdvancedResolution" }
+    local ASPECT_X, ASPECT_Y = path(res, "AspectRatioX"), path(res, "AspectRatioY")
+    local RESOLUTION_KEYS = {
+        advres = { path(res, "Enabled"), 1 },
+        aspect = { path(res, "UIComboItem", "AspectRatio"), 0 },
+    }
     local config = { title = spec.title, subtitle = spec.subtitle, help = spec.help, items = {} }
     local keys, forced = {}, spec.forced or {}
     for id, k in pairs(spec.keys or {}) do keys[id] = k end
@@ -174,7 +184,11 @@ return function(spec)
     function config.save(path, v)
         local lines = readLines(path)
         if not lines then return false, "cannot read " .. path end
-        for id, k in pairs(keys) do set(lines, k[1], v[id]) end
+        -- sorted, so CVars missing from the file are always added in the same order
+        local ids = {}
+        for id in pairs(keys) do ids[#ids + 1] = id end
+        table.sort(ids)
+        for _, id in ipairs(ids) do set(lines, keys[id][1], v[id]) end
         if resolution then
             local xy = v.aspect == 1 and { v.customX, v.customY } or ASPECTS[v.aspect]
             if xy then

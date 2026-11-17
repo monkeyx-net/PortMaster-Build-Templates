@@ -16,6 +16,8 @@
 --   CVars.gSettings.InterpolationFPS / MatchRefreshRate - frame rate ("Match display"
 --                                         sets MatchRefreshRate 1, which ignores InterpolationFPS)
 --   CVars.gSettings.LowResMode          - N64 low-res mode
+--   CVars.gSettings.VsyncEnabled and gSettings.AdvancedResolution.* (aspect ratio) - through
+--                                         the shared cvars.lua
 
 return function(title, opts)
     opts = opts or {}
@@ -45,6 +47,18 @@ return function(title, opts)
         table.insert(config.items, 1, { id = "name", label = "Player name", kind = "text", maxlen = 20 })
         table.insert(config.items, 2, { id = "room", label = "Room ID", kind = "text", maxlen = 20 })
     end
+
+    -- VSync and aspect ratio, edited by the shared CVar engine
+    local extra = require("cvars")({
+        items = {
+            { id = "vsync", label = "VSync", kind = "choice", choices = { { 1, "On" }, { 0, "Off" } },
+              help = "On removes tearing but caps the frame rate at the display's refresh rate." },
+            "resolution",
+        },
+        keys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } },
+        resolution = { "gSettings", "AdvancedResolution" },
+    })
+    for _, it in ipairs(extra.items) do config.items[#config.items + 1] = it end
 
     local function readLines(path)
         local f = io.open(path, "r")
@@ -125,6 +139,7 @@ return function(title, opts)
         end)
         v.fps = s.MatchRefreshRate == 1 and 0 or s.InterpolationFPS or fpsDefault
         v.lowres = s.LowResMode or 0
+        for k, x in pairs(extra.load(path)) do v[k] = x end
 
         -- a value set in game that the launcher doesn't offer (e.g. 45 fps) is kept as an extra choice
         for _, it in ipairs(config.items) do
@@ -212,7 +227,9 @@ return function(title, opts)
         if not f then return false, err end
         f:write(table.concat(lines, "\n"), "\n")
         f:close()
-        return os.rename(tmp, path)
+        local ok, rerr = os.rename(tmp, path)
+        if not ok then return false, rerr end
+        return extra.save(path, v)
     end
 
     return config
