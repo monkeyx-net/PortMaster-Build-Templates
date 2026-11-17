@@ -12,11 +12,18 @@
     "port_download": "https://github.com/HarbourMasters/PaperBoat/archive/refs/tags/1.0.3.tar.gz"
   },
   "includes": [
-    "swap.txt"
+    "swap.txt",
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua",
+    "launcher/anchor.lua",
+    "extract/main.lua",
+    "extract/conf.lua"
   ],
   "test": {
     "delay": 30,
     "keys": "start",
-    "needs_data": "*.z64 pm64.o2r"
-  }
+    "needs_data": "baseroms/*.z64 pm64.o2r"
+  },
+  "controls": "launcher/controls.png"
 }

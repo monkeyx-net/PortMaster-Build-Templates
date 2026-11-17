@@ -29,26 +29,56 @@ cd $GAMEDIR
 $ESUDO chmod +x "$GAMEDIR/Paperboat.${DEVICE_ARCH}"
 mkdir -p "$GAMEDIR/mods"
 
-# First run: open with the menu bar closed and controller navigation on, so the
-# rom conversion prompts can be answered with the gamepad
-[ -f paperboat.cfg.json ] || echo '{"CVars":{"gSettings":{"ControlNav":1,"OpenMenuBar":0}}}' > paperboat.cfg.json
+# -------------------- BEGIN FUNCTIONS --------------------
 
-# The game converts a .z64 in its own folder to pm64.o2r on first run
-ROMS=()
-if [ ! -f "pm64.o2r" ]; then
-  for rom in "$GAMEDIR/"*.z64; do
-    [ -f "$rom" ] && ROMS+=("$rom")
-  done
-  if [ ${#ROMS[@]} -eq 0 ]; then
-    pm_message "Missing ROM! Place a Paper Mario US .z64 in ports/paperboat/"
-    sleep 5
-    pm_finish
-    exit 0
-  fi
-fi
+# The game's built-in torch reads config.yml and assets/ from its folder
+unzip_assets() {
+    if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
+        $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." assets/extractor.zip || exit 1
+        rm -f "$GAMEDIR/assets/extractor.zip"
+    fi
+}
+
+# The game converts a .z64 in baseroms/ to pm64.o2r on first run (it asks on screen first)
+find_roms() {
+    ROMS=()
+    if [ ! -f "pm64.o2r" ]; then
+        for rom in "$GAMEDIR/baseroms/"*.z64; do
+            [ -f "$rom" ] && ROMS+=("$rom")
+        done
+        if [ ${#ROMS[@]} -eq 0 ]; then
+            pm_message "Missing ROM! Place a Paper Mario US .z64 in ports/paperboat/baseroms/"
+            sleep 5
+            pm_finish
+            exit 0
+        fi
+    fi
+}
 
 # Temporary swap for the rom conversion on <=1GB devices (swap_on/swap_off)
 source "$GAMEDIR/swap.txt"
+
+# --------------------- END FUNCTIONS ---------------------
+
+# The settings launcher edits paperboat.cfg.json line by line, so seed a pretty-printed one;
+# controller navigation lets the gamepad answer the rom conversion prompts
+[ -f paperboat.cfg.json ] || printf '{\n    "CVars": {\n        "gSettings": {\n            "ControlNav": 1\n        }\n    }\n}\n' > paperboat.cfg.json
+
+# Launcher (Love2D): frame rate and N64 low-res mode; also closes the menu bar and enables
+# controller navigation in paperboat.cfg.json
+rm -f "$GAMEDIR/launch.cfg"
+source $controlfolder/runtimes/"love_11.5"/love.txt
+$LOVE_RUN "$GAMEDIR/launcher" "$GAMEDIR/paperboat.cfg.json" "$GAMEDIR/launch.cfg"
+
+# Continue only if the user chose Play (launcher writes LAUNCHER_PLAY=1 to launch.cfg)
+if ! grep -qx "LAUNCHER_PLAY=1" "$GAMEDIR/launch.cfg" 2>/dev/null; then
+  pm_finish
+  exit 0
+fi
+
+# Perform functions
+unzip_assets
+find_roms
 swap_on
 trap swap_off EXIT
 

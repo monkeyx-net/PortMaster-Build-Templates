@@ -15,6 +15,7 @@ FILES=(
 [[ ${ARCH} == "aarch64" ]] && FILES+=(
   "libbz2.so.1"
   "libcrypto.so.1.1"
+  "libtheoradec.so.1"
   "libz.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
@@ -45,6 +46,10 @@ cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" external/
 sed -i 's|^#define _MACROS_H_$|&\n#ifdef __cplusplus\n#include <spdlog/spdlog.h>\n#endif|' include/macros.h
 grep -q '#include <spdlog/spdlog.h>' include/macros.h || { echo "Error: macros.h patch did not apply"; exit 1; }
 
+# The game only looks for roms next to the binary; also look in baseroms/ like the other HM ports
+sed -i 's|{ installPath, Ship::Context::GetAppDirectoryPath("boat") }|{ installPath, installPath + "/baseroms", Ship::Context::GetAppDirectoryPath("boat") }|' src/port/Engine.cpp
+grep -q 'installPath + "/baseroms"' src/port/Engine.cpp || { echo "Error: baseroms patch did not apply"; exit 1; }
+
 # Verify where clang is or use the default 'clang' which is v18 on 24.04
 if ! command -v clang-18 &> /dev/null; then
     export CC=clang
@@ -69,14 +74,16 @@ if [[ ! -f "PaperBoat/build-paperboat/${PORT_EXE}" ]]; then
   echo "Error: ${PORT_EXE} was not built"
   exit 1
 fi
-mkdir -p "${CDIR}/dist"
+mkdir -p "${CDIR}/dist/assets"
 strip "PaperBoat/build-paperboat/${PORT_EXE}" || true
 cp "PaperBoat/build-paperboat/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 cp "PaperBoat/build-paperboat/paperboat.o2r" "dist/"
-# The game's built-in torch reads config.yml and assets/ next to the binary to convert the rom
-cp PaperBoat/config.yml dist/
-cp -r PaperBoat/assets dist/
-ls -lha dist/
+# The game's built-in torch reads config.yml and the asset yamls (assets/) next to the binary;
+# ship them as extractor.zip to unpack into the port folder. This also replaces the LFS pointer
+# for extractor.zip that the package job checks out with lfs: false.
+(cd "${CDIR}/PaperBoat" && zip -qr "${CDIR}/dist/assets/extractor.zip" config.yml assets)
+unzip -tq "${CDIR}/dist/assets/extractor.zip" || exit 1
+ls -lha dist/ dist/assets/
 
 mkdir -p ${CDIR}/dist/libs.${ARCH}
 for file in "${FILES[@]}"; do

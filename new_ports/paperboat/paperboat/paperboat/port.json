@@ -14,7 +14,7 @@
     ],
     "desc": "PaperBoat is the HarbourMasters PC port of Paper Mario, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.",
     "desc_md": null,
-    "inst": "Copy your Paper Mario US .z64 rom to ports/paperboat. On first launch answer Yes to the prompts to convert it to pm64.o2r, which can take a few minutes.",
+    "inst": "Copy your Paper Mario US .z64 rom to ports/paperboat/baseroms. On first launch answer Yes to the prompts to convert it to pm64.o2r, which can take a few minutes.",
     "inst_md": null,
     "genres": [
       "rpg",

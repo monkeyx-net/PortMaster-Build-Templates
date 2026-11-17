@@ -1,0 +1,2 @@
+Place your Paper Mario US .z64 rom here.
+It is converted to pm64.o2r on first launch, after which it can be deleted.

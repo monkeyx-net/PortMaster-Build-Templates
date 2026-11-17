@@ -2,9 +2,12 @@
 PaperBoat is the HarbourMasters PC port of Paper Mario, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.
 
 ## Installation
-You need to provide your own rom. Copy your Paper Mario US `.z64` rom (SHA1 `3837f44cda784b466c9a2d99df70d77c322b97a0`) to `ports/paperboat`. On first launch the game offers to convert it to `pm64.o2r`: answer Yes to each prompt (D-pad and A). The conversion can take a few minutes, after which the rom can be deleted.
+You need to provide your own rom. Copy your Paper Mario US `.z64` rom (SHA1 `3837f44cda784b466c9a2d99df70d77c322b97a0`) to `ports/paperboat/baseroms`. On first launch the game offers to convert it to `pm64.o2r`: answer Yes to each prompt (D-pad and A). The conversion can take a few minutes, after which the rom can be deleted. On devices with 1GB of RAM or less, answer No to "Run PaperBoat?" after the conversion and start the port again.
 
 Mods can be added to the `ports/paperboat/mods` folder. Logs are written to `ports/paperboat/log.txt`; please include it when reporting an issue.
+
+## Launcher
+A settings launcher opens before the game: frame rate and N64 low-res mode. Choose Play, or wait for it to start the game.
 
 ## Controls
 
