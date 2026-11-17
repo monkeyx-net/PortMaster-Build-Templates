@@ -34,3 +34,11 @@ L2 is the N64 Z button and R2 is R (center camera). X, Y and R1 are unused in th
 - Fredomato and scorched11 for the randomizer
 - Rare and Nintendo for the game
 - Port by monkeyx
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [HarbourMasters/Lighthouse](https://github.com/HarbourMasters/Lighthouse). The recipe folder [recipes/ports/lighthouse](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/lighthouse) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```

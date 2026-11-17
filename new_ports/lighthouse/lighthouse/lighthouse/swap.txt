@@ -2,9 +2,10 @@
 # recipes/templates/includes/swap.txt, copied into the port folder at build time.
 # Edit the master copy, not the per-port copies.
 #
-# Needs: $GAMEDIR, $ESUDO, $DEVICE_RAM, pm_message, and ROMS (array of roms
+# Needs: $GAMEDIR, $ESUDO, $DEVICE_RAM, and ROMS (array of roms
 # being extracted; swap is only set up when it is non-empty).
 # Use:   swap_on before extraction, swap_off afterwards (and as an EXIT trap).
+# Messages only go to the log: a pm_message window would stay up and use CPU during extraction.
 
 # Temporary swap for rom extraction on <=1GB devices: zram first (fast, any filesystem),
 # swapfile/loop device only where zram isn't available
@@ -31,7 +32,7 @@ swap_try_dir() {
     fi
 
     SWAPFILE="$dir/${GAMEDIR##*/}.swap"
-    pm_message "Low memory device, creating temporary swap..."
+    echo "Swap: low memory device, creating $SWAP_MB MB swapfile in $dir"
     if ! { $ESUDO dd if=/dev/zero of="$SWAPFILE" bs=1M count=$SWAP_MB >/dev/null 2>&1 \
            && $ESUDO chmod 600 "$SWAPFILE"; }; then
         echo "Swap: could not create $SWAPFILE"
