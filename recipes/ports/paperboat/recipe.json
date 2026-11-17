@@ -1,0 +1,22 @@
+{
+  "recipe_version": 1,
+  "name": "paperboat.zip",
+  "port_json": "new_ports/paperboat/paperboat/paperboat/port.json",
+  "source": {
+    "date_updated": "2026-11-17",
+    "port_exe": "Paperboat",
+    "port_build": "cmake",
+    "port_checksum": "c9868e8da509d432e72bf7704e7bd4222d1b611e6ae5382ba1aa17c4e71fdb4e",
+    "port_url": "HarbourMasters/PaperBoat",
+    "port_version": "1.0.3",
+    "port_download": "https://github.com/HarbourMasters/PaperBoat/archive/refs/tags/1.0.3.tar.gz"
+  },
+  "includes": [
+    "swap.txt"
+  ],
+  "test": {
+    "delay": 30,
+    "keys": "start",
+    "needs_data": "*.z64 pm64.o2r"
+  }
+}

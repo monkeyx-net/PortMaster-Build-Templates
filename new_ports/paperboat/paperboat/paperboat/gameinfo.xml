@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameList>
+	<game>
+		<path>./PaperBoat.sh</path>
+		<name>PaperBoat</name>
+		<desc>PaperBoat is the HarbourMasters PC port of Paper Mario, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.</desc>
+		<image>./paperboat/cover.png</image>
+		<releasedate>20261011T000000</releasedate>
+		<developer>HarbourMasters</developer>
+		<publisher>HarbourMasters</publisher>
+		<genre>RPG</genre>
+	</game>
+</gameList>
