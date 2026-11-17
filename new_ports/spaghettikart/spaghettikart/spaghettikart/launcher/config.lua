@@ -6,7 +6,7 @@
 -- gAdvancedResolution.UIComboItem.AspectRatio. "Off" sets X/Y to 0 (fill the screen);
 -- Custom ([1]) uses the customX/customY items, 720 x 720 by default.
 local ASPECTS = {
-    [0] = { 0, 0 }, [1] = { 720, 720 }, [2] = { 4, 3 }, [3] = { 16, 9 }, [4] = { 5, 3 },
+    [0] = { 0, 0 }, [1] = { 720, 640 }, [2] = { 4, 3 }, [3] = { 16, 9 }, [4] = { 5, 3 },
     [5] = { 16, 10 }, [6] = { 21, 9 },
 }
 
