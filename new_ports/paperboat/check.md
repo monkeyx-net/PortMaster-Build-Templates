@@ -1,16 +1,14 @@
 # check_port: paperboat
 
-`check_port.sh paperboat --fix --fix-license` on 2026-11-17 20:16, commit d58c7e1.
+`check_port.sh paperboat --fix --fix-license` on 2026-11-17 22:20, commit b64a98a.
 
-**Result: ok, 5 warning(s)**
+**Result: ok, 3 warning(s)**
 
 ## Warnings
 
 - PaperBoat.sh sets a trap: make sure pm_finish still runs
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
-- screenshot.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
-- cover.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
 
 ## Notes
 
