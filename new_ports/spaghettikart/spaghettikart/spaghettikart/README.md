@@ -31,3 +31,11 @@ X is the N64 B button (brake, or reverse when stopped). Right stick up and right
 - The Mario Kart 64 decompilation team
 - Nintendo for the game
 - Port by beniamino and monkeyx
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [https://github.com/HarbourMasters/SpaghettiKart/archive/refs/heads/main.tar.gz](https://github.com/HarbourMasters/SpaghettiKart/archive/refs/heads/main.tar.gz). The recipe folder [recipes/ports/spaghettikart](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/spaghettikart) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```

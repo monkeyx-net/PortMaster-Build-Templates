@@ -26,7 +26,7 @@ export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 
 # CD and set log
 cd $GAMEDIR
-> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+: > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 $ESUDO chmod +x "$GAMEDIR/$BINARY" "$GAMEDIR/assets/torch.${DEVICE_ARCH}"
 mkdir -p "$GAMEDIR/mods"
 
