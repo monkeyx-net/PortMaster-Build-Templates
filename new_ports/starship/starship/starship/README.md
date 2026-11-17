@@ -31,3 +31,11 @@ Double-tap L1 or R1 to barrel roll. Right stick up changes the camera view, righ
 - The Star Fox 64 decompilation team
 - Nintendo for the game
 - Port by monkeyx
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [HarbourMasters/Starship](https://github.com/HarbourMasters/Starship). The recipe folder [recipes/ports/starship](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/starship) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```
