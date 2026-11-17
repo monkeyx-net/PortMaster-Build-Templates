@@ -28,3 +28,11 @@ All buttons can be remapped from the in-game menu.
 - The Paper Mario decompilation team
 - Nintendo and Intelligent Systems for the game
 - Port by SLAYKIN6_TTV and monkeyx
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [HarbourMasters/PaperBoat](https://github.com/HarbourMasters/PaperBoat). The recipe folder [recipes/ports/paperboat](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/paperboat) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```
