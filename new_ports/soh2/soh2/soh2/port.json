@@ -32,6 +32,6 @@
       "aarch64",
       "x86_64"
     ],
-    "min_glibc": null
+    "min_glibc": "2.29"
   }
 }

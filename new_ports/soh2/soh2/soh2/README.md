@@ -47,3 +47,11 @@ The [MM Reloaded](https://github.com/GhostlyDark/MM-Reloaded-2S2H) texture pack 
 - beniamino for the build steps allowing this to run on older Ubuntu-based systems
 - AkerHasReawakened for the cover art
 - Testers and Devs from the PortMaster Discord
+
+## Compile
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [2ship2harkinian/2ship2harkinian](https://github.com/2ship2harkinian/2ship2harkinian). The recipe folder [recipes/ports/soh2](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/soh2) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake
+```

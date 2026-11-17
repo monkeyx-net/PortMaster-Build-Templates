@@ -1,8 +1,8 @@
 # check_port: soh2
 
-`check_port.sh soh2 --test` on 2026-11-17 19:03, commit 50fdbaf44.
+`check_port.sh soh2 --fix` on 2026-11-17 19:07, commit 7b9715bb3.
 
-**Result: dry run, changes: 4 for --fix; 0 error(s) left, 7 warning(s)**
+**Result: ok, 7 warning(s)**
 
 ## Warnings
 
@@ -14,7 +14,7 @@
 - libfmt.so.9 (x86_64) is needed by 2s2h.elf.x86_64 but not bundled or in cfw_provided: check ldd on devices
 - build.sh FILES copies libtheoradec.so.1 but no libs.\<arch>/ has it although aarch64 needs it: rebuild (or it is missing on the builder)
 
-## To fix with --fix
+## Fixed by --fix
 
 - set attr.min_glibc from "" to "2.29" (2s2h.elf.aarch64 needs GLIBC_2.29)
 - add ## Compile section to README.md
