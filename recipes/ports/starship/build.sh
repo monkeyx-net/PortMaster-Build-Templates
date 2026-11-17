@@ -9,10 +9,6 @@ ARCH="$4"
 # needs file.arch?
 FILES=(
   "liblzma.so.5"
-  "libogg.so.0"
-  "libvorbis.so.0"
-  "libvorbisenc.so.2"
-  "libvorbisfile.so.3"
   "libtinyxml2.so.10"
   "libzip.so.5"
 )
