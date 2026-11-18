@@ -2,7 +2,7 @@
 Ghostship is the HarbourMasters PC port of Super Mario 64, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.
 
 ## Installation
-You need to provide your own rom. Copy your Super Mario 64 US (SHA1 `9bef1128717f958171a4afac3ed78ee2bb4e86ce`) or JP (SHA1 `8a20a5c83d6ceb0f0506cfc9fa20d8f438cafe51`) `.z64` rom to `ports/ghostship/baseroms`. On first launch the game offers to convert it to `sm64.o2r`: answer Yes to each prompt (D-pad and A). The conversion can take a few minutes, after which the rom can be deleted.
+You need to provide your own rom. Copy your Super Mario 64 US (SHA1 `9bef1128717f958171a4afac3ed78ee2bb4e86ce`) or JP (SHA1 `8a20a5c83d6ceb0f0506cfc9fa20d8f438cafe51`) `.z64` rom to `ports/ghostship/baseroms`. On first launch, after you choose Play, it is converted to `sm64.o2r` before the game starts. This can take a few minutes, after which the rom can be deleted (keep it if you want `sm64.o2r` rebuilt automatically after a port update).
 
 Mods can be added to the `ports/ghostship/mods` folder. Logs are written to `ports/ghostship/log.txt`; please include it when reporting an issue.
 

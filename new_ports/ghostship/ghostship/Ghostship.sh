@@ -26,12 +26,12 @@ export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 # CD and set log
 cd $GAMEDIR
 : > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
-$ESUDO chmod +x "$GAMEDIR/Ghostship.${DEVICE_ARCH}"
+$ESUDO chmod +x "$GAMEDIR/Ghostship.${DEVICE_ARCH}" "$GAMEDIR/assets/torch.${DEVICE_ARCH}"
 mkdir -p "$GAMEDIR/mods"
 
 # -------------------- BEGIN FUNCTIONS --------------------
 
-# The game's built-in torch reads config.yml and assets/ymls from its folder
+# torch reads config.yml and assets/ymls from the working directory
 unzip_assets() {
     if [ -f "$GAMEDIR/assets/extractor.zip" ]; then
         $LOVE_RUN "$GAMEDIR/extract" --text "Unpacking extractor assets..." assets/extractor.zip || exit 1
@@ -39,10 +39,42 @@ unzip_assets() {
     fi
 }
 
-# The game converts a .z64 in baseroms/ to sm64.o2r on first run (it asks on screen first)
+# sm64.o2r is built from the rom by the standalone torch, so the game never shows its own
+# conversion prompts. Rebuild it when the port was updated after it was made (and the rom is still there).
 find_roms() {
-    if [ ! -f "sm64.o2r" ] && ! ls "$GAMEDIR/baseroms/"*.z64 >/dev/null 2>&1; then
+    ROMS=()
+    for rom in "$GAMEDIR/baseroms/"*.z64; do
+        [ -f "$rom" ] && ROMS+=("$rom")
+    done
+    if [ -f "sm64.o2r" ]; then
+        if [ ${#ROMS[@]} -gt 0 ] && [ "Ghostship.${DEVICE_ARCH}" -nt "sm64.o2r" ]; then
+            echo "sm64.o2r is older than the port, rebuilding it"
+            rm -f "sm64.o2r"
+        else
+            ROMS=()
+        fi
+    elif [ ${#ROMS[@]} -eq 0 ]; then
         pm_message "Missing ROM! Place a Super Mario 64 US or JP .z64 in ports/ghostship/baseroms/"
+        sleep 5
+        pm_finish
+        exit 0
+    fi
+}
+
+extract_roms() {
+    [ ${#ROMS[@]} -eq 0 ] && return
+    # -u stores the port version in sm64.o2r, which the game compares with its own
+    VERSION=$(sed -n 's/.*"version": *"v\{0,1\}\([0-9.]*\)".*/\1/p' "$GAMEDIR/version.json")
+    # The extract app shows the message while torch runs; a failed rom shows an error until a
+    # button is pressed, then the next is tried
+    for rom in "${ROMS[@]}"; do
+        r=$(printf %q "$rom")
+        $LOVE_RUN "$GAMEDIR/extract" --text "Converting $(basename "$rom"), this can take a few minutes..." \
+            --run "assets/torch.${DEVICE_ARCH} o2r $r ${VERSION:+-u $VERSION}"
+        [ -f "sm64.o2r" ] && break
+    done
+    if [ ! -f "sm64.o2r" ]; then
+        pm_message "No sm64.o2r created! A Super Mario 64 US or JP rom is required."
         sleep 5
         pm_finish
         exit 0
@@ -54,8 +86,8 @@ source "$GAMEDIR/swap.txt"
 
 # --------------------- END FUNCTIONS ---------------------
 
-# The settings launcher edits ghostship.cfg.json line by line, so seed a pretty-printed one;
-# controller navigation lets the gamepad answer the rom conversion prompts
+# The settings launcher edits ghostship.cfg.json line by line, so seed a pretty-printed one
+# (controller navigation for the in-game menu)
 [ -f ghostship.cfg.json ] || printf '{\n    "CVars": {\n        "gSettings": {\n            "ControlNav": 1\n        }\n    }\n}\n' > ghostship.cfg.json
 
 # Launcher (Love2D): frame rate and N64 low-res mode; also closes the menu bar and enables
@@ -75,6 +107,8 @@ unzip_assets
 find_roms
 swap_on
 trap swap_off EXIT
+extract_roms
+swap_off
 
 # Run the game
 $GPTOKEYB "Ghostship.${DEVICE_ARCH}" -c "ghostship.gptk" &

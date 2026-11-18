@@ -62,7 +62,7 @@ grep -q 'ImGui_ImplSDL2_GamepadMode_AutoAll' libultraship/src/fast/Fast3dGui.cpp
 sed -i 's|set(CPU_OPTION -mcpu=native)|set(CPU_OPTION -mcpu=cortex-a53)|' CMakeLists.txt
 grep -q 'set(CPU_OPTION -mcpu=cortex-a53)' CMakeLists.txt || { echo "Error: CPU_OPTION patch did not apply"; exit 1; }
 
-# The standalone torch (only used to pack ghostship.o2r here) is built as an ExternalProject
+# The standalone torch (packs ghostship.o2r and converts the rom on device) is built as an ExternalProject
 # with no build type, i.e. unoptimised; build it as Release.
 sed -i 's|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/Torch|& -DCMAKE_BUILD_TYPE=Release|' CMakeLists.txt
 
@@ -97,6 +97,11 @@ mkdir -p "${CDIR}/dist/assets"
 strip "Ghostship/build-ghostship/${PORT_EXE}" || true
 cp "Ghostship/build-ghostship/${PORT_EXE}" "dist/${PORT_EXE}.${ARCH}"
 cp "Ghostship/build-ghostship/ghostship.o2r" "dist/"
+# Standalone torch: the launcher converts the rom to sm64.o2r with it before the game starts,
+# so the game's own conversion prompts (which can't be answered with a controller) never show
+TORCH="Ghostship/build-ghostship/TorchExternal/src/TorchExternal-build/torch"
+strip "${TORCH}" || true
+cp "${TORCH}" "dist/assets/torch.${ARCH}" || exit 1
 # libtcc.so (linked by the game) and the TCC runtime (headers, libtcc1.a) it uses to compile
 # C mods at runtime
 mkdir -p "${DEST_DIR}"
