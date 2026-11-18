@@ -1,0 +1,35 @@
+{
+  "version": 4,
+  "name": "ghostship.zip",
+  "items": [
+    "Ghostship.sh",
+    "ghostship"
+  ],
+  "items_opt": null,
+  "attr": {
+    "title": "Ghostship",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "Ghostship is the HarbourMasters PC port of Super Mario 64, built from the decompilation, with enhancements such as higher frame rates, widescreen support and mod support.",
+    "desc_md": null,
+    "inst": "Copy your Super Mario 64 US or JP .z64 rom to ports/ghostship/baseroms. On first launch answer Yes to the prompts to convert it to sm64.o2r, which can take a few minutes.",
+    "inst_md": null,
+    "genres": [
+      "platformer",
+      "adventure"
+    ],
+    "image": {},
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "paid",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "recipe_version": 1,
+  "name": "ghostship.zip",
+  "port_json": "new_ports/ghostship/ghostship/ghostship/port.json",
+  "source": {
+    "date_updated": "2026-11-18",
+    "port_exe": "Ghostship",
+    "port_build": "cmake",
+    "port_checksum": "91c778e10327967270eaefbd7f0e569a62cf67b92c8c963b0b3f89f689744ffe",
+    "port_url": "HarbourMasters/Ghostship",
+    "port_version": "3.0.0",
+    "port_download": "https://github.com/HarbourMasters/Ghostship/archive/refs/tags/3.0.0.tar.gz"
+  },
+  "includes": [
+    "extract/conf.lua",
+    "extract/main.lua",
+    "launcher/anchor.lua",
+    "launcher/conf.lua",
+    "launcher/cvars.lua",
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "swap.txt"
+  ],
+  "test": {
+    "delay": 30,
+    "keys": "start",
+    "needs_data": "baseroms/*.z64 sm64.o2r"
+  },
+  "controls": "launcher/controls.png"
+}
