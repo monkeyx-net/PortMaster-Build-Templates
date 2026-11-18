@@ -56,6 +56,13 @@ grep -q 'ImGuiPopupFlags_AnyPopupLevel' libultraship/src/ship/window/gui/Gui.cpp
 # gptokeyb can be the grabbed physical pad instead of the virtual one; listen to all of them.
 sed -i 's|^\( *\)ImGui_ImplSDL2_InitForOpenGL(.*);$|&\n\1ImGui_ImplSDL2_SetGamepadMode(ImGui_ImplSDL2_GamepadMode_AutoAll);|' libultraship/src/fast/Fast3dGui.cpp
 grep -q 'ImGui_ImplSDL2_GamepadMode_AutoAll' libultraship/src/fast/Fast3dGui.cpp || { echo "Error: gamepad mode patch did not apply"; exit 1; }
+# libultraship takes the controller added/removed events off SDL's queue before ImGui sees them,
+# so ImGui's controller list is never refreshed and the menu can't be opened or used with a pad.
+# Refresh it whenever libultraship handles one of those events.
+H=libultraship/src/ship/controller/physicaldevice/SDLAddRemoveDeviceEventHandler.cpp
+sed -i 's|^#include <SDL2/SDL.h>$|&\n#include <imgui_impl_sdl2.h>|' "$H"
+sed -i 's|^\( *\)mControlDeck->GetConnectedPhysicalDeviceManager()->HandlePhysicalDevice[A-Za-z]*(event.cdevice.which);$|&\n\1ImGui_ImplSDL2_SetGamepadMode(ImGui_ImplSDL2_GamepadMode_AutoAll);|' "$H"
+[[ $(grep -c 'ImGui_ImplSDL2_SetGamepadMode' "$H") == 2 ]] || { echo "Error: gamepad refresh patch did not apply"; exit 1; }
 
 # On aarch64 the game is built with -mcpu=native (the build machine); target the oldest
 # supported SoC instead.
@@ -78,7 +85,11 @@ fi
 # USE_SATELLA=OFF: the online relay / mod signing needs mbedtls 3 and ixwebsocket, and
 # PortMaster devices are mostly offline. Vulkan is off so the binary only needs GLES.
 # libultraship's crash handler needs dladdr (libdl on glibc < 2.34).
+# CMP0126=NEW: Ghostship names libultraship's CVars gSettings.* (cmake/lus-cvars.cmake), but with
+# the policy unset libultraship's cache defaults (gControlNav, gAdvancedResolution, ...) win, so
+# the launcher's settings (controller navigation, aspect ratio, VSync, low-res) were ignored.
 cmake -S . -B build-ghostship -GNinja \
+    -DCMAKE_POLICY_DEFAULT_CMP0126=NEW \
     -DUSE_OPENGLES=1 \
     -DUSE_SATELLA=OFF \
     -DCMAKE_DISABLE_FIND_PACKAGE_Vulkan=ON \
