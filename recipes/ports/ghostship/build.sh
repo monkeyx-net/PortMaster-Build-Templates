@@ -52,6 +52,10 @@ grep -q 'installPath + "/baseroms"' src/port/Engine.cpp || { echo "Error: basero
 # every frame (as in JeodC's libultraship fork that PaperBoat uses).
 sed -i '/^void Gui::DrawMenu() {$/a\    if (mConsoleVariable->GetInteger(CVAR_IMGUI_CONTROLLER_NAV, 0) \&\&\n        (GetMenuOrMenubarVisible() || ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))) {\n        mImGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;\n    } else {\n        mImGuiIo->ConfigFlags \&= ~ImGuiConfigFlags_NavEnableGamepad;\n    }' libultraship/src/ship/window/gui/Gui.cpp
 grep -q 'ImGuiPopupFlags_AnyPopupLevel' libultraship/src/ship/window/gui/Gui.cpp || { echo "Error: popup navigation patch did not apply"; exit 1; }
+# ImGui's SDL2 backend only listens to the first controller SDL lists (AutoFirst), which under
+# gptokeyb can be the grabbed physical pad instead of the virtual one; listen to all of them.
+sed -i 's|^\( *\)ImGui_ImplSDL2_InitForOpenGL(.*);$|&\n\1ImGui_ImplSDL2_SetGamepadMode(ImGui_ImplSDL2_GamepadMode_AutoAll);|' libultraship/src/fast/Fast3dGui.cpp
+grep -q 'ImGui_ImplSDL2_GamepadMode_AutoAll' libultraship/src/fast/Fast3dGui.cpp || { echo "Error: gamepad mode patch did not apply"; exit 1; }
 
 # On aarch64 the game is built with -mcpu=native (the build machine); target the oldest
 # supported SoC instead.
