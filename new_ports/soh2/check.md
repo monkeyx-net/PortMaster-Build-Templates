@@ -1,6 +1,6 @@
 # check_port: soh2
 
-`check_port.sh soh2 --fix --fix-license` on 2026-11-17 20:26, commit d58c7e1.
+`check_port.sh soh2 --fix --fix-license` on 2026-11-18 19:03, commit fe81962.
 
 **Result: ok, 3 warning(s)**
 
