@@ -69,6 +69,12 @@ sed -i 's|^\( *\)mControlDeck->GetConnectedPhysicalDeviceManager()->HandlePhysic
 sed -i 's|set(CPU_OPTION -mcpu=native)|set(CPU_OPTION -mcpu=cortex-a53)|' CMakeLists.txt
 grep -q 'set(CPU_OPTION -mcpu=cortex-a53)' CMakeLists.txt || { echo "Error: CPU_OPTION patch did not apply"; exit 1; }
 
+# The GLES shaders use mediump floats, which Panfrost (Mesa) runs as real fp16 while libmali
+# doesn't; use highp as libultraship already does for Emscripten.
+G=libultraship/src/fast/backends/gfx_opengl.cpp
+sed -i 's|"#version 300 es\\nprecision mediump float;"|"#version 300 es\\nprecision highp float;"|' "$G"
+grep -q 'precision mediump float;' "$G" && { echo "Error: shader precision patch did not apply"; exit 1; }
+
 # The standalone torch (packs ghostship.o2r and converts the rom on device) is built as an ExternalProject
 # with no build type, i.e. unoptimised; build it as Release.
 sed -i 's|CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/Torch|& -DCMAKE_BUILD_TYPE=Release|' CMakeLists.txt
