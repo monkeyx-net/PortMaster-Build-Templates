@@ -47,6 +47,12 @@ cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" Torch/src
 sed -i 's|{ installPath, Ship::Context::GetAppDirectoryPath("sm64") }|{ installPath, installPath + "/baseroms", Ship::Context::GetAppDirectoryPath("sm64") }|' src/port/Engine.cpp
 grep -q 'installPath + "/baseroms"' src/port/Engine.cpp || { echo "Error: baseroms patch did not apply"; exit 1; }
 
+# libultraship only enables gamepad navigation while the menu is open, so the rom conversion
+# prompts can't be answered with a controller. Also enable it while any popup is open, checked
+# every frame (as in JeodC's libultraship fork that PaperBoat uses).
+sed -i '/^void Gui::DrawMenu() {$/a\    if (mConsoleVariable->GetInteger(CVAR_IMGUI_CONTROLLER_NAV, 0) \&\&\n        (GetMenuOrMenubarVisible() || ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))) {\n        mImGuiIo->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;\n    } else {\n        mImGuiIo->ConfigFlags \&= ~ImGuiConfigFlags_NavEnableGamepad;\n    }' libultraship/src/ship/window/gui/Gui.cpp
+grep -q 'ImGuiPopupFlags_AnyPopupLevel' libultraship/src/ship/window/gui/Gui.cpp || { echo "Error: popup navigation patch did not apply"; exit 1; }
+
 # On aarch64 the game is built with -mcpu=native (the build machine); target the oldest
 # supported SoC instead.
 sed -i 's|set(CPU_OPTION -mcpu=native)|set(CPU_OPTION -mcpu=cortex-a53)|' CMakeLists.txt
