@@ -9,7 +9,9 @@
 --       o2r = { "game.o2r", ... },  -- optional: on <=1GB devices with none of these next to
 --                                   -- the config yet, warn to answer No after the rom conversion
 --       resolution = { "gSettings", "AdvancedResolution" },  -- optional: where the aspect ratio
---   })                              -- CVars live (default { "gAdvancedResolution" })
+--                                   -- CVars live (default { "gAdvancedResolution" })
+--       custom = { 720, 600 },      -- optional: default Custom aspect ratio (720 x 640 otherwise)
+--   })
 -- anchor.lua uses it too, for the items it doesn't handle itself.
 -- Edits the game's JSON config line by line; the game writes it pretty-printed (one key per
 -- line), so no JSON parser is needed.
@@ -170,7 +172,8 @@ return function(spec)
             -- custom ratio: the one in the file when Custom is selected there, else the default
             local x, y = get(lines, ASPECT_X), get(lines, ASPECT_Y)
             local custom = v.aspect == 1 and (x or 0) > 0 and (y or 0) > 0
-            v.customX, v.customY = custom and x or ASPECTS[1][1], custom and y or ASPECTS[1][2]
+            local def = spec.custom or ASPECTS[1]
+            v.customX, v.customY = custom and x or def[1], custom and y or def[2]
         end
         -- a value set in game that the launcher doesn't offer (e.g. 75 fps) is kept as an extra choice
         for _, it in ipairs(config.items) do

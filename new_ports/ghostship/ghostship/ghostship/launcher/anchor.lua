@@ -5,6 +5,7 @@
 -- fpsDefault is only needed when the game's unset default differs from fps.
 -- anchor = false: no Anchor co-op items (frame rate and low-res only, e.g. PaperBoat).
 -- settings = { Key = n, ... }: extra CVars.gSettings ints forced on every save.
+-- custom = { X, Y }: default Custom aspect ratio (cvars.lua's 720 x 640 otherwise).
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -57,6 +58,7 @@ return function(title, opts)
         },
         keys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } },
         resolution = { "gSettings", "AdvancedResolution" },
+        custom = opts.custom,
     })
     for _, it in ipairs(extra.items) do config.items[#config.items + 1] = it end
 
