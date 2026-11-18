@@ -1,6 +1,6 @@
 # check_port: ghostship
 
-`check_port.sh ghostship --fix --fix-license` on 2026-11-18 19:40, commit c14c242.
+`check_port.sh ghostship --fix --fix-license` on 2026-11-18 20:10, commit 3da01e4.
 
 **Result: ok, 5 warning(s)**
 
