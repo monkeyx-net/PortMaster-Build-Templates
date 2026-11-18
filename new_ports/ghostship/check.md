@@ -1,6 +1,6 @@
 # check_port: ghostship
 
-`check_port.sh ghostship --fix --fix-license` on 2026-11-18 18:20, commit 11813b7.
+`check_port.sh ghostship --fix --fix-license` on 2026-11-18 19:06, commit fe81962.
 
 **Result: ok, 5 warning(s)**
 
@@ -11,11 +11,6 @@
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - screenshot.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
 - cover.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
-
-## Fixed by --fix
-
-- set attr.min_glibc from "" to "2.29" (Ghostship.aarch64 needs GLIBC_2.29)
-- add ## Compile section to README.md
 
 ## Notes
 
