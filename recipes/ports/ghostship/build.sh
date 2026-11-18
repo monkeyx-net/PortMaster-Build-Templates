@@ -28,6 +28,9 @@ TAG=$(jq -r '.source.port_version' "${RECIPE_DIR}/recipe.json")
 
 if [[ ${ARCH} ==  "aarch64" ]]; then
   SOURCE_DIR="/usr/lib/aarch64-linux-gnu"
+  # The 20.04 builder's GNU ld (binutils 2.34) fails the final link on clang-18 objects
+  # (".eh_frame_hdr refers to overlapping FDEs"); link with lld instead
+  LINKER_OPTION="-DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld"
 elif [[ ${ARCH} == "x86_64" ]]; then
   SOURCE_DIR="/usr/lib/x86_64-linux-gnu"
 fi
@@ -69,6 +72,7 @@ cmake -S . -B build-ghostship -GNinja \
     -DUSE_OPENGLES=1 \
     -DUSE_SATELLA=OFF \
     -DCMAKE_DISABLE_FIND_PACKAGE_Vulkan=ON \
+    ${LINKER_OPTION} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD_LIBRARIES="-ldl"
 cmake --build build-ghostship --target GeneratePortO2R -j$(nproc)
