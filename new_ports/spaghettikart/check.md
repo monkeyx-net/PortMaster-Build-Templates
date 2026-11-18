@@ -1,6 +1,6 @@
 # check_port: spaghettikart
 
-`check_port.sh spaghettikart --fix --fix-license` on 2026-11-17 20:59, commit d58c7e1.
+`check_port.sh spaghettikart --fix --fix-license` on 2026-11-18 19:08, commit fe81962.
 
 **Result: ok, 3 warning(s)**
 
