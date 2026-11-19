@@ -5,6 +5,9 @@
 -- fpsDefault is only needed when the game's unset default differs from fps.
 -- anchor = false: no Anchor co-op items (frame rate and low-res only, e.g. PaperBoat).
 -- settings = { Key = n, ... }: extra CVars.gSettings ints forced on every save.
+-- custom = { X, Y }: default Custom aspect ratio (cvars.lua's 720 x 640 otherwise).
+-- items = { ... }, keys = { id = { { "gSettings", "Key" }, default } }: extra CVar items in
+-- cvars.lua's format, shown after VSync (default used when the CVar is missing).
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -16,8 +19,8 @@
 --   CVars.gSettings.InterpolationFPS / MatchRefreshRate - frame rate ("Match display"
 --                                         sets MatchRefreshRate 1, which ignores InterpolationFPS)
 --   CVars.gSettings.LowResMode          - N64 low-res mode
---   CVars.gSettings.VsyncEnabled and gSettings.AdvancedResolution.* (aspect ratio) - through
---                                         the shared cvars.lua
+--   CVars.gSettings.VsyncEnabled and gSettings.AdvancedResolution.* (aspect ratio), and any
+--                                         items/keys - through the shared cvars.lua
 
 return function(title, opts)
     opts = opts or {}
@@ -49,14 +52,19 @@ return function(title, opts)
     end
 
     -- VSync and aspect ratio, edited by the shared CVar engine
+    local cvItems = {
+        { id = "vsync", label = "VSync", kind = "choice", choices = { { 1, "On" }, { 0, "Off" } },
+          help = "On removes tearing but caps the frame rate at the display's refresh rate." },
+    }
+    local cvKeys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } }
+    for _, it in ipairs(opts.items or {}) do cvItems[#cvItems + 1] = it end
+    for k, x in pairs(opts.keys or {}) do cvKeys[k] = x end
+    cvItems[#cvItems + 1] = "resolution"
     local extra = require("cvars")({
-        items = {
-            { id = "vsync", label = "VSync", kind = "choice", choices = { { 1, "On" }, { 0, "Off" } },
-              help = "On removes tearing but caps the frame rate at the display's refresh rate." },
-            "resolution",
-        },
-        keys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } },
+        items = cvItems,
+        keys = cvKeys,
         resolution = { "gSettings", "AdvancedResolution" },
+        custom = opts.custom,
     })
     for _, it in ipairs(extra.items) do config.items[#config.items + 1] = it end
 

@@ -8,8 +8,6 @@
 -- custom = { X, Y }: default Custom aspect ratio (cvars.lua's 720 x 640 otherwise).
 -- items = { ... }, keys = { id = { { "gSettings", "Key" }, default } }: extra CVar items in
 -- cvars.lua's format, shown after VSync (default used when the CVar is missing).
--- defaults = { Section = { Key = n, ... } }: CVars.<Section> ints set only when missing, so
--- they can still be changed in game (e.g. { gDeveloperTools = { LogLevel = 3 } }).
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -229,32 +227,6 @@ return function(title, opts)
                 table.insert(add, 1, '"gSettings": {')
                 add[#add + 1] = "}"
                 insertAfter(lines, cvars, add)
-            end
-        end
-
-        -- defaults: added only when missing
-        for section, vals in pairs(opts.defaults or {}) do
-            local add = {}
-            for k, n in pairs(vals) do
-                local found = false
-                eachLine(lines, section, function(l, inSection)
-                    if inSection and l:match('^%s*"' .. k .. '":') then found = true end
-                    return l
-                end)
-                if not found then add[#add + 1] = '"' .. k .. '": ' .. n end
-            end
-            if #add > 0 then
-                for n = 1, #add - 1 do add[n] = add[n] .. "," end
-                local sec = find(lines, '"' .. section .. '":%s*{%s*$')
-                local cvars = find(lines, '"CVars":%s*{%s*$')
-                if sec then
-                    insertAfter(lines, sec, add)
-                elseif cvars then
-                    for n, e in ipairs(add) do add[n] = "    " .. e end
-                    table.insert(add, 1, '"' .. section .. '": {')
-                    add[#add + 1] = "}"
-                    insertAfter(lines, cvars, add)
-                end
             end
         end
 
