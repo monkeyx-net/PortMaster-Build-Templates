@@ -1,14 +1,13 @@
 # check_port: paperboat
 
-`check_port.sh paperboat --fix --fix-license` on 2026-11-19 09:45, commit f53b143.
+`check_port.sh paperboat --fix --fix-license` on 2026-11-19 17:48, commit 79d803a.
 
-**Result: ok, 3 warning(s)**
+**Result: ok, 2 warning(s)**
 
 ## Warnings
 
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
-- README.md doesn't follow the template (## Notes / ## Controls / ## Compile): it starts with '## Information' instead of '## Notes'; missing ## Notes; extra ## Information, ## Installation, ## Launcher, ## Thanks (merge into ## Notes or make them ###). https://portmaster.games/tools/markdown-generator/ builds one
 
 ## Notes
 
