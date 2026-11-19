@@ -114,7 +114,10 @@ TORCH="SpaghettiKart/build-spaghettikart/TorchExternal/src/TorchExternal-build/t
 strip "${TORCH}" || true
 cp "${TORCH}" "dist/assets/torch.${ARCH}"
 # torch reads config.yml, the asset yamls, include/ (enums) and meta/mods.toml from the working
-# directory; ship them as extractor.zip to unpack into the port folder
+# directory; ship them as extractor.zip to unpack into the port folder. Log warnings only: at the
+# default level a conversion writes ~280k lines (28 MB) through the launcher's tee to log.txt.
+sed -i 's|^    sort: OFFSET$|&\n    logging: WARN|' SpaghettiKart/config.yml
+grep -q '^    logging: WARN$' SpaghettiKart/config.yml || { echo "Error: torch logging patch did not apply"; exit 1; }
 (cd "${CDIR}/SpaghettiKart" && zip -qr "${CDIR}/dist/assets/extractor.zip" config.yml yamls include meta)
 unzip -tq "${CDIR}/dist/assets/extractor.zip" || exit 1
 ls -lha dist/ dist/assets/
