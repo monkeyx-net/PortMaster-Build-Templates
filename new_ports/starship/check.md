@@ -1,6 +1,6 @@
 # check_port: starship
 
-`check_port.sh starship --fix --fix-license` on 2026-11-17 20:11, commit d58c7e1.
+`check_port.sh starship --fix --fix-license` on 2026-11-19 09:14, commit 589e561.
 
 **Result: ok, 4 warning(s)**
 
