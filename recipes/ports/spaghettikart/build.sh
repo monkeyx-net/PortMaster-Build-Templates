@@ -60,9 +60,19 @@ if ! grep -q 'if (w1 > 0x0FFFFFFF) {' libultraship/src/fast/interpreter.cpp \
   exit 1
 fi
 
-# torch builds the whole O2R in RAM (and never frees it), which runs 1GB devices out of memory
-# during rom extraction; replace its writer with one that streams entries straight to the file.
+# torch keeps everything until the end of the rom extraction, which runs 1GB devices out of memory:
+# - the whole O2R: replace its writer with one that streams entries straight to the file
 cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" torch/src/archive/
+# - every yaml's parse results and every decompressed MIO0/TKMK00 chunk: free them once a yaml is
+#   exported (nothing reads them later when writing an O2R), and fix the two chunk leaks
+sed -i '/^    if(this->gConfig.exporterType != ExportType::Binary) {$/i\    if (this->gConfig.exporterType == ExportType::Binary) {\n        this->gParseResults.erase(this->gCurrentFile);\n        Decompressor::ClearCache();\n    }\n' torch/src/Companion.cpp
+sed -i 's|^        delete\[\] value->data;$|&\n        delete value;|; s|^    tkmk00_decode(in_buf, decompressed, rgba, alpha);$|&\n    delete[] decompressed;|' torch/src/utils/Decompressor.cpp
+if ! grep -q 'this->gParseResults.erase(this->gCurrentFile);' torch/src/Companion.cpp \
+   || ! grep -q '^        delete value;$' torch/src/utils/Decompressor.cpp \
+   || ! grep -q '^    delete\[\] decompressed;$' torch/src/utils/Decompressor.cpp; then
+  echo "Error: torch memory patch did not apply"
+  exit 1
+fi
 
 # The standalone torch (used on device to extract the rom without a window) is built as an
 # ExternalProject with no build type, i.e. unoptimised; build it as Release.
