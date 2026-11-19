@@ -12,7 +12,6 @@
     "port_download": "https://github.com/HarbourMasters/SpaghettiKart/archive/ce0f9358f0505bbdeb76b1aff7a25556cda3fdef.tar.gz"
   },
   "includes": [
-    "swap.txt",
     "launcher/main.lua",
     "launcher/osk.lua",
     "launcher/conf.lua",

@@ -81,9 +81,6 @@ extract_roms() {
     fi
 }
 
-# Temporary swap for rom extraction on <=1GB devices (swap_on/swap_off)
-source "$GAMEDIR/swap.txt"
-
 # --------------------- END FUNCTIONS ---------------------
 
 # Launcher (Love2D): frame rate, VSync, level of detail and culling; also closes the port menu and enables
@@ -101,10 +98,7 @@ fi
 # Perform functions
 unzip_assets
 find_roms
-swap_on
-trap swap_off EXIT
 extract_roms
-swap_off
 
 # Run the game
 $GPTOKEYB "$BINARY" -c "spaghetti.gptk" &

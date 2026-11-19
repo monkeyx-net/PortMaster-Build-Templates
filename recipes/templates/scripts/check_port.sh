@@ -579,6 +579,41 @@ if [[ -f "$readme" ]] && ! grep -qiE '^##[[:space:]]*compile' "$readme"; then
     fi
 fi
 
+# README.md layout (readme_sections in port_rules.json): PortMaster-New's template has
+# ## Notes, ## Controls, ## Compile in that order and nothing else at that level.
+# ## headings inside ``` code blocks are ignored.
+if [[ -f "$readme" ]]; then
+    mapfile -t want < <(jq -r '.readme_sections // [] | .[]' "$rules")
+    mapfile -t have < <(awk '/^[[:space:]]*```/ { code = !code; next }
+        !code && /^##[^#]/ { sub(/^##[[:space:]]*/, ""); sub(/[[:space:]#]*$/, ""); print }' "$readme")
+    if (( ${#want[@]} )); then
+        tmpl="$(printf '## %s / ' "${want[@]}")"; tmpl="${tmpl% / }"
+        problems=()
+        [[ "${have[0]:-}" == "${want[0]}" ]] \
+            || problems+=("it starts with '## ${have[0]:-(no ## heading)}' instead of '## ${want[0]}'")
+        missing=() extra=() order=()
+        for w in "${want[@]}"; do
+            printf '%s\n' "${have[@]}" | grep -qxiF -- "$w" || missing+=("## $w")
+        done
+        for h in "${have[@]}"; do
+            printf '%s\n' "${want[@]}" | grep -qxiF -- "$h" && order+=("$h") || extra+=("## $h")
+        done
+        (( ${#missing[@]} )) && problems+=("missing $(IFS=,; echo "${missing[*]}" | sed 's/,/, /g')")
+        (( ${#extra[@]} )) && problems+=("extra $(IFS=,; echo "${extra[*]}" | sed 's/,/, /g') (merge into ## ${want[0]} or make them ###)")
+        # the template's sections that are present must keep the template's order
+        expected=()
+        for w in "${want[@]}"; do
+            for h in "${order[@]}"; do [[ "${h,,}" == "${w,,}" ]] && { expected+=("$h"); break; }; done
+        done
+        uniq_order=()
+        for h in "${order[@]}"; do
+            [[ " ${uniq_order[*],,} " == *" ${h,,} "* ]] || uniq_order+=("$h")
+        done
+        [[ "${uniq_order[*],,}" == "${expected[*],,}" ]] || problems+=("sections are out of order")
+        (( ${#problems[@]} )) && warn "README.md doesn't follow the template ($tmpl): $(IFS=';'; echo "${problems[*]}" | sed 's/;/; /g'). https://portmaster.games/tools/markdown-generator/ builds one"
+    fi
+fi
+
 # ---------------------------------------------------------------- screenshot and cover
 # PortMaster wants both under 100 kB and the screenshot 640x480. --fix letterboxes the
 # screenshot to 640x480 and re-encodes oversized images with fewer palette colours

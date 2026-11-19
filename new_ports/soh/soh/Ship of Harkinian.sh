@@ -78,7 +78,7 @@ fi
 unzip_assets
 otr_check
 swap_on
-trap swap_off EXIT
+trap 'swap_off; pm_message_end' EXIT
 
 # torch writes the finished o2r to $TMPDIR before copying it here; /tmp is RAM (tmpfs) on most CFWs
 if [ ${#ROMS[@]} -gt 0 ]; then

@@ -18,8 +18,7 @@
     "launcher/conf.lua",
     "launcher/cvars.lua",
     "launcher/main.lua",
-    "launcher/osk.lua",
-    "swap.txt"
+    "launcher/osk.lua"
   ],
   "controls": "launcher/controls.png"
 }

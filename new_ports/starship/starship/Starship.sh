@@ -74,9 +74,6 @@ extract_roms() {
     fi
 }
 
-# Temporary swap for rom extraction on <=1GB devices (swap_on/swap_off)
-source "$GAMEDIR/swap.txt"
-
 # --------------------- END FUNCTIONS ---------------------
 
 # Launcher (Love2D): frame rate, low-res mode, voices, invert Y; also closes the menu bar and
@@ -94,10 +91,7 @@ fi
 # Perform functions
 unzip_assets
 find_roms ||{ pm_finish; exit 0; }
-swap_on
-trap swap_off EXIT
 extract_roms
-swap_off
 
 # Run the game
 $GPTOKEYB "Starship.${DEVICE_ARCH}" -c "starship.gptk" &

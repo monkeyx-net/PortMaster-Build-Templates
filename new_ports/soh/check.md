@@ -1,8 +1,8 @@
 # check_port: soh
 
-`check_port.sh soh --fix --fix-license` on 2026-11-19 09:23, commit 589e561.
+`check_port.sh soh --test` on 2026-11-19 09:23, commit 589e561d2.
 
-**Result: ok, 6 warning(s)**
+**Result: dry run, changes: none; 0 error(s) left, 7 warning(s)**
 
 ## Warnings
 
@@ -10,10 +10,12 @@
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libbz2.so.1 (x86_64) is needed by soh.elf.x86_64 but not bundled or in cfw_provided: check ldd on devices
-- libs.x86_64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
 - libs.aarch64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
+- libs.x86_64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
+- README.md doesn't follow the template (## Notes / ## Controls / ## Compile): it starts with '## Information' instead of '## Notes'; missing ## Notes; extra ## Information, ## Compatibility, ## Installation, ## Launcher, ## Menu Navigation, ## Default Gameplay Controls, ## Suggested Mods, ## Thanks (merge into ## Notes or make them ###). https://portmaster.games/tools/markdown-generator/ builds one
 
 ## Notes
 
-- aarch64 loads from libs.aarch64: libSDL2_net-2.0.so.0 libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libopus.so.0 libopusfile.so.0 libtheoradec.so.1 libz.so.1 libzip.so.5
-- x86_64 loads from libs.x86_64: libSDL2_net-2.0.so.0 libbz2.so.1.0 liblzma.so.5 libogg.so.0 libopus.so.0 libopusfile.so.0 libzip.so.5
+- shellcheck not installed, launcher lint skipped
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libopusfile.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libtheoradec.so.1 libzip.so.5 libz.so.1
+- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libopusfile.so.0 libopus.so.0 libSDL2_net-2.0.so.0 libzip.so.5

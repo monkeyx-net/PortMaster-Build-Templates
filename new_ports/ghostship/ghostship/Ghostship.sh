@@ -81,9 +81,6 @@ extract_roms() {
     fi
 }
 
-# Temporary swap for the rom conversion on <=1GB devices (swap_on/swap_off)
-source "$GAMEDIR/swap.txt"
-
 # --------------------- END FUNCTIONS ---------------------
 
 # The settings launcher edits ghostship.cfg.json line by line, so seed a pretty-printed one
@@ -105,10 +102,7 @@ fi
 # Perform functions
 unzip_assets
 find_roms
-swap_on
-trap swap_off EXIT
 extract_roms
-swap_off
 
 # Run the game
 $GPTOKEYB "Ghostship.${DEVICE_ARCH}" -c "ghostship.gptk" &
@@ -116,6 +110,5 @@ pm_platform_helper "Ghostship.${DEVICE_ARCH}" >/dev/null
 ./Ghostship.${DEVICE_ARCH}
 
 # Cleanup
-swap_off
 rm -rf "$GAMEDIR/logs/"
 pm_finish

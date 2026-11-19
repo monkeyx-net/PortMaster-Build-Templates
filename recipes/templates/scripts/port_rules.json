@@ -5,6 +5,8 @@
     "racing", "rhythm", "rpg", "simulation", "sports", "strategy", "visual novel", "other"
   ],
   "gameinfo_tags": ["path", "name", "desc", "releasedate", "developer", "publisher", "genre", "image"],
+  "_readme_sections": "README.md ## headings, as in PortMaster-New's template (https://portmaster.games/tools/markdown-generator/): README.md must start with the first, have all of them in this order, and no other ## headings (### subsections are fine).",
+  "readme_sections": ["Notes", "Controls", "Compile"],
   "port_json_attrs": [
     "title", "porter", "desc", "desc_md", "inst", "inst_md", "genres", "image", "rtr", "exp",
     "runtime", "store", "availability", "reqs", "arch", "min_glibc"

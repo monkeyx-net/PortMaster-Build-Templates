@@ -54,9 +54,6 @@ otr_check() {
     fi
 }
 
-# Temporary swap for rom extraction on <=1GB devices (swap_on/swap_off)
-source "$GAMEDIR/swap.txt"
-
 # --------------------- END FUNCTIONS ---------------------
 
 # Launcher (Love2D): Anchor player name / room ID, frame rate and N64 low-res mode;
@@ -74,15 +71,12 @@ fi
 # Perform functions
 unzip_assets
 otr_check
-swap_on
-trap swap_off EXIT
 
 $GPTOKEYB "Lighthouse.${DEVICE_ARCH}" -c "lighthouse.gptk" &
 pm_platform_helper "Lighthouse.${DEVICE_ARCH}" >/dev/null
 ./Lighthouse.${DEVICE_ARCH} "${ROMS[@]}"
 
 # Cleanup
-swap_off
 rm -rf "$GAMEDIR/tmp"
 rm -rf "$GAMEDIR/logs/"
 pm_finish

@@ -12,7 +12,6 @@
     "port_download": "https://github.com/HarbourMasters/Starship/archive/refs/tags/v2.0.0.tar.gz"
   },
   "includes": [
-    "swap.txt",
     "launcher/main.lua",
     "launcher/osk.lua",
     "launcher/conf.lua",

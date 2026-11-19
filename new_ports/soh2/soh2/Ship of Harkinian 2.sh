@@ -54,9 +54,6 @@ otr_check() {
     fi
 }
 
-# Temporary swap for rom extraction on <=1GB devices (swap_on/swap_off)
-source "$GAMEDIR/swap.txt"
-
 # --------------------- END FUNCTIONS ---------------------
 
 # Launcher (Love2D): frame rate and N64 low-res mode; also closes the game menu and enables
@@ -74,8 +71,6 @@ fi
 # Perform functions
 unzip_assets
 otr_check
-swap_on
-trap swap_off EXIT
 
 # Run the game
 $GPTOKEYB "2s2h.elf.${DEVICE_ARCH}" -c "soh2.gptk" &
@@ -83,6 +78,5 @@ pm_platform_helper "2s2h.elf.${DEVICE_ARCH}" >/dev/null
 ./2s2h.elf.${DEVICE_ARCH} "${ROMS[@]}"
 
 # Cleanup
-swap_off
 rm -rf "$GAMEDIR/logs/"
 pm_finish

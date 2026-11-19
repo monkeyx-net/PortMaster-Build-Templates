@@ -129,6 +129,9 @@ cp "${TORCH}" "dist/assets/torch.${ARCH}" || exit 1
 mkdir -p "${DEST_DIR}"
 cp "Ghostship/build-ghostship/libultraship/libtcc.so" "${DEST_DIR}/" || exit 1
 cp -r "Ghostship/build-ghostship/.tcc" "dist/" || exit 1
+# The build also stages the builder's glibc crti.o/crtn.o; TCC only links them for executables
+# and DLLs, never for mods compiled into memory (TCC_OUTPUT_MEMORY, ScriptLoader.cpp)
+rm -f dist/.tcc/lib/crti.o dist/.tcc/lib/crtn.o
 # The game's built-in torch reads config.yml and the asset yamls (assets/ymls) next to the
 # binary; ship them as extractor.zip to unpack into the port folder.
 (cd "${CDIR}/Ghostship" && zip -qr "${CDIR}/dist/assets/extractor.zip" config.yml assets)
