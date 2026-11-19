@@ -1,0 +1,79 @@
+diff --git a/src/Companion.cpp b/src/Companion.cpp
+index a881533..42b30d9 100644
+--- a/src/Companion.cpp
++++ b/src/Companion.cpp
+@@ -652,7 +652,7 @@ void Companion::ProcessFile(YAML::Node root) {
+             node["path"] = gCurrentVirtualPath;
+         }
+ 
+-        this->gAddrMap[this->gCurrentFile][node["offset"].as<uint32_t>()] = std::make_tuple(output, node);
++        this->gAddrMap[this->gCurrentFile][node["offset"].as<uint32_t>()] = std::make_tuple(output, YAML::Clone(node));
+     }
+ 
+     // Stupid hack because the iteration broke the assets
+@@ -1012,6 +1012,11 @@ void Companion::ProcessFile(YAML::Node root) {
+         }
+     }
+ 
++    if (this->gConfig.exporterType == ExportType::Binary) {
++        this->gParseResults.erase(this->gCurrentFile);
++        Decompressor::ClearCache();
++    }
++
+     if(this->gConfig.exporterType != ExportType::Binary) {
+         this->gHashNode[RelativePathToSrcDir(this->gCurrentFile)]["extracted"][ExportTypeToString(this->gConfig.exporterType)] = true;
+     }
+@@ -1287,6 +1292,22 @@ void Companion::Process() {
+         vWriter.Write((uint32_t) 0);
+     }
+ 
++    // PortMaster: lookups in other files only search a file's external_files, so the address map of a
++    // file no yaml lists there is not needed once that file is processed
++    std::unordered_set<std::string> pmExternal;
++    for (const auto & entry : Torch::getRecursiveEntries(this->gAssetPath)){
++        const auto p = entry.path().generic_string();
++        if (entry.is_directory() || (p.find(".yaml") == std::string::npos && p.find(".yml") == std::string::npos) || p.find("config.yml") != std::string::npos) {
++            continue;
++        }
++        auto ext = YAML::LoadFile(p)[":config"]["external_files"];
++        if (ext.IsSequence()) {
++            for (size_t i = 0; i < ext.size(); i++) {
++                pmExternal.insert((this->gSourceDirectory / ext[i].as<std::string>()).string());
++            }
++        }
++    }
++
+     for (const auto & entry : Torch::getRecursiveEntries(this->gAssetPath)){
+         if(entry.is_directory())  {
+             continue;
+@@ -1309,6 +1330,9 @@ void Companion::Process() {
+         if (!this->gProcessedFiles.contains(this->gCurrentFile)) {
+             ProcessFile(root);
+             this->gProcessedFiles.insert(this->gCurrentFile);
++            if (!pmExternal.contains(this->gCurrentFile)) {
++                this->gAddrMap.erase(this->gCurrentFile);
++            }
+         }
+     }
+ 
+diff --git a/src/utils/Decompressor.cpp b/src/utils/Decompressor.cpp
+index dd24650..9b14f76 100644
+--- a/src/utils/Decompressor.cpp
++++ b/src/utils/Decompressor.cpp
+@@ -70,6 +70,7 @@ DataChunk* Decompressor::DecodeTKMK00(const std::vector<uint8_t>& buffer, const
+     const auto decompressed = new uint8_t[size];
+     const auto rgba = new uint8_t[size];
+     tkmk00_decode(in_buf, decompressed, rgba, alpha);
++    delete[] decompressed;
+     gCachedChunks[offset] = new DataChunk{ rgba, size };
+     return gCachedChunks[offset];
+ }
+@@ -225,6 +226,7 @@ bool Decompressor::IsSegmented(uint32_t addr) {
+ void Decompressor::ClearCache() {
+     for(auto& [key, value] : gCachedChunks){
+         delete[] value->data;
++        delete value;
+     }
+     gCachedChunks.clear();
+ }
+\ No newline at end of file

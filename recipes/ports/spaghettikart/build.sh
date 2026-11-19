@@ -60,24 +60,14 @@ if ! grep -q 'if (w1 > 0x0FFFFFFF) {' libultraship/src/fast/interpreter.cpp \
   exit 1
 fi
 
-# torch keeps everything until the end of the rom extraction, which runs 1GB devices out of memory:
-# - the whole O2R: replace its writer with one that streams entries straight to the file
+# torch keeps everything until the end of the rom extraction, which runs 1GB devices out of memory.
+# Its O2R writer: replace it with one that streams entries straight to the file.
 cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" torch/src/archive/
-# - every yaml's parse results and every decompressed MIO0/TKMK00 chunk: free them once a yaml is
-#   exported (nothing reads them later when writing an O2R), and fix the two chunk leaks
-sed -i '/^    if(this->gConfig.exporterType != ExportType::Binary) {$/i\    if (this->gConfig.exporterType == ExportType::Binary) {\n        this->gParseResults.erase(this->gCurrentFile);\n        Decompressor::ClearCache();\n    }\n' torch/src/Companion.cpp
-sed -i 's|^        delete\[\] value->data;$|&\n        delete value;|; s|^    tkmk00_decode(in_buf, decompressed, rgba, alpha);$|&\n    delete[] decompressed;|' torch/src/utils/Decompressor.cpp
-# - every yaml's whole parsed document (the biggest part: ProcessFile loads each yaml twice and the
-#   address map's nodes keep the first load alive): store copies of the asset nodes instead.
-#   Peak RSS for the US rom on x86_64: 928 MB unpatched, 377 MB with these patches; same O2R.
-sed -i 's|^\(        this->gAddrMap\[this->gCurrentFile\]\[node\["offset"\].as<uint32_t>()\] = std::make_tuple(output, \)node);$|\1YAML::Clone(node));|' torch/src/Companion.cpp
-if ! grep -q 'this->gParseResults.erase(this->gCurrentFile);' torch/src/Companion.cpp \
-   || ! grep -q 'std::make_tuple(output, YAML::Clone(node));' torch/src/Companion.cpp \
-   || ! grep -q '^        delete value;$' torch/src/utils/Decompressor.cpp \
-   || ! grep -q '^    delete\[\] decompressed;$' torch/src/utils/Decompressor.cpp; then
-  echo "Error: torch memory patch did not apply"
-  exit 1
-fi
+# memory.patch: free each yaml's parse results and decompressed chunks once it is exported, keep
+# copies of the asset nodes for address lookups instead of every whole yaml document, drop the
+# lookups of yamls no other yaml lists in external_files once processed, fix two chunk leaks.
+# Peak RSS for the US rom: 928 MB unpatched, 187 MB patched (x86_64); identical O2R.
+git -C torch apply "${RECIPE_DIR}/torch/memory.patch" || { echo "Error: torch memory.patch did not apply"; exit 1; }
 
 # The standalone torch (used on device to extract the rom without a window) is built as an
 # ExternalProject with no build type, i.e. unoptimised; build it as Release.
