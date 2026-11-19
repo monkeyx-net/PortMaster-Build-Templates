@@ -1,0 +1,190 @@
+Backports from PaperBoat develop, merged after 1.0.3 (drop when the recipe moves past them):
+  #263 fix popup text offset reading uninit msgID
+  #269 fix UAF crash in GfxSpVertex (Munchlesia): free animator DL/vertex copies once per drawn frame
+  #278 fix 64-bit evt buffer overflows and clear scripts on soft reset
+
+diff --git a/include/model.h b/include/model.h
+index cc2b30b..f740075 100644
+--- a/include/model.h
++++ b/include/model.h
+@@ -210,6 +210,7 @@ void mdl_get_remap_tint_params(u8* primR, u8* primG, u8* primB, u8* envR, u8* en
+ void init_model_data(void);
+ void update_model_animator(s32);
+ void update_model_animator_with_transform(s32 animatorID, Mtx* mtx);
++void free_expired_animator_buffers(void);
+ void set_mdl_custom_gfx_set(Model*, s32, u32);
+ ModelNodeProperty* get_model_property(ModelNode* node, ModelPropertyKeys key);
+ void load_texture_variants(u8* srcData, s32 textureID, u8* baseData, s32 size);
+diff --git a/src/animator.c b/src/animator.c
+index 2d8d0a8..d98433e 100644
+--- a/src/animator.c
++++ b/src/animator.c
+@@ -11,7 +11,7 @@ typedef struct DisplayListBufferHandle {
+     /* 0x4 */ void* addr;
+ } DisplayListBufferHandle; // size = 0x8
+ 
+-typedef DisplayListBufferHandle AnimatedMeshVertexCopyList[0x60];
++typedef DisplayListBufferHandle AnimatedMeshVertexCopyList[0x100];
+ 
+ s32 gAnimCount;
+ 
+@@ -79,7 +79,7 @@ Vtx* animator_copy_vertices_to_buffer(ModelAnimator* animator, AnimatorNode* nod
+ 
+     ASSERT(bufferMem != nullptr);
+ 
+-    handle->ttl = 3;
++    handle->ttl = 2;
+     nodeVtxList = &node->fcData.vtxList[startIdx];
+ 
+     if (animator->baseAddr != nullptr) {
+@@ -487,7 +487,6 @@ AnimatorNode* add_anim_node(ModelAnimator* animator, s32 parentNodeID, AnimatorN
+ void update_model_animator(s32 animatorID) {
+     ModelAnimator* animator;
+     s32 temp;
+-    s32 i;
+ 
+     if (gGameStatusPtr->context != CONTEXT_WORLD && !(animatorID & BATTLE_ID_BIT)) {
+         return;
+@@ -528,6 +527,10 @@ void update_model_animator(s32 animatorID) {
+     FrameInterpolation_RecordOpenChild("animator", TAG_ANIMATOR(animatorID, animator));
+     animator_update_model_transforms(animator, nullptr);
+     FrameInterpolation_RecordCloseChild();
++}
++
++void free_expired_animator_buffers(void) {
++    s32 i;
+ 
+     for (i = 0; i < ARRAY_COUNT(D_801533C0); i++) {
+         if (D_801533C0[i].ttl >= 0) {
+@@ -553,7 +556,6 @@ void update_model_animator(s32 animatorID) {
+ void update_model_animator_with_transform(s32 animatorID, Mtx* mtx) {
+     ModelAnimator* animator;
+     s32 temp;
+-    s32 i;
+ 
+     if (gGameStatusPtr->context != CONTEXT_WORLD && !(animatorID & BATTLE_ID_BIT)) {
+         return;
+@@ -592,26 +594,6 @@ void update_model_animator_with_transform(s32 animatorID, Mtx* mtx) {
+     }
+ 
+     animator_update_model_transforms(animator, mtx);
+-
+-    for (i = 0; i < ARRAY_COUNT(D_801533C0); i++) {
+-        if (D_801533C0[i].ttl >= 0) {
+-            D_801533C0[i].ttl--;
+-            if (D_801533C0[i].ttl == 0) {
+-                D_801533C0[i].ttl = -1;
+-                general_heap_free(D_801533C0[i].addr);
+-            }
+-        }
+-    }
+-
+-    for (i = 0; i < ARRAY_COUNT(D_801536C0); i++) {
+-        if (D_801536C0[i].ttl >= 0) {
+-            D_801536C0[i].ttl--;
+-            if (D_801536C0[i].ttl == 0) {
+-                D_801536C0[i].ttl = -1;
+-                general_heap_free(D_801536C0[i].addr);
+-            }
+-        }
+-    }
+ }
+ 
+ s32 step_model_animator(ModelAnimator* animator) {
+@@ -986,7 +968,7 @@ void appendGfx_animator_node(ModelAnimator* animator, AnimatorNode* node, Matrix
+ 
+             bufferHandle->addr = gfxPos = general_heap_malloc(j * sizeof(Gfx));
+             ASSERT(gfxPos != nullptr);
+-            bufferHandle->ttl = 3;
++            bufferHandle->ttl = 2;
+ 
+             vtxIdx = 0;
+             dlIdx = 0;
+diff --git a/src/battle/area/flo2/actor/huff_n_puff.c b/src/battle/area/flo2/actor/huff_n_puff.c
+index 32e9139..9ee14f7 100644
+--- a/src/battle/area/flo2/actor/huff_n_puff.c
++++ b/src/battle/area/flo2/actor/huff_n_puff.c
+@@ -298,7 +298,7 @@ API_CALLABLE(N(UpdateLerp)) {
+ }
+ 
+ // first N words are actorIDs, next N are scriptIDs
+-s32 N(RuffPuffDataBuffer)[32] = {};
++Bytecode N(RuffPuffDataBuffer)[32] = {};
+ 
+ s32 N(BodyAnims)[] = {
+     STATUS_KEY_NORMAL,    ANIM_HuffNPuff_Anim01,
+diff --git a/src/battle/area/trd_part_2/actor/fake_bowser.c b/src/battle/area/trd_part_2/actor/fake_bowser.c
+index 89b5370..09dab97 100644
+--- a/src/battle/area/trd_part_2/actor/fake_bowser.c
++++ b/src/battle/area/trd_part_2/actor/fake_bowser.c
+@@ -29,7 +29,7 @@ extern EvtScript N(EVS_TryFormingTower);
+ extern EvtScript N(EVS_BroadcastToKoopaBros);
+ 
+ // only the first element is actually used
+-BSS s32 FakeBowserAnimState[31];
++BSS Bytecode FakeBowserAnimState[31];
+ 
+ enum N(ActorPartIDs) {
+     // the targetable bowser in part 1
+diff --git a/src/battle/common/actor/bandit.inc.c b/src/battle/common/actor/bandit.inc.c
+index 2381ecb..0657792 100644
+--- a/src/battle/common/actor/bandit.inc.c
++++ b/src/battle/common/actor/bandit.inc.c
+@@ -12,7 +12,7 @@ extern EvtScript N(EVS_Init_Coin);
+ extern EvtScript N(EVS_TakeTurn);
+ extern EvtScript N(EVS_HandleEvent);
+ 
+-BSS s32 N(DropCoinScript)[1];
++BSS Bytecode N(DropCoinScript)[1];
+ 
+ enum N(ActorPartIDs) {
+     PRT_MAIN            = 1,
+diff --git a/src/battle/menu_moves.c b/src/battle/menu_moves.c
+index 5155eb7..1f80f83 100644
+--- a/src/battle/menu_moves.c
++++ b/src/battle/menu_moves.c
+@@ -861,7 +861,6 @@ void btl_menu_moves_show_error(void* data, s32 posX, s32 posY) {
+ 
+     posX += 11;
+     posY += 6;
+-    posY += ErrorMessageAdjustY[get_msg_lines(msgID) - 1];
+ 
+     if (MovesErrorCode != 0) {
+         msgID = MSG_Menus_Battle_CantSelectNow;
+@@ -870,5 +869,6 @@ void btl_menu_moves_show_error(void* data, s32 posX, s32 posY) {
+     } else {
+         msgID = MSG_Menus_NotEnoughFP;
+     }
++    posY += ErrorMessageAdjustY[get_msg_lines(msgID) - 1];
+     draw_msg(msgID, posX, posY, 255, MSG_PAL_0F, 0);
+ }
+diff --git a/src/main_loop.c b/src/main_loop.c
+index 3636379..f11b7b9 100644
+--- a/src/main_loop.c
++++ b/src/main_loop.c
+@@ -5,6 +5,7 @@
+ #include "sprite.h"
+ #include "overlay.h"
+ #include "game_modes.h"
++#include "model.h"
+ #include "audio/public.h"
+ #include "dx/profiling.h"
+ #include "port/interpolation/FrameInterpolation.h"
+@@ -137,6 +138,8 @@ void step_game_loop(void) {
+                     gGameStatus.healthBarsEnabled = true;
+                     gGameStatus.altViewportOffset.x = -8;
+                     gGameStatus.altViewportOffset.y = 4;
++                    clear_script_list();
++                    clear_worker_list();
+                     set_game_mode(GAME_MODE_STARTUP);
+                     gOverrideFlags &= ~GLOBAL_OVERRIDES_SOFT_RESET;
+                 }
+@@ -204,6 +207,8 @@ void gfx_draw_frame(void) {
+         return;
+     }
+ 
++    free_expired_animator_buffers();
++
+     gDPSetColorImage(gMainGfxPos++, G_IM_FMT_RGBA, G_IM_SIZ_16b, SCREEN_WIDTH, GFX_COLOR_IMAGE_SENTINEL);
+     gDPSetDepthImage(gMainGfxPos++, GFX_DEPTH_IMAGE_SENTINEL);
+ 

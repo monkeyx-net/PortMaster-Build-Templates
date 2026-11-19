@@ -8,6 +8,8 @@
 -- custom = { X, Y }: default Custom aspect ratio (cvars.lua's 720 x 640 otherwise).
 -- items = { ... }, keys = { id = { { "gSettings", "Key" }, default } }: extra CVar items in
 -- cvars.lua's format, shown after VSync (default used when the CVar is missing).
+-- Every port also gets cvars.lua's texture filter (gSettings.TextureFilter, default linear)
+-- and log level (gDeveloperTools.LogLevel, default warnings) items.
 -- o2r = { "game.o2r", ... }: on <=1GB devices with none of these next to the game config
 -- yet, warn to answer No after the rom conversion and start the game again.
 --
@@ -19,7 +21,8 @@
 --   CVars.gSettings.InterpolationFPS / MatchRefreshRate - frame rate ("Match display"
 --                                         sets MatchRefreshRate 1, which ignores InterpolationFPS)
 --   CVars.gSettings.LowResMode          - N64 low-res mode
---   CVars.gSettings.VsyncEnabled and gSettings.AdvancedResolution.* (aspect ratio), and any
+--   CVars.gSettings.VsyncEnabled, gSettings.TextureFilter, gDeveloperTools.LogLevel,
+--                                         gSettings.AdvancedResolution.* (aspect ratio) and any
 --                                         items/keys - through the shared cvars.lua
 
 return function(title, opts)
@@ -59,11 +62,14 @@ return function(title, opts)
     local cvKeys = { vsync = { { "gSettings", "VsyncEnabled" }, 1 } }
     for _, it in ipairs(opts.items or {}) do cvItems[#cvItems + 1] = it end
     for k, x in pairs(opts.keys or {}) do cvKeys[k] = x end
+    cvItems[#cvItems + 1] = "filter"
+    cvItems[#cvItems + 1] = "loglevel"
     cvItems[#cvItems + 1] = "resolution"
     local extra = require("cvars")({
         items = cvItems,
         keys = cvKeys,
         resolution = { "gSettings", "AdvancedResolution" },
+        filter = { "gSettings", "TextureFilter" },
         custom = opts.custom,
     })
     for _, it in ipairs(extra.items) do config.items[#config.items + 1] = it end

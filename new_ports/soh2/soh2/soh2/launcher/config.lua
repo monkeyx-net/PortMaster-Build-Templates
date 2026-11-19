@@ -1,5 +1,6 @@
 -- Ship of Harkinian 2 launcher settings (shared logic in cvars.lua; 2Ship has no Anchor co-op);
--- also closes the game menu and forces gControlNav to 1
+-- also closes the game menu and forces gSettings.ControlNav to 1. 5.0.1 keeps libultraship's
+-- CVars in gSettings (VsyncEnabled, LowResMode, ControlNav, TextureFilter, AdvancedResolution).
 return require("cvars")({
     title = "Ship of Harkinian 2",
     subtitle = "Majora's Mask settings",
@@ -17,14 +18,18 @@ return require("cvars")({
         { id = "lowres", label = "N64 low-res mode", kind = "choice",
           choices = { { 0, "Off" }, { 1, "On" } },
           help = "Renders at the N64's original resolution. Helps on weaker devices." },
+        "filter",
+        "loglevel",
         "resolution",
     },
     keys = {
         fps = { { "gInterpolationFPS" }, 20 },
         matchrate = { { "gMatchRefreshRate" }, 0 },
-        vsync = { { "gVsyncEnabled" }, 1 },
-        lowres = { { "gLowResMode" }, 0 },
+        vsync = { { "gSettings", "VsyncEnabled" }, 1 },
+        lowres = { { "gSettings", "LowResMode" }, 0 },
     },
-    forced = { { { "gWindows", "Menu" }, 0 }, { { "gControlNav" }, 1 } },
+    forced = { { { "gWindows", "Menu" }, 0 }, { { "gSettings", "ControlNav" }, 1 } },
+    resolution = { "gSettings", "AdvancedResolution" },
+    filter = { "gSettings", "TextureFilter" },
     o2r = { "mm.o2r" },
 })

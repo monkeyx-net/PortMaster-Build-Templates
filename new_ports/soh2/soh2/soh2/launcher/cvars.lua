@@ -3,13 +3,20 @@
 -- Ship of Harkinian 2). A port's launcher/config.lua is:
 --   return require("cvars")({
 --       title = "...", subtitle = "...", help = "...",
---       items = { { id = "fps", ... }, ..., "resolution" },  -- "resolution": aspect ratio items
+--       items = { { id = "fps", ... }, ..., "filter", "loglevel", "resolution" },
+--                                   -- "filter": texture filter (default linear), "loglevel": log
+--                                   -- level (gDeveloperTools.LogLevel, default warnings),
+--                                   -- "resolution": aspect ratio items
 --       keys = { fps = { { "gInterpolationFPS" }, 30 }, ... }, -- id -> CVar path below "CVars", default
 --       forced = { { { "gControlNav" }, 1 }, ... },             -- always written on save
 --       o2r = { "game.o2r", ... },  -- optional: on <=1GB devices with none of these next to
 --                                   -- the config yet, warn to answer No after the rom conversion
 --       resolution = { "gSettings", "AdvancedResolution" },  -- optional: where the aspect ratio
---   })                              -- CVars live (default { "gAdvancedResolution" })
+--                                   -- CVars live (default { "gAdvancedResolution" })
+--       custom = { 720, 600 },      -- optional: default Custom aspect ratio (720 x 640 otherwise)
+--       filter = { "gSettings", "TextureFilter" },  -- optional: texture filter CVar path
+--                                   -- (default { "gTextureFilter" })
+--   })
 -- anchor.lua uses it too, for the items it doesn't handle itself.
 -- Edits the game's JSON config line by line; the game writes it pretty-printed (one key per
 -- line), so no JSON parser is needed.
@@ -37,6 +44,16 @@ local RESOLUTION_ITEMS = {
       visible = function(v) return v.aspect == 1 end,
       help = "Height part of the custom aspect ratio, e.g. 720 for 720 x 720." },
 }
+-- Texture filter (libultraship FilteringMode: 0 three-point, 1 linear, 2 none). Linear is one
+-- hardware texture read; three-point is done in the shader and costs more GPU.
+local FILTER_ITEM = { id = "filter", label = "Texture filter", kind = "choice",
+    choices = { { 1, "Linear" }, { 0, "Three-point" }, { 2, "None (pixelated)" } },
+    help = "Linear is smooth and fast. Three-point looks like the N64 but costs more GPU." }
+-- spdlog levels; the games default to info or debug, which fills log.txt
+local LOGLEVEL_ITEM = { id = "loglevel", label = "Log level", kind = "choice",
+    choices = { { 3, "Warnings" }, { 4, "Errors" }, { 2, "Info" }, { 1, "Debug" }, { 6, "Off" } },
+    help = "How much the game writes to log.txt. Info or Debug help when reporting a problem." }
+
 -- CVar path below "CVars": base .. rest
 local function path(base, ...)
     local p = {}
@@ -150,7 +167,13 @@ return function(spec)
     for id, k in pairs(spec.keys or {}) do keys[id] = k end
     local resolution = false
     for _, it in ipairs(spec.items) do
-        if it == "resolution" then
+        if it == "filter" then
+            config.items[#config.items + 1] = FILTER_ITEM
+            keys.filter = { spec.filter or { "gTextureFilter" }, 1 }
+        elseif it == "loglevel" then
+            config.items[#config.items + 1] = LOGLEVEL_ITEM
+            keys.loglevel = { { "gDeveloperTools", "LogLevel" }, 3 }
+        elseif it == "resolution" then
             resolution = true
             for _, r in ipairs(RESOLUTION_ITEMS) do config.items[#config.items + 1] = r end
             for id, k in pairs(RESOLUTION_KEYS) do keys[id] = k end
@@ -170,7 +193,8 @@ return function(spec)
             -- custom ratio: the one in the file when Custom is selected there, else the default
             local x, y = get(lines, ASPECT_X), get(lines, ASPECT_Y)
             local custom = v.aspect == 1 and (x or 0) > 0 and (y or 0) > 0
-            v.customX, v.customY = custom and x or ASPECTS[1][1], custom and y or ASPECTS[1][2]
+            local def = spec.custom or ASPECTS[1]
+            v.customX, v.customY = custom and x or def[1], custom and y or def[2]
         end
         -- a value set in game that the launcher doesn't offer (e.g. 75 fps) is kept as an extra choice
         for _, it in ipairs(config.items) do

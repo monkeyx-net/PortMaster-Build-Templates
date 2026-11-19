@@ -50,6 +50,9 @@ grep -q '#include <spdlog/spdlog.h>' include/macros.h || { echo "Error: macros.h
 sed -i 's|{ installPath, Ship::Context::GetAppDirectoryPath("boat") }|{ installPath, installPath + "/baseroms", Ship::Context::GetAppDirectoryPath("boat") }|' src/port/Engine.cpp
 grep -q 'installPath + "/baseroms"' src/port/Engine.cpp || { echo "Error: baseroms patch did not apply"; exit 1; }
 
+# Crash fixes merged upstream after 1.0.3 (#263, #269, #278; see the patch header)
+git apply "${RECIPE_DIR}/paperboat-upstream-fixes.patch" || { echo "Error: upstream fixes patch did not apply"; exit 1; }
+
 # The log level is hard-coded to info at startup (the Dev Tools menu's gDeveloperTools.LogLevel
 # only applies once changed in game); use the CVar so the launcher's Log level setting works.
 sed -i 's|^\( *\)spdlog::set_level(spdlog::level::info);|\1spdlog::set_level((spdlog::level::level_enum) CVarGetInteger(CVAR_DEVELOPER_TOOLS("LogLevel"), spdlog::level::info));|' src/port/Engine.cpp

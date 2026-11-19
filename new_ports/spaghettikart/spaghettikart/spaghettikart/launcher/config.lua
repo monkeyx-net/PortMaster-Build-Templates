@@ -18,6 +18,8 @@ return require("cvars")({
         { id = "culling", label = "Disable culling", kind = "choice",
           choices = { { 0, "Off" }, { 1, "On" } },
           help = "On also draws objects off screen and far away. Off (original) is much faster." },
+        "filter",       -- gTextureFilter
+        "loglevel",
         "resolution",
     },
     keys = {
