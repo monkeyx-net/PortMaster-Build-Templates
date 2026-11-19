@@ -1,8 +1,8 @@
 # check_port: soh
 
-`check_port.sh soh --fix --fix-license` on 2026-11-19 10:02, commit f53b143.
+`check_port.sh soh --fix --fix-license` on 2026-11-19 17:54, commit 79d803a.
 
-**Result: ok, 7 warning(s)**
+**Result: ok, 6 warning(s)**
 
 ## Warnings
 
@@ -10,9 +10,8 @@
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libbz2.so.1 (x86_64) is needed by soh.elf.x86_64 but not bundled or in cfw_provided: check ldd on devices
-- libs.x86_64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
 - libs.aarch64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
-- README.md doesn't follow the template (## Notes / ## Controls / ## Compile): it starts with '## Information' instead of '## Notes'; missing ## Notes; extra ## Information, ## Compatibility, ## Installation, ## Launcher, ## Menu Navigation, ## Default Gameplay Controls, ## Suggested Mods, ## Thanks (merge into ## Notes or make them ###). https://portmaster.games/tools/markdown-generator/ builds one
+- libs.x86_64/libtinyxml2.so.10 is not loaded: not NEEDED by or named in the binary or another bundled lib, and not in FILES in build.sh (stale from an older build, or copied some other way: remove it, or add it to dlopen_libs if it is dlopen'd)
 
 ## Notes
 
