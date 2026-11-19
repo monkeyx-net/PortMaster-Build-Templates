@@ -21,7 +21,8 @@
 # port.json, letterboxes screenshot.png to 640x480 and compresses screenshot/cover to <100 kB,
 # and for warnings: sets the launcher to 644, fixes shellcheck SC2188 (bare "> file"),
 # drops built-in runtimes from attr.runtime, renames LICENSE_x/LICENSE-x to LICENSE.x.txt
-# and appends a ## Compile section to README.md if missing.
+# appends a ## Compile section to README.md if missing and moves README.md to the
+# template's ## Notes / ## Controls / ## Compile (other ## sections become ### under Notes).
 #
 # --fix-license downloads the license of each bundled lib that has none from license_urls in
 # port_rules.json into licenses/LICENSE.<name>.txt (needs network; check the files).
@@ -582,10 +583,55 @@ fi
 # README.md layout (readme_sections in port_rules.json): PortMaster-New's template has
 # ## Notes, ## Controls, ## Compile in that order and nothing else at that level.
 # ## headings inside ``` code blocks are ignored.
+# --fix rewrites it in the template's order: text above the first ## stays on top, each
+# template section keeps its body (a heading that starts with the name, or Compiling for
+# Compile, becomes the name), and every other ## section moves under ## <first> as ### (its own
+# ### headings become ####). Missing sections are not invented.
+readme_layout() {   # readme_layout FILE: print FILE in the template's layout
+    awk -v want="$(IFS=$'\t'; echo "${want[*]}")" '
+        function trim(s) { sub(/^([ \t]*\n)+/, "", s); sub(/(\n[ \t]*)+$/, "", s); return s }
+        BEGIN { n = split(want, w, "\t"); cur = "pre" }
+        /^[[:space:]]*```/ { code = !code }
+        !code && /^##[^#]/ {
+            h = $0; sub(/^##[[:space:]]*/, "", h); sub(/[[:space:]#]*$/, "", h)
+            cur = ""
+            lh = tolower(h)
+            for (i = 1; i <= n; i++) {
+                lw = tolower(w[i])
+                if (index(lh, lw) == 1 || lh == substr(lw, 1, length(lw) - 1) "ing") { cur = "w" i; break }
+            }
+            if (cur == "") { cur = "x" (++nx); head[cur] = h }
+            next
+        }
+        { line = $0; if (!code && cur ~ /^x/ && line ~ /^###/) line = "#" line; body[cur] = body[cur] line "\n" }
+        END {
+            out = trim(body["pre"])
+            for (i = 1; i <= n; i++) {
+                if (!(("w" i) in body) && !(i == 1 && nx)) continue
+                b = trim(body["w" i])
+                if (i == 1) for (j = 1; j <= nx; j++) b = b (b == "" ? "" : "\n\n") "### " head["x" j] "\n\n" trim(body["x" j])
+                out = out (out == "" ? "" : "\n\n") "## " w[i] "\n\n" trim(b)
+            }
+            print out
+        }' "$1"
+}
+readme_headings() {   # the ## headings of stdin, outside code blocks
+    awk '/^[[:space:]]*```/ { code = !code; next }
+        !code && /^##[^#]/ { sub(/^##[[:space:]]*/, ""); sub(/[[:space:]#]*$/, ""); print }'
+}
 if [[ -f "$readme" ]]; then
     mapfile -t want < <(jq -r '.readme_sections // [] | .[]' "$rules")
-    mapfile -t have < <(awk '/^[[:space:]]*```/ { code = !code; next }
-        !code && /^##[^#]/ { sub(/^##[[:space:]]*/, ""); sub(/[[:space:]#]*$/, ""); print }' "$readme")
+    mapfile -t have < <(readme_headings < "$readme")
+    if (( ${#want[@]} )) && fixing; then
+        fixed=$(readme_layout "$readme")
+        mapfile -t new < <(readme_headings <<< "$fixed")
+        # only rewrite when the headings change (not for blank-line differences)
+        if [[ "${have[*]}" != "${new[*]}" ]]; then
+            fixit --fix "README.md sections: $(printf '## %s, ' "${have[@]}" | sed 's/, $//') -> $(printf '## %s, ' "${new[@]}" | sed 's/, $//')" \
+                eval 'printf "%s\n" "$fixed" > "$readme"'
+            have=("${new[@]}")
+        fi
+    fi
     if (( ${#want[@]} )); then
         tmpl="$(printf '## %s / ' "${want[@]}")"; tmpl="${tmpl% / }"
         problems=()

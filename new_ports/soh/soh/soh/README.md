@@ -1,41 +1,35 @@
-## Information
+## Notes
+
+### Information
+
 Ship of Harkinian was built from GitHub Actions at the [HM64 Autobuild Factory](https://github.com/JeodC/hm64-builder).
 
-## Compatibility
+### Compatibility
+
 This build can run on firmwares with older GLIBC (where previously 2.36+ was required) thanks to new build steps by beniamino. TrimUI devices have a render bug where the PVR driver doesn't support NPOT (non-power-of-two) textures and therefore won't render them. The game is still playable, but several textures will be invisible.
 
-## Installation
+### Installation
+
 You need to provide your own roms. See the [Shipwright](https://github.com/HarbourMasters/Shipwright/blob/develop/docs/supportedHashes.json) repository for a list of supported rom hashes. Gather your roms and put them in the `ports/soh/baseroms` folder. Start the port, and on first run, your .o2r files will be generated from the roms you provide. Note that only one `oot.o2r` and `oot-mq.o2r` will be made--if you provide more than one rom per game, strange things may occur. You *can* use pregenerated `.o2r` files from elsewhere, but you may experience crashes.
 
 Texture pack files and mods can be added to the `ports/soh/mods` folder. 
 
 Logs are recorded automatically as `ports/soh/log.txt`. Please provide a log if you report an issue. HarbourMasters is not affiliated with PortMaster or RHH-Ports and this distribution is not officially supported by them. *Please report an issue to the RHH-Ports repository before going to HarbourMasters!*
 
-## Launcher
+### Launcher
+
 A settings launcher opens before the game: Anchor player name and room ID, frame rate, N64 low-res mode, VSync and aspect ratio. Choose Play, or wait for it to start the game.
 
-## Menu Navigation
+### Menu Navigation
+
 Ship of Harkinian has built-in controller navigation for the imgui menu. Press `SELECT` to open the menu and use the `D-PAD` to choose a submenu, then press `A` to switch focus to it. Press `B` to back out of a submenu.
 
-## Default Gameplay Controls
+### Default Gameplay Controls
+
 The port uses SDL controller mapping and controls can be remapped from the imgui menu. For devices without a right analog stick, the gptk file allows for the `HOTKEY + ABXY` button combo to use the C-Buttons.
 
-## Controls
+### Suggested Mods
 
-| Button | Action |
-|--|--|
-| A | A |
-| B | B |
-| X | C-Up (Hotkey+X) |
-| Y | C-Left (Hotkey+Y) |
-| L1 | L |
-| L2 | Z-Target |
-| R1 | R |
-| R2 | Z-Target |
-| Select | Menu |
-| Start | Start |
-
-## Suggested Mods
 You can find a ton of mods at [GameBanana](https://gamebanana.com/mods/games/16121?_aFilters%5BGeneric_Name%5D=contains%2C3ds&_sSort=Generic_MostDownloaded).  
 
 I prefer the OoT 3DS look along with a studio ghibli style skybox:
@@ -53,7 +47,8 @@ I prefer the OoT 3DS look along with a studio ghibli style skybox:
 - [OOT3D Link Textures](https://gamebanana.com/mods/478711)
 - [Studio Ghibli Skybox](https://github.com/JeodC/PortMaster-ShipOfHarkinian/tree/main/external-mods/)
 
-## Thanks
+### Thanks
+
 - Nintendo for the game
 - beniamino for the updated build steps for develop to work on more devices
 - Monkeyx for taking over the ports from Jeod
@@ -61,6 +56,21 @@ I prefer the OoT 3DS look along with a studio ghibli style skybox:
 - HarbourMasters for the native pc port
 - AkerHasReawakened for the cover art
 - IanSantos for the ghibli skybox mod
+
+## Controls
+
+| Button | Action |
+|--|--|
+| A | A |
+| B | B |
+| X | C-Up (Hotkey+X) |
+| Y | C-Left (Hotkey+Y) |
+| L1 | L |
+| L2 | Z-Target |
+| R1 | R |
+| R2 | Z-Target |
+| Select | Menu |
+| Start | Start |
 
 ## Compile
 
