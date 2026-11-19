@@ -67,7 +67,12 @@ cp "${RECIPE_DIR}/torch/ZWrapper.h" "${RECIPE_DIR}/torch/ZWrapper.cpp" torch/src
 #   exported (nothing reads them later when writing an O2R), and fix the two chunk leaks
 sed -i '/^    if(this->gConfig.exporterType != ExportType::Binary) {$/i\    if (this->gConfig.exporterType == ExportType::Binary) {\n        this->gParseResults.erase(this->gCurrentFile);\n        Decompressor::ClearCache();\n    }\n' torch/src/Companion.cpp
 sed -i 's|^        delete\[\] value->data;$|&\n        delete value;|; s|^    tkmk00_decode(in_buf, decompressed, rgba, alpha);$|&\n    delete[] decompressed;|' torch/src/utils/Decompressor.cpp
+# - every yaml's whole parsed document (the biggest part: ProcessFile loads each yaml twice and the
+#   address map's nodes keep the first load alive): store copies of the asset nodes instead.
+#   Peak RSS for the US rom on x86_64: 928 MB unpatched, 377 MB with these patches; same O2R.
+sed -i 's|^\(        this->gAddrMap\[this->gCurrentFile\]\[node\["offset"\].as<uint32_t>()\] = std::make_tuple(output, \)node);$|\1YAML::Clone(node));|' torch/src/Companion.cpp
 if ! grep -q 'this->gParseResults.erase(this->gCurrentFile);' torch/src/Companion.cpp \
+   || ! grep -q 'std::make_tuple(output, YAML::Clone(node));' torch/src/Companion.cpp \
    || ! grep -q '^        delete value;$' torch/src/utils/Decompressor.cpp \
    || ! grep -q '^    delete\[\] decompressed;$' torch/src/utils/Decompressor.cpp; then
   echo "Error: torch memory patch did not apply"
