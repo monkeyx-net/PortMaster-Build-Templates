@@ -64,6 +64,11 @@ sed -i 's|^#include <SDL2/SDL.h>$|&\n#include <imgui_impl_sdl2.h>|' "$H"
 sed -i 's|^\( *\)mControlDeck->GetConnectedPhysicalDeviceManager()->HandlePhysicalDevice[A-Za-z]*(event.cdevice.which);$|&\n\1ImGui_ImplSDL2_SetGamepadMode(ImGui_ImplSDL2_GamepadMode_AutoAll);|' "$H"
 [[ $(grep -c 'ImGui_ImplSDL2_SetGamepadMode' "$H") == 2 ]] || { echo "Error: gamepad refresh patch did not apply"; exit 1; }
 
+# Backport of upstream PR #291 (after 3.0.0): a negative float angle cast straight to u16 reads past
+# the sine table on ARM and crashes, e.g. a Piranha Plant's bubble (bhv_piranha_plant_bubble_loop)
+sed -i 's|gSineTable\[(u16) (x) >> 4\]|gSineTable[(u16) (s32) (x) >> 4]|; s|gCosineTable\[(u16) (x) >> 4\]|gCosineTable[(u16) (s32) (x) >> 4]|' src/engine/math_util.h
+[[ $(grep -c '(u16) (s32) (x) >> 4' src/engine/math_util.h) == 2 ]] || { echo "Error: sins/coss patch did not apply"; exit 1; }
+
 # On aarch64 the game is built with -mcpu=native (the build machine); target the oldest
 # supported SoC instead.
 sed -i 's|set(CPU_OPTION -mcpu=native)|set(CPU_OPTION -mcpu=cortex-a53)|' CMakeLists.txt
