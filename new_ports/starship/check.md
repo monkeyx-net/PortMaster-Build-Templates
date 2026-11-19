@@ -1,8 +1,8 @@
 # check_port: starship
 
-`check_port.sh starship --test` on 2026-11-19 09:23, commit 589e561d2.
+`check_port.sh starship --fix --fix-license` on 2026-11-19 09:40, commit f53b143.
 
-**Result: dry run, changes: none; 0 error(s) left, 4 warning(s)**
+**Result: ok, 4 warning(s)**
 
 ## Warnings
 
@@ -13,6 +13,5 @@
 
 ## Notes
 
-- shellcheck not installed, launcher lint skipped
-- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libzip.so.5 libz.so.1
-- x86_64 loads from libs.x86_64: libbz2.so.1 libbz2.so.1.0 liblzma.so.5 libtinyxml2.so.10 libzip.so.5 libz.so.1
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libz.so.1 libzip.so.5
+- x86_64 loads from libs.x86_64: libbz2.so.1 libbz2.so.1.0 liblzma.so.5 libtinyxml2.so.10 libz.so.1 libzip.so.5
