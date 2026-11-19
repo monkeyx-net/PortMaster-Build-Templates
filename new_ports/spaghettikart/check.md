@@ -1,8 +1,8 @@
 # check_port: spaghettikart
 
-`check_port.sh spaghettikart --test` on 2026-11-19 17:26, commit d7c6a8bb5.
+`check_port.sh spaghettikart --fix --fix-license` on 2026-11-19 17:52, commit 79d803a.
 
-**Result: dry run, changes: none; 0 error(s) left, 2 warning(s)**
+**Result: ok, 2 warning(s)**
 
 ## Warnings
 
@@ -11,5 +11,5 @@
 
 ## Notes
 
-- aarch64 loads from libs.aarch64: libbz2.so.1 libbz2.so.1.0 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libvorbisenc.so.2 libvorbisfile.so.3 libvorbis.so.0 libzip.so.5 libz.so.1
-- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libtinyxml2.so.10 libvorbisenc.so.2 libvorbisfile.so.3 libvorbis.so.0 libzip.so.5 libz.so.1
+- aarch64 loads from libs.aarch64: libbz2.so.1 libbz2.so.1.0 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libz.so.1 libzip.so.5
+- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libz.so.1 libzip.so.5
