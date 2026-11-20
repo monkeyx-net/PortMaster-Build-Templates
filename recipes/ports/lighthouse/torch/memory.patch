@@ -1,0 +1,34 @@
+diff --git a/src/Companion.cpp b/src/Companion.cpp
+index 1f52ac5..c24b1e3 100644
+--- a/src/Companion.cpp
++++ b/src/Companion.cpp
+@@ -2610,6 +2610,29 @@ std::optional<YAML::Node> Companion::AddSubFileAsset(YAML::Node asset, std::stri
+ 
+     auto result = this->AddAsset(asset);
+ 
++    // PortMaster: in binary mode export the sub-file right away and free it, instead of holding
++    // every sub-file of the rom (BK: ~17k) until the parent yaml is done (BK US: 576 MB -> 109 MB)
++    if (mShouldProcess && this->gConfig.exporterType == ExportType::Binary && this->gCurrentWrapper != nullptr) {
++        auto parentDir = this->gCurrentDirectory;
++        this->gCurrentDirectory = parentDir / newFileName;
++        // companion files registered so far (e.g. the game's portVersion) belong to the parent's
++        // export, as without this change
++        auto pending = std::move(this->gCompanionFiles);
++        this->gCompanionFiles.clear();
++        try {
++            ProcessExportFile();
++        } catch (const std::exception& e) {
++            SPDLOG_ERROR("Sub-file export failed {}: {}", newFileName, e.what());
++        }
++        this->gCompanionFiles = std::move(pending);
++        this->gCurrentDirectory = parentDir;
++        this->gProcessedFiles.insert(newFileName);
++        this->gParseResults.erase(newFileName);
++        this->gAddrMap.erase(newFileName);
++        this->gNodesByTypeCache.erase(newFileName);
++        this->gNodesByTypeCacheValid.erase(newFileName);
++    }
++
+     // ...and put the parent file's state back the way we found it.
+     this->gCurrentFile = oldFile;
+     this->gCurrentVram = oldVram;

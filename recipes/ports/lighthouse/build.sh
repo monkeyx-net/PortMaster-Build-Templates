@@ -44,6 +44,11 @@ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
 git submodule update --init --recursive
 
+# Torch holds every sub-file of the rom's asset table (~17k) in memory until all are parsed, so the
+# in-game rom extraction was killed on 1GB devices; export and free each one as soon as it's parsed.
+# Peak RSS for the US rom: 576 MB -> 109 MB, identical bk.o2r.
+git -C Torch apply "${CDIR}/recipes/ports/${PORT_FOLDER}/torch/memory.patch" || { echo "Error: Torch memory.patch did not apply"; exit 1; }
+
 # On Linux the extractor ignores rom paths passed on the command line and always asks first
 # ("No O2R files... Generate?", "ROMs found... process?"). Use them directly like SoH and
 # Lighthouse's own Windows path do, so the launcher's baseroms are extracted without prompting.
