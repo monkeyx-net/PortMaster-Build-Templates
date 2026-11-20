@@ -65,11 +65,11 @@ find_roms() {
 extract_roms() {
     [ ${#ROMS[@]} -eq 0 ] && return
     # The extract app shows the message while torch runs (a pm_message window stays up and
-    # uses CPU); a failed rom shows an error until a button is pressed, then the next is tried
+    # uses CPU); a failed rom shows an error until a button is pressed, then the next is tried.
+    # Only o2r: torch's header mode (C headers for compiling) needs ~860 MB and isn't used by the game
     for rom in "${ROMS[@]}"; do
         r=$(printf %q "$rom")
         $LOVE_RUN "$GAMEDIR/extract" --text "Converting $(basename "$rom"), this can take a few minutes..." \
-            --run "assets/torch.${DEVICE_ARCH} header -o $r >/dev/null" \
             --run "assets/torch.${DEVICE_ARCH} o2r $r --additional-files meta/mods.toml"
         [ -f "mk64.o2r" ] && break
     done
