@@ -31,5 +31,4 @@ return require("cvars")({
     forced = { { { "gWindows", "Menu" }, 0 }, { { "gSettings", "ControlNav" }, 1 } },
     resolution = { "gSettings", "AdvancedResolution" },
     filter = { "gSettings", "TextureFilter" },
-    o2r = { "mm.o2r" },
 })

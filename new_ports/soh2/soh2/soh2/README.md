@@ -13,7 +13,7 @@ d6133ace5afaa0882cf214cf88daba39e266c078 - N64 US
 9743aa026e9269b339eb0e3044cd5830a440c1fd - GC US
 ```
 
-Put the rom (`.z64`, `.n64` or `.v64`) in `ports/soh2/baseroms` and start the port. On first run it is converted to `mm.o2r`, which can take several minutes. On devices with 1GB of RAM or less, answer No to the prompt after the conversion and start the port again.
+Put the rom (`.z64`, `.n64` or `.v64`) in `ports/soh2/baseroms` and start the port. On first run it is converted to `mm.o2r`, which can take several minutes.
 
 Texture packs and mods go in the `ports/soh2/mods` folder. Logs are written to `ports/soh2/log.txt`; please include it when reporting an issue. HarbourMasters is not affiliated with PortMaster and does not support this distribution.
 
