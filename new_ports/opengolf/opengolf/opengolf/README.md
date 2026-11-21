@@ -26,6 +26,13 @@ Progress is saved in `storage.json` in the port folder.
 
 Hold A to grab the ball, pull back with the D-pad or left stick, and release A to putt.
 
-## Compiling
+## Compile
 
 `cmake -S . -B cmake-build -DGOLF_PORTMASTER=ON -DCMAKE_BUILD_TYPE=Release && cmake --build cmake-build`
+
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [monkeyx-net/Open-Golf](https://github.com/monkeyx-net/Open-Golf). The recipe folder [recipes/ports/opengolf](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/opengolf) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+cmake -S . -B cmake-build -DGOLF_PORTMASTER=ON -DCMAKE_BUILD_TYPE=Release
+```

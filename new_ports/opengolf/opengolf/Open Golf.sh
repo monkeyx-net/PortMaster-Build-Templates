@@ -19,7 +19,7 @@ get_controls
 
 GAMEBINARY=golf
 GAMEDIR=/$directory/ports/opengolf
-> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+: > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 cd $GAMEDIR
 chmod +x "$GAMEBINARY.${DEVICE_ARCH}"
