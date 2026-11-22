@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-21_
+_Last checked: 2026-11-22_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -26,14 +26,14 @@ _Last checked: 2026-11-21_
 | -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
 | Shamogu | shamogu | 🔵 | v1.6.0 | 2026-09-25 | 2026-08-21 |
-| Space Invaders Part 2 | sip2 | 🔵 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
-| Ship of Harkinian | soh | 🟢 | 9.3.1 | 2026-10-20 | 2026-11-17 |
-| Ship of Harkinian 2 | soh2 | 🔵 | 5.0.1 | 2026-08-26 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-12 | 2025-09-08 |
-| -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
-| Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| Space Invaders Part 2 | sip2 | 🔴 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
+| Ship of Harkinian | soh | 🔴 | 9.3.1 | 2026-10-20 | 2026-11-17 |
+| Ship of Harkinian 2 | soh2 | 🔴 | 5.0.1 | 2026-08-26 | 2026-03-16 |
+| SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-22 | 2025-09-08 |
+| -- | starship | 🔴 | v2.0.0 | 2026-10-28 | -- |
+| Stunt Car Racer | stuntcarracer | 🔴 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 24 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 24 &nbsp; 🟢 OK: 14 &nbsp; 🔵 Updates: 5 &nbsp; 🔴 Errors: 5 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
