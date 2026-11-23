@@ -22,7 +22,9 @@
 # and for warnings: sets the launcher to 644, fixes shellcheck SC2188 (bare "> file"),
 # drops built-in runtimes from attr.runtime, renames LICENSE_x/LICENSE-x to LICENSE.x.txt
 # appends a ## Compile section to README.md if missing and moves README.md to the
-# template's ## Notes / ## Controls / ## Compile (other ## sections become ### under Notes).
+# template's ## Notes / ## Controls / ## Compile (other ## sections become ### under Notes),
+# and removes libs.<arch>/ libs that build.sh does not copy for that arch (FILES, or named
+# elsewhere in build.sh), which older builds leave behind.
 #
 # --fix-license downloads the license of each bundled lib that has none from license_urls in
 # port_rules.json into licenses/LICENSE.<name>.txt (needs network; check the files).
@@ -209,9 +211,50 @@ libfiles=()   # bundled .so files kept (for the license check)
 while IFS=$'\t' read -r m a; do machine_arch[$m]=$a; done \
     < <(jq -r '.elf_machine_arch | to_entries[] | "\(.key)\t\(.value)"' "$rules")
 port_arches=" $(jq -r '.attr.arch // [] | join(" ")' "$pj") "
+
+# build.sh FILES per arch: the shared FILES=( ) list plus [[ ${ARCH} == "<arch>" ]] && FILES+=( )
+# blocks (see soh). Only those statements are run, once per arch.
+build="recipes/ports/$port/build.sh"
+declare -A files_for=() loaded_name=() used_by_arch=() stale=()
+lib_arches=()
+for a in $port_arches; do [[ -d "$dir/libs.$a" ]] && lib_arches+=("$a"); done
+if [[ -f "$build" ]] && grep -qE '^[[:space:]]*FILES=\(' "$build"; then
+    snippet=$(awk '/^[[:space:]]*(\[\[.*\]\][[:space:]]*&&[[:space:]]*)?FILES\+?=\(/ { on = 1 }
+                   on { print } on && /\)[[:space:]]*$/ { on = 0 }' "$build")
+    for a in "${lib_arches[@]}"; do
+        list=$(ARCH="$a" bash -c "set -e"$'\n'"$snippet"$'\nprintf "%s " "${FILES[@]}"' 2> /dev/null) && files_for[$a]=" $list"
+    done
+    # libs.<arch>/ may only hold what build.sh copies: FILES for that arch, or a lib named (or
+    # globbed, liballegro*.so.5.2) elsewhere in build.sh (libs the port builds, see legoisland).
+    # Anything else was left by an older build (the tarball extracts over the port folder);
+    # --fix removes it, and the checks below treat it as gone.
+    mapfile -t named < <(awk '/^[[:space:]]*(\[\[.*\]\][[:space:]]*&&[[:space:]]*)?FILES\+?=\(/ { on = 1 }
+                             !on { print } on && /\)[[:space:]]*$/ { on = 0 }' "$build" \
+        | grep -oE '[A-Za-z0-9_.*+-]+\.so([.*][A-Za-z0-9_.*]*)?' | sort -u)
+    for a in "${lib_arches[@]}"; do
+        [[ -n "${files_for[$a]+x}" ]] || continue   # FILES did not evaluate: keep everything
+        while IFS= read -r -d '' f; do
+            name="${f##*/}" keep=""
+            [[ "${files_for[$a]}" == *" $name "* ]] && keep=1
+            for p in "${named[@]}"; do
+                # shellcheck disable=SC2053  # $p is a glob on purpose
+                [[ -z "$keep" && "$name" == $p ]] && keep=1
+            done
+            [[ -n "$keep" ]] && continue
+            stale[$f]=1
+            if fixing; then
+                fixit --fix "remove libs.$a/$name: build.sh does not copy it for $a (left from an older build)" rm -f "$f"
+            else
+                warn "libs.$a/$name is not copied by build.sh for $a (left from an older build): remove it (or run with --fix)"
+            fi
+        done < <(find "$dir/libs.$a" -maxdepth 1 \( -type f -o -type l \) \( -name '*.so' -o -name '*.so.*' \) -print0)
+    done
+fi
+
 elfs=()
 while IFS= read -r -d '' f; do
     rel="${f#"$dir"/}" name="${f##*/}" drop=""
+    [[ -n "${stale[$f]:-}" ]] && continue   # reported above (--fix removed it)
     if [[ "$name" == *.so || "$name" == *.so.* ]]; then
         for b in "${banned[@]}"; do
             [[ "$name" =~ ${b%%$'\t'*} ]] && err "bundles $rel: ${b#*$'\t'}"
@@ -350,19 +393,6 @@ while :; do
     done
     (( ${#queue[@]} )) || break
 done
-# build.sh FILES per arch: the shared FILES=( ) list plus [[ ${ARCH} == "<arch>" ]] && FILES+=( )
-# blocks (see soh). Only those statements are run, once per arch.
-build="recipes/ports/$port/build.sh"
-declare -A files_for=() loaded_name=() used_by_arch=()
-lib_arches=()
-for a in $port_arches; do [[ -d "$dir/libs.$a" ]] && lib_arches+=("$a"); done
-if [[ -f "$build" ]] && grep -qE '^[[:space:]]*FILES=\(' "$build"; then
-    snippet=$(awk '/^[[:space:]]*(\[\[.*\]\][[:space:]]*&&[[:space:]]*)?FILES\+?=\(/ { on = 1 }
-                   on { print } on && /\)[[:space:]]*$/ { on = 0 }' "$build")
-    for a in "${lib_arches[@]}"; do
-        files_for[$a]=" $(ARCH="$a" bash -c "$snippet"$'\nprintf "%s " "${FILES[@]}"' 2> /dev/null)"
-    done
-fi
 in_files() { [[ "${files_for[$1]:-}" == *" $2 "* ]]; }   # arch name
 for k in "${!unresolved[@]}"; do
     in_files "${k%%/*}" "${k#*/}" && continue   # in FILES: the FILES check below says rebuild
