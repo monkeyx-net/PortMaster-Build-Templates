@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-22_
+_Last checked: 2026-11-23_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -16,7 +16,7 @@ _Last checked: 2026-11-22_
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | -- | ghostship | 🟢 | 3.0.0 | 2026-11-18 | -- |
 | Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
-| -- | legoisland | 🟢 | continuous-2026-11-17 | 2026-11-17 | -- |
+| -- | legoisland | 🔵 | continuous-2026-11-23 | 2026-11-23 | -- |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | Lix | lix | 🟢 | v0.10.36 | 2026-11-05 | 2026-11-15 |
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
@@ -26,14 +26,14 @@ _Last checked: 2026-11-22_
 | -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
 | Shamogu | shamogu | 🔵 | v1.6.0 | 2026-09-25 | 2026-08-21 |
-| Space Invaders Part 2 | sip2 | 🔴 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
-| Ship of Harkinian | soh | 🔴 | 9.3.1 | 2026-10-20 | 2026-11-17 |
-| Ship of Harkinian 2 | soh2 | 🔴 | 5.0.1 | 2026-08-26 | 2026-03-16 |
-| SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-22 | 2025-09-08 |
-| -- | starship | 🔴 | v2.0.0 | 2026-10-28 | -- |
-| Stunt Car Racer | stuntcarracer | 🔴 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| Space Invaders Part 2 | sip2 | 🔵 | commit:8ce398a | 2026-10-15 | 2026-03-17 |
+| Ship of Harkinian | soh | 🟢 | 9.3.1 | 2026-10-20 | 2026-11-17 |
+| Ship of Harkinian 2 | soh2 | 🔵 | 5.0.1 | 2026-08-26 | 2026-03-16 |
+| SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-23 | 2025-09-08 |
+| -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
+| Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 24 &nbsp; 🟢 OK: 14 &nbsp; 🔵 Updates: 5 &nbsp; 🔴 Errors: 5 &nbsp; 🟡 Skipped: 0_
+_Checked: 24 &nbsp; 🟢 OK: 15 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach

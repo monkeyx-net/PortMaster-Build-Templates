@@ -3,13 +3,13 @@
   "name": "legoisland.zip",
   "port_json": "new_ports/legoisland/legoisland/legoisland/port.json",
   "source": {
-    "date_updated": "2026-11-17",
+    "date_updated": "2026-11-23",
     "port_exe": "isle",
     "port_build": "cmake",
-    "port_checksum": "ae567c4325a1eb920bff9e7bda1e20dcb881eaa704591e5e3a08024ca5853059",
+    "port_checksum": "32b04e0e7307005109cff5ed737276cd2903af882bf5ececcc0db750a608ab0b",
     "port_url": "isledecomp/isle-portable",
     "port_download": "https://github.com/isledecomp/isle-portable/archive/refs/tags/continuous.tar.gz",
-    "port_version": "continuous-2026-11-17"
+    "port_version": "continuous-2026-11-23"
   },
   "includes": [
     "launcher/main.lua",
