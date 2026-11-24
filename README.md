@@ -34,7 +34,7 @@ _Last checked: 2026-11-24_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 24 &nbsp; 🟢 OK: 15 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 25 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach

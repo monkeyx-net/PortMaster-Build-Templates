@@ -6,7 +6,7 @@
     "date_updated": "2026-11-24",
     "port_exe": "isle",
     "port_build": "cmake",
-    "port_checksum": "a813a330b2895c1cc038e66b765850fa9c2c531633a6da31f5cf10471afc1f25",
+    "port_checksum": "f084577b1244e7f0695e855c071dc8f7136d5a67ef6c0fa21aaf93c19e8da558",
     "port_url": "isledecomp/isle-portable",
     "port_download": "https://github.com/isledecomp/isle-portable/archive/refs/tags/continuous.tar.gz",
     "port_version": "continuous-2026-11-24"
