@@ -1,0 +1,24 @@
+{
+  "version": 4,
+  "name": "onsyuri.zip",
+  "items": ["ONScripter-Yuri.sh", "onsyuri"],
+  "items_opt": null,
+  "attr": {
+    "title": "ONScripter-Yuri",
+    "porter": ["monkeyx-net"],
+    "desc": "ONScripter-Yuri is an enhanced ONScripter, an open source engine for NScripter visual novels, with Lua scripting and Shift-JIS, GBK and UTF-8 scripts.",
+    "desc_md": null,
+    "inst": "Copy each NScripter game (0.txt, 00.txt or nscript.dat plus its .nsa/.sar archives) into its own folder in ports/onsyuri/games/, then pick it in the launcher.",
+    "inst_md": null,
+    "genres": ["visual novel"],
+    "image": {},
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "free",
+    "reqs": [],
+    "arch": ["aarch64", "x86_64"],
+    "min_glibc": ""
+  }
+}

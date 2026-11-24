@@ -1,0 +1,19 @@
+{
+  "recipe_version": 1,
+  "name": "onsyuri.zip",
+  "port_json": "new_ports/onsyuri/onsyuri/onsyuri/port.json",
+  "source": {
+    "date_updated": "2026-11-24",
+    "port_exe": "onsyuri",
+    "port_build": "cmake -B build -DCMAKE_BUILD_TYPE=MinSizeRel && cmake --build build -j$(nproc)",
+    "port_checksum": "bcfd014f80afbaf92b5b9db26a8b841cc9897830508d4c4372cc3c9027993039",
+    "port_url": "YuriSizuku/OnscripterYuri",
+    "port_download": "https://github.com/YuriSizuku/OnscripterYuri/archive/refs/tags/v0.7.7beta.tar.gz",
+    "port_version": "v0.7.7beta"
+  },
+  "includes": [
+    "launcher/main.lua",
+    "launcher/osk.lua",
+    "launcher/conf.lua"
+  ]
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./ONScripter-Yuri.sh</path>
+    <name>ONScripter-Yuri</name>
+    <desc>ONScripter-Yuri is an enhanced ONScripter, an open source engine for NScripter visual novels, with Lua scripting and Shift-JIS, GBK and UTF-8 scripts.</desc>
+    <releasedate>20260623T000000</releasedate>
+    <developer>YuriSizuku</developer>
+    <publisher>YuriSizuku</publisher>
+    <genre>Visual Novel</genre>
+    <image>./onsyuri/cover.png</image>
+  </game>
+</gameList>

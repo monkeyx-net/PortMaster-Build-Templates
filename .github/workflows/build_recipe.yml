@@ -28,6 +28,7 @@ on:
           - 'lix'
           - 'manicminer'
           - 'nookery'
+          - 'onsyuri'
           - 'opengolf'
           - 'paperboat'
           - 'pikifen'
