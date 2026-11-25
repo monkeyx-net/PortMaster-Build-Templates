@@ -1,7 +1,7 @@
 {
   "recipe_version": 1,
-  "name": "edgar.zip",
-  "port_json": "new_ports/edgar/edgar/edgar/port.json",
+  "name": "thelegendofedgar.zip",
+  "port_json": "new_ports/thelegendofedgarr/thelegendofedgar/thelegendofedgarr/port.json",
   "source": {
     "date_updated": "2026-03-27",
     "port_exe": "edgar",
