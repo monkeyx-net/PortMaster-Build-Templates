@@ -18,7 +18,6 @@ on:
           - 'animalcrossing'
           - 'ddnet'
           - 'defendguin'
-          - 'edgar'
           - 'epiphany'
           - 'frozenbubble'
           - 'ghostship'
@@ -40,6 +39,7 @@ on:
           - 'spaghettikart'
           - 'starship'
           - 'stuntcarracer'
+          - 'thelegendofedgar'
           # recipe-list-end
       sdl_version:
         description: 'Enter SDL Version required'
