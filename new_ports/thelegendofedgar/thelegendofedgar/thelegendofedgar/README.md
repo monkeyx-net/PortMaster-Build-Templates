@@ -22,6 +22,13 @@ Thanks to [Parallel Realities](https://github.com/riksweeney/edgar) for creating
 | R1 | Block with equipped shield |
 | R2 | Next Item |
 
-## Compiling
+## Compile
 
 `make DATA_DIR=./ -j$(nproc)`
+
+
+Built with [PortMaster-Build-Templates](https://github.com/monkeyx-net/PortMaster-Build-Templates) from [riksweeney/edgar](https://github.com/riksweeney/edgar). The recipe folder [recipes/ports/thelegendofedgar](https://github.com/monkeyx-net/PortMaster-Build-Templates/tree/main/recipes/ports/thelegendofedgar) holds `build.sh`, which reads `recipe.json` and applies the patches and files in that folder before running the build command:
+
+```sh
+make DATA_DIR=./ -j$(nproc)
+```

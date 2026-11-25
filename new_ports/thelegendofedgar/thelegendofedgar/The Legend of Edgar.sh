@@ -19,7 +19,7 @@ get_controls
 
 GAMEBINARY=edgar
 GAMEDIR=/$directory/ports/edgar
-> "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
+: > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 
 bind_directories ~/.parallelrealities/edgar $GAMEDIR/conf
