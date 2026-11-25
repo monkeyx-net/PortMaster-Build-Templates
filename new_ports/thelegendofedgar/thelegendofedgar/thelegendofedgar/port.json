@@ -1,23 +1,16 @@
 {
   "version": 4,
   "name": "thelegendofedgar.zip",
-  "items": [
-    "The Legend Of Edgar.sh",
-    "thelegendofedgar"
-  ],
+  "items": ["The Legend of Edgar.sh", "thelegendofedgar"],
   "items_opt": [],
   "attr": {
     "title": "The Legend of Edgar",
-    "porter": [
-      "monkeyx-net"
-    ],
+    "porter": ["monkeyx-net"],
     "desc": "The Legend of Edgar is a platform game, not unlike those found on the Amiga and SNES. Edgar must battle his way across the world, solving puzzles and defeating powerful enemies to achieve his quest.",
     "desc_md": null,
     "inst": "Ready to play",
     "inst_md": null,
-    "genres": [
-      "platformer"
-    ],
+    "genres": ["platformer"],
     "image": null,
     "rtr": true,
     "exp": false,
@@ -25,10 +18,7 @@
     "store": [],
     "availability": "full",
     "reqs": [],
-    "arch": [
-      "aarch64",
-      "x86_64"
-    ],
+    "arch": ["aarch64", "x86_64"],
     "min_glibc": ""
   }
 }
