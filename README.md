@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-24_
+_Last checked: 2026-11-25_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -16,7 +16,7 @@ _Last checked: 2026-11-24_
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | -- | ghostship | 🟢 | 3.0.0 | 2026-11-18 | -- |
 | Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
-| -- | legoisland | 🔵 | continuous-2026-11-24 | 2026-11-24 | -- |
+| -- | legoisland | 🟢 | continuous-2026-11-24 | 2026-11-24 | -- |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | Lix | lix | 🟢 | v0.10.36 | 2026-11-05 | 2026-11-15 |
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
@@ -34,7 +34,7 @@ _Last checked: 2026-11-24_
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 
-_Checked: 25 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 25 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
