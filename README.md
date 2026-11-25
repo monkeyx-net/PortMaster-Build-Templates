@@ -11,12 +11,11 @@ _Last checked: 2026-11-25_
 | -- | animalcrossing | 🟢 | commit:f7fc9a1 | 2026-04-23 | -- |
 | -- | ddnet | 🟢 | 20.2.1 | 2026-11-09 | -- |
 | Defendguin | defendguin | 🔵 | commit:556ad68 | 2026-10-15 | 2026-02-14 |
-| -- | edgar | 🟢 | 1.38 | 2026-03-27 | -- |
 | -- | epiphany | 🟢 | v0.9.2 | 2026-11-07 | -- |
 | -- | frozenbubble | 🟢 | v2.4.22 | 2026-11-02 | -- |
 | -- | ghostship | 🟢 | 3.0.0 | 2026-11-18 | -- |
 | Harmonist | harmonist | 🔵 | v1.0.3 | 2026-08-07 | 2026-01-07 |
-| -- | legoisland | 🟢 | continuous-2026-11-24 | 2026-11-24 | -- |
+| -- | legoisland | 🔵 | continuous-2026-11-25 | 2026-11-25 | -- |
 | -- | lighthouse | 🟢 | 1.2.2 | 2026-10-30 | -- |
 | Lix | lix | 🟢 | v0.10.36 | 2026-11-05 | 2026-11-15 |
 | Manic Miner | manicminer | 🔵 | 1.1.1 | 2026-03-01 | 2025-11-04 |
@@ -33,8 +32,9 @@ _Last checked: 2026-11-25_
 | SpaghettiKart | spaghettikart | 🔵 | commit:ce0f935 | 2026-11-23 | 2025-09-08 |
 | -- | starship | 🟢 | v2.0.0 | 2026-10-28 | -- |
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
+| -- | thelegendofedgar | 🟢 | 1.38 | 2026-03-27 | -- |
 
-_Checked: 25 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 25 &nbsp; 🟢 OK: 16 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
