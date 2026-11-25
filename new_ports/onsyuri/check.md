@@ -1,15 +1,15 @@
 # check_port: onsyuri
 
-`check_port.sh onsyuri --test` on 2026-11-24 23:01, commit 3ddc08945.
+`check_port.sh onsyuri --fix --fix-license` on 2026-11-25 08:06, commit 529ddc0.
 
-**Result: dry run, changes: none; 1 error(s) left, 3 warning(s)**
-
-## Errors
-
-- gameinfo.xml \<image> ./onsyuri/cover.png does not exist
+**Result: ok, 3 warning(s)**
 
 ## Warnings
 
-- no aarch64 binaries in new_ports/onsyuri/onsyuri/onsyuri (not built yet?)
-- no screenshot.png (make_images.sh creates a placeholder)
-- no cover.png (make_images.sh creates a placeholder)
+- libbz2.so.1 (aarch64) is needed by onsyuri.aarch64 but not bundled or in cfw_provided: check ldd on devices
+- screenshot.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
+- cover.png is a generated placeholder: replace it before submitting (test_port.sh --screenshot DEV)
+
+## Fixed by --fix
+
+- set attr.min_glibc from "" to "2.29" (onsyuri.aarch64 needs GLIBC_2.29)
