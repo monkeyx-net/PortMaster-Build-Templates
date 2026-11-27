@@ -1,0 +1,37 @@
+{
+  "version": 4,
+  "name": "opensgolf.zip",
+  "items": [
+    "OpenSGolf.sh",
+    "opensgolf"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "OpenSGolf",
+    "porter": [
+      "monkeyx-net"
+    ],
+    "desc": "OpenSGolf is an open source engine for Sid Meier's SimGolf (2002): design and build a golf course, add buildings, hire staff and keep your golfers happy. It plays with its own free graphics and sound, or with the files of your own copy of SimGolf.",
+    "desc_md": null,
+    "inst": "Ready to play with the free graphics. To use the original game, copy your SimGolf folder (the one with Data, Flics and Sounds) to ports/opensgolf/simgolf.",
+    "inst_md": null,
+    "genres": [
+      "simulation",
+      "sports"
+    ],
+    "image": null,
+    "rtr": true,
+    "exp": false,
+    "runtime": [
+      "weston_pkg_0.2.squashfs"
+    ],
+    "store": [],
+    "availability": "full",
+    "reqs": [],
+    "arch": [
+      "aarch64",
+      "x86_64"
+    ],
+    "min_glibc": ""
+  }
+}

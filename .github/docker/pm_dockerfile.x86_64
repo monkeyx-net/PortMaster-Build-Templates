@@ -30,6 +30,7 @@ RUN apt-get update && \
       liballegro-ttf5-dev \
       liballegro5-dev \
       libarchive-tools \
+      libasound2-dev \
       libboost-dev \
       libenet-dev \
       libfuse2 \
@@ -61,6 +62,7 @@ RUN apt-get update && \
       libc++abi-18-dev \
       libstdc++-10-dev \
       libtool \
+      libudev-dev \
       libvorbis-dev \
       libx11-xcb-dev \
       libzip-dev \

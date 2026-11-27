@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+  <game>
+    <path>./OpenSGolf.sh</path>
+    <name>OpenSGolf</name>
+    <desc>OpenSGolf is an open source engine for Sid Meier's SimGolf (2002): design and build a golf course, add buildings, hire staff and keep your golfers happy. It plays with its own free graphics and sound, or with the files of your own copy of SimGolf.</desc>
+    <releasedate>20261012T000000</releasedate>
+    <developer>crspytopgn</developer>
+    <publisher>crspytopgn</publisher>
+    <genre>Simulation</genre>
+    <image>./opensgolf/cover.png</image>
+  </game>
+</gameList>
