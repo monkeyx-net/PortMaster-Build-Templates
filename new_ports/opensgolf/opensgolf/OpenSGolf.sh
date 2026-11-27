@@ -48,11 +48,11 @@ if [[ "$PM_CAN_MOUNT" != "N" ]]; then
 fi
 $ESUDO mount "$controlfolder/libs/${weston_runtime}.squashfs" "${weston_dir}"
 
-# The game reads the controller itself (left stick = pointer, A = click), so gptokeyb only handles the exit hotkey.
-$GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" &
+$GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 
-$ESUDO env CRUSTY_BLOCK_INPUT=1 \
+# CRUSTY_SHOW_CURSOR: the game uses the system mouse cursor, which crusty only draws when asked.
+$ESUDO env CRUSTY_BLOCK_INPUT=1 CRUSTY_SHOW_CURSOR=1 \
 $weston_dir/westonwrap.sh headless noop kiosk crusty_glx_gl4es \
 HOME=$CONFDIR XDG_DATA_HOME=$CONFDIR WAYLAND_DISPLAY= \
 $GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} $GAMEARGS

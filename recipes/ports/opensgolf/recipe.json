@@ -5,7 +5,7 @@
   "source": {
     "date_updated": "2026-11-27",
     "port_exe": "opensgolf",
-    "port_build": "cargo build --release --locked -p opensgolf --no-default-features --features audio,gamepad",
+    "port_build": "cargo build --release --locked -p opensgolf --no-default-features --features audio",
     "port_checksum": "76271e4e2489b6b2247ee095321c87797c75357b3eba25d33b32cba61dd412f7",
     "port_url": "crspytopgn/opensgolf",
     "port_download": "https://github.com/crspytopgn/opensgolf/archive/refs/tags/v0.9.9.tar.gz",
