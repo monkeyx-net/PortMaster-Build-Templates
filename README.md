@@ -35,7 +35,7 @@ _Last checked: 2026-11-27_
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 | -- | thelegendofedgar | 🟢 | 1.38 | 2026-03-27 | -- |
 
-_Checked: 25 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 26 &nbsp; 🟢 OK: 18 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach
