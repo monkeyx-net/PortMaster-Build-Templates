@@ -32,6 +32,14 @@ if grep -rqPz '"(lib(?:X11|Xi|GL|EGL)\.so)"\s*\)?\s*(?:\.or_else\(\|_\|\s*[\w:]*
   exit 1
 fi
 
+# Westonpack's crusty cannot draw the system cursor over this game, so always draw the game's own
+# controller pointer (an arrow, drawn last each frame) at the mouse position (gptokeyb's mouse).
+perl -0pi -e 's/(fn draw_gamepad_pointer\(&mut self\) \{)\s*if !self\.pad\.active \{\s*return;\s*\}/$1\n        let pointer = if self.pad.active { self.pad.pointer } else { self.mouse };/; s/to_virtual\(self\.pad\.pointer\.0, self\.pad\.pointer\.1\)/to_virtual(pointer.0, pointer.1)/' crates/simgolf/src/gamepad.rs
+if ! grep -q 'to_virtual(pointer.0, pointer.1)' crates/simgolf/src/gamepad.rs; then
+  echo "Error: failed to patch the pointer in crates/simgolf/src/gamepad.rs"
+  exit 1
+fi
+
 ${PORT_BUILD}
 
 # The free base set, fonts and text are built into the binary, so only the executable is shipped.

@@ -51,8 +51,7 @@ $ESUDO mount "$controlfolder/libs/${weston_runtime}.squashfs" "${weston_dir}"
 $GPTOKEYB "$GAMEBINARY.${DEVICE_ARCH}" -c "./$GAMEBINARY.gptk" &
 pm_platform_helper "$GAMEDIR/$GAMEBINARY.${DEVICE_ARCH}"
 
-# CRUSTY_SHOW_CURSOR: the game uses the system mouse cursor, which crusty only draws when asked.
-$ESUDO env CRUSTY_BLOCK_INPUT=1 CRUSTY_SHOW_CURSOR=1 \
+$ESUDO env CRUSTY_BLOCK_INPUT=1 \
 $weston_dir/westonwrap.sh headless noop kiosk crusty_glx_gl4es \
 HOME=$CONFDIR XDG_DATA_HOME=$CONFDIR WAYLAND_DISPLAY= \
 $GAMEDIR/$GAMEBINARY.${DEVICE_ARCH} $GAMEARGS
