@@ -1,6 +1,6 @@
 # check_port: opengolf
 
-`check_port.sh opengolf --fix --fix-license` on 2026-11-23 19:47, commit 2468dbc.
+`check_port.sh opengolf --fix --fix-license` on 2026-11-28 18:48, commit f9f889c.
 
 **Result: ok, 1 warning(s)**
 
@@ -10,7 +10,7 @@
 
 ## Fixed by --fix
 
-- shrink screenshot.png from 269 to 83 kB (64 colours)
+- shrink screenshot.png from 269 to 84 kB (64 colours)
 
 ## Notes
 
