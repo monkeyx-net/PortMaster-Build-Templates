@@ -18,7 +18,6 @@ FILES=(
   "libcrypto.so.1.1"
   "libogg.so.0"
   "libtheoradec.so.1"
-  "libz.so.1"
 )
 [[ ${ARCH} == "x86_64" ]] && FILES+=(
   "libbz2.so.1.0"
