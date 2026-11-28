@@ -4,7 +4,7 @@ Holding repo for meta information and assets needed to build/update ports in Por
 <!-- PORT-STATUS-START -->
 ## Port Status
 
-_Last checked: 2026-11-27_
+_Last checked: 2026-11-28_
 
 | Title | Port | Status | Version | Date Updated | PM Date Updated |
 |-------|------|--------|---------|--------------|-----------------|
@@ -22,7 +22,7 @@ _Last checked: 2026-11-27_
 | -- | nookery | 🟢 | v1.0.0 | 2026-11-07 | -- |
 | -- | onsyuri | 🟢 | v0.7.7beta | 2026-11-24 | -- |
 | -- | opengolf | 🟢 | v0.0.4 | 2026-11-08 | -- |
-| -- | opensgolf | 🟢 | v0.9.9 | 2026-11-27 | -- |
+| -- | opensgolf | 🔵 | v0.9.10 | 2026-11-28 | -- |
 | -- | paperboat | 🟢 | 1.0.3 | 2026-11-17 | -- |
 | -- | pikifen | 🟢 | 1.1.1 | 2026-11-07 | -- |
 | -- | recwars | 🟢 | v0.1.5 | 2026-11-02 | -- |
@@ -35,7 +35,7 @@ _Last checked: 2026-11-27_
 | Stunt Car Racer | stuntcarracer | 🔵 | continuous-2026-02-25 | 2026-02-25 | 2026-01-25 |
 | -- | thelegendofedgar | 🟢 | 1.38 | 2026-03-27 | -- |
 
-_Checked: 26 &nbsp; 🟢 OK: 18 &nbsp; 🔵 Updates: 8 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
+_Checked: 26 &nbsp; 🟢 OK: 17 &nbsp; 🔵 Updates: 9 &nbsp; 🔴 Errors: 0 &nbsp; 🟡 Skipped: 0_
 <!-- PORT-STATUS-END -->
 
 ## A slightly different approach

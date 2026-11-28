@@ -3,13 +3,13 @@
   "name": "opensgolf.zip",
   "port_json": "new_ports/opensgolf/opensgolf/opensgolf/port.json",
   "source": {
-    "date_updated": "2026-11-27",
+    "date_updated": "2026-11-28",
     "port_exe": "opensgolf",
     "port_build": "cargo build --release --locked -p opensgolf --no-default-features --features audio",
-    "port_checksum": "76271e4e2489b6b2247ee095321c87797c75357b3eba25d33b32cba61dd412f7",
+    "port_checksum": "8abf8c2653c9a4f30bd2b016d8027de1748308f5e3fa03f9af86d8d84b9a3218",
     "port_url": "crspytopgn/opensgolf",
-    "port_download": "https://github.com/crspytopgn/opensgolf/archive/refs/tags/v0.9.9.tar.gz",
-    "port_version": "v0.9.9"
+    "port_download": "https://github.com/crspytopgn/opensgolf/archive/refs/tags/v0.9.10.tar.gz",
+    "port_version": "v0.9.10"
   },
   "screenshot": {
     "delay": 10,
