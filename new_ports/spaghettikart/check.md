@@ -1,6 +1,6 @@
 # check_port: spaghettikart
 
-`check_port.sh spaghettikart --fix --fix-license` on 2026-11-20 11:01, commit a105bb9.
+`check_port.sh spaghettikart --fix --fix-license` on 2026-11-28 16:58, commit 4f4b757.
 
 **Result: ok, 2 warning(s)**
 
@@ -9,7 +9,13 @@
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 
+## Fixed by --fix
+
+- remove libs.aarch64/libbz2.so.1.0: build.sh does not copy it for aarch64 (left from an older build)
+- remove libs.aarch64/libz.so.1: build.sh does not copy it for aarch64 (left from an older build)
+- remove libs.x86_64/libz.so.1: build.sh does not copy it for x86_64 (left from an older build)
+
 ## Notes
 
-- aarch64 loads from libs.aarch64: libbz2.so.1 libbz2.so.1.0 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libz.so.1 libzip.so.5
-- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libz.so.1 libzip.so.5
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libogg.so.0 libtheoradec.so.1 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libzip.so.5
+- x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libogg.so.0 libtinyxml2.so.10 libvorbis.so.0 libvorbisenc.so.2 libvorbisfile.so.3 libzip.so.5
