@@ -1,6 +1,6 @@
 # check_port: ghostship
 
-`check_port.sh ghostship --fix --fix-license` on 2026-11-19 09:47, commit f53b143.
+`check_port.sh ghostship --fix --fix-license` on 2026-11-28 15:00, commit d775e1b.
 
 **Result: ok, 2 warning(s)**
 
@@ -9,7 +9,11 @@
 - libzstd.so.1 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 - libcrypto.so.3 (x86_64) is needed by libs.x86_64/libzip.so.5 but not bundled or in cfw_provided: check ldd on devices
 
+## Fixed by --fix
+
+- remove libs.aarch64/libz.so.1: build.sh does not copy it for aarch64 (left from an older build)
+
 ## Notes
 
-- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libtcc.so libtheoradec.so.1 libtinyxml2.so.10 libz.so.1 libzip.so.5
+- aarch64 loads from libs.aarch64: libbz2.so.1 libcrypto.so.1.1 liblzma.so.5 libtcc.so libtheoradec.so.1 libtinyxml2.so.10 libzip.so.5
 - x86_64 loads from libs.x86_64: libbz2.so.1.0 liblzma.so.5 libtcc.so libtinyxml2.so.10 libzip.so.5
