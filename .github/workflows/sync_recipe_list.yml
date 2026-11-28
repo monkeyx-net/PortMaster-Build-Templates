@@ -18,7 +18,7 @@ jobs:
       # GitHub rejects pushes to .github/workflows made with GITHUB_TOKEN, so
       # BUILD_TOKEN needs workflow scope (classic) or Workflows read/write (fine-grained).
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.BUILD_TOKEN }}
 
