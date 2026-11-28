@@ -6,10 +6,10 @@
     "date_updated": "2026-11-28",
     "port_exe": "opensgolf",
     "port_build": "cargo build --release --locked -p opensgolf --no-default-features --features audio",
-    "port_checksum": "8abf8c2653c9a4f30bd2b016d8027de1748308f5e3fa03f9af86d8d84b9a3218",
+    "port_checksum": "a3dc081adfc4b12925d7a7b8a9499e2f145f5be90f2fb0dfa3a5cae8bb513559",
     "port_url": "crspytopgn/opensgolf",
-    "port_download": "https://github.com/crspytopgn/opensgolf/archive/refs/tags/v0.9.10.tar.gz",
-    "port_version": "v0.9.10"
+    "port_download": "https://github.com/crspytopgn/opensgolf/archive/refs/tags/v0.9.11.tar.gz",
+    "port_version": "v0.9.11"
   },
   "screenshot": {
     "delay": 10,
